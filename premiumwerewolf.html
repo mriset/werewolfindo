@@ -1,0 +1,2745 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf Premium Light Edition - Kartu Cetak</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: radial-gradient(circle at 50% 0%, #1e2229 0%, #0d1115 100%); font-family: 'Crimson Pro', serif; padding: 40px 10px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color: #fff; }
+        h1.print-title { text-align: center; font-family: 'Cinzel', serif; font-size: 36px; color: #D4AF37; margin: 10px 0 6px; letter-spacing: 12px; text-transform: uppercase; text-shadow: 0 4px 15px rgba(212, 175, 55, 0.4), 0 1px 2px rgba(0,0,0,0.8); }
+        .print-subtitle { text-align: center; font-family: 'Crimson Pro', serif; font-size: 16px; color: #A0AAB5; margin-bottom: 24px; letter-spacing: 4px; font-weight: 300; }
+        .screen-note { text-align: center; font-family: 'Crimson Pro', serif; font-size: 14px; color: #D4AF37; margin: 8px auto 30px; font-style: italic; background: rgba(212, 175, 55, 0.05); padding: 12px 20px; border-radius: 8px; max-width: 650px; border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); line-height: 1.6; }
+        .page { width: 210mm; min-height: 297mm; background: #faf8f5; margin: 0 auto 30px; padding: 9.15mm 3.75mm; display: grid; grid-template-columns: repeat(3, 63.5mm); grid-template-rows: repeat(3, 88.9mm); gap: 6mm; justify-content: center; align-content: center; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); position: relative; }
+        .page::before { content: ''; position: absolute; inset: 0; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.02"><circle cx="50" cy="50" r="1" fill="%23000"/></svg>') repeat; pointer-events: none; z-index: 0; }
+        .card { width: 63.5mm; height: 88.9mm; border-radius: 4mm; position: relative; background: #ffffff; border: 0.2mm solid #d0c8b8; font-family: 'Crimson Pro', serif; page-break-inside: avoid; z-index: 1;}
+        .card::before { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; border: 0.35mm dashed #b0b0b0; border-radius: 5mm; z-index: 20; pointer-events: none; }
+        .card::after { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; background: #ffffff; border-radius: 5mm; z-index: -2; }
+        
+        /* Inner container */
+        .card-inner { position: absolute; inset: 1.5mm; border-radius: 2.5mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: linear-gradient(135deg, #FFFEFA 0%, #F5F1E6 100%); overflow: hidden; box-shadow: inset 0 0 15px rgba(0,0,0,0.05); }
+        .card-inner::before { content: ''; position: absolute; inset: 0.8mm; border-radius: 1.8mm; pointer-events: none; z-index: 1; opacity: 0.7; }
+
+        .card-header { width: 100%; padding: 2mm 2.5mm 0mm; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
+        .card-faction { font-family: 'Cinzel', serif; font-size: 8.5px; font-weight: 900; letter-spacing: 2px; padding: 1.2mm 2.5mm; border-radius: 1.5mm; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3); }
+        .faction-evil { background: linear-gradient(135deg, #7A0000 0%, #B22222 100%); color: #FFFEFA; border: 0.2mm solid #4A0000; }
+        .faction-good { background: linear-gradient(135deg, #102B4E 0%, #25548A 100%); color: #FFFEFA; border: 0.2mm solid #0B1C33; }
+        .faction-neutral { background: linear-gradient(135deg, #333333 0%, #595959 100%); color: #FFFEFA; border: 0.2mm solid #1A1A1A; }
+        .card-id { font-family: 'Cinzel', serif; font-size: 8.5px; color: #888; font-weight: 700; background: transparent; padding: 1mm; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
+        
+        .card-icon-wrap { width: 100%; display: flex; align-items: center; justify-content: center; padding: 0.5mm 0; flex-shrink: 0; z-index:2; position: relative; }
+        .card-icon-wrap svg { width: 19mm; height: 19mm; display: block; }
+        
+        .card-name-container { text-align: center; margin-bottom: 1.5mm; width: 100%; z-index:2; position: relative; }
+        .card-name { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; line-height: 1; text-shadow: none; }
+        .card-name-en { font-family: 'Cinzel', serif; font-size: 9.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; opacity: 0.85; }
+        
+        .card-ability { font-family: 'Cinzel', serif; font-size: 9.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-align: center; padding: 1.5mm 3mm; width: 100%; line-height: 1.1; margin-bottom: 2mm; z-index:2; position: relative; }
+        
+        .card-desc { font-family: 'Crimson Pro', serif; font-size: 11.5px; font-weight: 500; text-align: center; padding: 0 3mm; line-height: 1.2; flex: 1; display: block; z-index:2; position: relative; text-shadow: none; }
+        .card-desc strong { font-weight: 700; }
+        
+        .card-footer { width: 100%; padding: 0.8mm 0 2.2mm; text-align: center; margin-top: auto; z-index:2; position: relative; }
+        .card-footer-text { font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; display: inline-block; transform: translateY(-0.5mm); }
+
+        /* === ULTRA PREMIUM THEMING === */
+        .theme-evil .card-inner { border: 0.6mm solid #7A0000; }
+        .theme-evil .card-inner::before { border: 0.25mm solid rgba(122, 0, 0, 0.4); }
+        .theme-evil .card-name { color: #7A0000; }
+        .theme-evil .card-name-en { color: #B22222; }
+        .theme-evil .card-ability { background: linear-gradient(90deg, rgba(122,0,0,0) 0%, rgba(122,0,0,0.08) 20%, rgba(122,0,0,0.08) 80%, rgba(122,0,0,0) 100%); color: #7A0000; border-top: 0.3mm solid rgba(122, 0, 0, 0.25); border-bottom: 0.3mm solid rgba(122, 0, 0, 0.25); }
+        .theme-evil .card-desc { color: #2a2a2a; }
+        .theme-evil .card-desc strong { color: #7A0000; }
+        .theme-evil .card-footer { border-top: 0.4mm solid rgba(122, 0, 0, 0.2); background: linear-gradient(to top, rgba(122,0,0,0.04) 0%, rgba(122,0,0,0) 100%); }
+        .theme-evil .card-footer-text { color: #7A0000; }
+
+        .theme-good .card-inner { border: 0.6mm solid #102B4E; }
+        .theme-good .card-inner::before { border: 0.25mm solid rgba(16, 43, 78, 0.4); }
+        .theme-good .card-name { color: #102B4E; }
+        .theme-good .card-name-en { color: #2A6099; }
+        .theme-good .card-ability { background: linear-gradient(90deg, rgba(16,43,78,0) 0%, rgba(16,43,78,0.08) 20%, rgba(16,43,78,0.08) 80%, rgba(16,43,78,0) 100%); color: #102B4E; border-top: 0.3mm solid rgba(16, 43, 78, 0.25); border-bottom: 0.3mm solid rgba(16, 43, 78, 0.25); }
+        .theme-good .card-desc { color: #2a2a2a; }
+        .theme-good .card-desc strong { color: #102B4E; }
+        .theme-good .card-footer { border-top: 0.4mm solid rgba(16, 43, 78, 0.2); background: linear-gradient(to top, rgba(16,43,78,0.04) 0%, rgba(16,43,78,0) 100%); }
+        .theme-good .card-footer-text { color: #102B4E; }
+
+        .theme-neutral .card-inner { border: 0.6mm solid #333333; }
+        .theme-neutral .card-inner::before { border: 0.25mm solid rgba(51, 51, 51, 0.4); }
+        .theme-neutral .card-name { color: #222222; }
+        .theme-neutral .card-name-en { color: #666666; }
+        .theme-neutral .card-ability { background: linear-gradient(90deg, rgba(51,51,51,0) 0%, rgba(51,51,51,0.08) 20%, rgba(51,51,51,0.08) 80%, rgba(51,51,51,0) 100%); color: #333333; border-top: 0.3mm solid rgba(51, 51, 51, 0.25); border-bottom: 0.3mm solid rgba(51, 51, 51, 0.25); }
+        .theme-neutral .card-desc { color: #2a2a2a; }
+        .theme-neutral .card-desc strong { color: #111111; }
+        .theme-neutral .card-footer { border-top: 0.4mm solid rgba(51, 51, 51, 0.2); background: linear-gradient(to top, rgba(51,51,51,0.04) 0%, rgba(51,51,51,0) 100%); }
+        .theme-neutral .card-footer-text { color: #333333; }
+
+        .card-back { background: #ffffff; }
+        .card-back .card-inner { border: 0.6mm solid #D4AF37; background: linear-gradient(135deg, #FFFEFA 0%, #F5F1E6 100%); align-items: center; justify-content: center; box-shadow: inset 0 0 15px rgba(0,0,0,0.02); }
+        .card-back .card-inner::before { border: 0.3mm solid rgba(212, 175, 55, 0.8); inset: 1.5mm; }
+        .card-back svg { position: relative; z-index: 2; }
+
+        @media print {
+            body { background: #fff; padding: 0; }
+            h1.print-title, .print-subtitle, .screen-note { display: none; }
+            .page { margin: 0; box-shadow: none; page-break-after: always; padding: 9.15mm 3.75mm; background: #fff; }
+            .page::before { display: none; }
+            .page:last-child { page-break-after: auto; }
+            .card { box-shadow: none; }
+            .card:hover { transform: none; box-shadow: none; }
+            @page { size: A4; margin: 0; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 class="print-title">⚔ Werewolf ⚔</h1>
+    <p class="print-subtitle">Ultra Premium Gold & Ivory Edition — State of the Art</p>
+    <div class="screen-note">
+        <strong>PANDUAN CETAK:</strong> Tekan <code>Ctrl+P</code>. Pastikan opsi <strong>"Background graphics"</strong>
+        tercentang.<br>
+        <span style="font-size:11.5px; font-weight:400; color:#555;">Telah dilengkapi <strong>Garis Potong (Crop
+                Marks)</strong> dan <strong>Bleed Area</strong> serta disusun presisi agar sejajar (simetris) saat
+            dicetak bolak-balik (Double-sided). Gunakan bantuan penggaris & cutter pada garis potong.</span>
+    </div>
+
+    <!-- ===================== PAGE 1: GOOD (DESA) 01 - 09 ===================== -->
+    <div class="page">
+
+        <!-- VL.01 SEER -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·01</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path
+                            d="M50,10 L55,25 L70,20 L60,35 L80,45 L65,50 L80,55 L60,65 L70,80 L55,75 L50,90 L45,75 L30,80 L40,65 L20,55 L35,50 L20,45 L40,35 L30,20 L45,25 Z"
+                            fill="#D4AF37" opacity="0.4" />
+                        <path d="M15,50 Q50,20 85,50 Q50,80 15,50 Z" fill="#fff" stroke="#D4AF37" stroke-width="2" />
+                        <circle cx="50" cy="50" r="16" fill="#4FA1D8" />
+                        <circle cx="50" cy="50" r="8" fill="#1a3a5c" />
+                        <circle cx="54" cy="46" r="3" fill="#fff" />
+                        <path d="M30,50 A20,20 0 0,1 70,50" fill="none" stroke="#1a3a5c" stroke-width="1.5"
+                            opacity="0.6" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Peramal</div>
+                    <div class="card-name-en">Seer</div>
+                </div>
+                <div class="card-ability">Penerawang Identitas</div>
+                <div class="card-desc">
+                    Setiap malam, peramal dapat menunjuk satu pemain. Moderator akan mengonfirmasi apakah pemain
+                    tersebut <strong>Serigala atau bukan</strong>. Pemain paling vital bagi pihak desa.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Seer — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.02 GUARDIAN -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·02</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <line x1="20" y1="20" x2="80" y2="80" stroke="#a0b0c0" stroke-width="3"
+                            stroke-linecap="round" />
+                        <line x1="80" y1="20" x2="20" y2="80" stroke="#a0b0c0" stroke-width="3"
+                            stroke-linecap="round" />
+                        <polygon points="15,15 25,20 20,25" fill="#FFD700" />
+                        <polygon points="85,15 80,25 75,20" fill="#FFD700" />
+                        <path d="M50,15 L80,25 L75,65 Q50,95 50,95 Q50,95 25,65 L20,25 Z" fill="#e2e8f0"
+                            stroke="#4FA1D8" stroke-width="2" />
+                        <path d="M50,15 L80,25 L75,65 Q50,95 50,95 L50,15 Z" fill="#cbd5e1" />
+                        <rect x="45" y="25" width="10" height="60" fill="#FFD700" />
+                        <rect x="25" y="45" width="50" height="10" fill="#FFD700" />
+                        <circle cx="50" cy="50" r="8" fill="#e06666" stroke="#B8860B" stroke-width="1.5" />
+                        <circle cx="52" cy="48" r="2" fill="#fff" opacity="0.8" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Penjaga</div>
+                    <div class="card-name-en">Guardian</div>
+                </div>
+                <div class="card-ability">Pelindung Malam</div>
+                <div class="card-desc">
+                    Setiap malam, memilih satu pemain untuk <strong>dilindungi</strong> dari serangan serigala. Penjaga
+                    tidak boleh melindungi dirinya atau pemain yang sama selama dua malam berturut-turut.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Guardian — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.03 WITCH -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·03</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <circle cx="50" cy="45" r="25" fill="#8fdf8f" opacity="0.4" />
+                        <path d="M30,60 Q20,90 50,90 Q80,90 70,60 L65,45 L35,45 Z" fill="#444" stroke="#333"
+                            stroke-width="1.5" />
+                        <ellipse cx="50" cy="45" rx="15" ry="6" fill="#32CD32" />
+                        <ellipse cx="50" cy="45" rx="15" ry="6" fill="none" stroke="#222" stroke-width="2" />
+                        <circle cx="45" cy="35" r="4" fill="#32CD32" opacity="0.9" />
+                        <circle cx="55" cy="25" r="5" fill="#32CD32" opacity="0.7" />
+                        <circle cx="40" cy="15" r="3" fill="#32CD32" opacity="0.6" />
+                        <path d="M15,55 L25,55 L27,75 Q20,80 13,75 Z" fill="#75d175" stroke="#fff" stroke-width="1.5" />
+                        <path d="M85,55 L75,55 L73,75 Q80,80 87,75 Z" fill="#e06666" stroke="#fff" stroke-width="1.5" />
+                        <rect x="17" y="50" width="6" height="5" fill="#A0522D" />
+                        <rect x="77" y="50" width="6" height="5" fill="#A0522D" />
+                        <circle cx="18" cy="65" r="2" fill="#fff" opacity="0.8" />
+                        <circle cx="82" cy="65" r="2" fill="#fff" opacity="0.8" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Penyihir</div>
+                    <div class="card-name-en">Witch</div>
+                </div>
+                <div class="card-ability">Pemilik Dua Ramuan</div>
+                <div class="card-desc">
+                    Miliki 2 ramuan (1x pakai seumur hidup): Ramuan <strong>Kehidupan</strong> untuk menyelamatkan
+                    korban malam itu, dan Ramuan <strong>Kematian</strong> untuk membunuh siapapun secara instan.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Witch — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.04 HUNTER -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·04</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <circle cx="50" cy="50" r="30" fill="none" stroke="#e06666" stroke-width="1.5" opacity="0.6" />
+                        <circle cx="50" cy="50" r="15" fill="none" stroke="#e06666" stroke-width="1.5" opacity="0.6" />
+                        <path d="M25,75 L80,20 L85,25 L30,80 Z" fill="#A0522D" stroke="#8B4513" stroke-width="1.5" />
+                        <path d="M60,15 Q85,35 85,60" fill="none" stroke="#A0A0A0" stroke-width="4"
+                            stroke-linecap="round" />
+                        <path d="M15,60 Q35,85 60,85" fill="none" stroke="#A0A0A0" stroke-width="4"
+                            stroke-linecap="round" />
+                        <line x1="60" y1="15" x2="45" y2="45" stroke="#fff" stroke-width="1.5" />
+                        <line x1="85" y1="60" x2="55" y2="55" stroke="#fff" stroke-width="1.5" />
+                        <line x1="20" y1="80" x2="70" y2="30" stroke="#FFD700" stroke-width="2.5" />
+                        <polygon points="75,25 65,35 85,15 75,35" fill="#C0C0C0" />
+                        <polygon points="20,80 15,70 30,70" fill="#DC143C" />
+                        <polygon points="20,80 30,85 30,70" fill="#DC143C" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Pemburu</div>
+                    <div class="card-name-en">Hunter</div>
+                </div>
+                <div class="card-ability">Tembakan Terakhir</div>
+                <div class="card-desc">
+                    Jika pemburu terbunuh karena eksekusi siang hari, ia dapat melancarkan tembakan terakhir untuk
+                    membunuh <strong>satu pemain lain</strong> sebelum ia benar-benar mati sebagai balas dendam.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Hunter — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.05 KING -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·05</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <circle cx="50" cy="50" r="30" fill="#FFD700" opacity="0.2" />
+                        <path d="M15,75 L20,30 L35,55 L50,15 L65,55 L80,30 L85,75 Z" fill="#FFD700" stroke="#B8860B"
+                            stroke-width="1.5" />
+                        <path d="M15,75 L35,55 L50,15 L65,55 L85,75 Z" fill="#ffe066" />
+                        <path d="M18,70 Q50,60 82,70 L85,75 L15,75 Z" fill="#e06666" />
+                        <rect x="12" y="75" width="76" height="10" rx="3" fill="#DAA520" stroke="#8B6508"
+                            stroke-width="1.5" />
+                        <circle cx="50" cy="80" r="3.5" fill="#DC143C" stroke="#fff" stroke-width="1" />
+                        <circle cx="30" cy="80" r="2.5" fill="#4fa1d8" stroke="#fff" stroke-width="1" />
+                        <circle cx="70" cy="80" r="2.5" fill="#4fa1d8" stroke="#fff" stroke-width="1" />
+                        <circle cx="20" cy="27" r="4" fill="#4fa1d8" />
+                        <circle cx="50" cy="11" r="5" fill="#DC143C" stroke="#fff" stroke-width="1" />
+                        <circle cx="80" cy="27" r="4" fill="#4fa1d8" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Raja</div>
+                    <div class="card-name-en">King</div>
+                </div>
+                <div class="card-ability">Hak Veto Eksekusi</div>
+                <div class="card-desc">
+                    Raja adalah bangsawan desa. Memiliki kuasa untuk membatalkan eksekusi siang hari secara mutlak.
+                    Kemampuan istimewa ini hanya dapat digunakan <strong>satu kali</strong> sepanjang permainan.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">King — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.06 DRUNKER -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·06</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M70,45 C90,45 90,75 70,75" fill="none" stroke="#C0C0C0" stroke-width="5"
+                            stroke-linecap="round" />
+                        <path d="M30,35 L35,85 Q50,90 65,85 L70,35 Z" fill="#A0522D" stroke="#8B4513"
+                            stroke-width="1.5" />
+                        <line x1="42" y1="36" x2="45" y2="86" stroke="#8B4513" stroke-width="2" />
+                        <line x1="50" y1="36" x2="50" y2="88" stroke="#8B4513" stroke-width="2" />
+                        <line x1="58" y1="36" x2="55" y2="86" stroke="#8B4513" stroke-width="2" />
+                        <path d="M32,60 Q50,65 68,60" fill="none" stroke="#C0C0C0" stroke-width="3" />
+                        <path d="M33,75 Q50,80 67,75" fill="none" stroke="#C0C0C0" stroke-width="3" />
+                        <ellipse cx="50" cy="35" rx="20" ry="8" fill="#ffb84d" />
+                        <path d="M25,35 Q20,20 40,25 Q45,10 55,20 Q65,15 75,25 Q85,35 70,40 Q50,45 30,40 Q15,38 25,35 Z"
+                            fill="#fff" stroke="#e6e6e6" stroke-width="1.5" />
+                        <circle cx="35" cy="20" r="4" fill="#fff" />
+                        <circle cx="65" cy="15" r="3" fill="#fff" />
+                        <circle cx="20" cy="45" r="2.5" fill="#ffb84d" />
+                        <circle cx="80" cy="25" r="2" fill="#fff" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Pemabuk</div>
+                    <div class="card-name-en">Drunker</div>
+                </div>
+                <div class="card-ability">Pesta Keras Malam Ini</div>
+                <div class="card-desc">
+                    Setiap malam mengajak satu pemain untuk minum. Pemain yang diajak mabuk <strong>kehilangan
+                        kemampuannya</strong> malam itu. Serigala atau Peramal yang diajak akan gagal beraksi tanpa
+                    sadar.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Drunker — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.07 LITTLE GIRL -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·07</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <circle cx="50" cy="40" r="16" fill="#c27c5b" />
+                        <circle cx="38" cy="28" r="6" fill="#c27c5b" />
+                        <circle cx="62" cy="28" r="6" fill="#c27c5b" />
+                        <path d="M40,55 Q50,50 60,55 L68,85 Q50,95 32,85 Z" fill="#c27c5b" />
+                        <ellipse cx="30" cy="65" rx="6" ry="14" transform="rotate(30 30 65)" fill="#a05e3b" />
+                        <ellipse cx="70" cy="65" rx="6" ry="14" transform="rotate(-30 70 65)" fill="#a05e3b" />
+                        <circle cx="38" cy="85" r="8" fill="#a05e3b" />
+                        <circle cx="62" cy="85" r="8" fill="#a05e3b" />
+                        <circle cx="44" cy="36" r="4" fill="#333" />
+                        <line x1="54" y1="34" x2="60" y2="40" stroke="#333" stroke-width="1.5" />
+                        <line x1="60" y1="34" x2="54" y2="40" stroke="#333" stroke-width="1.5" />
+                        <ellipse cx="50" cy="45" rx="5" ry="4" fill="#e6d0b3" />
+                        <circle cx="50" cy="43" r="1.5" fill="#333" />
+                        <path d="M48,46 Q50,48 52,46" fill="none" stroke="#333" stroke-width="1" />
+                        <polygon points="50,55 35,45 35,65" fill="#e06666" />
+                        <polygon points="50,55 65,45 65,65" fill="#e06666" />
+                        <circle cx="50" cy="55" r="3" fill="#8B0000" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Gadis Kecil</div>
+                    <div class="card-name-en">Little Girl</div>
+                </div>
+                <div class="card-ability">Pengintip Malam</div>
+                <div class="card-desc">
+                    Bisa membuka mata perlahan saat Serigala beraksi untuk mengetahui identitas mereka. <strong>Risiko
+                        Tinggi:</strong> Jika Serigala menyadari ia mengintip, gadis kecil langsung dibantai di tempat!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Little Girl — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.08 HARLOT -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·08</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M15,40 Q35,20 50,40 Q65,20 85,40 Q95,60 75,70 Q65,60 50,55 Q35,60 25,70 Q5,60 15,40 Z"
+                            fill="#9932CC" stroke="#FFD700" stroke-width="1.5" />
+                        <path d="M20,42 Q35,25 50,42 Q65,25 80,42 Q88,58 75,65 Q65,58 50,53 Q35,58 25,65 Q12,58 20,42 Z"
+                            fill="#6a1a9a" />
+                        <path d="M28,45 Q38,38 48,45 Q38,52 28,45 Z" fill="#fff" />
+                        <path d="M72,45 Q62,38 52,45 Q62,52 72,45 Z" fill="#fff" />
+                        <path d="M20,40 Q10,15 30,10 Q25,25 35,30" fill="#ffb6c1" />
+                        <path d="M80,40 Q90,15 70,10 Q75,25 65,30" fill="#ffb6c1" />
+                        <path d="M45,75 C35,65 55,50 60,60 C70,70 50,85 45,75 Z" fill="#ff6666" stroke="#8B0000"
+                            stroke-width="1" />
+                        <path d="M48,72 C40,65 55,58 55,65" fill="none" stroke="#8B0000" stroke-width="1" />
+                        <path d="M52,70 C50,65 58,62 55,68" fill="none" stroke="#8B0000" stroke-width="1" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Pelacur</div>
+                    <div class="card-name-en">Harlot</div>
+                </div>
+                <div class="card-ability">Tamu Misterius</div>
+                <div class="card-desc">
+                    Tidur di rumah pemain lain tiap malam. Jika rumah yang dikunjungi diserang Serigala, ia ikut mati.
+                    Jika ia mengunjungi Serigala, ia dibunuh. Selamat jika diam di rumah (namun berisiko).
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Harlot — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.09 SHERIFF -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·09</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <polygon points="50,12 62,35 85,35 67,52 75,76 50,64 25,76 33,52 15,35 38,35" fill="#ffe066"
+                            stroke="#B8860B" stroke-width="1.5" />
+                        <polygon points="50,12 50,64 25,76 33,52 15,35 38,35" fill="#fff5cc" />
+                        <circle cx="50" cy="48" r="10" fill="#fff" stroke="#B8860B" stroke-width="1.5" />
+                        <text x="50" y="52" font-family="sans-serif" font-size="12" fill="#B8860B" text-anchor="middle"
+                            font-weight="bold">★</text>
+                        <circle cx="50" cy="22" r="1.5" fill="#8B6508" />
+                        <circle cx="75" cy="40" r="1.5" fill="#8B6508" />
+                        <circle cx="65" cy="68" r="1.5" fill="#8B6508" />
+                        <circle cx="35" cy="68" r="1.5" fill="#8B6508" />
+                        <circle cx="25" cy="40" r="1.5" fill="#8B6508" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Polisi</div>
+                    <div class="card-name-en">Sheriff</div>
+                </div>
+                <div class="card-ability">Pemegang Otoritas Tinggi</div>
+                <div class="card-desc">
+                    Polisi sering kali ditunjuk oleh warga secara terbuka. Suaranya bernilai <strong>dua poin</strong>
+                    pada saat voting eksekusi siang hari. Posisi terbuka ini menjadikannya target yang menggiurkan.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Sheriff — Tim Desa</span></div>
+            </div>
+        </div>
+
+    </div><!-- end page 1 -->
+
+    <!-- ===================== PAGE 2: GOOD (10-17) + EVIL 01 ===================== -->
+    <div class="page">
+
+        <!-- VL.10 MAYOR -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·10</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M35,45 L35,15 L65,15 L65,45 Z" fill="#444" />
+                        <rect x="25" y="45" width="50" height="6" rx="2" fill="#333" />
+                        <rect x="35" y="38" width="30" height="7" fill="#e06666" />
+                        <line x1="35" y1="15" x2="45" y2="45" stroke="#555" stroke-width="1.5" />
+                        <circle cx="60" cy="58" r="6" fill="#f0ffff" stroke="#FFD700" stroke-width="1.5" />
+                        <path d="M64,62 Q75,70 80,85" fill="none" stroke="#FFD700" stroke-width="1.5" />
+                        <path d="M50,70 Q35,65 25,75 Q45,80 50,70 Z" fill="#fff" />
+                        <path d="M50,70 Q65,65 75,75 Q55,80 50,70 Z" fill="#fff" />
+                        <polygon points="40,88 50,75 60,88 55,98 45,98" fill="#4FA1D8" />
+                        <circle cx="50" cy="82" r="4" fill="#FFD700" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Kepala Desa</div>
+                    <div class="card-name-en">Mayor</div>
+                </div>
+                <div class="card-ability">Hak veto tunggal</div>
+                <div class="card-desc">
+                    Tokoh yang sangat disegani warga. Suara votingnya dihitung normal, namun ia memiliki hak mutlak
+                    untuk membatalkan hasil akhir eksekusi desa <strong>satu kali</strong> jika dirasa ada konspirasi di
+                    dalamnya.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Mayor — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.11 DETECTIVE -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·11</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <line x1="53" y1="53" x2="78" y2="78" stroke="#8B4513" stroke-width="6"
+                            stroke-linecap="round" />
+                        <line x1="55" y1="55" x2="76" y2="76" stroke="#a0522d" stroke-width="1.5"
+                            stroke-linecap="round" />
+                        <circle cx="40" cy="40" r="22" fill="#e0ffff" opacity="0.8" stroke="#C0C0C0" stroke-width="3" />
+                        <path d="M25,30 A18,18 0 0,1 45,22" fill="none" stroke="#fff" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <path d="M35,35 C42,28 48,42 40,48 C32,54 28,42 35,35 Z" fill="#4FA1D8" />
+                        <ellipse cx="38" cy="28" rx="2" ry="3" fill="#4FA1D8" transform="rotate(30 38 28)" />
+                        <ellipse cx="44" cy="30" rx="2" ry="3" fill="#4FA1D8" transform="rotate(45 44 30)" />
+                        <ellipse cx="32" cy="32" rx="2" ry="3" fill="#4FA1D8" transform="rotate(15 32 32)" />
+                        <path d="M15,70 C30,80 40,70 45,65 L40,58 C35,63 25,70 15,65 Z" fill="#A0522D" />
+                        <polygon points="45,65 50,50 40,48 40,58" fill="#8B4513" />
+                        <ellipse cx="45" cy="49" rx="5" ry="2" fill="#555" />
+                        <circle cx="45" cy="45" r="2" fill="#ccc" opacity="0.7" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Detektif</div>
+                    <div class="card-name-en">Detective</div>
+                </div>
+                <div class="card-ability">Investigasi Identitas</div>
+                <div class="card-desc">
+                    Setiap malam, detektif menunjuk <strong>dua pemain</strong>. Moderator akan memberi isyarat apakah
+                    kedua pemain itu berada di tim yang sama atau berbeda (tanpa menyebutkan perannya apa).
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Detective — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.12 MEDIUM -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·12</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <circle cx="50" cy="40" r="24" fill="#d0b3ff" />
+                        <path d="M35,30 A18,18 0 0,1 55,20" fill="none" stroke="#fff" stroke-width="2"
+                            stroke-linecap="round" />
+                        <circle cx="50" cy="40" r="10" fill="#fff" opacity="0.4" filter="blur(1px)" />
+                        <path d="M35,62 L65,62 L75,80 L25,80 Z" fill="#e6c200" />
+                        <line x1="30" y1="70" x2="70" y2="70" stroke="#B8860B" stroke-width="1.5" />
+                        <path d="M15,50 Q25,40 30,55 Q35,45 40,55" fill="none" stroke="#fff" stroke-width="2"
+                            opacity="0.8" />
+                        <path d="M85,50 Q75,40 70,55 Q65,45 60,55" fill="none" stroke="#fff" stroke-width="2"
+                            opacity="0.8" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Medium</div>
+                    <div class="card-name-en">Medium</div>
+                </div>
+                <div class="card-ability">Penghubung Arwah</div>
+                <div class="card-desc">
+                    Mampu berkomunikasi dengan para korban yang telah tewas. Setiap malam dapat menanyakan satu
+                    pertanyaan <strong>"Ya atau Tidak"</strong> pada arwah. Sangat berguna mencari petunjuk tersisa.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Medium — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.13 WIZARD -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·13</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M20,70 L40,15 L60,15 L80,70 Z" fill="#4FA1D8" />
+                        <ellipse cx="50" cy="70" rx="38" ry="6" fill="#1a3a5c" />
+                        <path d="M45,30 L47,35 L52,36 L48,40 L49,45 L45,42 L41,45 L42,40 L38,36 L43,35 Z"
+                            fill="#ffe066" />
+                        <circle cx="55" cy="50" r="3" fill="#ffe066" />
+                        <circle cx="40" cy="55" r="2.5" fill="#ffe066" />
+                        <line x1="15" y1="85" x2="85" y2="35" stroke="#A0522D" stroke-width="3.5"
+                            stroke-linecap="round" />
+                        <circle cx="85" cy="35" r="5" fill="#8fdf8f" />
+                        <path d="M75,45 Q90,65 70,85" fill="none" stroke="#8fdf8f" stroke-width="2"
+                            stroke-dasharray="4,2" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Penyihir Penukar</div>
+                    <div class="card-name-en">Wizard</div>
+                </div>
+                <div class="card-ability">Menukar Peran Dua Pemain</div>
+                <div class="card-desc">
+                    Di fase malam, ia dapat menunjuk dua pemain kepada moderator. Sang moderator akan menukar secara
+                    diam-diam <strong>kartu peran kedua pemain</strong> tanpa disadari hingga terungkap di kemudian
+                    hari.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Wizard — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.14 VILLAGER 1 -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·14</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <line x1="20" y1="80" x2="65" y2="35" stroke="#8B4513" stroke-width="3.5"
+                            stroke-linecap="round" />
+                        <path d="M55,30 Q60,20 70,25" fill="none" stroke="#A0A0A0" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <path d="M65,40 Q75,30 80,35" fill="none" stroke="#A0A0A0" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <line x1="65" y1="35" x2="78" y2="22" stroke="#A0A0A0" stroke-width="3"
+                            stroke-linecap="round" />
+                        <line x1="80" y1="80" x2="40" y2="40" stroke="#A0522D" stroke-width="4"
+                            stroke-linecap="round" />
+                        <polygon points="35,45 45,35 35,25 25,35" fill="#555" />
+                        <path d="M35,30 Q25,15 35,10 Q40,5 40,15 Q50,10 45,25 Q55,30 35,30 Z" fill="#ff9933" />
+                        <path d="M35,30 Q30,20 35,15 Q40,15 40,25 Z" fill="#FFD700" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Warga Desa</div>
+                    <div class="card-name-en">Villager</div>
+                </div>
+                <div class="card-ability">Pemilik Suara Demokrasi</div>
+                <div class="card-desc">
+                    Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan
+                    analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Villager — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.15 VILLAGER 2 -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·15</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <line x1="20" y1="80" x2="65" y2="35" stroke="#8B4513" stroke-width="3.5"
+                            stroke-linecap="round" />
+                        <path d="M55,30 Q60,20 70,25" fill="none" stroke="#A0A0A0" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <path d="M65,40 Q75,30 80,35" fill="none" stroke="#A0A0A0" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <line x1="65" y1="35" x2="78" y2="22" stroke="#A0A0A0" stroke-width="3"
+                            stroke-linecap="round" />
+                        <line x1="80" y1="80" x2="40" y2="40" stroke="#A0522D" stroke-width="4"
+                            stroke-linecap="round" />
+                        <polygon points="35,45 45,35 35,25 25,35" fill="#555" />
+                        <path d="M35,30 Q25,15 35,10 Q40,5 40,15 Q50,10 45,25 Q55,30 35,30 Z" fill="#ff9933" />
+                        <path d="M35,30 Q30,20 35,15 Q40,15 40,25 Z" fill="#FFD700" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Warga Desa</div>
+                    <div class="card-name-en">Villager</div>
+                </div>
+                <div class="card-ability">Pemilik Suara Demokrasi</div>
+                <div class="card-desc">
+                    Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan
+                    analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Villager — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.16 VILLAGER 3 -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·16</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <line x1="20" y1="80" x2="65" y2="35" stroke="#8B4513" stroke-width="3.5"
+                            stroke-linecap="round" />
+                        <path d="M55,30 Q60,20 70,25" fill="none" stroke="#A0A0A0" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <path d="M65,40 Q75,30 80,35" fill="none" stroke="#A0A0A0" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <line x1="65" y1="35" x2="78" y2="22" stroke="#A0A0A0" stroke-width="3"
+                            stroke-linecap="round" />
+                        <line x1="80" y1="80" x2="40" y2="40" stroke="#A0522D" stroke-width="4"
+                            stroke-linecap="round" />
+                        <polygon points="35,45 45,35 35,25 25,35" fill="#555" />
+                        <path d="M35,30 Q25,15 35,10 Q40,5 40,15 Q50,10 45,25 Q55,30 35,30 Z" fill="#ff9933" />
+                        <path d="M35,30 Q30,20 35,15 Q40,15 40,25 Z" fill="#FFD700" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Warga Desa</div>
+                    <div class="card-name-en">Villager</div>
+                </div>
+                <div class="card-ability">Pemilik Suara Demokrasi</div>
+                <div class="card-desc">
+                    Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan
+                    analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Villager — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.17 VILLAGER 4 -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·17</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <line x1="20" y1="80" x2="65" y2="35" stroke="#8B4513" stroke-width="3.5"
+                            stroke-linecap="round" />
+                        <path d="M55,30 Q60,20 70,25" fill="none" stroke="#A0A0A0" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <path d="M65,40 Q75,30 80,35" fill="none" stroke="#A0A0A0" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <line x1="65" y1="35" x2="78" y2="22" stroke="#A0A0A0" stroke-width="3"
+                            stroke-linecap="round" />
+                        <line x1="80" y1="80" x2="40" y2="40" stroke="#A0522D" stroke-width="4"
+                            stroke-linecap="round" />
+                        <polygon points="35,45 45,35 35,25 25,35" fill="#555" />
+                        <path d="M35,30 Q25,15 35,10 Q40,5 40,15 Q50,10 45,25 Q55,30 35,30 Z" fill="#ff9933" />
+                        <path d="M35,30 Q30,20 35,15 Q40,15 40,25 Z" fill="#FFD700" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Warga Desa</div>
+                    <div class="card-name-en">Villager</div>
+                </div>
+                <div class="card-ability">Pemilik Suara Demokrasi</div>
+                <div class="card-desc">
+                    Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan
+                    analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Villager — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- WW.01 WEREWOLF 1 -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·01</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(122,0,0,0.08)" stroke="#7A0000" stroke-width="1.5" />
+                        <!-- Distressed Blood Moon -->
+                        <circle cx="50" cy="45" r="24" fill="#a31515" opacity="0.4" />
+                        <path d="M60,30 A24,24 0 0,0 35,55 A24,24 0 0,1 60,30" fill="#7A0000" opacity="0.6"/>
+                        <!-- Sharp Ears -->
+                        <polygon points="32,25 40,40 30,45" fill="#111" />
+                        <polygon points="68,25 60,40 70,45" fill="#111" />
+                        <!-- Fur top -->
+                        <polygon points="35,40 50,32 65,40" fill="#1a1a1a" />
+                        <polygon points="40,40 50,20 60,40" fill="#222" />
+                        <!-- Face structure -->
+                        <polygon points="30,45 50,42 70,45 65,65 50,80 35,65" fill="#111" />
+                        <polygon points="38,45 50,45 50,75 35,60" fill="#222" />
+                        <polygon points="62,45 50,45 50,75 65,60" fill="#171717" />
+                        <!-- Snout & Nose -->
+                        <polygon points="45,65 55,65 50,75" fill="#000" />
+                        <!-- Fierce Eyes -->
+                        <polygon points="38,50 45,52 42,48" fill="#FF1A1A" />
+                        <polygon points="62,50 55,52 58,48" fill="#FF1A1A" />
+                        <!-- Eye glow -->
+                        <circle cx="41.5" cy="50" r="1.5" fill="#FFD700" />
+                        <circle cx="58.5" cy="50" r="1.5" fill="#FFD700" />
+                        <!-- Fangs / Jaw -->
+                        <polygon points="45,78 47,85 50,80 53,85 55,78" fill="#e6e6e6" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Serigala</div>
+                    <div class="card-name-en">Werewolf</div>
+                </div>
+                <div class="card-ability">Membunuh di Malam Hari</div>
+                <div class="card-desc">
+                    Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling
+                    mengetahui identitas koloninya. Menang jika jumlah serigala menyamai jumlah warga desa yang tersisa.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Werewolf — Tim Jahat</span></div>
+            </div>
+        </div>
+
+    </div><!-- end page 2 -->
+
+    <!-- ===================== PAGE 3: EVIL (02-06) + NEUTRAL 01-04 ===================== -->
+    <div class="page">
+
+        <!-- WW.02 WEREWOLF 2 -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·02</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(122,0,0,0.08)" stroke="#7A0000" stroke-width="1.5" />
+                        <!-- Distressed Blood Moon -->
+                        <circle cx="50" cy="45" r="24" fill="#a31515" opacity="0.4" />
+                        <path d="M60,30 A24,24 0 0,0 35,55 A24,24 0 0,1 60,30" fill="#7A0000" opacity="0.6"/>
+                        <!-- Sharp Ears -->
+                        <polygon points="32,25 40,40 30,45" fill="#111" />
+                        <polygon points="68,25 60,40 70,45" fill="#111" />
+                        <!-- Fur top -->
+                        <polygon points="35,40 50,32 65,40" fill="#1a1a1a" />
+                        <polygon points="40,40 50,20 60,40" fill="#222" />
+                        <!-- Face structure -->
+                        <polygon points="30,45 50,42 70,45 65,65 50,80 35,65" fill="#111" />
+                        <polygon points="38,45 50,45 50,75 35,60" fill="#222" />
+                        <polygon points="62,45 50,45 50,75 65,60" fill="#171717" />
+                        <!-- Snout & Nose -->
+                        <polygon points="45,65 55,65 50,75" fill="#000" />
+                        <!-- Fierce Eyes -->
+                        <polygon points="38,50 45,52 42,48" fill="#FF1A1A" />
+                        <polygon points="62,50 55,52 58,48" fill="#FF1A1A" />
+                        <!-- Eye glow -->
+                        <circle cx="41.5" cy="50" r="1.5" fill="#FFD700" />
+                        <circle cx="58.5" cy="50" r="1.5" fill="#FFD700" />
+                        <!-- Fangs / Jaw -->
+                        <polygon points="45,78 47,85 50,80 53,85 55,78" fill="#e6e6e6" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Serigala</div>
+                    <div class="card-name-en">Werewolf</div>
+                </div>
+                <div class="card-ability">Membunuh di Malam Hari</div>
+                <div class="card-desc">
+                    Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling
+                    mengetahui identitas koloninya. Menang jika jumlah serigala menyamai jumlah warga desa yang tersisa.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Werewolf — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- WW.03 ALPHA WOLF -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·03</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(122,0,0,0.08)" stroke="#7A0000" stroke-width="1.5" />
+                        <!-- Blood Moon -->
+                        <circle cx="50" cy="45" r="24" fill="#a31515" opacity="0.4" />
+                        <path d="M60,30 A24,24 0 0,0 35,55 A24,24 0 0,1 60,30" fill="#7A0000" opacity="0.6"/>
+                        <!-- Sharp Ears -->
+                        <polygon points="32,25 40,40 30,45" fill="#222" />
+                        <polygon points="68,25 60,40 70,45" fill="#222" />
+                        <!-- Fur top -->
+                        <polygon points="35,40 50,32 65,40" fill="#333" />
+                        <polygon points="40,40 50,20 60,40" fill="#444" />
+                        <!-- Face structure -->
+                        <polygon points="30,45 50,42 70,45 65,65 50,80 35,65" fill="#111" />
+                        <polygon points="38,45 50,45 50,75 35,60" fill="#222" />
+                        <polygon points="62,45 50,45 50,75 65,60" fill="#171717" />
+                        <!-- Snout & Nose -->
+                        <polygon points="45,65 55,65 50,75" fill="#000" />
+                        <!-- Fierce Eyes Alpha (Gold/Yellow) -->
+                        <polygon points="38,50 45,52 42,48" fill="#FFD700" />
+                        <polygon points="62,50 55,52 58,48" fill="#FFD700" />
+                        <!-- Eye glow -->
+                        <circle cx="41.5" cy="50" r="1.5" fill="#FFF" />
+                        <circle cx="58.5" cy="50" r="1.5" fill="#FFF" />
+                        <!-- Fangs / Jaw -->
+                        <polygon points="45,78 47,85 50,80 53,85 55,78" fill="#e6e6e6" />
+                        <!-- Golden Crown of the Alpha -->
+                        <polygon points="25,25 20,5 35,15 50,2 65,15 80,5 75,25" fill="#FFD700" stroke="#B8860B" stroke-width="1.5" />
+                        <circle cx="20" cy="5" r="3" fill="#DC143C" />
+                        <circle cx="50" cy="2" r="4" fill="#DC143C" />
+                        <circle cx="80" cy="5" r="3" fill="#DC143C" />
+                        <polygon points="25,28 75,28 72,32 28,32" fill="#B8860B" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Alpha Serigala</div>
+                    <div class="card-name-en">Alpha Wolf</div>
+                </div>
+                <div class="card-ability">Pemimpin Kawanan</div>
+                <div class="card-desc">
+                    Pemimpin utama. Memiliki hak veto saat memilih korban. Satu kali dalam permainan, ia dapat
+                    <strong>menginfeksi</strong> satu pemain warga menjadi serigala alih-alih membunuhnya.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Alpha Wolf — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- WW.04 LYCAN -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·04</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(122,0,0,0.08)" stroke="#7A0000" stroke-width="1.5" />
+                        <!-- Left: Human half (Noble profile) -->
+                        <path d="M50,15 C30,15 20,35 25,60 C28,75 40,85 50,85 Z" fill="#f5d7b5" />
+                        <!-- Human Hair -->
+                        <path d="M50,15 C30,15 20,30 22,45 C28,30 40,25 50,25 Z" fill="#4a3623" />
+                        <!-- Human Eye & Brow -->
+                        <path d="M35,45 Q40,42 45,45" fill="none" stroke="#222" stroke-width="1.5" />
+                        <circle cx="38" cy="48" r="2.5" fill="#fff" />
+                        <circle cx="38" cy="48" r="1" fill="#333" />
+                        <!-- Human Nose & Mouth profile illusion -->
+                        <path d="M45,65 Q48,68 50,68" fill="none" stroke="#d2a66b" stroke-width="1.5" />
+                        
+                        <!-- Right: Wolf half (Fierce profile) -->
+                        <path d="M50,15 C70,15 85,30 80,55 C78,75 60,85 50,85 Z" fill="#111" />
+                        <polygon points="50,15 65,10 60,25" fill="#111" />
+                        <polygon points="80,55 90,60 78,65" fill="#222" />
+                        <!-- Wolf Eye -->
+                        <path d="M55,44 Q60,40 68,46" fill="none" stroke="#222" stroke-width="1.5" />
+                        <polygon points="58,47 64,45 64,49 Z" fill="#FF1A1A" />
+                        <circle cx="61" cy="47" r="1.2" fill="#FFD700" />
+                        <!-- Wolf Snout -->
+                        <path d="M50,70 Q60,70 70,75" fill="none" stroke="#333" stroke-width="1.5" />
+                        <polygon points="55,72 60,78 52,78" fill="#fff" />
+                        
+                        <!-- Split Line Glow -->
+                        <line x1="50" y1="10" x2="50" y2="90" stroke="#7A0000" stroke-width="1.5" stroke-dasharray="6,4" />
+                        <line x1="49" y1="10" x2="49" y2="90" stroke="#ff4d4d" stroke-width="0.5" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Likat</div>
+                    <div class="card-name-en">Lycan</div>
+                </div>
+                <div class="card-ability">Penyamaran Sempurna</div>
+                <div class="card-desc">
+                    Anggota tim jahat dengan aura kemanusiaan yang kuat. Jika diperiksa oleh sang Peramal, identitasnya
+                    akan muncul sebagai <strong>Orang Baik/Warga</strong>! Penyusup paling sulit diidentifikasi.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Lycan — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- WW.05 LONE WOLF -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·05</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(122,0,0,0.08)" stroke="#7A0000" stroke-width="1.5" />
+                        <!-- Giant Pale Moon -->
+                        <circle cx="50" cy="50" r="32" fill="#e6e6e6" />
+                        <circle cx="40" cy="40" r="6" fill="#cccccc" opacity="0.6" />
+                        <circle cx="65" cy="60" r="8" fill="#cccccc" opacity="0.6" />
+                        <circle cx="60" cy="35" r="4" fill="#cccccc" opacity="0.6" />
+                        
+                        <!-- Lone Wolf howling silhouette on rocky crag -->
+                        <path d="M10,85 L45,70 L90,85 Z" fill="#111" />
+                        <!-- Wolf Howling -->
+                        <path d="M35,75 C35,60 40,40 50,30 C53,27 57,22 55,18 C58,20 62,25 65,22 C62,28 65,32 60,38 C55,42 55,50 65,65 C68,70 70,75 65,75 Z" fill="#111" />
+                        <polygon points="52,28 48,22 50,28" fill="#111" /> <!-- ear -->
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Serigala Penyendiri</div>
+                    <div class="card-name-en">Lone Wolf</div>
+                </div>
+                <div class="card-ability">Berubah Saat Ditemukan Werewolf</div>
+                <div class="card-desc">
+                    Awalnya berstatus warga biasa. Namun ketika Serigala memeriksa dan "menemukan" Lone Wolf di malam
+                    hari, ia langsung berubah menjadi <strong>Serigala penuh</strong> dan bergabung dengan kawanan.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Lone Wolf — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- WW.06 SORCERER -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·06</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(139,0,0,0.06)" stroke="#8B0000" stroke-width="1.5" />
+                        <path d="M15,65 Q35,55 50,65 Q65,55 85,65 L80,80 Q65,70 50,80 Q35,70 20,80 Z" fill="#9932CC"
+                            stroke="#FFD700" stroke-width="1.5" />
+                        <path d="M20,62 Q35,52 50,62 Q65,52 80,62 L75,67 Q65,57 50,67 Q35,57 25,67 Z" fill="#fff" />
+                        <line x1="50" y1="62" x2="50" y2="80" stroke="#FFD700" stroke-width="1.5" />
+                        <circle cx="50" cy="35" r="14" fill="#e06666" stroke="#FFD700" stroke-width="1.5" />
+                        <path d="M42,35 Q50,25 58,35 Q50,45 42,35 Z" fill="#ffe066" />
+                        <circle cx="50" cy="35" r="3" fill="#444" />
+                        <path d="M30,40 Q15,25 35,15" fill="none" stroke="#8fdf8f" stroke-width="2" />
+                        <path d="M70,40 Q85,25 65,15" fill="none" stroke="#8fdf8f" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Penyihir Jahat</div>
+                    <div class="card-name-en">Sorcerer</div>
+                </div>
+                <div class="card-ability">Mencari Peramal di Fase Malam</div>
+                <div class="card-desc">
+                    Berada di pihak Serigala. Setiap malam, ia bisa menerawang untuk mencari siapa yang berperan sebagai
+                    <strong>Peramal</strong> demi membocorkan informasi dan memburu tokoh paling berbahaya bagi kawanan.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Sorcerer — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- NT.01 JESTER -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·01</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <path d="M 20 60 Q 35 85 50 70 Q 65 85 80 60 L 50 50 Z" fill="#e0e0e0" stroke="#444"
+                            stroke-width="1.5" />
+                        <circle cx="20" cy="60" r="3" fill="#FFD700" stroke="#B8860B" />
+                        <circle cx="50" cy="70" r="3" fill="#FFD700" stroke="#B8860B" />
+                        <circle cx="80" cy="60" r="3" fill="#FFD700" stroke="#B8860B" />
+                        <path d="M 30 50 Q 50 70 70 50 Q 70 30 50 30 Q 30 30 30 50 Z" fill="#fff" stroke="#444"
+                            stroke-width="1.5" />
+                        <path d="M 40 45 Q 45 40 50 45 Q 45 45 40 45 Z" fill="#333" />
+                        <path d="M 60 45 Q 55 40 50 45 Q 55 45 60 45 Z" fill="#333" />
+                        <path d="M 40 55 Q 50 65 60 55" fill="none" stroke="#d64949" stroke-width="2" />
+                        <circle cx="40" cy="55" r="1.5" fill="#d64949" />
+                        <circle cx="60" cy="55" r="1.5" fill="#d64949" />
+                        <path d="M 28 35 Q 50 45 72 35 L 70 30 Q 50 40 30 30 Z" fill="#FFD700" stroke="#B8860B"
+                            stroke-width="1.5" />
+                        <path d="M 28 32 Q 15 15 10 30 Q 25 40 35 34 Z" fill="#8B0000" stroke="#444"
+                            stroke-width="1.5" />
+                        <path d="M 72 32 Q 85 15 90 30 Q 75 40 65 34 Z" fill="#8B0000" stroke="#444"
+                            stroke-width="1.5" />
+                        <path d="M 40 36 Q 50 5 60 36 Z" fill="#333" stroke="#444" stroke-width="1.5" />
+                        <circle cx="10" cy="30" r="4" fill="#FFD700" stroke="#B8860B" />
+                        <circle cx="90" cy="30" r="4" fill="#FFD700" stroke="#B8860B" />
+                        <circle cx="50" cy="5" r="4" fill="#FFD700" stroke="#B8860B" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Badut</div>
+                    <div class="card-name-en">Jester</div>
+                </div>
+                <div class="card-ability">Tawa Terakhir</div>
+                <div class="card-desc">
+                    Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di siang hari.
+                    Jika Badut berhasil membuat dirinya digantung, maka ia memenangkan permainan seorang diri.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Jester — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- NT.02 TANNER -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·02</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <line x1="50" y1="5" x2="50" y2="25" stroke="#D2B48C" stroke-width="3" />
+                        <rect x="45" y="25" width="10" height="12" rx="2" fill="#8B4513" />
+                        <line x1="45" y1="28" x2="55" y2="28" stroke="#5c2e0b" stroke-width="1" />
+                        <line x1="45" y1="31" x2="55" y2="31" stroke="#5c2e0b" stroke-width="1" />
+                        <line x1="45" y1="34" x2="55" y2="34" stroke="#5c2e0b" stroke-width="1" />
+                        <path d="M50,37 C25,37 25,80 50,80 C75,80 75,37 50,37 Z" fill="none" stroke="#D2B48C"
+                            stroke-width="4" />
+                        <path d="M38,55 Q50,40 62,55 L58,70 L42,70 Z" fill="#e0e0e0" />
+                        <circle cx="44" cy="55" r="4" fill="#333" />
+                        <circle cx="56" cy="55" r="4" fill="#333" />
+                        <path d="M50,62 L48,66 L52,66 Z" fill="#333" />
+                        <line x1="44" y1="70" x2="44" y2="65" stroke="#333" stroke-width="1" />
+                        <line x1="50" y1="70" x2="50" y2="65" stroke="#333" stroke-width="1" />
+                        <line x1="56" y1="70" x2="56" y2="65" stroke="#333" stroke-width="1" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Penyamak</div>
+                    <div class="card-name-en">Tanner</div>
+                </div>
+                <div class="card-ability">Mencari Kematian</div>
+                <div class="card-desc">
+                    Pemain depresif yang memenangkan permainan <strong>HANYA</strong> jika dirinya dieksekusi mati oleh
+                    voting warga. Jika mati terbunuh Serigala, ia kalah. Bertingkahlah sangat mencurigakan!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Tanner — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- NT.03 CUPID -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·03</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <circle cx="50" cy="50" r="25" fill="#ffb6c1" opacity="0.4" />
+                        <path d="M50,80 C50,80 15,50 15,30 C15,15 35,10 50,25 C65,10 85,15 85,30 C85,50 50,80 50,80 Z"
+                            fill="#ff9999" stroke="#fff" stroke-width="1.5" />
+                        <path d="M30,30 C35,25 45,25 50,35" fill="none" stroke="#fff" stroke-width="2" />
+                        <line x1="10" y1="90" x2="90" y2="10" stroke="#FFD700" stroke-width="2.5" />
+                        <polygon points="90,10 75,15 85,25" fill="#FFD700" />
+                        <line x1="20" y1="80" x2="25" y2="85" stroke="#FFD700" stroke-width="2" />
+                        <line x1="15" y1="75" x2="20" y2="80" stroke="#FFD700" stroke-width="2" />
+                        <path d="M20,35 Q5,45 10,65 Q25,50 30,45" fill="#fff" opacity="0.9" />
+                        <path d="M80,35 Q95,45 90,65 Q75,50 70,45" fill="#fff" opacity="0.9" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Cupid</div>
+                    <div class="card-name-en">Cupid</div>
+                </div>
+                <div class="card-ability">Penyatu Dua Jiwa</div>
+                <div class="card-desc">
+                    Pada malam pertama, menunjuk dua pemain untuk menjadi sepasang <strong>kekasih abadi</strong>. Jika
+                    salah satu mati, yang lain otomatis mati patah hati. Pasangan ini harus bertahan hidup bersama.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Cupid — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- NT.04 DOPPELGANGER -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·04</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <path d="M25,25 Q10,45 20,70 Q35,80 50,70 Q60,45 45,25 Z" fill="#ccc" />
+                        <path d="M25,45 Q30,40 35,45" fill="none" stroke="#555" stroke-width="1.5" />
+                        <path d="M40,40 Q45,45 50,40" fill="none" stroke="#555" stroke-width="1.5" />
+                        <path d="M30,65 Q40,55 45,65" fill="none" stroke="#555" stroke-width="1.5" />
+                        <path d="M55,30 Q40,50 50,75 Q65,85 80,75 Q90,50 75,30 Z" fill="#fff" />
+                        <path d="M55,50 Q60,45 65,50" fill="none" stroke="#444" stroke-width="1.5" />
+                        <path d="M70,45 Q75,50 80,45" fill="none" stroke="#444" stroke-width="1.5" />
+                        <path d="M60,65 Q70,75 75,65" fill="none" stroke="#444" stroke-width="1.5" />
+                        <path d="M15,15 Q30,30 45,20" fill="none" stroke="#d64949" stroke-width="3" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Peniru</div>
+                    <div class="card-name-en">Doppelganger</div>
+                </div>
+                <div class="card-ability">Mengambil Alih Peran Pemain Lain</div>
+                <div class="card-desc">
+                    Hanya bangun di malam pertama untuk memilih target. Jika target tersebut mati, sang Peniru akan
+                    <strong>mewarisi peran</strong> targetnya secara rahasia dan bermain dengan tujuan tim barunya.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Doppelganger — Tim Netral</span></div>
+            </div>
+        </div>
+
+    </div><!-- end page 3 -->
+
+    <!-- ===================== PAGE 4: GOOD (18-21) + EVIL 07-08 + NEUTRAL 05-07 ===================== -->
+    <div class="page">
+
+        <!-- VL.18 BODYGUARD -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·18</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M50,15 L75,25 L70,55 C65,75 50,85 50,85 C50,85 35,75 30,55 L25,25 Z" fill="#b0c4de" stroke="#4FA1D8" stroke-width="2" />
+                        <path d="M50,15 L75,25 L70,55 C65,75 50,85 50,85 L50,15 Z" fill="#8fa6c2" />
+                        <rect x="35" y="45" width="30" height="8" rx="2" fill="#fff" />
+                        <rect x="46" y="32" width="8" height="34" rx="2" fill="#fff" />
+                        <circle cx="50" cy="50" r="6" fill="#D4AF37" stroke="#b89b32" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Prajurit</div>
+                    <div class="card-name-en">Bodyguard</div>
+                </div>
+                <div class="card-ability">Perisai Nyawa</div>
+                <div class="card-desc">
+                    Melindungi satu pemain setiap malam. Perbedaannya dengan Penjaga, jika target yang dilindungi diserang, <strong>Prajuritlah yang akan terbunuh</strong> menggantikan target tersebut.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Bodyguard — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.19 PRIEST -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·19</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M40,25 Q50,15 60,25 L65,75 Q50,85 35,75 Z" fill="#e0f7fa" stroke="#4FA1D8" stroke-width="2" />
+                        <rect x="48" y="35" width="4" height="20" fill="#D4AF37" />
+                        <rect x="40" y="42" width="20" height="4" fill="#D4AF37" />
+                        <path d="M45,18 L50,12 L55,18 Z" fill="#fff" />
+                        <ellipse cx="50" cy="27" rx="15" ry="3" fill="#b2ebf2" stroke="#4FA1D8" stroke-width="1" />
+                        <path d="M36,73 Q50,80 64,73" fill="none" stroke="#4FA1D8" stroke-width="2" />
+                        <circle cx="50" cy="58" r="8" fill="#fff" opacity="0.6" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Pendeta</div>
+                    <div class="card-name-en">Priest</div>
+                </div>
+                <div class="card-ability">Pemilih Air Suci</div>
+                <div class="card-desc">
+                    Memiliki <strong>botol air suci</strong> (1x pakai). Dilempar ke 1 pemain malam hari. Jika pemain itu Serigala, Serigala langsung musnah. Tapi jika disiram ke manusia biasa, Pendeta yang mati.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Priest — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.20 VETERAN -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·20</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M25,50 C25,25 40,20 50,20 C60,20 75,25 75,50 C75,65 65,80 50,80 C35,80 25,65 25,50 Z" fill="#ddb59c" />
+                        <path d="M35,45 Q40,40 50,45" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" />
+                        <path d="M65,45 Q60,40 50,45" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" />
+                        <path d="M25,50 C25,30 40,20 50,20 C60,20 75,30 75,50 L25,50 Z" fill="#304f30" />
+                        <line x1="45" y1="65" x2="55" y2="65" stroke="#333" stroke-width="2.5" stroke-linecap="round" />
+                        <path d="M48,60 L50,55 L52,60" fill="none" stroke="#99705a" stroke-width="2" />
+                        <line x1="30" y1="35" x2="45" y2="55" stroke="#cc5555" stroke-width="2.5" stroke-linecap="round" />
+                        <line x1="35" y1="35" x2="40" y2="40" stroke="#cc5555" stroke-width="2.5" stroke-linecap="round" />
+                        <polygon points="50,22 45,15 55,15" fill="#FFD700" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Veteran Tua</div>
+                    <div class="card-name-en">Veteran</div>
+                </div>
+                <div class="card-ability">Kulit Keras Penuh Luka</div>
+                <div class="card-desc">
+                    Pensiunan militer yang luar biasa tangguh. Jika ia didatangi serigala di malam hari, ia <strong>tidak langsung mati</strong>. Ia akan bertahan membisu dan baru gugur keesokan siangnya akibat luka-luka gawat.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Veteran — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.21 APPRENTICE SEER -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·21</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M35,70 L40,85 L60,85 L65,70 Z" fill="#A0522D" />
+                        <path d="M25,85 L35,85 L30,95 Z" fill="#D4AF37" />
+                        <path d="M75,85 L65,85 L70,95 Z" fill="#D4AF37" />
+                        <circle cx="50" cy="52" r="22" fill="#4FA1D8" opacity="0.3" stroke="#D4AF37" stroke-width="1.5" />
+                        <path d="M35,45 Q50,25 65,45 Q50,65 35,45 Z" fill="#fff" stroke="#D4AF37" stroke-width="1" />
+                        <circle cx="50" cy="45" r="5" fill="#1a3a5c" />
+                        <circle cx="50" cy="52" r="18" fill="none" stroke="#fff" stroke-width="2" opacity="0.6" stroke-dasharray="4,4" />
+                        <path d="M40,52 Q50,42 60,52" fill="none" stroke="#fff" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Murid Peramal</div>
+                    <div class="card-name-en">Apprentice Seer</div>
+                </div>
+                <div class="card-ability">Pewaris Mata Batin</div>
+                <div class="card-desc">
+                    Mulai layaknya warga biasa. Tapi jika <strong>Peramal asli terbunuh</strong>, maka malam itu juga potensinya bangkit, dan ia mewarisi penuh tugas Peramal untuk menerawang satu pemain tiap malamnya.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Apprentice Seer — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- WW.07 MINION -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·07</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(139,0,0,0.06)" stroke="#8B0000" stroke-width="1.5" />
+                        <path d="M30,85 C30,60 40,40 50,40 C60,40 70,60 70,85" fill="#333" />
+                        <circle cx="50" cy="35" r="14" fill="#ffcccc" />
+                        <path d="M45,35 Q50,32 55,35" fill="none" stroke="#333" stroke-width="1.5" />
+                        <line x1="50" y1="40" x2="50" y2="43" stroke="#333" stroke-width="1.5" />
+                        <ellipse cx="50" cy="25" rx="16" ry="6" fill="#1a1a1a" />
+                        <rect x="38" y="15" width="24" height="10" fill="#1a1a1a" />
+                        <polygon points="50,60 40,80 60,80" fill="#666" />
+                        <circle cx="50" cy="65" r="5" fill="#8B0000" />
+                        <path d="M42,65 L58,65 M50,57 L50,73" stroke="#8B0000" stroke-width="2" />
+                        <path d="M15,60 C40,40 85,60 85,60" fill="none" stroke="#8B0000" stroke-width="2" stroke-dasharray="8,4" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Kaki Tangan</div>
+                    <div class="card-name-en">Minion</div>
+                </div>
+                <div class="card-ability">Sekte Pengabdi Sang Alpha</div>
+                <div class="card-desc">
+                    Sekutu manusia para serigala. Ia diberi tahu identitas kawanan Serigala, namun serigala tak tahu siapa dia. Karena aslinya manusia, jika diterawang ia akan tampil sebagai <strong>Orang Baik</strong>!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Minion — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- WW.08 WOLF CUB -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·08</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(122,0,0,0.08)" stroke="#7A0000" stroke-width="1.5" />
+                        <!-- Smaller, rounder but fierce wolf head -->
+                        <polygon points="38,30 45,45 35,50" fill="#222" />
+                        <polygon points="62,30 55,45 65,50" fill="#222" />
+                        <!-- Head base -->
+                        <path d="M35,50 C35,35 65,35 65,50 C65,70 55,80 45,75 C40,72 35,60 35,50 Z" fill="#1a1a1a" />
+                        <!-- Snout -->
+                        <polygon points="45,55 35,40 50,45" fill="#333" />
+                        <polygon points="55,55 65,40 50,45" fill="#333" />
+                        <polygon points="42,70 58,70 50,80" fill="#000" />
+                        
+                        <!-- Big fierce eyes but slightly puppy-like proportions -->
+                        <circle cx="42" cy="52" r="4.5" fill="#FF1A1A" />
+                        <circle cx="58" cy="52" r="4.5" fill="#FF1A1A" />
+                        <circle cx="41.5" cy="51" r="1.5" fill="#fff" />
+                        <circle cx="57.5" cy="51" r="1.5" fill="#fff" />
+                        <!-- Fangs -->
+                        <polygon points="46,72 48,78 50,72" fill="#fff" />
+                        <polygon points="54,72 52,78 50,72" fill="#fff" />
+                        
+                        <!-- Scratch marks -->
+                        <path d="M20,65 L30,80 M25,60 L35,75 M15,70 L25,85" stroke="#7A0000" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Anak Serigala</div>
+                    <div class="card-name-en">Wolf Cub</div>
+                </div>
+                <div class="card-ability">Pemicu Balas Dendam</div>
+                <div class="card-desc">
+                    Bagian dari Serigala, imut tapi berbahaya. Jika ia sampai terbunuh (entah dieksekusi siang atau ditembak pemburu), kawanannya murka dan akan memangsa <strong>Dua Orang Sekaligus</strong> di malam esok.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Wolf Cub — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- NT.05 SERIAL KILLER -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·05</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <circle cx="50" cy="45" r="18" fill="#e0e0e0" />
+                        <circle cx="43" cy="42" r="5" fill="#333" />
+                        <circle cx="57" cy="42" r="5" fill="#333" />
+                        <polygon points="50,48 48,53 52,53" fill="#333" />
+                        <rect x="42" y="58" width="16" height="5" fill="#333" />
+                        <rect x="44" y="58" width="2" height="5" fill="#e0e0e0" />
+                        <rect x="49" y="58" width="2" height="5" fill="#e0e0e0" />
+                        <rect x="54" y="58" width="2" height="5" fill="#e0e0e0" />
+                        <path d="M25,85 C25,60 35,20 50,20 C65,20 75,60 75,85 Z" fill="#222" opacity="0.9" />
+                        <path d="M50,20 C60,20 70,35 65,45 C60,35 55,25 50,30 C45,25 40,35 35,45 C30,35 40,20 50,20 Z" fill="#111" />
+                        <path d="M65,85 L75,70 L80,72 L70,87 Z" fill="#8B4513" />
+                        <polygon points="75,70 70,45 80,42 80,72" fill="#C0C0C0" stroke="#fff" stroke-width="1" />
+                        <circle cx="72" cy="50" r="2" fill="#8B0000" />
+                        <circle cx="75" cy="55" r="3" fill="#8B0000" />
+                        <polygon points="75,70 65,70 70,75" fill="#D4AF37" />
+                        <path d="M78,45 L77,55 L80,50 Z" fill="#8B0000" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Pembunuh Berantai</div>
+                    <div class="card-name-en">Serial Killer</div>
+                </div>
+                <div class="card-ability">Ancaman Gelap Independen</div>
+                <div class="card-desc">
+                    Misi individunya satu: Menang dengan cara menjadi Survivor terakhir! Setiap malam ia kebal terkaman serigala, dan dapat <strong>menusuk mati 1 pemain</strong> mana pun (baik warga/serigala) secara ganas!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Serial Killer — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- NT.06 CULT LEADER -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·06</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <path d="M35,85 L45,40 L55,40 L65,85 Z" fill="#6a1b9a" />
+                        <path d="M45,40 L50,25 L55,40 Z" fill="#6a1b9a" />
+                        <circle cx="50" cy="35" r="8" fill="#e0e0e0" />
+                        <path d="M25,85 Q35,50 45,45 M75,85 Q65,50 55,45" fill="none" stroke="#6a1b9a" stroke-width="3" opacity="0.6" />
+                        <circle cx="35" cy="55" r="6" fill="#1a1a1a" />
+                        <circle cx="65" cy="55" r="6" fill="#1a1a1a" />
+                        <path d="M45,65 Q50,60 55,65 Q50,70 45,65 Z" fill="#FFD700" stroke="#B8860B" stroke-width="1.5" />
+                        <circle cx="50" cy="65" r="1.5" fill="#B8860B" />
+                        <line x1="50" y1="58" x2="50" y2="72" stroke="#FFD700" stroke-width="1" />
+                        <line x1="40" y1="65" x2="60" y2="65" stroke="#FFD700" stroke-width="1" />
+                        <circle cx="50" cy="65" r="15" fill="none" stroke="#FFD700" stroke-width="1" stroke-dasharray="2,2" />
+                        <path d="M25,40 Q50,15 75,40" fill="none" stroke="#d411b0" stroke-width="1.5" opacity="0.6" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Pemimpin Sekte</div>
+                    <div class="card-name-en">Cult Leader</div>
+                </div>
+                <div class="card-ability">Misi Perekrutan Massal</div>
+                <div class="card-desc">
+                    Setiap kelam ia merekrut 1 pemain rahasia masuk faksi sektenya. Anggota tahu mereka bergabung, tapi tidak tau siapa saja anggotanya. Menang mutlak jika dan hanya jika <strong>seluruh pemain sisa adalah anggota kultus!</strong>
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Cult Leader — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- NT.07 CURSED -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·07</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <path d="M25,60 C25,30 40,15 50,15 C60,15 75,30 75,60 L25,60 Z" fill="#ddb59c" />
+                        <path d="M50,15 C60,15 75,30 75,60 L50,60 Z" fill="#444" />
+                        <circle cx="65" cy="50" r="4" fill="#8B0000" opacity="0.8" />
+                        <path d="M60,45 L62,49 M68,45 L66,49 M64,55 L65,51 M68,54 L66,51" stroke="#fff" stroke-width="1.5" />
+                        <path d="M35,35 Q40,30 45,35" fill="none" stroke="#666" stroke-width="1.5" />
+                        <path d="M55,35 Q60,30 65,35" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="2,1" />
+                        <circle cx="62" cy="40" r="2" fill="#ff4d4d" />
+                        <circle cx="38" cy="40" r="2" fill="#333" />
+                        <path d="M35,48 M65,48" stroke="#333" />
+                        <path d="M20,85 C20,70 30,60 50,60 C70,60 80,70 80,85 Z" fill="#a6b8c7" />
+                        <path d="M50,60 C70,60 80,70 80,85 L50,85 Z" fill="#333" />
+                        <path d="M15,45 Q50,0 85,45" fill="none" stroke="#8B0000" stroke-width="1" opacity="0.4" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Darah Terkutuk</div>
+                    <div class="card-name-en">Cursed</div>
+                </div>
+                <div class="card-ability">Evolusi Monster Tidur</div>
+                <div class="card-desc">
+                    Dimana ia diperiksa oleh si peramal ia adalah <strong>Warga Biasa</strong>. Namun pudar saat serigala menyerangnya; si terkutuk tidak mati melainkan lolos maut untuk <strong>Berubah Menjadi Serigala Tambahan!</strong>
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Cursed — Tim Netral</span></div>
+            </div>
+        </div>
+
+    </div><!-- end page 4 -->
+
+    <!-- ===================== PAGE 5: GOOD 22-30 ===================== -->
+    <div class="page">
+        <!-- VL.22 AURA SEER -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·22</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <circle cx="50" cy="50" r="18" fill="none" stroke="#D4AF37" stroke-width="2" />
+                        <path d="M50,20 Q70,50 50,80 Q30,50 50,20 Z" fill="#b0e0e6" stroke="#4FA1D8" stroke-width="1.5" />
+                        <circle cx="50" cy="50" r="6" fill="#1a3a5c" />
+                        <path d="M20,50 Q10,30 30,10" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.6" stroke-dasharray="2,2" />
+                        <path d="M80,50 Q90,30 70,10" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.6" stroke-dasharray="2,2" />
+                        <path d="M20,50 Q10,70 30,90" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.6" stroke-dasharray="2,2" />
+                        <path d="M80,50 Q90,70 70,90" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.6" stroke-dasharray="2,2" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Penerawang Aura</div>
+                    <div class="card-name-en">Aura Seer</div>
+                </div>
+                <div class="card-ability">Mendeteksi Kekuatan</div>
+                <div class="card-desc">
+                    Tiap malam dapat menunjuk 1 pemain. Moderator akan memberitahu apakah pemain tersebut <strong>punya kemampuan spesial</strong> (termasuk serigala/peran unik) atau hanya warga/makhluk pasif tanpa kemampuan.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Aura Seer — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.23 BEHOLDER -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·23</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M15,50 Q30,35 50,50 Q30,65 15,50 Z" fill="#fff" stroke="#4FA1D8" stroke-width="1.5" />
+                        <circle cx="35" cy="50" r="4" fill="#1a3a5c" />
+                        <circle cx="70" cy="50" r="16" fill="#e6f2ff" stroke="#D4AF37" stroke-width="1.5" />
+                        <path d="M70,38 Q75,34 80,38" fill="none" stroke="#fff" stroke-width="1.5" />
+                        <line x1="10" y1="50" x2="60" y2="50" stroke="#4FA1D8" stroke-width="1" stroke-dasharray="2,2" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Sang Pengawas</div>
+                    <div class="card-name-en">Beholder</div>
+                </div>
+                <div class="card-ability">Mata Tersembunyi</div>
+                <div class="card-desc">
+                    Hanya terbangun sekali di malam pertama. Ia akan ditunjukkan <strong>siapa yang memegang peran Peramal (Seer)</strong>. Tugasnya melindungi Peramal dalam argumen siang hari tanpa membongkar pengetahuannya.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Beholder — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.24 DISEASED -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·24</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <circle cx="50" cy="45" r="15" fill="#c2d5a8" />
+                        <circle cx="45" cy="45" r="2" fill="#88a86a" />
+                        <circle cx="53" cy="42" r="1.5" fill="#88a86a" />
+                        <circle cx="48" cy="38" r="1" fill="#88a86a" />
+                        <circle cx="55" cy="48" r="2.5" fill="#88a86a" />
+                        <path d="M47,52 Q50,55 53,52" fill="none" stroke="#68804f" stroke-width="1.5" />
+                        <path d="M35,75 C35,60 45,55 50,55 C55,55 65,60 65,75 Z" fill="#9db185" />
+                        <path d="M20,60 Q30,40 25,20 M80,60 Q70,40 75,20 M30,40 Q40,25 35,15" fill="none" stroke="#88a86a" stroke-width="1.5" opacity="0.6" stroke-dasharray="3,3" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Warga Berpenyakit</div>
+                    <div class="card-name-en">Diseased</div>
+                </div>
+                <div class="card-ability">Darah Beracun</div>
+                <div class="card-desc">
+                    Warga dengan penyakit kutukan. Jika kawanan serigala memangsa dirinya, maka kawanan serigala tersebut <strong>jatuh sakit kelaparan</strong> dan tidak boleh memangsa siapapun pada malam hari berikutnya.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Diseased — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.25 GHOST -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·25</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M50,20 C35,20 30,35 30,50 C30,75 25,85 50,80 C75,85 70,75 70,50 C70,35 65,20 50,20 Z" fill="#edfcff" stroke="#a0ccdb" stroke-width="1.5" />
+                        <circle cx="43" cy="40" r="3.5" fill="#444" />
+                        <circle cx="57" cy="40" r="3.5" fill="#444" />
+                        <ellipse cx="50" cy="50" rx="4" ry="7" fill="#444" />
+                        <path d="M40,84 L45,90 L50,84 L55,90 L60,84" fill="none" stroke="#edfcff" stroke-width="3" />
+                        <line x1="75" y1="30" x2="85" y2="20" stroke="#a0ccdb" stroke-width="1" stroke-dasharray="2,2" />
+                        <line x1="25" y1="30" x2="15" y2="20" stroke="#a0ccdb" stroke-width="1" stroke-dasharray="2,2" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Hantu Gentayangan</div>
+                    <div class="card-name-en">Ghost</div>
+                </div>
+                <div class="card-ability">Pesan Dari Kubur</div>
+                <div class="card-desc">
+                    Jika ia tewas terbunuh di <strong>Malam Pertama</strong>, ia mengubah statusnya menjadi arwah informan. Setiap bangun esok harinya, dapat menyumbangkan <strong>1 huruf</strong> gaib yang ditulis Moderator ke warga.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Ghost — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.26 VILLAGE IDIOT -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·26</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M30,55 C30,30 40,20 50,20 C60,20 70,30 70,55 C70,75 60,80 50,80 C40,80 30,75 30,55 Z" fill="#f5d6b8" />
+                        <path d="M25,50 Q15,40 25,25 Q40,15 50,20 Q60,15 75,25 Q85,40 75,50 Z" fill="#8B4513" />
+                        <path d="M30,55 Q50,70 70,55" fill="none" stroke="#d64949" stroke-width="3" stroke-linecap="round" />
+                        <path d="M55,63 Q60,70 55,75 Q45,75 50,63" fill="#ff6666" />
+                        <circle cx="42" cy="45" r="4" fill="#333" />
+                        <circle cx="58" cy="45" r="4" fill="#333" />
+                        <line x1="38" y1="38" x2="45" y2="35" stroke="#333" stroke-width="1.5" />
+                        <line x1="62" y1="38" x2="55" y2="35" stroke="#333" stroke-width="1.5" />
+                        <path d="M50,80 L50,90" stroke="#f5d6b8" stroke-width="10" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Orang Dungu</div>
+                    <div class="card-name-en">Village Idiot</div>
+                </div>
+                <div class="card-ability">Kebal Hukuman Mati</div>
+                <div class="card-desc">
+                    Pemain yang memicu jengkel warga. Jika ia diputuskan <strong>dieksekusi mati</strong> pada musyawarah siang hari, ia membuka identitasnya dan **tidak jadi dibunuh**! Tapi hak votingnya hangus selamanya.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Idiot — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.27 INSOMNIAC -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·27</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <ellipse cx="50" cy="50" rx="20" ry="25" fill="#f0e6d2" />
+                        <ellipse cx="43" cy="45" rx="5" ry="3" fill="#333" />
+                        <ellipse cx="57" cy="45" rx="5" ry="3" fill="#333" />
+                        <ellipse cx="43" cy="50" rx="7" ry="4" fill="none" stroke="#68804f" stroke-width="2" opacity="0.6"/>
+                        <ellipse cx="57" cy="50" rx="7" ry="4" fill="none" stroke="#68804f" stroke-width="2" opacity="0.6"/>
+                        <path d="M46,60 Q50,62 54,60" fill="none" stroke="#333" stroke-width="1.5" />
+                        <path d="M30,30 Q32,35 30,40 Q28,35 30,30 Z" fill="#4FA1D8" opacity="0.8"/>
+                        <polyline points="75,25 85,25 75,35 85,35" fill="none" stroke="#8fa6c2" stroke-width="1.5" stroke-dasharray="1,1" />
+                        <line x1="70" y1="20" x2="80" y2="10" stroke="#8fa6c2" stroke-width="1" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Insomnia</div>
+                    <div class="card-name-en">Insomniac</div>
+                </div>
+                <div class="card-ability">Bangun Semalaman</div>
+                <div class="card-desc">
+                    Warga yang selalu terjaga. Di pagi hari ia berhak bertanya sembunyi-sembunyi pada Moderator: <strong>"Apakah peran/tubuhku ditukar semalam?"</strong>. Sangat berguna menangkal kekuatan tukar-kopi faksi gelap.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Insomniac — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.28 MARTYR -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·28</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M50,15 C40,40 25,50 35,70 C40,80 60,80 65,70 C75,50 60,40 50,15 Z" fill="#ff7f50" />
+                        <path d="M50,30 C45,45 35,55 45,65 C50,70 55,65 55,55 C55,45 50,40 50,30 Z" fill="#FFD700" />
+                        <path d="M48,50 L52,50 M50,48 L50,60" fill="none" stroke="#8B0000" stroke-width="2" />
+                        <line x1="15" y1="80" x2="35" y2="70" stroke="#a0a0a0" stroke-width="3" />
+                        <line x1="85" y1="80" x2="65" y2="70" stroke="#a0a0a0" stroke-width="3" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Sang Martir</div>
+                    <div class="card-name-en">Martyr</div>
+                </div>
+                <div class="card-ability">Tebusan Dosa Darah</div>
+                <div class="card-desc">
+                    Memiliki hak krusial (hanya berlaku 1x) untuk <strong>mengambil alih kematian mangsa Serigala</strong> di malam hari. Target serigala akan diampuni, dan sang Martir mengambil posisi mengorbankan nyawanya.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Martyr — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.29 MASON 1 -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·29</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <polygon points="50,15 20,70 80,70" fill="none" stroke="#D4AF37" stroke-width="3" />
+                        <path d="M25,65 L50,25 L75,65 M30,60 L70,60" fill="none" stroke="#D4AF37" stroke-width="1.5" />
+                        <ellipse cx="50" cy="55" rx="10" ry="5" fill="#fff" stroke="#1a3a5c" stroke-width="1.5" />
+                        <circle cx="50" cy="55" r="2.5" fill="#1a3a5c" />
+                        <line x1="45" y1="40" x2="55" y2="40" stroke="#8B4513" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Tukang Batu</div>
+                    <div class="card-name-en">Mason</div>
+                </div>
+                <div class="card-ability">Persaudaraan Gelap</div>
+                <div class="card-desc">
+                    Warga bagian dari sindikat. Di fase formasi awal malam pertama, **semua Mason saling terbangun**. Mereka merupakan satu-satunya duo/trio warga yang <strong>pasti jujur</strong> tentang satu sama lain.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Mason — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.30 MASON 2 -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·30</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <polygon points="50,15 20,70 80,70" fill="none" stroke="#D4AF37" stroke-width="3" />
+                        <path d="M25,65 L50,25 L75,65 M30,60 L70,60" fill="none" stroke="#D4AF37" stroke-width="1.5" />
+                        <ellipse cx="50" cy="55" rx="10" ry="5" fill="#fff" stroke="#1a3a5c" stroke-width="1.5" />
+                        <circle cx="50" cy="55" r="2.5" fill="#1a3a5c" />
+                        <line x1="45" y1="40" x2="55" y2="40" stroke="#8B4513" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Tukang Batu</div>
+                    <div class="card-name-en">Mason</div>
+                </div>
+                <div class="card-ability">Persaudaraan Gelap</div>
+                <div class="card-desc">
+                    Warga bagian dari sindikat. Di fase formasi awal malam pertama, **semua Mason saling terbangun**. Mereka merupakan satu-satunya duo/trio warga yang <strong>pasti jujur</strong> tentang satu sama lain.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Mason — Tim Desa</span></div>
+            </div>
+        </div>
+
+    </div><!-- end page 5 -->
+
+    <!-- ===================== PAGE 6: GOOD 31-39 ===================== -->
+    <div class="page">
+        <!-- VL.31 OLD HAG -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·31</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M50,20 Q60,10 70,30 Q80,50 60,60 Q50,65 40,60 Q20,50 30,30 Q40,10 50,20 Z" fill="#555" />
+                        <path d="M35,60 Q50,80 65,60 L50,90 Z" fill="#333" />
+                        <!-- face nose -->
+                        <path d="M48,45 Q50,55 55,50" fill="none" stroke="#111" stroke-width="1.5" />
+                        <!-- mole -->
+                        <circle cx="53" cy="53" r="1.5" fill="#111" />
+                        <ellipse cx="43" cy="40" rx="3" ry="1.5" fill="#111" />
+                        <ellipse cx="57" cy="40" rx="3" ry="1.5" fill="#111" />
+                        <path d="M45,60 Q50,55 55,60" fill="none" stroke="#111" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Nenek Sihir Tua</div>
+                    <div class="card-name-en">Old Hag</div>
+                </div>
+                <div class="card-ability">Aura Pengusir</div>
+                <div class="card-desc">
+                    Setiap malam ia menunjuk 1 pemain. Keesokan harinya, pemain yang ditunjuk <strong>dilarang mengikuti voting/berkomentar</strong> dalam diskusi siang! Sangat berguna membatasi bicara suspek perusuh.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Old Hag — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.32 OLD MAN -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·32</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <!-- beard & cane -->
+                        <path d="M40,30 Q50,20 60,30 Q65,40 50,70 Q35,40 40,30 Z" fill="#e6e6e6" />
+                        <ellipse cx="50" cy="35" rx="10" ry="12" fill="#f5d6b8" />
+                        <path d="M45,42 Q50,45 55,42" fill="none" stroke="#999" stroke-width="1.5" />
+                        <path d="M25,85 L35,50 Q40,40 45,45 L35,85 Z" fill="#8B4513" />
+                        <circle cx="43" cy="42" r="3" fill="#D4AF37" />
+                        <path d="M46,30 L54,30" stroke="#999" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Kakek Renta</div>
+                    <div class="card-name-en">Old Man</div>
+                </div>
+                <div class="card-ability">Waktu yang Terbatas</div>
+                <div class="card-desc">
+                    Penduduk tertua di desa. Ia <strong>akan mati otomatis di fajar hari ke-X</strong> (hari ke-X ditentukan saat permainan dimulai berdasarkan jumlah pemain). Sang Kakek berpacu dengan waktu sebelum ia mati.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Old Man — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.33 P.I. -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·33</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <!-- Magnifying glass looking at wolf hairs -->
+                        <circle cx="45" cy="45" r="20" fill="none" stroke="#8fa6c2" stroke-width="4" />
+                        <circle cx="45" cy="45" r="16" fill="#e6f2ff" />
+                        <line x1="58" y1="58" x2="75" y2="75" stroke="#8fa6c2" stroke-width="6" stroke-linecap="round" />
+                        <path d="M35,40 Q45,35 40,50" fill="none" stroke="#8B0000" stroke-width="2" />
+                        <path d="M50,45 Q55,40 45,55" fill="none" stroke="#8B0000" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Penyidik Gaib</div>
+                    <div class="card-name-en">Paranormal Investigator</div>
+                </div>
+                <div class="card-ability">Inspeksi Suara Serigala</div>
+                <div class="card-desc">
+                    Mengecek 1 sasaran (dan orang di sebelahnya). Mengetahui *"Adakah Serigala di area tersebut?"*. Namun <strong>bila ada Serigala</strong> yang tertangkap sinyal radarnya, maka P.I juga berubah jadi serigala!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Detektif Mistik — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.34 PACIFIST -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·34</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <circle cx="50" cy="50" r="22" fill="none" stroke="#4FA1D8" stroke-width="3" />
+                        <line x1="50" y1="28" x2="50" y2="72" stroke="#4FA1D8" stroke-width="3" />
+                        <line x1="50" y1="50" x2="33" y2="65" stroke="#4FA1D8" stroke-width="3" />
+                        <line x1="50" y1="50" x2="67" y2="65" stroke="#4FA1D8" stroke-width="3" />
+                        <path d="M35,25 Q50,15 65,25" fill="none" stroke="#D4AF37" stroke-width="2" opacity="0.6"/>
+                        <circle cx="50" cy="50" r="3" fill="#D4AF37" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Cinta Damai</div>
+                    <div class="card-name-en">Pacifist</div>
+                </div>
+                <div class="card-ability">Pemaksa Gencatan Senjata</div>
+                <div class="card-desc">
+                    Warga ini wajib melakukan "Abstain / Nol Voting". Sekali per permainan, ia bisa mendeklarasikan pengampunan yang membatalkan hukuman eksekusi siang hari, menghentikan penumpahan darah hari itu!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Pacifist — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.35 PRINCE -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·35</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <path d="M30,55 L35,25 L50,40 L65,25 L70,55 Z" fill="#D4AF37" />
+                        <circle cx="35" cy="22" r="3" fill="#ff4d4d" />
+                        <circle cx="50" cy="37" r="3" fill="#4FA1D8" />
+                        <circle cx="65" cy="22" r="3" fill="#ff4d4d" />
+                        <path d="M35,60 C35,80 65,80 65,60 Z" fill="#8B0000" />
+                        <polygon points="40,55 60,55 50,65" fill="#fff" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Pangeran Elit</div>
+                    <div class="card-name-en">Prince</div>
+                </div>
+                <div class="card-ability">Titah Darah Mahkota</div>
+                <div class="card-desc">
+                    Bangsawan rahasia yang turun gunung. Jika voting warga di balai desa sepakat menggantungnya, sang Prince akan mengungkap identitas dan ia <strong>bebas dari jerat eksekusi</strong> (hanya berlaku kebal 1x seumur hidup)!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Prince — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.36 SPELLCASTER -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·36</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <polygon points="50,15 35,50 65,50" fill="#a0ccdb" />
+                        <path d="M35,50 L50,85 L65,50 Z" fill="#4FA1D8" />
+                        <circle cx="50" cy="50" r="8" fill="#D4AF37" />
+                        <path d="M40,20 Q20,30 30,60" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="3,2" />
+                        <path d="M60,20 Q80,30 70,60" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="3,2" />
+                        <path d="M50,85 Q50,95 40,80" fill="none" stroke="#D4AF37" stroke-width="1.5" />
+                        <path d="M50,85 Q50,95 60,80" fill="none" stroke="#D4AF37" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Perapal Mantra</div>
+                    <div class="card-name-en">Spellcaster</div>
+                </div>
+                <div class="card-ability">Kutukan Bisu Magis</div>
+                <div class="card-desc">
+                    Tiap malam memilih 1 pemain untuk dikutuk lidahnya. Saat esok siangnya, pemain tersebut <strong>100% Bisul/Bisu</strong>: tidak boleh bicara, mengetik (chat), apalagi berdebat (namun ia tetap bisa ikut menunjuk untuk divote).
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Spellcaster — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.37 TOUGH GUY -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·37</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <!-- muscular arm / fist -->
+                        <path d="M50,20 C35,20 25,35 25,50 C25,75 40,80 50,80 C60,80 75,75 75,50 C75,35 65,20 50,20 Z" fill="#e0a982" />
+                        <path d="M50,30 C30,30 25,45 25,50 C25,70 50,80 50,80" fill="none" stroke="#b5764b" stroke-width="2" />
+                        <circle cx="40" cy="40" r="4" fill="#333" />
+                        <circle cx="60" cy="40" r="4" fill="#333" />
+                        <path d="M45,65 L55,65" stroke="#333" stroke-width="3" />
+                        <path d="M30,35 Q40,30 45,35" fill="none" stroke="#333" stroke-width="2" />
+                        <path d="M70,35 Q60,30 55,35" fill="none" stroke="#333" stroke-width="2" />
+                        <!-- bandana -->
+                        <path d="M25,30 Q50,20 75,30 L72,25 Q50,15 28,25 Z" fill="#8B0000" />
+                        <path d="M25,30 L20,40 L15,35 Z" fill="#8B0000" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Jagoan Kampung</div>
+                    <div class="card-name-en">Tough Guy</div>
+                </div>
+                <div class="card-ability">Urat Kawat Tulang Besi</div>
+                <div class="card-desc">
+                    Warga paling kekar. Jika diterkam Serigala di malam hari, ia <strong>membutuhkan waktu lama untuk mati</strong>. Ia akan terus bertahan di persidangan esok paginya. Saat malam <em>kedua</em> setelah digigit, ia mati otomatis.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Tough Guy — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.38 TROUBLEMAKER -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·38</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <!-- swap symbols / chaos -->
+                        <path d="M30,30 Q50,15 70,30" fill="none" stroke="#d64949" stroke-width="3" stroke-dasharray="4,2" />
+                        <polygon points="70,30 60,25 65,35" fill="#d64949" />
+                        
+                        <path d="M70,70 Q50,85 30,70" fill="none" stroke="#4FA1D8" stroke-width="3" stroke-dasharray="4,2" />
+                        <polygon points="30,70 40,75 35,65" fill="#4FA1D8" />
+                        
+                        <circle cx="30" cy="50" r="10" fill="#222" />
+                        <circle cx="70" cy="50" r="10" fill="#222" />
+                        <!-- ? inside circles -->
+                        <text x="30" y="55" font-family="'Cinzel', serif" font-size="14" fill="#fff" text-anchor="middle">?</text>
+                        <text x="70" y="55" font-family="'Cinzel', serif" font-size="14" fill="#fff" text-anchor="middle">?</text>
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Pembuat Onar</div>
+                    <div class="card-name-en">Troublemaker</div>
+                </div>
+                <div class="card-ability">Pengacau Malam Buta</div>
+                <div class="card-desc">
+                    Setiap malam diam-diam ia dapat memilih 2 pemain (selain dirinya). Ke-dua pemain tersebut (baik peran dan fisik mereka) <strong>Tukar Nasib/Posisi</strong> dan peran mereka tertukar tanpa mereka menyadarinya!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Troublemaker — Tim Desa</span></div>
+            </div>
+        </div>
+
+        <!-- VL.39 FORTUNE TELLER -->
+        <div class="card theme-good">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-good">Baik</span>
+                    <span class="card-id">VL·39</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(26,58,92,0.06)" stroke="#1a3a5c" stroke-width="1.5" />
+                        <!-- Tarot Cards stacked -->
+                        <rect x="25" y="35" width="20" height="30" fill="#f0e6d2" stroke="#1a3a5c" stroke-width="1" transform="rotate(-15 35 50)" />
+                        <rect x="40" y="35" width="20" height="30" fill="#f0e6d2" stroke="#1a3a5c" stroke-width="1" />
+                        <rect x="55" y="35" width="20" height="30" fill="#f0e6d2" stroke="#1a3a5c" stroke-width="1" transform="rotate(15 65 50)" />
+                        
+                        <!-- center crystal or coin -->
+                        <circle cx="50" cy="50" r="6" fill="#D4AF37" />
+                        <circle cx="50" cy="50" r="4" fill="none" stroke="#fff" stroke-width="1" />
+                        <!-- magical sparkles -->
+                        <path d="M50,15 L52,20 L57,22 L52,24 L50,29 L48,24 L43,22 L48,20 Z" fill="#D4AF37" />
+                        <path d="M20,65 L21,68 L24,69 L21,70 L20,73 L19,70 L16,69 L19,68 Z" fill="#D4AF37" />
+                        <path d="M80,65 L81,68 L84,69 L81,70 L80,73 L79,70 L76,69 L79,68 Z" fill="#D4AF37" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Pembaca Nasib</div>
+                    <div class="card-name-en">Fortune Teller</div>
+                </div>
+                <div class="card-ability">Bedah Identitas Mati</div>
+                <div class="card-desc">
+                    Tiap malam memilih 1 pemain. Namun, ia bertugas untuk membuka dan mengetahui <strong>identitas kartu pemain yang baru saja dibunuh/dieksekusi</strong>, memastikan apakah sisa ancaman desa sudah benar-benar lenyap!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Fortune Teller — Tim Desa</span></div>
+            </div>
+        </div>
+
+    </div><!-- end page 6 -->
+
+    <!-- ===================== PAGE 7: EVIL & VAMPIRE ===================== -->
+    <div class="page">
+        <!-- WW.09 BIG BAD WOLF -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·09</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(139,0,0,0.06)" stroke="#8B0000" stroke-width="1.5" />
+                        <path d="M25,70 L35,20 L50,30 L65,20 L75,70 C60,85 40,85 25,70 Z" fill="#222" />
+                        <path d="M30,65 L40,30 L50,40 L60,30 L70,65 Z" fill="#111" />
+                        <!-- big glowing red eyes -->
+                        <ellipse cx="40" cy="45" rx="5" ry="3" fill="#ff1a1a" />
+                        <ellipse cx="60" cy="45" rx="5" ry="3" fill="#ff1a1a" />
+                        <circle cx="40" cy="45" r="1.5" fill="#fff" />
+                        <circle cx="60" cy="45" r="1.5" fill="#fff" />
+                        <path d="M45,60 Q50,65 55,60" fill="none" stroke="#666" stroke-width="2" />
+                        <!-- blood dripping -->
+                        <path d="M48,62 L48,70 M52,62 L52,75" stroke="#8B0000" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Serigala Raksasa</div>
+                    <div class="card-name-en">Big Bad Wolf</div>
+                </div>
+                <div class="card-ability">Haus Darah Ganda</div>
+                <div class="card-desc">
+                    Setelah kawanan serigala biasa selesai memangsa satu korban, moderator akan membangunkannya kembali <strong>sendirian</strong> agar ia memangsa ekstra <strong>satu korban lagi</strong> di malam yang sama!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Big Bad Wolf — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- WW.10 WHITE WOLF -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·10</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(139,0,0,0.06)" stroke="#8B0000" stroke-width="1.5" />
+                        <path d="M30,70 L40,30 L50,40 L60,30 L70,70 C60,80 40,80 30,70 Z" fill="#f0f0f0" />
+                        <path d="M35,65 L45,40 L50,45 L55,40 L65,65 Z" fill="#e0e0e0" />
+                        <!-- icy blue eyes -->
+                        <ellipse cx="42" cy="50" rx="4" ry="2.5" fill="#4FA1D8" />
+                        <ellipse cx="58" cy="50" rx="4" ry="2.5" fill="#4FA1D8" />
+                        <circle cx="42" cy="50" r="1" fill="#fff" />
+                        <circle cx="58" cy="50" r="1" fill="#fff" />
+                        <path d="M45,65 Q50,60 55,65" fill="none" stroke="#ccc" stroke-width="1.5" />
+                        <!-- crown / alpha mark? No, just white fur -->
+                        <path d="M50,20 L50,35" stroke="#fff" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Serigala Putih</div>
+                    <div class="card-name-en">White Wolf</div>
+                </div>
+                <div class="card-ability">Pengkhianat Kawanan</div>
+                <div class="card-desc">
+                    Malam hari ia terbangun bersama serigala lain. Namun setiap <strong>2 malam sekali</strong>, ia terbangun lagi sendirian untuk memangsa <strong>sesama werewolf lainnya</strong>. Ia menang hanya jika hidup sendirian!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">White Wolf — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- WW.11 DREAM WOLF -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·11</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(139,0,0,0.06)" stroke="#8B0000" stroke-width="1.5" />
+                        <path d="M25,70 L35,40 L50,45 L65,40 L75,70 C60,85 40,85 25,70 Z" fill="#444" />
+                        <!-- sleeping eyes -->
+                        <path d="M38,55 Q42,58 46,55" fill="none" stroke="#111" stroke-width="2" />
+                        <path d="M54,55 Q58,58 62,55" fill="none" stroke="#111" stroke-width="2" />
+                        <path d="M45,65 Q50,68 55,65" fill="none" stroke="#222" stroke-width="1.5" />
+                        <!-- dream bubbles -->
+                        <circle cx="70" cy="30" r="3" fill="#8B0000" opacity="0.6"/>
+                        <circle cx="80" cy="20" r="5" fill="#8B0000" opacity="0.6"/>
+                        <!-- zZz -->
+                        <polyline points="75,20 85,20 75,25 85,25" fill="none" stroke="#8B0000" stroke-width="1" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Serigala Tidur</div>
+                    <div class="card-name-en">Dream Wolf</div>
+                </div>
+                <div class="card-ability">Monster Pemalas</div>
+                <div class="card-desc">
+                    Bagian dari faksi jahat, tapi ia tak mau direpotkan. Saat serigala lain dipanggil untuk berunding/membunuh malam hari, <strong>ia tidak ikut bangun</strong>. Ia tak tahu siapa sesama serigalanya!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Dream Wolf — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- WW.12 DIRE WOLF -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·12</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(139,0,0,0.06)" stroke="#8B0000" stroke-width="1.5" />
+                        <!-- spiked aggressive wolf -->
+                        <path d="M25,65 L30,20 L40,30 L50,15 L60,30 L70,20 L75,65 C60,80 40,80 25,65 Z" fill="#3a3a3a" />
+                        <ellipse cx="42" cy="45" rx="4" ry="2" fill="#ff4d4d" transform="rotate(-15 42 45)"/>
+                        <ellipse cx="58" cy="45" rx="4" ry="2" fill="#ff4d4d" transform="rotate(15 58 45)"/>
+                        <path d="M40,35 L45,40 M60,35 L55,40" stroke="#111" stroke-width="2" /> <!-- angry brows -->
+                        <path d="M42,60 L45,55 L50,60 L55,55 L58,60 L50,65 Z" fill="#222" /> <!-- fangs/snout -->
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Serigala Buas</div>
+                    <div class="card-name-en">Dire Wolf</div>
+                </div>
+                <div class="card-ability">Sumpah Kesetiaan</div>
+                <div class="card-desc">
+                    Malam pertama ia menunjuk 1 pemain (kawan/lawan). Pasangannya itu disebut "Blood Brother". Jika sang Blood Brother suatu saat mati terbunuh, ia mengamuk dan akan menargetkan kemarahan mengerikan!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Dire Wolf — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- WW.13 BLACK WOLF -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Jahat</span>
+                    <span class="card-id">WW·13</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(139,0,0,0.06)" stroke="#8B0000" stroke-width="1.5" />
+                        <!-- pure black silhouette blending with night -->
+                        <path d="M20,80 C20,60 30,30 50,30 C70,30 80,60 80,80 Z" fill="#050505" />
+                        <path d="M25,80 L35,45 L50,60 L65,45 L75,80 Z" fill="#151515" />
+                        <!-- glowing eerie yellow eyes -->
+                        <ellipse cx="43" cy="55" rx="3" ry="2" fill="#FFD700" />
+                        <ellipse cx="57" cy="55" rx="3" ry="2" fill="#FFD700" />
+                        <circle cx="43" cy="55" r="0.8" fill="#fff" />
+                        <circle cx="57" cy="55" r="0.8" fill="#fff" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Serigala Hitam</div>
+                    <div class="card-name-en">Black Wolf</div>
+                </div>
+                <div class="card-ability">Kegelapan Mutlak</div>
+                <div class="card-desc">
+                    Pemimpin bayangan kawanan. Selama ia hidup menangkap aura, <strong>tidak ada serigala lain yang bisa terdeteksi</strong> oleh kemampuan "P.I" atau "Aura Seer". Ia melindungi rekam jejak timnya.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Black Wolf — Tim Jahat</span></div>
+            </div>
+        </div>
+
+        <!-- WW.14 WOLF MAN (Deceptive Card) -->
+        <div class="card theme-evil">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-evil">Baik (Unik!)</span>
+                    <span class="card-id">WW·14</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(139,0,0,0.06)" stroke="#8B0000" stroke-width="1.5" />
+                        <!-- half man, half wolf silhouette -->
+                        <path d="M50,15 C35,15 25,30 25,50 C25,70 35,85 50,85 L50,15 Z" fill="#ddb59c" />
+                        <path d="M50,15 C65,15 75,30 75,50 C75,70 65,85 50,85 L50,15 Z" fill="#333" />
+                        <circle cx="40" cy="45" r="3" fill="#333" />
+                        <circle cx="60" cy="45" r="3" fill="#ff1a1a" />
+                        <path d="M40,65 Q50,70 60,65" fill="none" stroke="#000" stroke-width="2" />
+                        <path d="M50,15 L50,85" fill="none" stroke="#111" stroke-dasharray="4,4" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Manusia Serigala</div>
+                    <div class="card-name-en">Wolf Man</div>
+                </div>
+                <div class="card-ability">Genetika Terkutuk</div>
+                <div class="card-desc">
+                    Unik! Fisiknya mirip monster sehingga wujud kartunya merah. <strong>Ia beraliansi sepenuh hati dengan Warga Desa</strong>. Namun, jika Seer menerawangnya ia selalu terlihat sebagai Serigala tulen!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Wolf Man — Tim Desa (?)</span></div>
+            </div>
+        </div>
+
+        <!-- NT.08 VAMPIRE -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·08</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <!-- Bat wings / Dracula -->
+                        <path d="M50,75 C20,70 15,40 15,40 C15,40 25,55 35,45 C35,45 40,60 50,55 C60,60 65,45 65,45 C75,55 85,40 85,40 C85,40 80,70 50,75 Z" fill="#1a1a1a" />
+                        <!-- white grim face -->
+                        <ellipse cx="50" cy="35" rx="12" ry="15" fill="#f0f0f0" />
+                        <path d="M46,31 L42,35 L46,36 Z" fill="#111" />
+                        <path d="M54,31 L58,35 L54,36 Z" fill="#111" />
+                        <!-- fangs -->
+                        <path d="M48,43 L48,46 L49,43 M52,43 L52,46 L51,43" stroke="#8B0000" stroke-width="1" />
+                        <!-- red bite marks around his mouth -->
+                        <circle cx="50" cy="46" r="1.5" fill="#8B0000" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Vampir</div>
+                    <div class="card-name-en">Vampire</div>
+                </div>
+                <div class="card-ability">Ancaman Malam ke-2</div>
+                <div class="card-desc">
+                    Faksi jahat tersendiri (memusuhi Desa dan Serigala). Bangun tiap malam lalu menunjuk 1 orang, besoknya orang itu akan <strong>menunda ajalnya 1 hari</strong> sebelum tewas divakum darahnya (kecuali dibantu tabib).
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Vampire — Tim Vampir</span></div>
+            </div>
+        </div>
+
+        <!-- NT.09 THE COUNT -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·09</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <!-- Noble collar / goblet -->
+                        <path d="M30,70 L40,40 L60,40 L70,70 Z" fill="#1a1a1a" />
+                        <path d="M35,40 Q50,70 65,40 Z" fill="#8B0000" /> <!-- red silk inside collar -->
+                        <!-- goblet of blood -->
+                        <path d="M45,45 Q50,55 55,45 Z" fill="#f0f0f0" stroke="#FFD700" stroke-width="1.5" />
+                        <rect x="49" y="50" width="2" height="15" fill="#FFD700" />
+                        <line x1="45" y1="65" x2="55" y2="65" stroke="#FFD700" stroke-width="2" />
+                        <ellipse cx="50" cy="45" rx="5" ry="1.5" fill="#8B0000" /> <!-- blood inside goblet -->
+                        <!-- subtle bat flying above -->
+                        <path d="M45,25 Q50,30 55,25 Q60,20 50,22 Q40,20 45,25 Z" fill="#111" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Sang Tuan Vampir</div>
+                    <div class="card-name-en">The Count</div>
+                </div>
+                <div class="card-ability">Pewabahan Eksklusif</div>
+                <div class="card-desc">
+                    Pemimpin ras penghisap darah. Tiap malam menunjuk 1 calon. Namun jika The Count bertahan hingga akhir, calon mangsanya itu tidak terbunuh melainkan <strong>bermutasi menjadi kawan se-vaksinya</strong>!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">The Count — Tim Vampir</span></div>
+            </div>
+        </div>
+
+        <!-- NT.10 CHUPACABRA -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·10</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <!-- weird alien animal creature -->
+                        <path d="M30,60 Q50,80 70,60 Q80,40 50,30 Q20,40 30,60 Z" fill="#5c6e5c" />
+                        <!-- spines -->
+                        <polygon points="50,30 45,20 55,25" fill="#2d382d" />
+                        <polygon points="65,35 68,25 72,35" fill="#2d382d" />
+                        <polygon points="35,35 32,25 28,35" fill="#2d382d" />
+                        <!-- red glowing alien eyes -->
+                        <circle cx="40" cy="45" r="4" fill="#ff1a1a" />
+                        <circle cx="60" cy="45" r="4" fill="#ff1a1a" />
+                        <!-- long sucking tongue -->
+                        <path d="M50,55 Q50,75 55,80" fill="none" stroke="#d64949" stroke-width="2" />
+                        <circle cx="55" cy="80" r="1.5" fill="#8B0000" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Penghisap Darah</div>
+                    <div class="card-name-en">Chupacabra</div>
+                </div>
+                <div class="card-ability">Mengkopi Kekuatan Hewan</div>
+                <div class="card-desc">
+                    Makhluk mitos malam. Ia membunuh 1 orang tiap malam. Jika yang dibunuh (tanpa ia tahu) kebetulan adalah seekor <strong>Werewolf</strong>, ia tidak membunuhnya namun justru menyalin kekuatan Serigala tersebut.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Chupacabra — Tim Netral</span></div>
+            </div>
+        </div>
+
+    </div><!-- end page 7 -->
+
+    <!-- ===================== PAGE 8: NEUTRAL 11-18 + MODERATOR ===================== -->
+    <div class="page">
+        <!-- NT.11 BOGEYMAN -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·11</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <ellipse cx="50" cy="40" rx="20" ry="10" fill="#222" />
+                        <!-- sharp fingers extending from darkness -->
+                        <path d="M50,50 L40,75 M50,50 L50,80 M50,50 L60,75" stroke="#111" stroke-width="2" />
+                        <path d="M35,35 Q50,55 65,35" fill="none" stroke="#666" stroke-width="3" />
+                        <circle cx="40" cy="38" r="2" fill="#FFD700" />
+                        <circle cx="60" cy="38" r="2" fill="#FFD700" />
+                        <!-- shadowy aura -->
+                        <path d="M20,60 Q30,80 50,80 Q70,80 80,60" fill="none" stroke="#333" stroke-width="4" stroke-dasharray="8,4" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Sang Momok (Genderuwo)</div>
+                    <div class="card-name-en">Bogeyman</div>
+                </div>
+                <div class="card-ability">Sembunyi Dalam Gelap</div>
+                <div class="card-desc">
+                    Target utamanya adalah kekacauan. Ia hanya bisa menang jika para <strong>Serigala/Warga tersesat secara ajaib mengeksekusi dia di Malam Hari</strong> (akibat efek tukar role). Sangat rumit menebak alurnya.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Bogeyman — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- NT.12 HOODLUM -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·12</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <!-- beanie hat and bandanna -->
+                        <path d="M35,35 Q50,20 65,35 Z" fill="#222" />
+                        <path d="M30,45 Q50,65 70,45 Z" fill="#d64949" />
+                        <!-- scars -->
+                        <line x1="45" y1="50" x2="55" y2="45" stroke="#fff" stroke-width="1.5" />
+                        <line x1="48" y1="46" x2="52" y2="52" stroke="#fff" stroke-width="1.5" />
+                        <ellipse cx="40" cy="40" rx="3" ry="2" fill="#111" />
+                        <ellipse cx="60" cy="40" rx="3" ry="2" fill="#111" />
+                        <!-- knuckle duster -->
+                        <rect x="40" y="70" width="20" height="8" rx="2" fill="#C0C0C0" stroke="#777" stroke-width="1.5" />
+                        <circle cx="43" cy="74" r="1.5" fill="#fff" />
+                        <circle cx="47" cy="74" r="1.5" fill="#fff" />
+                        <circle cx="53" cy="74" r="1.5" fill="#fff" />
+                        <circle cx="57" cy="74" r="1.5" fill="#fff" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Sang Preman</div>
+                    <div class="card-name-en">Hoodlum</div>
+                </div>
+                <div class="card-ability">Kontrak Pembunuhan Terselubung</div>
+                <div class="card-desc">
+                    Pada malam pertama ia menunjuk <strong>2 karakter acak</strong>. Misinya tunggal: Hoodlum baru bisa mengklaim kemenangannya jika di hari penentuan kedua karakter tersangkanya mati, dan ia sendiri tidak dibunuh.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Hoodlum — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- NT.13 WILD CHILD -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·13</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <path d="M40,50 L45,30 L50,45 L60,25 L60,50 Z" fill="#ddb59c" /> <!-- fuzzy hair -->
+                        <ellipse cx="50" cy="55" rx="15" ry="15" fill="#ddb59c" />
+                        <circle cx="45" cy="52" r="2.5" fill="#111" />
+                        <circle cx="55" cy="52" r="2.5" fill="#111" />
+                        <path d="M48,60 Q50,62 52,60" fill="none" stroke="#111" stroke-width="1" />
+                        <path d="M30,75 Q50,60 70,75 L60,85 Q50,75 40,85 Z" fill="#8B4513" /> <!-- leather clothes -->
+                        <!-- subtle wolf shadow behind him -->
+                        <path d="M70,30 Q75,35 70,45" fill="none" stroke="#8B0000" stroke-width="3" opacity="0.3" />
+                        <path d="M25,50 Q20,30 40,20 Q60,10 75,30 Q80,50 75,60" fill="none" stroke="#8B0000" stroke-width="4" stroke-dasharray="6,4" opacity="0.1" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Anak Rimba Liar</div>
+                    <div class="card-name-en">Wild Child</div>
+                </div>
+                <div class="card-ability">Panutan Menentukan Faksi</div>
+                <div class="card-desc">
+                    Malam pertama memilih 1 <strong>Panutan (Role Model)</strong>. Selama Panutan hidup, ia adalah Warga tulen. Namun jika Sang Panutan mati tak sempat selamat, Anak Liar otomatis <strong>berubah jadi Serigala</strong> buas.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Wild Child — Tim Variabel</span></div>
+            </div>
+        </div>
+
+        <!-- NT.14 SASQUATCH -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·14</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <!-- big foot / fur -->
+                        <path d="M25,80 C30,40 70,40 75,80 Z" fill="#4a3b32" />
+                        <circle cx="50" cy="40" r="10" fill="#4a3b32" /> <!-- small head big body -->
+                        <!-- glowing eyes far away -->
+                        <circle cx="47" cy="38" r="1.5" fill="#FFD700" />
+                        <circle cx="53" cy="38" r="1.5" fill="#FFD700" />
+                        <path d="M30,85 C30,75 45,75 45,85" fill="#4a3b32" />
+                        <path d="M55,85 C55,75 70,75 70,85" fill="#4a3b32" />
+                        <!-- giant footprint in background -->
+                        <path d="M20,20 C30,10 40,20 30,40 C20,25 15,25 20,20 Z" fill="#2d241e" opacity="0.4" />
+                        <circle cx="15" cy="15" r="3" fill="#2d241e" opacity="0.4"/>
+                        <circle cx="25" cy="10" r="3.5" fill="#2d241e" opacity="0.4"/>
+                        <circle cx="35" cy="12" r="3" fill="#2d241e" opacity="0.4"/>
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Bigfoot (Sasquatch)</div>
+                    <div class="card-name-en">Sasquatch</div>
+                </div>
+                <div class="card-ability">Adaptasi Keadaan Bertahan</div>
+                <div class="card-desc">
+                    Dianggap makhluk pasif hari ke-1 (hidup menyendiri). Jika permainan berlangsung lebih dari sejumlah fajar tanpa ia tersingkir, <strong>ia mendadak memiliki faksi penentu</strong> antara Serigala atau Desa yang menguasai jalannya game!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Sasquatch — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- NT.15 LEPRECHAUN -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·15</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <!-- green hat -->
+                        <path d="M35,40 L35,20 L65,20 L65,40 Z" fill="#2E8B57" />
+                        <rect x="25" y="40" width="50" height="5" fill="#222" />
+                        <rect x="45" y="32" width="10" height="8" fill="none" stroke="#FFD700" stroke-width="2" />
+                        <!-- clover leaf -->
+                        <path d="M35,60 C40,50 50,60 45,70 C35,65 30,75 40,80 C50,90 60,75 55,70 C65,65 60,50 50,60 C45,60 35,60 35,60 Z" fill="#32CD32" />
+                        <!-- gold coin -->
+                        <circle cx="70" cy="65" r="6" fill="#FFD700" stroke="#B8860B" stroke-width="1.5" />
+                        <line x1="70" y1="61" x2="70" y2="69" stroke="#B8860B" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Peri Penipu</div>
+                    <div class="card-name-en">Leprechaun</div>
+                </div>
+                <div class="card-ability">Tipu Balik Kematian</div>
+                <div class="card-desc">
+                    Penganut aliran jahil yang kebal deteksi. Menyelinap malam usai Serigala menyerang. Ia bisa menunjuk orang lain secara acak, dan keajaiban jahatnya memindah <strong>bekas terkaman kematian Serigala</strong> ke orang yang ia tunjuk! 
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Leprechaun — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- NT.16 BLOODY MARY -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·16</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <!-- cracked mirror -->
+                        <ellipse cx="50" cy="45" rx="18" ry="25" fill="#d0e8f2" stroke="#a0a0a0" stroke-width="2" />
+                        <path d="M45,20 L55,40 L40,55 L55,70 L50,65 L55,60" fill="none" stroke="#a0a0a0" stroke-width="1" />
+                        <path d="M68,45 L55,40 M32,45 L40,55" fill="none" stroke="#a0a0a0" stroke-width="1" />
+                        <!-- bloody handprint inside -->
+                        <path d="M45,50 Q48,40 52,50 Q60,45 55,55 Q55,65 50,60 Q45,65 42,55 Q35,45 45,50 Z" fill="#8B0000" opacity="0.8"/>
+                        <!-- blood drips -->
+                        <path d="M50,70 L50,85 M45,70 L45,78 M55,70 L55,80" stroke="#8B0000" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Hantu Kaca</div>
+                    <div class="card-name-en">Bloody Mary</div>
+                </div>
+                <div class="card-ability">Hukuman Terhadap Ke-Sok-Tahuan</div>
+                <div class="card-desc">
+                    Roh penasaran. Jika seorang pemain dengan ceroboh dan jelas menyebutkan nama peran "Bloody Mary" atau mencurigainya sepanjang hari dengan lantang, malam harinya **pemain yang memanggilnya tersebut tewas membusuk**.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Bloody Mary — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- NT.17 THING -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·17</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <!-- a creepy crawling disconnected hand / tentacle -->
+                        <path d="M30,70 C30,50 45,40 50,40 C55,40 70,50 70,70" fill="none" stroke="#5c6e5c" stroke-width="8" stroke-linecap="round" />
+                        <circle cx="50" cy="35" r="5" fill="#2d382d" />
+                        <path d="M48,30 L45,20 M52,30 L55,20 M50,30 L50,15" stroke="#2d382d" stroke-width="2.5" stroke-linecap="round" />
+                        <!-- swamp bubbles -->
+                        <circle cx="25" cy="50" r="3" fill="#68804f" stroke="#88a86a" stroke-width="1"/>
+                        <circle cx="75" cy="65" r="4" fill="#68804f" stroke="#88a86a" stroke-width="1"/>
+                        <circle cx="35" cy="80" r="2.5" fill="#68804f" stroke="#88a86a" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Makhluk Rawa Misterius</div>
+                    <div class="card-name-en">The Thing</div>
+                </div>
+                <div class="card-ability">Menyentuh Orang Sebelah</div>
+                <div class="card-desc">
+                    (Perlu dimainkan fisik). Tiap malam ia mendapat jatah <strong>mencolek/menyenggol pundak 1 orang yang duduk tepat di kirinya/kanannya</strong> secara fisik diam-diam. Menciptakan kecurigaan paranioia ke pagi hari!
+                </div>
+                <div class="card-footer"><span class="card-footer-text">The Thing — Tim Netral</span></div>
+            </div>
+        </div>
+
+        <!-- VL.40 NOSTRADAMUS (Neutral aligned with prophecy) -->
+        <div class="card theme-neutral">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction faction-neutral">Netral</span>
+                    <span class="card-id">NT·18</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(68,68,68,0.06)" stroke="#444" stroke-width="1.5" />
+                        <!-- star constellations and scroll -->
+                        <path d="M30,30 L40,25 L60,25 L70,30 L70,70 L60,75 L40,75 L30,70 Z" fill="#e0ddd5" />
+                        <path d="M35,35 Q50,45 65,35" fill="none" stroke="#8B4513" stroke-width="1.5" />
+                        <path d="M35,45 Q50,55 65,45" fill="none" stroke="#8B4513" stroke-width="1.5" />
+                        <path d="M35,55 Q50,65 65,55" fill="none" stroke="#8B4513" stroke-width="1.5" />
+                        <!-- mystical eye on scroll -->
+                        <circle cx="50" cy="50" r="5" fill="#fff" stroke="#D4AF37" stroke-width="1" />
+                        <circle cx="50" cy="50" r="2" fill="#1a3a5c" />
+                        <path d="M45,50 Q50,45 55,50 Q50,55 45,50 Z" fill="none" stroke="#D4AF37" stroke-width="1" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Peramal Kuno Akhir Zaman</div>
+                    <div class="card-name-en">Nostradamus</div>
+                </div>
+                <div class="card-ability">Ramalan Mutlak Pemenang</div>
+                <div class="card-desc">
+                    Malam pertama, ia menulis tebakan siapakah Faksi yang akan menang! (Desa atau Serigala). Segel dan jangan diubah. Jika tebakkannya tepat di akhir peperangan, Nostradamus merenggut kursi kemenangan bersama mereka.
+                </div>
+                <div class="card-footer"><span class="card-footer-text">Nostradamus — Tim Ketiga</span></div>
+            </div>
+        </div>
+
+        <!-- SP.01 MODERATOR -->
+        <div class="card theme-neutral">
+            <div class="card-inner" style="border-color: #D4AF37; box-shadow: inset 0 0 15px rgba(212,175,55,0.1);">
+                <div class="card-header">
+                    <span class="card-faction" style="background:var(--color-gold); color:#111; font-weight:800; border:var(--border-thin) solid #111;">Khusus</span>
+                    <span class="card-id">SP·01</span>
+                </div>
+                <div class="card-icon-wrap">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="42" fill="rgba(212,175,55,0.06)" stroke="#D4AF37" stroke-width="1.5" />
+                        <!-- A grand throne or eye of providence -->
+                        <polygon points="50,15 20,70 80,70" fill="none" stroke="#D4AF37" stroke-width="3" />
+                        <!-- crown -->
+                        <path d="M40,30 L45,20 L50,25 L55,20 L60,30 Z" fill="#D4AF37" />
+                        <!-- scale of justice -->
+                        <line x1="50" y1="35" x2="50" y2="60" stroke="#fff" stroke-width="2" />
+                        <line x1="30" y1="45" x2="70" y2="45" stroke="#fff" stroke-width="2" />
+                        <path d="M30,45 L25,55 L35,55 Z" fill="none" stroke="#D4AF37" stroke-width="1.5" />
+                        <path d="M70,45 L65,55 L75,55 Z" fill="none" stroke="#D4AF37" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">Sang Narator</div>
+                    <div class="card-name-en">Game Moderator</div>
+                </div>
+                <div class="card-ability">Tuhan Desa Werewolf</div>
+                <div class="card-desc">
+                    Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain berdasarkan instruksi malam.
+                </div>
+                <div class="card-footer"><span class="card-footer-text" style="color:#D4AF37;">Moderator — Supreme</span></div>
+            </div>
+        </div>
+
+    </div><!-- end page 8 -->
+
+    <!-- ===================== PAGE BACKS ===================== -->
+    <script>
+        const backContent = `
+      <div class="card card-back">
+        <div class="card-inner">
+          <svg width="25mm" height="25mm" viewBox="0 0 100 100">
+            <!-- Light Elegant Background Elements -->
+            <circle cx="50" cy="50" r="46" fill="transparent" stroke="#D4AF37" stroke-width="1.5"/>
+            <circle cx="50" cy="50" r="41" fill="none" stroke="#D4AF37" stroke-width="1" stroke-dasharray="3,3"/>
+            <circle cx="50" cy="50" r="30" fill="rgba(212,175,55,0.08)" stroke="#D4AF37" stroke-width="1"/>
+            
+            <!-- Mystic Star Overlay -->
+            <path d="M50,10 L55,35 L80,50 L55,65 L50,90 L45,65 L20,50 L45,35 Z" fill="#D4AF37" opacity="0.6"/>
+            <path d="M50,20 L53,40 L70,50 L53,60 L50,80 L47,60 L30,50 L47,40 Z" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.9"/>
+            
+            <!-- Center Shield & Monogram MRS -->
+            <circle cx="50" cy="50" r="18" fill="#4A0000" stroke="#D4AF37" stroke-width="1.5"/>
+            <!-- M -->
+            <text x="39" y="55" font-family="'Cinzel', serif" font-size="14" fill="#D4AF37" text-anchor="middle" font-weight="900">M</text>
+            <!-- S -->
+            <text x="61" y="55" font-family="'Cinzel', serif" font-size="14" fill="#D4AF37" text-anchor="middle" font-weight="900">S</text>
+            <!-- R -->
+            <text x="50" y="57" font-family="'Cinzel', serif" font-size="24" fill="#FFFEFA" text-anchor="middle" font-weight="900">R</text>
+          </svg>
+          <div style="font-family:'Cinzel', serif; font-size:12.5px; font-weight:900; color:#4A0000; margin-top:5mm; letter-spacing:6px;">WEREWOLF</div>
+          <div style="font-family:'Crimson Pro', serif; font-size:10px; font-weight:700; color:#4A0000; letter-spacing:3px; text-transform:uppercase; margin-top:2mm; opacity:0.8;">MRSETIAWAN</div>
+        </div>
+      </div>
+    `;
+        
+        // Membangkitkan 1 halaman card backs saja (bisa diprint 8x manual)
+        for (let p = 0; p < 1; p++) {
+            document.write('<div class="page">');
+            for (let i = 0; i < 9; i++) {
+                document.write(backContent);
+            }
+            document.write('</div>');
+        }
+    </script>
+    <!-- End Card Backs -->
+
+</body>
+
+</html>
