@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Werewolf Premium Light Edition - Kartu Cetak</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: radial-gradient(circle at 50% 0%, #1e2229 0%, #0d1115 100%); font-family: 'Crimson Pro', serif; padding: 40px 10px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color: #fff; }
+        h1.print-title { text-align: center; font-family: 'Cinzel', serif; font-size: 36px; color: #D4AF37; margin: 10px 0 6px; letter-spacing: 12px; text-transform: uppercase; text-shadow: 0 4px 15px rgba(212, 175, 55, 0.4), 0 1px 2px rgba(0,0,0,0.8); }
+        .print-subtitle { text-align: center; font-family: 'Crimson Pro', serif; font-size: 16px; color: #A0AAB5; margin-bottom: 24px; letter-spacing: 4px; font-weight: 300; }
+        .screen-note { text-align: center; font-family: 'Crimson Pro', serif; font-size: 14px; color: #D4AF37; margin: 8px auto 30px; font-style: italic; background: rgba(212, 175, 55, 0.05); padding: 12px 20px; border-radius: 8px; max-width: 650px; border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); line-height: 1.6; }
+        .page { width: 210mm; min-height: 297mm; background: #faf8f5; margin: 0 auto 30px; padding: 9.15mm 3.75mm; display: grid; grid-template-columns: repeat(3, 63.5mm); grid-template-rows: repeat(3, 88.9mm); gap: 6mm; justify-content: center; align-content: center; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); position: relative; }
+        .page::before { content: ''; position: absolute; inset: 0; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.02"><circle cx="50" cy="50" r="1" fill="%23000"/></svg>') repeat; pointer-events: none; z-index: 0; }
+        .card { width: 63.5mm; height: 88.9mm; border-radius: 4mm; position: relative; background: #FFFFFF; border: 0.2mm solid #d0c8b8; font-family: 'Crimson Pro', serif; page-break-inside: avoid; z-index: 1;}
+        .card::before { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; border: 0.35mm dashed #b0b0b0; border-radius: 5mm; z-index: 20; pointer-events: none; }
+        .card::after { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; background: #ffffff; border-radius: 5mm; z-index: -2; }
+        
+        /* Inner container */
+        .card-inner { position: absolute; inset: 1.5mm; border-radius: 2.5mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #FFFFFF; overflow: hidden; box-shadow: inset 0 0 15px rgba(0,0,0,0.05); }
+        .card-inner::before { content: ''; position: absolute; inset: 0.8mm; border-radius: 1.8mm; pointer-events: none; z-index: 1; opacity: 0.7; }
+
+        .card-header { width: 100%; padding: 2mm 2.5mm 0mm; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
+        .card-faction { font-family: 'Cinzel', serif; font-size: 8.5px; font-weight: 900; letter-spacing: 2px; padding: 1.2mm 2.5mm; border-radius: 1.5mm; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3); }
+        .faction-evil { background: linear-gradient(135deg, #7A0000 0%, #B22222 100%); color: #FFFEFA; border: 0.2mm solid #4A0000; }
+        .faction-good { background: linear-gradient(135deg, #102B4E 0%, #25548A 100%); color: #FFFEFA; border: 0.2mm solid #0B1C33; }
+        .faction-neutral { background: linear-gradient(135deg, #333333 0%, #595959 100%); color: #FFFEFA; border: 0.2mm solid #1A1A1A; }
+        .card-id { font-family: 'Cinzel', serif; font-size: 8.5px; color: #888; font-weight: 700; background: transparent; padding: 1mm; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
+        
+        .card-icon-wrap { width: 100%; display: flex; align-items: center; justify-content: center; padding: 0.5mm 0; flex-shrink: 0; z-index:2; position: relative; }
+        .card-icon-wrap svg { width: 19mm; height: 19mm; display: block; }
+        
+        .card-name-container { text-align: center; margin-bottom: 1.5mm; width: 100%; z-index:2; position: relative; }
+        .card-name { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; line-height: 1; text-shadow: none; }
+        .card-name-en { font-family: 'Cinzel', serif; font-size: 9.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; opacity: 0.85; }
+        
+        .card-ability { font-family: 'Cinzel', serif; font-size: 9.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-align: center; padding: 1.5mm 3mm; width: 100%; line-height: 1.1; margin-bottom: 2mm; z-index:2; position: relative; }
+        
+        .card-desc { font-family: 'Crimson Pro', serif; font-size: 11.5px; font-weight: 500; text-align: center; padding: 0 3mm; line-height: 1.2; flex: 1; display: block; z-index:2; position: relative; text-shadow: none; }
+        .card-desc strong { font-weight: 700; }
+        
+        .card-footer { width: 100%; padding: 0.8mm 0 2.2mm; text-align: center; margin-top: auto; z-index:2; position: relative; }
+        .card-footer-text { font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; display: inline-block; transform: translateY(-0.5mm); }
+
+        /* === ULTRA PREMIUM THEMING === */
+        .theme-evil .card-inner { border: 0.6mm solid #7A0000; }
+        .theme-evil .card-inner::before { border: 0.25mm solid rgba(122, 0, 0, 0.4); }
+        .theme-evil .card-name { color: #7A0000; }
+        .theme-evil .card-name-en { color: #B22222; }
+        .theme-evil .card-ability { background: linear-gradient(90deg, rgba(122,0,0,0) 0%, rgba(122,0,0,0.08) 20%, rgba(122,0,0,0.08) 80%, rgba(122,0,0,0) 100%); color: #7A0000; border-top: 0.3mm solid rgba(122, 0, 0, 0.25); border-bottom: 0.3mm solid rgba(122, 0, 0, 0.25); }
+        .theme-evil .card-desc { color: #2a2a2a; }
+        .theme-evil .card-desc strong { color: #7A0000; }
+        .theme-evil .card-footer { border-top: 0.4mm solid rgba(122, 0, 0, 0.2); background: linear-gradient(to top, rgba(122,0,0,0.04) 0%, rgba(122,0,0,0) 100%); }
+        .theme-evil .card-footer-text { color: #7A0000; }
+
+        .theme-good .card-inner { border: 0.6mm solid #102B4E; }
+        .theme-good .card-inner::before { border: 0.25mm solid rgba(16, 43, 78, 0.4); }
+        .theme-good .card-name { color: #102B4E; }
+        .theme-good .card-name-en { color: #2A6099; }
+        .theme-good .card-ability { background: linear-gradient(90deg, rgba(16,43,78,0) 0%, rgba(16,43,78,0.08) 20%, rgba(16,43,78,0.08) 80%, rgba(16,43,78,0) 100%); color: #102B4E; border-top: 0.3mm solid rgba(16, 43, 78, 0.25); border-bottom: 0.3mm solid rgba(16, 43, 78, 0.25); }
+        .theme-good .card-desc { color: #2a2a2a; }
+        .theme-good .card-desc strong { color: #102B4E; }
+        .theme-good .card-footer { border-top: 0.4mm solid rgba(16, 43, 78, 0.2); background: linear-gradient(to top, rgba(16,43,78,0.04) 0%, rgba(16,43,78,0) 100%); }
+        .theme-good .card-footer-text { color: #102B4E; }
+
+        .theme-neutral .card-inner { border: 0.6mm solid #333333; }
+        .theme-neutral .card-inner::before { border: 0.25mm solid rgba(51, 51, 51, 0.4); }
+        .theme-neutral .card-name { color: #222222; }
+        .theme-neutral .card-name-en { color: #666666; }
+        .theme-neutral .card-ability { background: linear-gradient(90deg, rgba(51,51,51,0) 0%, rgba(51,51,51,0.08) 20%, rgba(51,51,51,0.08) 80%, rgba(51,51,51,0) 100%); color: #333333; border-top: 0.3mm solid rgba(51, 51, 51, 0.25); border-bottom: 0.3mm solid rgba(51, 51, 51, 0.25); }
+        .theme-neutral .card-desc { color: #2a2a2a; }
+        .theme-neutral .card-desc strong { color: #111111; }
+        .theme-neutral .card-footer { border-top: 0.4mm solid rgba(51, 51, 51, 0.2); background: linear-gradient(to top, rgba(51,51,51,0.04) 0%, rgba(51,51,51,0) 100%); }
+        .theme-neutral .card-footer-text { color: #333333; }
+
+        .card-back { background: #ffffff; }
+        .card-back .card-inner { border: 0.6mm solid #D4AF37; background: #FFFFFF; align-items: center; justify-content: center; box-shadow: inset 0 0 15px rgba(0,0,0,0.02); }
+        .card-back .card-inner::before { border: 0.3mm solid rgba(212, 175, 55, 0.8); inset: 1.5mm; }
+        .card-back svg { position: relative; z-index: 2; }
+
+        @media print {
+            body { background: #fff; padding: 0; }
+            h1.print-title, .print-subtitle, .screen-note { display: none; }
+            .page { margin: 0; box-shadow: none; page-break-after: always; padding: 9.15mm 3.75mm; background: #fff; }
+            .page::before { display: none; }
+            .page:last-child { page-break-after: auto; }
+            .card { box-shadow: none; }
+            .card:hover { transform: none; box-shadow: none; }
+            @page { size: A4; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+<h1 class="print-title">⚔ Werewolf ⚔</h1>
+<p class="print-subtitle">Ultra Premium Ivory Line-Art Edition — State of the Art</p>
+<div class="screen-note">
+<strong>PANDUAN CETAK:</strong> Tekan <code>Ctrl+P</code>. Pastikan opsi <strong>"Background graphics"</strong>
+        tercentang.<br/>
+<span style="font-size:11.5px; font-weight:400; color:#555;">Telah dilengkapi <strong>Garis Potong (Crop Marks)</strong> dan <strong>Bleed Area</strong> serta disusun presisi agar desain monokromatik ini sejajar (simetris) saat dicetak bolak-balik (Double-sided). Gunakan bantuan penggaris &amp; cutter ekstra hati-hati pada garis potong.</span>
+</div>
+<!-- ===================== PAGE 1: GOOD (DESA) 01 - 09 ===================== -->
+<!-- end page 1 -->
+<!-- ===================== PAGE 2: GOOD (10-17) + EVIL 01 ===================== -->
+<!-- end page 2 -->
+<!-- ===================== PAGE 3: EVIL (02-06) + NEUTRAL 01-04 ===================== -->
+<!-- end page 3 -->
+<!-- ===================== PAGE 4: GOOD (18-21) + EVIL 07-08 + NEUTRAL 05-07 ===================== -->
+<!-- end page 4 -->
+<!-- ===================== PAGE 5: GOOD 22-30 ===================== -->
+<!-- end page 5 -->
+<!-- ===================== PAGE 6: GOOD 31-39 ===================== -->
+<!-- end page 6 -->
+<!-- ===================== PAGE 7: EVIL & VAMPIRE ===================== -->
+<!-- end page 7 -->
+<!-- ===================== PAGE 8: NEUTRAL 11-18 + MODERATOR ===================== -->
+<!-- end page 8 -->
+<!-- ===================== PAGE BACKS ===================== -->
+
+<!-- End Card Backs -->
+<div id="pages-container"></div><script src="svg_linearted.js"></script><script src="cards.js"></script><script>
+    const cardsPerPage = 9;
+    const container = document.getElementById("pages-container");
+    
+    function generateCardHTML(card) {
+        return `
+        <div class="card ${card.theme}">
+            <div class="card-inner">
+                <div class="card-header">
+                    <span class="card-faction ${card.factionUpClass}">${card.factionUp}</span>
+                    <span class="card-id">${card.id}</span>
+                </div>
+                <div class="card-icon-wrap">
+                    ${svgsLinearted[card.id] || ''}
+                </div>
+                <div class="card-name-container">
+                    <div class="card-name">${card.nameId}</div>
+                    <div class="card-name-en">${card.nameEn}</div>
+                </div>
+                <div class="card-ability">${card.ability}</div>
+                <div class="card-desc">${card.desc}</div>
+                <div class="card-footer"><span class="card-footer-text">${card.footer}</span></div>
+            </div>
+        </div>
+        `;
+    }
+    
+    for (let i = 0; i < cardsData.length; i += cardsPerPage) {
+        const pageCards = cardsData.slice(i, i + cardsPerPage);
+        const pageDiv = document.createElement("div");
+        pageDiv.className = "page";
+        
+        let pageHTML = "";
+        pageCards.forEach(card => {
+            pageHTML += generateCardHTML(card);
+        });
+        
+        pageDiv.innerHTML = pageHTML;
+        container.appendChild(pageDiv);
+    }
+    
+    // Card Backs
+    const backContent = `
+      <div class="card card-back">
+        <div class="card-inner">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Premium Ornate Border -->
+    <circle cx="50" cy="50" r="46" fill="none" stroke="#D4AF37" stroke-width="0.8"/>
+    <circle cx="50" cy="50" r="42" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
+    <circle cx="50" cy="50" r="38" fill="none" stroke="#D4AF37" stroke-width="0.5" stroke-dasharray="2 4"/>
+    
+    <!-- Quadrant accents -->
+    <path d="M50,4 L53,10 L47,10 Z" fill="#D4AF37"/>
+    <path d="M50,96 L53,90 L47,90 Z" fill="#D4AF37"/>
+    <path d="M4,50 L10,47 L10,53 Z" fill="#D4AF37"/>
+    <path d="M96,50 L90,47 L90,53 Z" fill="#D4AF37"/>
+
+    <circle cx="15" cy="15" r="2" fill="#D4AF37"/>
+    <circle cx="85" cy="15" r="2" fill="#D4AF37"/>
+    <circle cx="15" cy="85" r="2" fill="#D4AF37"/>
+    <circle cx="85" cy="85" r="2" fill="#D4AF37"/>
+
+    <!-- Inner Illustration with Role's Accent Color -->
+    <g color="#B8860B" transform="scale(0.8) translate(12.5, 12.5)">
+        <circle cx="50" cy="50" r="22" fill="none" stroke="currentColor" stroke-width="2"/><path d="M50,15 L50,85 M15,50 L85,50" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="50" cy="50" r="5" fill="currentColor"/><rect x="40" y="40" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" transform="rotate(45 50 50)"/>
+    </g>
+</svg>
+          <div style="font-family:'Cinzel', serif; font-size:12.5px; font-weight:900; color:#4A0000; margin-top:5mm; letter-spacing:6px;">WEREWOLF</div>
+          <div style="font-family:'Crimson Pro', serif; font-size:10px; font-weight:700; color:#4A0000; letter-spacing:3px; text-transform:uppercase; margin-top:2mm; opacity:0.8;">MRSETIAWAN</div>
+        </div>
+      </div>
+    `;
+    
+    const backPageDiv = document.createElement("div");
+    backPageDiv.className = "page";
+    let backPageHTML = "";
+    for (let i = 0; i < 9; i++) {
+        backPageHTML += backContent;
+    }
+    backPageDiv.innerHTML = backPageHTML;
+    container.appendChild(backPageDiv);
+</script></body>
+</html>

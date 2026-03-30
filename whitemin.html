@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Werewolf White Minimalist Edition</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&amp;family=Outfit:wght@300;400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #e0e0e0;
+            font-family: 'Outfit', sans-serif;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color: #333;
+            padding: 20px;
+        }
+
+        .print-title {
+            text-align: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 36px;
+            color: #111;
+            margin: 10px 0 6px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+
+        .print-subtitle {
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+            letter-spacing: 4px;
+            font-weight: 300;
+        }
+
+        .screen-note {
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            color: #444;
+            margin: 8px auto 30px;
+            background: #fff;
+            padding: 12px 20px;
+            border-radius: 4px;
+            max-width: 650px;
+            border: 1px solid #ddd;
+            line-height: 1.6;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background: #fff;
+            margin: 0 auto 30px;
+            padding: 10mm 5mm;
+            display: grid;
+            grid-template-columns: repeat(3, 63.5mm);
+            grid-auto-rows: 88.9mm;
+            gap: 5mm;
+            justify-content: center;
+            align-content: start;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .card {
+            width: 63.5mm;
+            height: 88.9mm;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            page-break-inside: avoid;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 3mm;
+            border: 0.5px solid rgba(0, 0, 0, 0.08);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .card-art {
+            height: 40%;
+            width: 100%;
+            position: relative;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .card-art svg {
+            height: 85%;
+            width: auto;
+            max-width: 90%;
+            display: block;
+        }
+
+        .theme-good .card-art {
+            background-color: #F8FAFC;
+        }
+
+        .theme-evil .card-art {
+            background-color: #FEF2F2;
+        }
+
+        .theme-neutral .card-art {
+            background-color: #F3F4F6;
+        }
+
+        .theme-special .card-art {
+            background-color: #FEFCE8;
+        }
+
+        .card-body {
+            height: 60%;
+            padding: 4.5mm 4.5mm;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-id-faction {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2mm;
+            font-size: 7px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .theme-good .card-id-faction {
+            color: #1E3A8A;
+        }
+
+        .theme-evil .card-id-faction {
+            color: #7F1D1D;
+        }
+
+        .theme-neutral .card-id-faction {
+            color: #1F2937;
+        }
+
+        .theme-special .card-id-faction {
+            color: #B45309;
+        }
+
+        .card-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 19px;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.1;
+            color: #111827;
+        }
+
+        .card-en {
+            font-family: 'Outfit', sans-serif;
+            font-size: 7.5px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 1mm 0 2.5mm 0;
+            color: #6B7280;
+        }
+
+        .divider {
+            width: 15mm;
+            height: 1px;
+            margin-bottom: 2.5mm;
+        }
+
+        .theme-good .divider {
+            background: #1E3A8A;
+        }
+
+        .theme-evil .divider {
+            background: #7F1D1D;
+        }
+
+        .theme-neutral .divider {
+            background: #1F2937;
+        }
+
+        .theme-special .divider {
+            background: #B45309;
+        }
+
+        .ability {
+            font-size: 7.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.5mm;
+            color: #374151;
+        }
+
+        .desc {
+            font-size: 8.5px;
+            line-height: 1.35;
+            font-weight: 300;
+            color: #4B5563;
+            flex: 1;
+        }
+
+        .desc strong {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .card-footer {
+            font-size: 6px;
+            text-align: right;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #9CA3AF;
+            margin-top: auto;
+            padding-top: 1mm;
+        }
+
+        .card-back .card-body {
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            background: #FAFAFA;
+        }
+
+        .card-back .card-art {
+            display: none;
+        }
+
+        .card-back::after {
+            border: 0.5px solid rgba(0, 0, 0, 0.15);
+        }
+
+        .back-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: #111;
+        }
+
+        .back-sub {
+            font-family: 'Outfit', sans-serif;
+            font-size: 8px;
+            letter-spacing: 3px;
+            margin-top: 2mm;
+            color: #555;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .print-title,
+            .print-subtitle,
+            .screen-note {
+                display: none;
+            }
+
+            .page {
+                margin: 0;
+                box-shadow: none;
+                page-break-after: always;
+                padding: 10mm 5mm;
+            }
+
+            .page:last-child {
+                page-break-after: auto;
+            }
+
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="print-title">Werewolf</h1>
+    <p class="print-subtitle">White Minimalist Edition — Asymmetric Editorial Design</p>
+    <div class="screen-note">
+        <strong>PANDUAN CETAK:</strong> Tekan <code>Ctrl+P</code>. Pastikan opsi <strong>"Background graphics"</strong>
+        tercentang.<br />
+        Desain 100% baru dengan warna dominan putih, margin editorial asimetris, dan tipografi modern elegan.
+    </div>
+
+
+
+
+
+
+
+
+
+    <div id="pages-container"></div>
+    <script src="svg_whitemin.js"></script>
+    <script src="cards.js"></script>
+    <script>
+        const cardsPerPage = 9;
+        const container = document.getElementById("pages-container");
+
+        function generateCardHTML(card) {
+            return `
+        <div class="card ${card.theme}">
+            <div class="card-art">
+                ${svgsWhiteMin[card.id] || ''}
+            </div>
+            <div class="card-body">
+                <div class="card-id-faction">
+                    <span class="faction">${card.factionWm}</span>
+                    <span class="id">${card.id}</span>
+                </div>
+                <h2 class="card-name">${card.nameId}</h2>
+                <h3 class="card-en">${card.nameEn}</h3>
+                <div class="divider"></div>
+                <div class="ability">${card.ability}</div>
+                <div class="desc">${card.desc}</div>
+                <div class="card-footer">${card.footer}</div>
+            </div>
+        </div>
+        `;
+        }
+
+        for (let i = 0; i < cardsData.length; i += cardsPerPage) {
+            const pageCards = cardsData.slice(i, i + cardsPerPage);
+            const pageDiv = document.createElement("div");
+            pageDiv.className = "page";
+
+            let pageHTML = "";
+            pageCards.forEach(card => {
+                pageHTML += generateCardHTML(card);
+            });
+
+            pageDiv.innerHTML = pageHTML;
+            container.appendChild(pageDiv);
+        }
+
+        // Card Backs
+        const backContent = `
+        <div class="card card-back">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 100 100" style="margin-bottom:5mm;">
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="#111" stroke-width="1" />
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#111" stroke-width="0.5"
+                        stroke-dasharray="2,2" />
+                    <path d="M50,15 L60,40 L85,50 L60,60 L50,85 L40,60 L15,50 L40,40 Z" fill="none" stroke="#111"
+                        stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="10" fill="#111" />
+                </svg>
+                <div class="back-logo">WEREWOLF</div>
+                <div class="back-sub">MRSETIAWAN</div>
+            </div>
+        </div>
+    `;
+
+        const backPageDiv = document.createElement("div");
+        backPageDiv.className = "page";
+        let backPageHTML = "";
+        for (let i = 0; i < 9; i++) {
+            backPageHTML += backContent;
+        }
+        backPageDiv.innerHTML = backPageHTML;
+        container.appendChild(backPageDiv);
+    </script>
+</body>
+
+</html>
