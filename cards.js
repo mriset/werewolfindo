@@ -924,7 +924,7 @@ const cardsData = [
   },
   {
     "id": "SP·01",
-    "theme": "theme-neutral",
+    "theme": "theme-supreme",
     "factionArcana": "NEUTRAL",
     "nameEn": "Game Moderator",
     "nameId": "Sang Narator",
@@ -932,7 +932,7 @@ const cardsData = [
     "desc": "Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain berdasarkan instruksi malam.",
     "footer": "Moderator — Supreme",
     "factionUp": "Khusus",
-    "factionUpClass": "",
+    "factionUpClass": "faction-supreme",
     "factionWm": "Khusus"
   }
 ];
