@@ -27,6 +27,7 @@
         .faction-evil { background: linear-gradient(135deg, #7A0000 0%, #B22222 100%); color: #FFFEFA; border: 0.2mm solid #4A0000; }
         .faction-good { background: linear-gradient(135deg, #102B4E 0%, #25548A 100%); color: #FFFEFA; border: 0.2mm solid #0B1C33; }
         .faction-neutral { background: linear-gradient(135deg, #333333 0%, #595959 100%); color: #FFFEFA; border: 0.2mm solid #1A1A1A; }
+        .faction-supreme { background: linear-gradient(135deg, #4A0080 0%, #8000FF 100%); color: #FFFEFA; border: 0.2mm solid #2A004A; text-shadow: 0 0 5px rgba(255,255,255,0.8); }
         .card-id { font-family: 'Cinzel', serif; font-size: 8.5px; color: #888; font-weight: 700; background: transparent; padding: 1mm; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
         
         .card-icon-wrap { width: 100%; display: flex; align-items: center; justify-content: center; padding: 0.5mm 0; flex-shrink: 0; z-index:2; position: relative; }
@@ -45,6 +46,17 @@
         .card-footer-text { font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; display: inline-block; transform: translateY(-0.5mm); }
 
         /* === ULTRA PREMIUM THEMING === */
+        .theme-supreme .card-inner { border: 0.8mm solid #D4AF37; background: radial-gradient(circle at center, #2a0a4a 0%, #0d001a 100%); box-shadow: inset 0 0 25px rgba(128,0,255,0.4), 0 0 15px rgba(212,175,55,0.6); }
+        .theme-supreme .card-inner::before { border: 0.4mm solid rgba(212, 175, 55, 0.8); border-radius: 1.5mm; }
+        .theme-supreme .card-id { text-shadow: none; color: #a3b2c2; }
+        .theme-supreme .card-name { color: #D4AF37; text-shadow: 0 0 8px rgba(212,175,55,0.6); font-size: 15px; }
+        .theme-supreme .card-name-en { color: #B08D28; letter-spacing: 3px; }
+        .theme-supreme .card-ability { background: linear-gradient(90deg, rgba(128,0,255,0) 0%, rgba(128,0,255,0.3) 50%, rgba(128,0,255,0) 100%); color: #FFFEFA; border-top: 0.3mm solid rgba(212, 175, 55, 0.5); border-bottom: 0.3mm solid rgba(212, 175, 55, 0.5); text-shadow: 0 0 4px rgba(255,255,255,0.5); }
+        .theme-supreme .card-desc { color: #E0E0E0; text-shadow: 0 1px 2px #000; }
+        .theme-supreme .card-desc strong { color: #D4AF37; text-shadow: 0 0 5px rgba(212,175,55,0.4); }
+        .theme-supreme .card-footer { border-top: 0.4mm solid rgba(212, 175, 55, 0.4); background: linear-gradient(to top, rgba(128,0,255,0.15) 0%, rgba(128,0,255,0) 100%); }
+        .theme-supreme .card-footer-text { color: #D4AF37; text-shadow: 0 0 4px rgba(212,175,55,0.3); }
+
         .theme-evil .card-inner { border: 0.6mm solid #7A0000; }
         .theme-evil .card-inner::before { border: 0.25mm solid rgba(122, 0, 0, 0.4); }
         .theme-evil .card-name { color: #7A0000; }
