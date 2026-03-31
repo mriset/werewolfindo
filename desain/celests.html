@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf - 4 Factions (Symmetrical Design 1)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Supreme (Gold) */
+            --sup-light: #fcf6ba; --sup-base: #d4af37; --sup-dark: #aa771c;
+            /* Good (Blue/Silver) */
+            --good-light: #e0f7fa; --good-base: #4dd0e1; --good-dark: #00838f;
+            /* Evil (Red) */
+            --evil-light: #ffcccc; --evil-base: #ff3333; --evil-dark: #8b0000;
+            /* Neutral (Purple) */
+            --neu-light: #f3e5f5; --neu-base: #ba68c8; --neu-dark: #6a1b9a;
+
+            --card-w: 63mm;
+            --card-h: 88mm;
+            --scale: 1.5;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px;
+            background: #121212;
+            background-image: radial-gradient(circle at 50% 50%, #2a2a35 0%, #121212 100%);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+        }
+
+        /* BASE CARD STYLE (Desain 1 Layout) */
+        .card {
+            width: calc(var(--card-w) * var(--scale));
+            height: calc(var(--card-h) * var(--scale));
+            position: relative;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1) inset;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+        }
+
+        /* Common Symmetrical Elements */
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border-radius: 10px;
+            pointer-events: none;
+            border-width: 1px;
+            border-style: solid;
+        }
+        
+        .c-header { position: absolute; top: 15px; left: 15px; right: 15px; text-align: center; }
+        .c-header h1 { font-family: 'Cinzel', serif; font-size: 22px; margin: 0; }
+        .c-header h2 { font-size: 10px; margin: 2px 0 0 0; letter-spacing: 3px; text-transform: uppercase; }
+        
+        .c-svg-wrapper {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -55%);
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        .c-content { position: absolute; bottom: 20px; left: 20px; right: 20px; text-align: center; }
+        .ability-title { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;}
+        .desc-text { font-size: 10px; line-height: 1.4; text-align: justify; color: #d4d4d4;}
+        
+        .c-code { position: absolute; top: 15px; left: 15px; font-size: 9px; font-weight: bold; }
+        .c-faction { position: absolute; top: 15px; right: 15px; font-size: 9px; font-weight: bold; text-transform: uppercase; }
+
+
+        /* =========================================================
+           FAKSI 1: SUPREME (Moderator) - Tema: Emas / Obsidian
+           ========================================================= */
+        .f-supreme {
+            background: linear-gradient(135deg, #1a1a24 0%, #0d0d12 100%);
+            border: 2px solid var(--sup-dark);
+        }
+        .f-supreme:hover { box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 25px rgba(212, 175, 55, 0.4); }
+        .f-supreme::before { border-color: rgba(212, 175, 55, 0.4); }
+        .f-supreme .c-header h1 { color: var(--sup-light); text-shadow: 0 2px 10px rgba(212, 175, 55, 0.5); }
+        .f-supreme .c-header h2 { color: var(--sup-base); }
+        .f-supreme .c-svg-wrapper { background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%); }
+        .f-supreme .ability-title { color: var(--sup-light); }
+        .f-supreme .c-code, .f-supreme .c-faction { color: var(--sup-base); }
+
+
+        /* =========================================================
+           FAKSI 2: DESA (Good) - Tema: Biru Kristal / Perak
+           ========================================================= */
+        .f-good {
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            border: 2px solid var(--good-dark);
+        }
+        .f-good:hover { box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 25px rgba(77, 208, 225, 0.4); }
+        .f-good::before { border-color: rgba(77, 208, 225, 0.4); }
+        .f-good .c-header h1 { color: var(--good-light); text-shadow: 0 2px 10px rgba(77, 208, 225, 0.5); }
+        .f-good .c-header h2 { color: var(--good-base); }
+        .f-good .c-svg-wrapper { background: radial-gradient(circle, rgba(77, 208, 225, 0.15) 0%, transparent 70%); border: 1px dashed rgba(77,208,225,0.2); }
+        .f-good .ability-title { color: var(--good-light); }
+        .f-good .c-code, .f-good .c-faction { color: var(--good-base); }
+
+
+        /* =========================================================
+           FAKSI 3: SERIGALA (Evil) - Tema: Merah Darah / Crimson
+           ========================================================= */
+        .f-evil {
+            background: linear-gradient(135deg, #2a0808 0%, #0a0000 100%);
+            border: 2px solid var(--evil-dark);
+        }
+        .f-evil:hover { box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 25px rgba(255, 51, 51, 0.4); }
+        .f-evil::before { border-color: rgba(255, 51, 51, 0.4); }
+        .f-evil .c-header h1 { color: var(--evil-light); text-shadow: 0 2px 10px rgba(255, 51, 51, 0.5); }
+        .f-evil .c-header h2 { color: var(--evil-base); }
+        .f-evil .c-svg-wrapper { background: radial-gradient(circle, rgba(255, 51, 51, 0.15) 0%, transparent 70%); }
+        .f-evil .ability-title { color: var(--evil-light); }
+        .f-evil .c-code, .f-evil .c-faction { color: var(--evil-base); }
+
+
+        /* =========================================================
+           FAKSI 4: NETRAL (Neutral) - Tema: Ungu Mistis / Amethyst
+           ========================================================= */
+        .f-neutral {
+            background: linear-gradient(135deg, #1e1025 0%, #0d0512 100%);
+            border: 2px solid var(--neu-dark);
+        }
+        .f-neutral:hover { box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 25px rgba(186, 104, 200, 0.4); }
+        .f-neutral::before { border-color: rgba(186, 104, 200, 0.4); }
+        .f-neutral .c-header h1 { color: var(--neu-light); text-shadow: 0 2px 10px rgba(186, 104, 200, 0.5); }
+        .f-neutral .c-header h2 { color: var(--neu-base); }
+        .f-neutral .c-svg-wrapper { background: radial-gradient(circle, rgba(186, 104, 200, 0.15) 0%, transparent 70%); }
+        .f-neutral .ability-title { color: var(--neu-light); }
+        .f-neutral .c-code, .f-neutral .c-faction { color: var(--neu-base); }
+
+        /* =========================================================
+           KARTU 5: CARD BACK (Belakang) - Tema: Obsidian / Emas
+           ========================================================= */
+        .f-back {
+            background: #080808;
+        }
+        .f-back:hover { box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 25px rgba(212, 175, 55, 0.4); }
+        .f-back::before { border-color: var(--sup-dark); inset: 8px; }
+        .back-pattern {
+            position: absolute; inset: 0; opacity: 0.15;
+            background-image: repeating-linear-gradient(45deg, var(--sup-base) 0, var(--sup-base) 1px, transparent 1px, transparent 10px),
+                              repeating-linear-gradient(-45deg, var(--sup-base) 0, var(--sup-base) 1px, transparent 1px, transparent 10px);
+        }
+        .back-center-logo {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 180px; height: 180px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .back-text-top {
+            position: absolute; top: 25px; left: 0; right: 0; text-align: center;
+            font-family: 'Cinzel', serif; color: var(--sup-base); font-size: 14px; letter-spacing: 5px; text-shadow: 0 2px 10px rgba(212, 175, 55, 0.5);
+        }
+        .back-text-bottom {
+            position: absolute; bottom: 25px; left: 0; right: 0; text-align: center;
+            font-family: 'Cinzel', serif; color: var(--sup-dark); font-size: 10px; letter-spacing: 3px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. KARTU SUPREME (MODERATOR) -->
+    <div class="card f-supreme">
+        <div class="c-code">SP·01</div>
+        <div class="c-faction">Supreme</div>
+        <div class="c-header">
+            <h1>Sang Narator</h1>
+            <h2>Game Moderator</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <!-- SVG: The All Seeing Eye & Obelisk (Symmetrical) -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="supGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fcf6ba" />
+                        <stop offset="50%" stop-color="#d4af37" />
+                        <stop offset="100%" stop-color="#aa771c" />
+                    </linearGradient>
+                    <filter id="supGlow">
+                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#supGrad)" stroke-width="0.5" opacity="0.5"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="url(#supGrad)" stroke-width="1" stroke-dasharray="2 4"/>
+                <polygon points="50,20 80,85 20,85" fill="none" stroke="url(#supGrad)" stroke-width="1.5" opacity="0.3"/>
+                <polygon points="50,20 65,85 35,85" fill="url(#supGrad)" opacity="0.1"/>
+                <polygon points="50,20 50,85 35,85" fill="url(#supGrad)" opacity="0.2"/>
+                <g filter="url(#supGlow)">
+                    <path d="M 30 45 Q 50 30 70 45 Q 50 60 30 45 Z" fill="#1a1a24" stroke="url(#supGrad)" stroke-width="2"/>
+                    <circle cx="50" cy="45" r="8" fill="url(#supGrad)"/>
+                    <circle cx="50" cy="45" r="3" fill="#000"/>
+                </g>
+                <line x1="50" y1="5" x2="50" y2="15" stroke="url(#supGrad)" stroke-width="1.5"/>
+                <line x1="50" y1="75" x2="50" y2="95" stroke="url(#supGrad)" stroke-width="1.5"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Tuhan Desa Werewolf</div>
+            <div class="desc-text">
+                Tugas pemegang kartu ini absolut. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencabut Nyawa</strong> pemain berdasarkan instruksi malam.
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. KARTU DESA (GOOD) -->
+    <div class="card f-good">
+        <div class="c-code">VL·01</div>
+        <div class="c-faction">Tim Desa</div>
+        <div class="c-header">
+            <h1>Sang Peramal</h1>
+            <h2>The Seer</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <!-- SVG: Symmetrical Holy Sword & Angelic Wings (Symmetrical) -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="goodGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#e0f7fa" />
+                        <stop offset="50%" stop-color="#4dd0e1" />
+                        <stop offset="100%" stop-color="#00838f" />
+                    </linearGradient>
+                    <filter id="goodGlow">
+                        <feGaussianBlur stdDeviation="3" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
+                <!-- Central Crystal/Diamond -->
+                <polygon points="50,15 65,50 50,85 35,50" fill="none" stroke="url(#goodGrad)" stroke-width="1.5" opacity="0.5"/>
+                <polygon points="50,25 60,50 50,75 40,50" fill="url(#goodGrad)" opacity="0.2"/>
+                <!-- Sword -->
+                <path d="M48,10 L52,10 L52,70 L48,70 Z" fill="url(#goodGrad)"/>
+                <polygon points="50,5 53,10 47,10" fill="url(#goodGrad)"/>
+                <path d="M35,70 L65,70 L65,74 L35,74 Z" fill="url(#goodGrad)"/>
+                <circle cx="50" cy="80" r="4" fill="url(#goodGrad)"/>
+                <!-- Symmetrical Wings -->
+                <g stroke="url(#goodGrad)" fill="none" stroke-width="1.5">
+                    <!-- Left Wing -->
+                    <path d="M 45 40 Q 20 20 10 40 Q 20 50 35 60" />
+                    <path d="M 45 45 Q 15 35 15 55 Q 25 60 38 65" />
+                    <path d="M 46 50 Q 25 50 25 65 Q 35 68 42 70" />
+                    <!-- Right Wing -->
+                    <path d="M 55 40 Q 80 20 90 40 Q 80 50 65 60" />
+                    <path d="M 55 45 Q 85 35 85 55 Q 75 60 62 65" />
+                    <path d="M 54 50 Q 75 50 75 65 Q 65 68 58 70" />
+                </g>
+                <!-- Glowing Orb in Center -->
+                <circle cx="50" cy="50" r="6" fill="#e0f7fa" filter="url(#goodGlow)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Penerawang Identitas</div>
+            <div class="desc-text">
+                Setiap malam, peramal dapat menunjuk satu pemain. Moderator akan mengonfirmasi secara rahasia apakah pemain tersebut <strong>Serigala atau bukan</strong>. Anda adalah pilar kebenaran desa.
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. KARTU SERIGALA (EVIL) -->
+    <div class="card f-evil">
+        <div class="c-code">WW·01</div>
+        <div class="c-faction">Tim Serigala</div>
+        <div class="c-header">
+            <h1>Alpha Serigala</h1>
+            <h2>Alpha Werewolf</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <!-- SVG: Symmetrical Geometric Wolf Face (Symmetrical) -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="evilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#ffcccc" />
+                        <stop offset="50%" stop-color="#ff3333" />
+                        <stop offset="100%" stop-color="#8b0000" />
+                    </linearGradient>
+                    <filter id="evilGlow">
+                        <feGaussianBlur stdDeviation="2" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
+                <!-- Tribal Symmetrical Wolf Lines -->
+                <g fill="none" stroke="url(#evilGrad)" stroke-width="1.5" stroke-linejoin="round">
+                    <!-- Outer Head -->
+                    <polygon points="50,10 70,30 85,25 75,50 80,75 50,95 20,75 25,50 15,25 30,30" opacity="0.3"/>
+                    <polygon points="50,20 65,35 75,35 65,55 70,75 50,85 30,75 35,55 25,35 35,35" />
+                    <!-- Snout & Nose -->
+                    <polygon points="50,55 60,70 50,85 40,70" />
+                    <polygon points="50,75 55,80 50,85 45,80" fill="url(#evilGrad)"/>
+                    <!-- Forehead Markings -->
+                    <path d="M 50 20 L 50 45 M 40 30 L 50 40 L 60 30" />
+                </g>
+                <!-- Glowing Eyes -->
+                <g filter="url(#evilGlow)">
+                    <polygon points="35,45 45,48 40,53" fill="#ff3333" />
+                    <polygon points="65,45 55,48 60,53" fill="#ff3333" />
+                </g>
+                <!-- Fangs -->
+                <polygon points="45,85 48,95 50,85" fill="#ffcccc" />
+                <polygon points="55,85 52,95 50,85" fill="#ffcccc" />
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Sang Pemimpin Malam</div>
+            <div class="desc-text">
+                Pemimpin klan serigala. Sekali dalam satu permainan, jika ada voting seri di antara komplotan Serigala di malam hari, keputusan mutlak pembunuhan berada di tangan Anda.
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. KARTU NETRAL (NEUTRAL) -->
+    <div class="card f-neutral">
+        <div class="c-code">NT·04</div>
+        <div class="c-faction">Netral</div>
+        <div class="c-header">
+            <h1>Si Badut</h1>
+            <h2>The Jester</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <!-- SVG: Symmetrical Crown & Split Chaos Skull (Symmetrical) -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="neuGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#f3e5f5" />
+                        <stop offset="50%" stop-color="#ba68c8" />
+                        <stop offset="100%" stop-color="#6a1b9a" />
+                    </linearGradient>
+                    <filter id="neuGlow">
+                        <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
+                <!-- Symmetrical Balance/Pendulum Background -->
+                <path d="M 10 50 Q 50 10 90 50 Q 50 90 10 50" fill="none" stroke="url(#neuGrad)" stroke-width="1" opacity="0.3"/>
+                <path d="M 25 50 Q 50 25 75 50 Q 50 75 25 50" fill="none" stroke="url(#neuGrad)" stroke-width="1" opacity="0.5"/>
+                
+                <!-- Symmetrical Jester Crown -->
+                <polygon points="20,40 35,50 50,35 65,50 80,40 70,20 50,15 30,20" fill="none" stroke="url(#neuGrad)" stroke-width="1.5"/>
+                <circle cx="20" cy="40" r="3" fill="url(#neuGrad)"/>
+                <circle cx="50" cy="35" r="3" fill="url(#neuGrad)"/>
+                <circle cx="80" cy="40" r="3" fill="url(#neuGrad)"/>
+                
+                <!-- Symmetrical Skull/Mask Base -->
+                <path d="M 35 50 C 35 40 65 40 65 50 C 65 70 55 85 50 85 C 45 85 35 70 35 50 Z" fill="#1e1025" stroke="url(#neuGrad)" stroke-width="2"/>
+                
+                <!-- Symmetrical Eyes (One glowing purple, one glowing pink/white) -->
+                <circle cx="43" cy="55" r="5" fill="#f3e5f5" filter="url(#neuGlow)"/>
+                <circle cx="57" cy="55" r="5" fill="#ba68c8" filter="url(#neuGlow)"/>
+                
+                <!-- Symmetrical Stitch/Smile -->
+                <path d="M 40 75 Q 50 80 60 75" fill="none" stroke="url(#neuGrad)" stroke-width="2"/>
+                <line x1="45" y1="73" x2="45" y2="78" stroke="url(#neuGrad)" stroke-width="1.5"/>
+                <line x1="50" y1="74" x2="50" y2="79" stroke="url(#neuGrad)" stroke-width="1.5"/>
+                <line x1="55" y1="73" x2="55" y2="78" stroke="url(#neuGrad)" stroke-width="1.5"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Martir Sinting</div>
+            <div class="desc-text">
+                Tujuan Anda hanya satu: Membuat warga desa muak dan menggantung/memvoting Anda di siang hari. Jika Anda berhasil mati di tiang gantungan, permainan berakhir dan Anda adalah pemenangnya!
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. KARTU BELAKANG (CARD BACK) -->
+    <div class="card f-back">
+        <div class="back-pattern"></div>
+        
+        <div class="back-text-top">WEREWOLF</div>
+
+        <div class="back-center-logo">
+            <!-- SVG: Intricate Symmetrical Mandala & Wolf (Card Back) -->
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="backGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fcf6ba" />
+                        <stop offset="50%" stop-color="#d4af37" />
+                        <stop offset="100%" stop-color="#8a5a19" />
+                    </linearGradient>
+                    <filter id="backGlow">
+                        <feGaussianBlur stdDeviation="2" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
+
+                <!-- Outer Ornate Rings -->
+                <circle cx="100" cy="100" r="90" fill="none" stroke="url(#backGrad)" stroke-width="1" stroke-dasharray="4 4"/>
+                <circle cx="100" cy="100" r="85" fill="none" stroke="url(#backGrad)" stroke-width="2"/>
+                <circle cx="100" cy="100" r="75" fill="none" stroke="url(#backGrad)" stroke-width="0.5"/>
+                
+                <!-- Moon Phases (Symmetrical) -->
+                <circle cx="100" cy="20" r="6" fill="url(#backGrad)"/>
+                <circle cx="100" cy="180" r="6" fill="none" stroke="url(#backGrad)" stroke-width="1.5"/>
+                <circle cx="20" cy="100" r="6" fill="url(#backGrad)" opacity="0.5"/>
+                <circle cx="180" cy="100" r="6" fill="url(#backGrad)" opacity="0.5"/>
+                
+                <!-- Inner Mandala Geometry -->
+                <polygon points="100,25 175,100 100,175 25,100" fill="none" stroke="url(#backGrad)" stroke-width="1" opacity="0.4"/>
+                <polygon points="100,40 160,100 100,160 40,100" fill="none" stroke="url(#backGrad)" stroke-width="1" opacity="0.6"/>
+                <circle cx="100" cy="100" r="50" fill="none" stroke="url(#backGrad)" stroke-width="2"/>
+
+                <!-- Central Howling Wolf Silhouette -->
+                <path d="M 100 130 C 80 130 70 110 75 90 C 78 80 85 70 85 60 C 85 55 90 50 95 55 C 92 65 95 75 105 80 C 115 85 120 70 120 65 C 122 62 128 65 125 70 C 120 85 130 100 120 120 C 115 125 110 130 100 130 Z" fill="url(#backGrad)"/>
+                
+                <!-- Symmetrical Stars -->
+                <polygon points="100,60 102,65 107,65 103,68 104,73 100,70 96,73 97,68 93,65 98,65" fill="#fff" opacity="0.8" filter="url(#backGlow)"/>
+            </svg>
+        </div>
+
+        <div class="back-text-bottom">OBSIDIAN VANGUARD</div>
+    </div>
+
+</body>
+</html>
