@@ -139,6 +139,11 @@
         <option value="png">PNG (Transparan)</option>
         <option value="jpg">JPG (Background Putih)</option>
     </select>
+    <button id="btn-download-all"
+        onclick="downloadAllCards('UltraPremium', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})"
+        style="margin-left:12px; font-family:'Crimson Pro',serif; font-size:14px; font-weight:700; background:linear-gradient(135deg,#aa771c,#d4af37); color:#000; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; letter-spacing:1px;">
+        ⬇ Download Semua (ZIP)
+    </button>
 </div>
 
 <div id="pages-container"></div><script src="svg_ultrapremium.js"></script><script src="cards.js"></script><script>
@@ -242,61 +247,14 @@
     });
     
     function downloadCard(card) {
-        let format = document.getElementById("export-format").value;
-        
-        format = format.trim().toLowerCase();
-        let mimeType = "image/png";
-        let ext = "png";
-        let bgColor = null; // transparent for png
-        
-        if (format === "jpg" || format === "jpeg") {
-            mimeType = "image/jpeg";
-            ext = "jpg";
-            bgColor = "#ffffff"; // avoid black background on transparent areas
-        } else {
-            // Default back to png for anything else
-            format = "png";
-        }
-
+        const format = (document.getElementById('export-format').value || 'png').trim().toLowerCase();
         const idElement = card.querySelector('.card-id');
         let cardId = idElement ? idElement.innerText : 'card-back';
-        // Replace middle dot with hyphen for file name
         cardId = cardId.replace(/·/g, '-');
-        
-        const scale = 10;
-        const style = {
-            transform: `scale(${scale})`,
-            transformOrigin: 'top left',
-            width: card.offsetWidth + 'px',
-            height: card.offsetHeight + 'px'
-        };
-        const param = {
-            height: card.offsetHeight * scale,
-            width: card.offsetWidth * scale,
-            quality: 1,
-            style: style
-        };
-
-        let promise;
-        if (format === "jpg" || format === "jpeg") {
-            param.bgcolor = bgColor;
-            promise = domtoimage.toJpeg(card, param);
-        } else {
-            promise = domtoimage.toPng(card, param);
-        }
-
-        promise.then(dataUrl => {
-            const a = document.createElement("a");
-            a.href = dataUrl;
-            a.download = `Werewolf-${cardId}.${ext}`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }).catch(error => {
-            console.error('Error generating image!', error);
-        });
+        const bgColor = format === 'jpg' ? '#ffffff' : null;
+        downloadCardFaithful(card, `Werewolf-${cardId}`, { format, bgColor });
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="download_helper.js"></script>
 </body>
 </html>

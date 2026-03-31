@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,49 +15,72 @@
             --gold-dark: #aa771c;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            background: radial-gradient(circle at 50% 50%, #1e2229 0%, #05070a 100%);
+            background: #f0f0f0;
             font-family: 'Montserrat', sans-serif;
-            color: #fff;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            color: #111;
+            padding: 40px 10px;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
         .header-title {
             text-align: center;
             font-family: 'Cinzel', serif;
             font-size: 28px;
-            color: var(--gold-base);
+            color: #aa771c;
             margin-bottom: 10px;
             letter-spacing: 4px;
-            text-shadow: 0 4px 20px rgba(212,175,55,0.4);
+            text-shadow: none;
         }
 
         .header-subtitle {
             text-align: center;
             font-family: 'Montserrat', sans-serif;
             font-size: 12px;
-            color: #aaa;
-            margin-bottom: 40px;
+            color: #666;
+            margin-bottom: 20px;
             letter-spacing: 2px;
         }
 
-        .cards-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            justify-content: center;
+        .screen-note {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            color: #555;
+            margin: 8px auto 30px;
+            background: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            max-width: 650px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            line-height: 1.6;
         }
 
-        /* * ==========================================
-         * UNIFIED CARD BASE (Supreme Moderator Style)
-         * ==========================================
-         */
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background: #fff;
+            margin: 0 auto 30px;
+            padding: 9.15mm 3.75mm;
+            display: grid;
+            grid-template-columns: repeat(3, var(--card-w));
+            grid-auto-rows: var(--card-h);
+            gap: 6mm;
+            justify-content: center;
+            align-content: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            position: relative;
+            border-radius: 2px;
+        }
+
         .card {
             width: var(--card-w);
             height: var(--card-h);
@@ -64,18 +88,19 @@
             background: #0a0a0c;
             border-radius: 4mm;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.05);
-            transform: scale(1.2); 
-            margin: 15px;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            page-break-inside: avoid;
+            background: #0a0a0c;
+            border: none;
         }
 
-        /* Text Gradients */
         .gold-text-fx {
             background: linear-gradient(to right, #bf953f, var(--gold-light), #b38728, #fbf5b7, var(--gold-dark));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
+
         .silver-text-fx {
             background: linear-gradient(to right, #888, #fff, #aaa, #fff, #666);
             -webkit-background-clip: text;
@@ -83,328 +108,344 @@
             color: transparent;
         }
 
-        /* Theme Variables Setup */
         .theme-supreme { --fac-color: #8a2be2; --fac-dark: #4a154b; --fac-light: #b066ff; }
-        .theme-good    { --fac-color: #4183d7; --fac-dark: #0f2c59; --fac-light: #88aadd; }
-        .theme-evil    { --fac-color: #dc143c; --fac-dark: #590f0f; --fac-light: #ff6666; }
+        .theme-good { --fac-color: #4183d7; --fac-dark: #0f2c59; --fac-light: #88aadd; }
+        .theme-evil { --fac-color: #dc143c; --fac-dark: #590f0f; --fac-light: #ff6666; }
         .theme-neutral { --fac-color: #a0a0a0; --fac-dark: #2a2a2a; --fac-light: #e0e0e0; }
-        .theme-back    { --fac-color: #d4af37; --fac-dark: #1a1505; --fac-light: #fcf6ba; }
+        .theme-back { --fac-color: #d4af37; --fac-dark: #1a1505; --fac-light: #fcf6ba; }
 
-        /* Unified Layers */
         .card-bg {
-            position: absolute; inset: 0;
+            position: absolute;
+            inset: 0;
             background: radial-gradient(circle at 50% 30%, var(--fac-dark) 0%, #0a0a0c 70%);
         }
+
         .card-bg::before {
-            content: ''; position: absolute; inset: 0;
+            content: '';
+            position: absolute;
+            inset: 0;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="2" cy="2" r="1" fill="rgba(212,175,55,0.2)"/></svg>');
             opacity: 0.6;
         }
-        
+
         .card-ring {
-            position: absolute; top: -10mm; left: -10mm; right: -10mm; height: 60mm;
+            position: absolute;
+            top: -10mm;
+            left: -10mm;
+            right: -10mm;
+            height: 60mm;
             border: 1px solid var(--fac-color);
             border-radius: 50%;
             opacity: 0.3;
             box-shadow: inset 0 0 20px var(--fac-dark), 0 0 20px var(--fac-dark);
+            /* Clip off the bottom 42% of the ellipse so its bottom arc
+               (which falls ~50mm from card top) doesn't render as a
+               thin horizontal line in exported images. */
+            clip-path: inset(0 0 42% 0);
         }
 
         .card-header {
-            position: absolute; top: 3mm; width: 100%; text-align: center;
-            display: flex; justify-content: space-between; padding: 0 4mm;
+            position: absolute;
+            top: 3mm;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 4mm;
             z-index: 10;
         }
+
         .card-id { font-size: 7px; color: #fff; font-weight: bold; letter-spacing: 2px; }
-        .card-faction { 
-            font-size: 5px; background: var(--fac-color); color: #fff; 
-            padding: 1mm 2mm; border-radius: 2mm; font-weight: 800; letter-spacing: 1px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+
+        .card-faction {
+            font-size: 5px;
+            background: var(--fac-color);
+            color: #fff;
+            padding: 1mm 2mm;
+            border-radius: 2mm;
+            font-weight: 800;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+        }
+        
+        .theme-neutral .card-faction {
+            color: #000;
         }
 
-        .card-svg { 
-            position: absolute; top: 12mm; width: 100%; height: 32mm; 
-            display: flex; justify-content: center; align-items: center;
+        .card-svg {
+            position: absolute;
+            top: 12mm;
+            width: 100%;
+            height: 32mm;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             z-index: 5;
         }
-        .card-svg svg { 
-            height: 100%; width: 100%;
-            filter: drop-shadow(0 5px 15px var(--fac-dark)); 
+
+        .card-svg svg {
+            height: 100%;
+            width: 100%;
+            filter: drop-shadow(0 5px 15px var(--fac-dark));
         }
 
         .card-content {
-            position: absolute; bottom: 0; width: 100%; height: 48mm;
-            background: linear-gradient(0deg, rgba(8,8,10,1) 60%, rgba(8,8,10,0) 100%);
-            padding: 5mm 4mm; text-align: center; display: flex; flex-direction: column; justify-content: flex-end;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 48mm;
+            background: linear-gradient(0deg, rgba(8, 8, 10, 1) 60%, rgba(8, 8, 10, 0) 100%);
+            padding: 5mm 4mm;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
             z-index: 10;
         }
 
-        .card-name-en { font-size: 6px; color: var(--gold-base); letter-spacing: 3px; text-transform: uppercase; }
-        .card-name-id { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 900; margin: 1mm 0; line-height: 1; }
-        
-        .card-ability { 
-            font-size: 6.5px; color: var(--gold-light); 
-            border-top: 1px solid rgba(212,175,55,0.3); 
-            border-bottom: 1px solid rgba(212,175,55,0.3); 
-            padding: 1.5mm 0; margin-bottom: 2mm; 
-            font-weight: 800; letter-spacing: 1px;
-            background: rgba(212,175,55,0.05);
+        .card-name-en {
+            font-size: 6px;
+            color: var(--gold-base);
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
-        
-        .card-desc { font-size: 6.5px; color: #ccc; line-height: 1.4; margin-bottom: 2mm; text-align: justify; text-align-last: center;}
-        .card-desc strong { color: var(--fac-light); font-weight: 800; }
-        
-        .card-footer { font-size: 5px; color: #555; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;}
 
-        /* Specifically for Card Back */
+        .card-name-id {
+            font-family: 'Cinzel', serif;
+            font-size: 15px;
+            font-weight: 900;
+            margin: 1mm 0;
+            line-height: 1;
+        }
+
+        .card-ability {
+            font-size: 6.5px;
+            color: var(--gold-light);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 1.5mm 0;
+            margin-bottom: 2mm;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: rgba(212, 175, 55, 0.05);
+            text-transform: uppercase;
+        }
+
+        .card-desc {
+            font-size: 6.5px;
+            color: #ccc;
+            line-height: 1.4;
+            margin-bottom: 2mm;
+            text-align: justify;
+            text-align-last: center;
+        }
+
+        .card-desc strong {
+            color: var(--fac-light);
+            font-weight: 800;
+        }
+
+        .card-footer {
+            font-size: 5px;
+            color: #555;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* Card Back */
         .theme-back .card-bg { background: #050505; }
-        .theme-back .card-ring { 
-            top: 50%; left: 50%; transform: translate(-50%, -50%); 
+        .theme-back .card-ring {
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 50mm; height: 50mm; border-color: var(--gold-dark); opacity: 0.5;
         }
-        .theme-back .card-svg { top: 50%; left: 50%; transform: translate(-50%, -50%); height: 40mm; }
+        .theme-back .card-svg {
+            top: 50%; left: 50%; transform: translate(-50%, -50%); height: 40mm;
+        }
         .theme-back .card-text-top {
             position: absolute; top: 12mm; width: 100%; text-align: center;
             font-family: 'Cinzel', serif; font-size: 7px; color: var(--gold-base); letter-spacing: 4px;
         }
         .theme-back .card-text-bottom {
             position: absolute; bottom: 12mm; width: 100%; text-align: center;
-            font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold-base); font-weight: 900; letter-spacing: 6px;
+            font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold-base);
+            font-weight: 900; letter-spacing: 6px;
         }
         .theme-back .card-text-sub {
             position: absolute; bottom: 8mm; width: 100%; text-align: center;
             font-size: 5px; color: var(--gold-dark); letter-spacing: 3px;
         }
 
+        @media print {
+            body { background: #fff; padding: 0; min-height: auto; }
+            .header-title, .header-subtitle, .screen-note, .screen-only, .download-options { display: none; }
+            .page {
+                margin: 0; box-shadow: none; page-break-after: always;
+                padding: 9.15mm 3.75mm; border: none; background: transparent;
+            }
+            .page:last-child { page-break-after: auto; }
+            @page { size: A4; margin: 0; }
+        }
     </style>
 </head>
-<body>
 
+<body>
     <h1 class="header-title">OBSIDIAN VANGUARD EDITION</h1>
     <p class="header-subtitle">UNIFIED SUPREME CELESTIAL LAYOUT</p>
+    <div class="screen-note">
+        <strong>PANDUAN CETAK:</strong> Tekan <code>Ctrl+P</code>. Pastikan opsi <strong>"Background graphics"</strong> tercentang.<br />
+        <span style="font-size:11px; font-weight:400; color:#888;">(Gunakan Klik Ganda / Double-Tap untuk mengunduh desain kartu individunya).</span>
+    </div>
 
-    <div class="cards-container">
+    <div style="text-align: center; margin-bottom: 20px;" class="download-options screen-only">
+        <label for="export-format" style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: #333;">Format Unduhan: </label>
+        <select id="export-format" style="font-family: 'Montserrat', sans-serif; font-size: 12px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #111;">
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+        </select>
+        <button id="btn-download-all"
+            onclick="downloadAllCards('ObsidianVanguardOve', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#0a0a0c':null})"
+            style="margin-left:12px; font-family:'Montserrat',sans-serif; font-size:12px; font-weight:700; background:linear-gradient(135deg,#aa771c,#d4af37); color:#000; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; letter-spacing:1px; box-shadow: 0 2px 8px rgba(170,119,28,0.3);">
+            ⬇ Download Semua (ZIP)
+        </button>
+    </div>
 
-        <!-- KARTU 1: MODERATOR (SUPREME) -->
-        <div class="card theme-supreme">
-            <div class="card-bg"></div>
-            <div class="card-ring"></div>
-            
-            <div class="card-header">
-                <div class="card-id">SP·01</div>
-                <div class="card-faction">KHUSUS</div>
+    <div id="pages-container"></div>
+
+    <script src="cards.js"></script>
+    <script src="svg_ove.js"></script>
+    <script>
+        const cardsPerPage = 9;
+        const container = document.getElementById("pages-container");
+
+        function generateCardHTML(card) {
+            let factionClass = card.factionUpClass || 'faction-neutral';
+            let themeClass = 'theme-neutral';
+            let factionLabel = 'NETRAL';
+            let textFxClass = 'silver-text-fx';
+
+            if (factionClass === 'faction-supreme') {
+                themeClass = 'theme-supreme';
+                factionLabel = 'KHUSUS';
+                textFxClass = 'gold-text-fx';
+            } else if (factionClass === 'faction-good') {
+                themeClass = 'theme-good';
+                factionLabel = 'TIM BAIK';
+                textFxClass = 'gold-text-fx';
+            } else if (factionClass === 'faction-evil') {
+                themeClass = 'theme-evil';
+                factionLabel = 'TIM JAHAT';
+                textFxClass = 'gold-text-fx';
+            }
+
+            let svgIcon = getSvgOve(card.id, factionClass);
+
+            return `
+            <div class="card ${themeClass}">
+                <div class="card-bg"></div>
+                <div class="card-ring"></div>
+                <div class="card-header">
+                    <div class="card-id">${card.id}</div>
+                    <div class="card-faction">${factionLabel}</div>
+                </div>
+                <div class="card-svg">
+                    ${svgIcon}
+                </div>
+                <div class="card-content">
+                    <div class="card-name-en">${card.nameEn}</div>
+                    <div class="card-name-id ${textFxClass}">${card.nameId}</div>
+                    <div class="card-ability">✦ ${card.ability} ✦</div>
+                    <div class="card-desc">${card.desc}</div>
+                    <div class="card-footer">${card.footer.replace('—', '//')}</div>
+                </div>
             </div>
+            `;
+        }
 
-            <div class="card-svg">
-                <!-- SVG: Eye of God / Celestial -->
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <radialGradient id="eyeGlow" cx="50%" cy="40%">
-                            <stop offset="0%" stop-color="#d4af37" stop-opacity="0.8"/>
-                            <stop offset="100%" stop-color="#8a2be2" stop-opacity="0"/>
-                        </radialGradient>
-                    </defs>
-                    <circle cx="50" cy="40" r="30" fill="url(#eyeGlow)"/>
-                    <polygon points="50,10 80,70 50,90 20,70" fill="none" stroke="#d4af37" stroke-width="1.5"/>
-                    <polygon points="50,20 70,65 50,80 30,65" fill="rgba(138,43,226,0.2)" stroke="#d4af37" stroke-width="0.5"/>
-                    <path d="M35,45 C45,35 55,35 65,45 C55,55 45,55 35,45 Z" fill="#0a0a0c" stroke="#d4af37" stroke-width="1.5"/>
-                    <circle cx="50" cy="45" r="5" fill="#d4af37"/>
-                    <circle cx="50" cy="45" r="2" fill="#000"/>
-                    <line x1="50" y1="10" x2="50" y2="0" stroke="#d4af37" stroke-width="1"/>
-                    <line x1="20" y1="70" x2="10" y2="75" stroke="#d4af37" stroke-width="1"/>
-                    <line x1="80" y1="70" x2="90" y2="75" stroke="#d4af37" stroke-width="1"/>
-                    <ellipse cx="50" cy="50" rx="35" ry="15" fill="none" stroke="#8a2be2" stroke-width="0.5" transform="rotate(30 50 50)"/>
-                    <ellipse cx="50" cy="50" rx="35" ry="15" fill="none" stroke="#8a2be2" stroke-width="0.5" transform="rotate(-30 50 50)"/>
-                </svg>
-            </div>
+        // Generate pages
+        for (let i = 0; i < cardsData.length; i += cardsPerPage) {
+            const pageCards = cardsData.slice(i, i + cardsPerPage);
+            const pageDiv = document.createElement("div");
+            pageDiv.className = "page";
 
-            <div class="card-content">
-                <div class="card-name-en">Game Moderator</div>
-                <div class="card-name-id gold-text-fx">Sang Narator</div>
-                <div class="card-ability">✦ Tuhan Desa Werewolf ✦</div>
-                <div class="card-desc">Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain berdasarkan instruksi malam.</div>
-                <div class="card-footer">MODERATOR // SUPREME</div>
-            </div>
-        </div>
+            let pageHTML = "";
+            pageCards.forEach(card => {
+                pageHTML += generateCardHTML(card);
+            });
 
-        <!-- KARTU 2: WARGA DESA (GOOD) -->
-        <div class="card theme-good">
-            <div class="card-bg"></div>
-            <div class="card-ring"></div>
-            
-            <div class="card-header">
-                <div class="card-id">VL·14</div>
-                <div class="card-faction">TIM BAIK</div>
-            </div>
+            pageDiv.innerHTML = pageHTML;
+            container.appendChild(pageDiv);
+        }
 
-            <div class="card-svg">
-                <!-- SVG: Tree of Life / Glowing Crystal -->
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <radialGradient id="goodGlow" cx="50%" cy="50%">
-                            <stop offset="0%" stop-color="#4183d7" stop-opacity="0.8"/>
-                            <stop offset="100%" stop-color="#0f2c59" stop-opacity="0"/>
-                        </radialGradient>
-                    </defs>
-                    <circle cx="50" cy="50" r="35" fill="url(#goodGlow)"/>
-                    <!-- Majestic Tree -->
-                    <path d="M50,80 C48,60 40,50 30,40 M50,80 C52,60 60,50 70,40 M50,80 C50,60 50,40 50,20" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M40,50 C35,40 35,30 45,25 M60,50 C65,40 65,30 55,25" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-linecap="round"/>
-                    <!-- Leaves/Stars -->
-                    <circle cx="50" cy="20" r="3" fill="#fcf6ba"/>
-                    <circle cx="30" cy="40" r="2.5" fill="#fcf6ba"/>
-                    <circle cx="70" cy="40" r="2.5" fill="#fcf6ba"/>
-                    <circle cx="45" cy="25" r="2" fill="#4183d7"/>
-                    <circle cx="55" cy="25" r="2" fill="#4183d7"/>
-                    <circle cx="40" cy="35" r="1.5" fill="#fcf6ba"/>
-                    <circle cx="60" cy="35" r="1.5" fill="#fcf6ba"/>
-                    <!-- Protective Base -->
-                    <polygon points="35,85 65,85 50,95" fill="#0f2c59" stroke="#d4af37" stroke-width="1"/>
-                    <line x1="20" y1="85" x2="80" y2="85" stroke="#d4af37" stroke-width="1" opacity="0.5"/>
-                </svg>
-            </div>
-
-            <div class="card-content">
-                <div class="card-name-en">Villager</div>
-                <div class="card-name-id gold-text-fx">Warga Desa</div>
-                <div class="card-ability">✦ Pemilik Suara Demokrasi ✦</div>
-                <div class="card-desc">Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.</div>
-                <div class="card-footer">VILLAGER // ALLIANCE</div>
-            </div>
-        </div>
-
-        <!-- KARTU 3: WEREWOLF (EVIL) -->
-        <div class="card theme-evil">
-            <div class="card-bg"></div>
-            <div class="card-ring"></div>
-            
-            <div class="card-header">
-                <div class="card-id">WW·01</div>
-                <div class="card-faction">TIM JAHAT</div>
-            </div>
-
-            <div class="card-svg">
-                <!-- SVG: Demonic Wolf Skull / Blood Moon -->
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <radialGradient id="evilGlow" cx="50%" cy="50%">
-                            <stop offset="0%" stop-color="#dc143c" stop-opacity="0.7"/>
-                            <stop offset="100%" stop-color="#590f0f" stop-opacity="0"/>
-                        </radialGradient>
-                    </defs>
-                    <circle cx="50" cy="45" r="35" fill="url(#evilGlow)"/>
-                    <circle cx="50" cy="45" r="25" fill="none" stroke="#dc143c" stroke-width="0.5" stroke-dasharray="4,4"/>
-                    <!-- Wolf Skull -->
-                    <path d="M50,15 C70,15 80,30 75,55 L65,50 L70,80 L50,65 L30,80 L35,50 L25,55 C20,30 30,15 50,15 Z" fill="#0a0a0c" stroke="#d4af37" stroke-width="1.5"/>
-                    <path d="M50,15 C50,15 55,35 50,65 C45,35 50,15 50,15 Z" fill="#dc143c" opacity="0.3"/>
-                    <!-- Eyes -->
-                    <polygon points="35,40 45,45 35,48" fill="#ff1a1a"/>
-                    <polygon points="65,40 55,45 65,48" fill="#ff1a1a"/>
-                    <circle cx="40" cy="44" r="1.5" fill="#fff"/>
-                    <circle cx="60" cy="44" r="1.5" fill="#fff"/>
-                    <!-- Fangs -->
-                    <polygon points="40,60 45,70 50,60 55,70 60,60 50,85" fill="#111" stroke="#dc143c" stroke-width="1"/>
-                    <!-- Floating Blood drops -->
-                    <path d="M25,25 Q30,35 25,40 Q20,35 25,25" fill="#dc143c"/>
-                    <path d="M75,25 Q80,35 75,40 Q70,35 75,25" fill="#dc143c"/>
-                </svg>
-            </div>
-
-            <div class="card-content">
-                <div class="card-name-en">Werewolf</div>
-                <div class="card-name-id gold-text-fx">Serigala</div>
-                <div class="card-ability">✦ Membunuh di Malam Hari ✦</div>
-                <div class="card-desc">Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling mengetahui identitas koloninya. Menang jika jumlah serigala menyamai jumlah warga desa yang tersisa.</div>
-                <div class="card-footer">WEREWOLF // SHADOWS</div>
-            </div>
-        </div>
-
-        <!-- KARTU 4: JESTER (NEUTRAL) -->
-        <div class="card theme-neutral">
-            <div class="card-bg"></div>
-            <div class="card-ring"></div>
-            
-            <div class="card-header">
-                <div class="card-id">NT·01</div>
-                <div class="card-faction" style="color:#000;">NETRAL</div>
-            </div>
-
-            <div class="card-svg">
-                <!-- SVG: Floating Theatrical Mask / Broken Mirrors -->
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <radialGradient id="neutralGlow" cx="50%" cy="50%">
-                            <stop offset="0%" stop-color="#e0e0e0" stop-opacity="0.4"/>
-                            <stop offset="100%" stop-color="#2a2a2a" stop-opacity="0"/>
-                        </radialGradient>
-                    </defs>
-                    <circle cx="50" cy="45" r="35" fill="url(#neutralGlow)"/>
-                    <!-- Floating Cards / Shards -->
-                    <polygon points="20,20 30,15 25,30" fill="none" stroke="#d4af37" stroke-width="1"/>
-                    <polygon points="80,20 70,15 75,30" fill="none" stroke="#a0a0a0" stroke-width="1"/>
-                    <polygon points="15,60 25,70 10,75" fill="none" stroke="#a0a0a0" stroke-width="1"/>
-                    <polygon points="85,60 75,70 90,75" fill="none" stroke="#d4af37" stroke-width="1"/>
-                    
-                    <!-- Split Mask -->
-                    <path d="M50,15 C20,15 10,45 25,75 Q50,95 50,75 Z" fill="#111" stroke="#e0e0e0" stroke-width="1.5"/>
-                    <path d="M50,15 C80,15 90,45 75,75 Q50,95 50,75 Z" fill="#d4af37" stroke="#aa771c" stroke-width="1.5"/>
-                    <line x1="50" y1="15" x2="50" y2="75" stroke="#111" stroke-width="1"/>
-                    
-                    <!-- Eyes -->
-                    <ellipse cx="35" cy="45" rx="6" ry="4" fill="#000" stroke="#e0e0e0" stroke-width="1"/>
-                    <ellipse cx="65" cy="45" rx="6" ry="4" fill="#111" stroke="#111" stroke-width="1"/>
-                    <circle cx="35" cy="45" r="1.5" fill="#fff"/>
-                    
-                    <!-- Smile / Frown -->
-                    <path d="M25,65 Q35,55 45,65" fill="none" stroke="#e0e0e0" stroke-width="1.5"/>
-                    <path d="M55,60 Q65,75 75,60" fill="none" stroke="#111" stroke-width="1.5"/>
-                </svg>
-            </div>
-
-            <div class="card-content">
-                <div class="card-name-en">Jester</div>
-                <div class="card-name-id silver-text-fx">Badut</div>
-                <div class="card-ability">✦ Tawa Terakhir ✦</div>
-                <div class="card-desc">Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di siang hari. Jika Badut berhasil membuat dirinya digantung, maka ia memenangkan permainan seorang diri.</div>
-                <div class="card-footer">JESTER // NEUTRAL</div>
-            </div>
-        </div>
-
-        <!-- KARTU 5: CARD BACK (BELAKANG) -->
+        // Card Backs Page
+        const backContent = `
         <div class="card theme-back">
             <div class="card-bg"></div>
             <div class="card-ring"></div>
-            
             <div class="card-text-top">OBSIDIAN VANGUARD</div>
-
             <div class="card-svg">
-                <!-- SVG: Ornate Compass / Wolf Crest Mandala -->
                 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Outer Mandala Rings -->
-                    <circle cx="50" cy="50" r="48" fill="none" stroke="#d4af37" stroke-width="0.5" opacity="0.5"/>
-                    <circle cx="50" cy="50" r="42" fill="none" stroke="#d4af37" stroke-width="1.5"/>
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="#d4af37" stroke-width="0.5" stroke-dasharray="2,2"/>
-                    
-                    <!-- 8-Pointed Star -->
-                    <polygon points="50,10 55,35 80,50 55,65 50,90 45,65 20,50 45,35" fill="#0a0a0c" stroke="#d4af37" stroke-width="1"/>
-                    <polygon points="50,20 60,40 80,50 60,60 50,80 40,60 20,50 40,40" fill="none" stroke="#aa771c" stroke-width="0.5"/>
-                    
-                    <!-- Center Core (Stylized W) -->
-                    <circle cx="50" cy="50" r="20" fill="#111" stroke="#d4af37" stroke-width="1.5"/>
-                    <path d="M35,55 L42,65 L50,55 L58,65 L65,55 M40,40 L60,40" fill="none" stroke="#d4af37" stroke-width="2" stroke-linejoin="round"/>
-                    <circle cx="50" cy="50" r="10" fill="none" stroke="#dc143c" stroke-width="0.5"/>
-                    
-                    <!-- Corner Ornaments inside SVG bounding box -->
-                    <circle cx="15" cy="15" r="2" fill="#d4af37"/>
-                    <circle cx="85" cy="15" r="2" fill="#d4af37"/>
-                    <circle cx="15" cy="85" r="2" fill="#d4af37"/>
-                    <circle cx="85" cy="85" r="2" fill="#d4af37"/>
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="#d4af37" stroke-width="0.5" opacity="0.5" />
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#d4af37" stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="#d4af37" stroke-width="0.5" stroke-dasharray="2,2" />
+                    <polygon points="50,10 55,35 80,50 55,65 50,90 45,65 20,50 45,35" fill="#0a0a0c" stroke="#d4af37" stroke-width="1" />
+                    <polygon points="50,20 60,40 80,50 60,60 50,80 40,60 20,50 40,40" fill="none" stroke="#aa771c" stroke-width="0.5" />
+                    <circle cx="50" cy="50" r="20" fill="#111" stroke="#d4af37" stroke-width="1.5" />
+                    <path d="M35,55 L42,65 L50,55 L58,65 L65,55 M40,40 L60,40" fill="none" stroke="#d4af37" stroke-width="2" stroke-linejoin="round" />
+                    <circle cx="50" cy="50" r="10" fill="none" stroke="#dc143c" stroke-width="0.5" />
+                    <circle cx="15" cy="15" r="2" fill="#d4af37" />
+                    <circle cx="85" cy="15" r="2" fill="#d4af37" />
+                    <circle cx="15" cy="85" r="2" fill="#d4af37" />
+                    <circle cx="85" cy="85" r="2" fill="#d4af37" />
                 </svg>
             </div>
-
             <div class="card-text-bottom">WEREWOLF</div>
             <div class="card-text-sub">MRSETIAWAN</div>
         </div>
+        `;
 
-    </div>
+        const backPageDiv = document.createElement("div");
+        backPageDiv.className = "page";
+        let backPageHTML = "";
+        for (let i = 0; i < 9; i++) {
+            backPageHTML += backContent;
+        }
+        backPageDiv.innerHTML = backPageHTML;
+        container.appendChild(backPageDiv);
+
+        // Download Logic
+        document.addEventListener('dblclick', function (e) {
+            const card = e.target.closest('.card');
+            if (!card) return;
+            downloadCard(card);
+        });
+
+        let lastTap = 0;
+        document.addEventListener('touchend', function (e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 500 && tapLength > 0) {
+                const card = e.target.closest('.card');
+                if (card) {
+                    downloadCard(card);
+                    e.preventDefault();
+                }
+            }
+            lastTap = currentTime;
+        });
+
+        function downloadCard(card) {
+            const format = (document.getElementById('export-format').value || 'png').trim().toLowerCase();
+            const idElement = card.querySelector('.card-id');
+            let cardId = idElement ? idElement.innerText : 'card-back';
+            cardId = cardId.replace(/·/g, '-');
+            const bgColor = format === 'jpg' ? '#0a0a0c' : null;
+            downloadCardFaithful(card, `ObsidianVanguardOve-${cardId}`, { format, bgColor });
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="download_helper.js"></script>
 </body>
 </html>
