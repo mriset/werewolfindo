@@ -66,8 +66,8 @@
             margin: 0 auto 30px;
             padding: 10mm 5mm;
             display: grid;
-            grid-template-columns: repeat(3, 63.5mm);
-            grid-auto-rows: 88.9mm;
+            grid-template-columns: repeat(3, 54.5mm);
+            grid-auto-rows: 85.5mm;
             gap: 5mm;
             justify-content: center;
             align-content: start;
@@ -76,8 +76,8 @@
         }
 
         .card {
-            width: 63.5mm;
-            height: 88.9mm;
+            width: 54.5mm;
+            height: 85.5mm;
             background: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 0;
@@ -280,7 +280,8 @@
 
             .print-title,
             .print-subtitle,
-            .screen-note {
+            .screen-note,
+            .screen-only {
                 display: none;
             }
 
@@ -319,6 +320,14 @@
 
 
 
+
+    <div style="text-align: center; margin-bottom: 20px;" class="download-options screen-only">
+        <label for="export-format" style="font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;">Format Unduhan (Klik Ganda Kartu): </label>
+        <select id="export-format" style="font-family: 'Outfit', sans-serif; font-size: 14px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc;">
+            <option value="png">PNG (Transparan)</option>
+            <option value="jpg">JPG (Background Putih)</option>
+        </select>
+    </div>
 
     <div id="pages-container"></div>
     <script src="svg_whitemin.js"></script>
@@ -389,7 +398,66 @@
         }
         backPageDiv.innerHTML = backPageHTML;
         container.appendChild(backPageDiv);
+
+        // Add double click / double tap download functionality
+        document.addEventListener('dblclick', function(e) {
+            const card = e.target.closest('.card');
+            if (!card) return;
+            downloadCard(card);
+        });
+        
+        let lastTap = 0;
+        document.addEventListener('touchend', function(e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 500 && tapLength > 0) {
+                const card = e.target.closest('.card');
+                if (card) {
+                    downloadCard(card);
+                    e.preventDefault();
+                }
+            }
+            lastTap = currentTime;
+        });
+        
+        function downloadCard(card) {
+            let format = document.getElementById("export-format").value;
+            
+            format = format.trim().toLowerCase();
+            let mimeType = "image/png";
+            let ext = "png";
+            let bgColor = null; // transparent for png
+            
+            if (format === "jpg" || format === "jpeg") {
+                mimeType = "image/jpeg";
+                ext = "jpg";
+                bgColor = "#ffffff"; // avoid black background on transparent areas
+            } else {
+                // Default back to png for anything else
+                format = "png";
+            }
+
+            const idElement = card.querySelector('.id');
+            let cardId = idElement ? idElement.innerText : 'card-back';
+            // Replace middle dot with hyphen for file name
+            cardId = cardId.replace(/·/g, '-');
+            
+            html2canvas(card, {
+                scale: 10,
+                useCORS: true,
+                backgroundColor: bgColor
+            }).then(canvas => {
+                const dataUrl = canvas.toDataURL(mimeType, 1.0);
+                const a = document.createElement("a");
+                a.href = dataUrl;
+                a.download = `Werewolf-${cardId}.${ext}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+        }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 
 </html>
