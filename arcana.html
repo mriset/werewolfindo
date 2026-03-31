@@ -230,21 +230,40 @@
         // Replace middle dot with hyphen for file name
         cardId = cardId.replace(/·/g, '-');
         
-        html2canvas(card, {
-            scale: 10,
-            useCORS: true,
-            backgroundColor: bgColor
-        }).then(canvas => {
-            const dataUrl = canvas.toDataURL(mimeType, 1.0);
+        const scale = 10;
+        const style = {
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left',
+            width: card.offsetWidth + 'px',
+            height: card.offsetHeight + 'px'
+        };
+        const param = {
+            height: card.offsetHeight * scale,
+            width: card.offsetWidth * scale,
+            quality: 1,
+            style: style
+        };
+
+        let promise;
+        if (format === "jpg" || format === "jpeg") {
+            param.bgcolor = bgColor;
+            promise = domtoimage.toJpeg(card, param);
+        } else {
+            promise = domtoimage.toPng(card, param);
+        }
+
+        promise.then(dataUrl => {
             const a = document.createElement("a");
             a.href = dataUrl;
             a.download = `Werewolf-${cardId}.${ext}`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+        }).catch(error => {
+            console.error('Error generating image!', error);
         });
     }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
 </body>
 </html>
