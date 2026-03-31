@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Werewolf Obsidian Vanguard Edition</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@300;400;600;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --gold-light: #fcf6ba;
+            --gold-base: #d4af37;
+            --gold-dark: #aa771c;
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 0%, #1e2229 0%, #0d1115 100%);
+            font-family: 'Montserrat', sans-serif;
+            padding: 40px 10px;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color: #fff;
+        }
+
+        h1.print-title {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--gold-base);
+            margin: 10px 0 6px;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            text-shadow: 0 4px 15px rgba(212, 175, 55, 0.4), 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .print-subtitle {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: #A0AAB5;
+            margin-bottom: 24px;
+            letter-spacing: 4px;
+            font-weight: 300;
+        }
+
+        .screen-note {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            color: var(--gold-base);
+            margin: 8px auto 30px;
+            font-style: italic;
+            background: rgba(212, 175, 55, 0.05);
+            padding: 12px 20px;
+            border-radius: 8px;
+            max-width: 650px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            line-height: 1.6;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background: #0a0a0c;
+            margin: 0 auto 30px;
+            padding: 9.15mm 3.75mm;
+            display: grid;
+            grid-template-columns: repeat(3, var(--card-w));
+            grid-auto-rows: var(--card-h);
+            gap: 6mm;
+            justify-content: center;
+            align-content: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            position: relative;
+            border-radius: 4mm;
+            page-break-inside: avoid;
+            background: #0a0a0c;
+            overflow: hidden;
+            border: 0.2mm solid #333;
+            box-shadow: inset 0 0 20px #000;
+        }
+
+        .t2-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: linear-gradient(145deg, #16181c 0%, #050506 100%);
+        }
+
+        .t2-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 2mm, rgba(212, 175, 55, 0.03) 2mm, rgba(212, 175, 55, 0.03) 4mm);
+        }
+
+        /* Accent gradients based on faction */
+        .faction-supreme .t2-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(138, 43, 226, 0.15) 0%, transparent 100%);
+        }
+
+        .faction-good .t2-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(65, 131, 215, 0.1) 0%, transparent 100%);
+        }
+
+        .faction-evil .t2-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(220, 20, 60, 0.15) 0%, transparent 100%);
+        }
+
+        .faction-neutral .t2-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(160, 160, 160, 0.1) 0%, transparent 100%);
+        }
+
+        .t2-inner {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 4mm;
+        }
+
+        .t2-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5mm;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 1.5mm;
+        }
+
+        .card-id {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8px;
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .card-faction {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6px;
+            color: #0a0a0c;
+            padding: 0.8mm 2mm;
+            border-radius: 4mm;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Hardcode colors based on theme */
+        .faction-supreme .card-faction {
+            background: #8a2be2;
+            color: #fff;
+        }
+
+        .faction-good .card-faction {
+            background: #4183d7;
+            color: #fff;
+        }
+
+        .faction-evil .card-faction {
+            background: #dc143c;
+            color: #fff;
+        }
+
+        .faction-neutral .card-faction {
+            background: #a0a0a0;
+            color: #000;
+        }
+
+        .t2-art {
+            flex-shrink: 0;
+            width: 100%;
+            height: 25mm;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2mm;
+        }
+
+        .t2-art svg {
+            width: 25mm;
+            height: 25mm;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.8));
+        }
+
+        .t2-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .t2-name-en {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6.5px;
+            color: var(--gold-base);
+            letter-spacing: 3px;
+            font-weight: 600;
+            margin-bottom: 0.5mm;
+            text-transform: uppercase;
+        }
+
+        .t2-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: 1px;
+            line-height: 1;
+            margin-bottom: 1.5mm;
+            text-transform: uppercase;
+        }
+
+        .gold-text {
+            background: linear-gradient(to right, #bf953f, var(--gold-light), #b38728, #fbf5b7, var(--gold-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .t2-ability-box {
+            background: rgba(212, 175, 55, 0.08);
+            border-left: 1.5mm solid var(--gold-base);
+            padding: 1mm 1.5mm;
+            margin-bottom: 2mm;
+        }
+
+        .t2-ability {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 7px;
+            color: var(--gold-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .t2-desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8px;
+            font-weight: 500;
+            color: #ffffff;
+            line-height: 1.4;
+            text-align: left;
+        }
+
+        .t2-desc strong {
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .t2-footer {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6px;
+            color: #666;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-align: right;
+            margin-top: auto;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            h1.print-title,
+            .print-subtitle,
+            .screen-note,
+            .screen-only {
+                display: none;
+            }
+
+            .page {
+                margin: 0;
+                box-shadow: none;
+                page-break-after: always;
+                padding: 9.15mm 3.75mm;
+                border: none;
+            }
+
+            .page:last-child {
+                page-break-after: auto;
+            }
+
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 class="print-title">Werewolf</h1>
+    <p class="print-subtitle">OBSIDIAN VANGUARD EDITION (MODERN SLEEK)</p>
+    <div class="screen-note">
+        <strong>PANDUAN CETAK:</strong> Tekan <code>Ctrl+P</code>. Pastikan opsi <strong>"Background graphics"</strong>
+        tercentang.<br />
+        <span style="font-size:11px; font-weight:400; color:#aaa;">(Gunakan Klik Ganda / Double-Tap untuk mengunduh
+            desain kartu individunya).</span>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 20px;" class="download-options screen-only">
+        <label for="export-format"
+            style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: #d4af37;">Format
+            Unduhan: </label>
+        <select id="export-format"
+            style="font-family: 'Montserrat', sans-serif; font-size: 12px; padding: 4px 8px; border-radius: 4px; border: 1px solid #d4af37; background: #222; color: #fff;">
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+        </select>
+    </div>
+
+    <div id="pages-container"></div>
+
+    <script src="cards.js"></script>
+    <script src="svg_obsidianv.js"></script>
+    <script>
+        const cardsPerPage = 9;
+        const container = document.getElementById("pages-container");
+
+        function generateCardHTML(card) {
+            let factionClass = card.factionUpClass || 'faction-neutral';
+            let svgIcon = getSvgObsidianV(card.id, factionClass);
+
+            let factionLabel = '';
+            if (factionClass === 'faction-supreme') factionLabel = 'SPECIAL';
+            else if (factionClass === 'faction-good') factionLabel = 'ALLIANCE';
+            else if (factionClass === 'faction-evil') factionLabel = 'SHADOWS';
+            else factionLabel = 'NEUTRAL';
+
+            return `
+        <div class="card t2-card ${factionClass}">
+            <div class="t2-bg"></div>
+            <div class="t2-inner">
+                <div class="t2-header">
+                    <div class="card-id">${card.id}</div>
+                    <div class="card-faction">${factionLabel}</div>
+                </div>
+                <div class="t2-art">
+                    ${svgIcon}
+                </div>
+                <div class="t2-content">
+                    <div class="t2-name-en">${card.nameEn}</div>
+                    <div class="t2-name gold-text">${card.nameId}</div>
+                    <div class="t2-ability-box">
+                        <div class="t2-ability">${card.ability}</div>
+                    </div>
+                    <div class="t2-desc">${card.desc}</div>
+                </div>
+                <div class="t2-footer">${card.footer.replace('—', '//')}</div>
+            </div>
+        </div>
+        `;
+        }
+
+        for (let i = 0; i < cardsData.length; i += cardsPerPage) {
+            const pageCards = cardsData.slice(i, i + cardsPerPage);
+            const pageDiv = document.createElement("div");
+            pageDiv.className = "page";
+
+            let pageHTML = "";
+            pageCards.forEach(card => {
+                pageHTML += generateCardHTML(card);
+            });
+
+            pageDiv.innerHTML = pageHTML;
+            container.appendChild(pageDiv);
+        }
+
+        // Card Backs
+        const backContent = `
+        <div class="card t2-card">
+            <div class="t2-bg"></div>
+            <div class="t2-inner" style="justify-content: center; align-items: center; padding: 5mm;">
+                <div style="position: absolute; inset: 2mm; border: 1mm solid rgba(212,175,55,0.8); border-radius: 2mm;"></div>
+                <div style="position: absolute; inset: 4mm; border: 0.3mm dashed rgba(212,175,55,0.5); border-radius: 1mm;"></div>
+
+                <!-- SVG: Massive Compass Rose / Monogram -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 35mm; height: 35mm; filter: drop-shadow(0 0 10px rgba(212,175,55,0.5));">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" stroke-width="2" />
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="#aa771c" stroke-width="1" stroke-dasharray="2,2" />
+                    <path d="M50,5 L55,40 L90,50 L55,60 L50,95 L45,60 L10,50 L45,40 Z" fill="#1a1a1a" stroke="#d4af37" stroke-width="1.5" />
+                    <path d="M50,5 L50,95 M10,50 L90,50" stroke="#d4af37" stroke-width="1" />
+                    <circle cx="50" cy="50" r="16" fill="#8b0000" stroke="#d4af37" stroke-width="2" />
+                    <text x="50" y="58" font-family="'Cinzel', serif" font-size="24" font-weight="900" fill="#fcf6ba" text-anchor="middle">W</text>
+                </svg>
+
+                <div style="font-family: 'Cinzel', serif; font-size: 16px; font-weight: 900; color: var(--gold-base); margin-top: 6mm; letter-spacing: 5px; text-shadow: 0 2px 4px #000;">
+                    WEREWOLF</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 10px; font-weight: 800; color: var(--gold-base); letter-spacing: 3px; margin-top: 3px; text-shadow: 0 1px 2px #000;">
+                    MRSETIAWAN</div>
+            </div>
+        </div>
+    `;
+
+        const backPageDiv = document.createElement("div");
+        backPageDiv.className = "page";
+        let backPageHTML = "";
+        for (let i = 0; i < 9; i++) {
+            backPageHTML += backContent;
+        }
+        backPageDiv.innerHTML = backPageHTML;
+        container.appendChild(backPageDiv);
+
+        // Download Logic
+        document.addEventListener('dblclick', function (e) {
+            const card = e.target.closest('.card');
+            if (!card) return;
+            downloadCard(card);
+        });
+
+        let lastTap = 0;
+        document.addEventListener('touchend', function (e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 500 && tapLength > 0) {
+                const card = e.target.closest('.card');
+                if (card) {
+                    downloadCard(card);
+                    e.preventDefault();
+                }
+            }
+            lastTap = currentTime;
+        });
+
+        function downloadCard(card) {
+            let format = document.getElementById("export-format").value;
+            format = format.trim().toLowerCase();
+            let mimeType = "image/png";
+            let ext = "png";
+            let bgColor = null;
+
+            if (format === "jpg" || format === "jpeg") {
+                mimeType = "image/jpeg";
+                ext = "jpg";
+                bgColor = "#0a0a0c"; // Black background for Observer Vanguard
+            } else {
+                format = "png";
+            }
+
+            const idElement = card.querySelector('.card-id');
+            let cardId = idElement ? idElement.innerText : 'card-back';
+            cardId = cardId.replace(/·/g, '-');
+
+            const scale = 10;
+            const style = {
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
+                width: card.offsetWidth + 'px',
+                height: card.offsetHeight + 'px'
+            };
+            const param = {
+                height: card.offsetHeight * scale,
+                width: card.offsetWidth * scale,
+                quality: 1,
+                style: style
+            };
+
+            let promise;
+            if (format === "jpg" || format === "jpeg") {
+                param.bgcolor = bgColor;
+                promise = domtoimage.toJpeg(card, param);
+            } else {
+                promise = domtoimage.toPng(card, param);
+            }
+
+            promise.then(dataUrl => {
+                const a = document.createElement("a");
+                a.href = dataUrl;
+                a.download = `ObsidianVanguard-${cardId}.${ext}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }).catch(error => {
+                console.error('Error generating image!', error);
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+</body>
+
+</html>
