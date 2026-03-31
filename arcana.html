@@ -18,13 +18,13 @@
         
         .page { width: 210mm; min-height: 297mm; background: #fff; margin: 0 auto 30px; padding: 9.15mm 3.75mm; display: grid; grid-template-columns: repeat(3, 54.5mm); grid-template-rows: repeat(3, 85.5mm); gap: 6mm; justify-content: center; align-content: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); position: relative; }
         
-        .card { width: 54.5mm; height: 85.5mm; position: relative; background: #ffffff; page-break-inside: avoid; z-index: 1; }
+        .card { width: 54.5mm; height: 85.5mm; position: relative; background: #ffffff; border-radius: 4mm; page-break-inside: avoid; z-index: 1; }
         
         /* Trim marks wrapper */
-        .card::before { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; border: 0.2mm dashed #e0e0e0; z-index: 20; pointer-events: none; }
+        .card::before { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; border: 0.2mm dashed #e0e0e0; border-radius: 5mm; z-index: 20; pointer-events: none; }
         
         /* The inner card with thin solid border */
-        .card-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #ffffff; overflow: hidden; padding: 4mm; border: 1px solid #ddd; }
+        .card-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #ffffff; overflow: hidden; padding: 4mm; border: 1px solid #ddd; border-radius: 4mm; }
         
         /* Minimal Top Bar */
         .card-top-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 2mm; margin-bottom: 3mm; }
