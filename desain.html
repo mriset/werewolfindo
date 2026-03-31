@@ -1337,3 +1337,976 @@
 
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>25 Premium Werewolf Cards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #111; font-family: 'Crimson Pro', serif; padding: 40px 10px; color: #fff; }
+        .print-title { text-align: center; font-family: 'Cinzel', serif; font-size: 36px; color: #D4AF37; margin: 10px 0 6px; letter-spacing: 12px; text-transform: uppercase; }
+        .page { width: 210mm; background: transparent; margin: 0 auto 30px; padding: 10mm; display: grid; grid-template-columns: repeat(5, 54.5mm); grid-auto-rows: 85.5mm; gap: 6mm; justify-content: center; }
+        .style-title { grid-column: 1 / -1; text-align: center; font-family: 'Cinzel', serif; font-size: 24px; color: #fff; margin-bottom: 10mm; border-bottom: 2px solid #D4AF37; padding-bottom: 10px; }
+        
+        .card { width: 54.5mm; height: 85.5mm; border-radius: 4mm; position: relative; background: #ffffff; page-break-inside: avoid; z-index: 1; overflow: hidden; }
+        
+/* =========================================
+   STYLE 1: CLASSIC ROYAL (Ivory & Gold)
+   ========================================= */
+.style-royal {
+    font-family: 'Crimson Pro', serif;
+    background: #FFFEFA;
+    border: 0.2mm solid #d0c8b8;
+}
+.style-royal::before { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; border: 0.35mm dashed #b0b0b0; border-radius: 5mm; z-index: 20; pointer-events: none; }
+.style-royal::after { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; background: #ffffff; border-radius: 5mm; z-index: -2; }
+.style-royal .card-inner { position: absolute; inset: 1.5mm; border-radius: 2.5mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: linear-gradient(135deg, #FFFEFA 0%, #F5F1E6 100%); overflow: hidden; box-shadow: inset 0 0 15px rgba(0,0,0,0.05); }
+.style-royal .card-inner::before { content: ''; position: absolute; inset: 0.8mm; border-radius: 1.8mm; pointer-events: none; z-index: 1; opacity: 0.7; }
+.style-royal .card-header { width: 100%; padding: 2mm 2.5mm 0mm; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
+.style-royal .card-faction { font-family: 'Cinzel', serif; font-size: 8.5px; font-weight: 900; letter-spacing: 2px; padding: 1.2mm 2.5mm; border-radius: 1.5mm; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3); }
+.style-royal.theme-good .card-faction { background: linear-gradient(135deg, #102B4E 0%, #25548A 100%); color: #FFFEFA; border: 0.2mm solid #0B1C33; }
+.style-royal.theme-evil .card-faction { background: linear-gradient(135deg, #7A0000 0%, #B22222 100%); color: #FFFEFA; border: 0.2mm solid #4A0000; }
+.style-royal.theme-neutral .card-faction { background: linear-gradient(135deg, #333333 0%, #595959 100%); color: #FFFEFA; border: 0.2mm solid #1A1A1A; }
+.style-royal.theme-supreme .card-faction { background: linear-gradient(135deg, #4A0080 0%, #8000FF 100%); color: #FFFEFA; border: 0.2mm solid #2A004A; text-shadow: 0 0 5px rgba(255,255,255,0.8); }
+.style-royal .card-id { font-family: 'Cinzel', serif; font-size: 8.5px; color: #888; font-weight: 700; background: transparent; padding: 1mm; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
+.style-royal .card-icon-wrap { width: 100%; display: flex; align-items: center; justify-content: center; padding: 0.5mm 0; flex-shrink: 0; z-index:2; position: relative; }
+.style-royal .card-icon-wrap svg { width: 19mm; height: 19mm; display: block; }
+.style-royal .card-name-container { text-align: center; margin-bottom: 1.5mm; width: 100%; z-index:2; position: relative; }
+.style-royal .card-name { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; line-height: 1; text-shadow: none; color: #111; }
+.style-royal .card-name-en { font-family: 'Cinzel', serif; font-size: 9.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; opacity: 0.85; color: #555;}
+.style-royal .card-ability { font-family: 'Cinzel', serif; font-size: 9.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-align: center; padding: 1.5mm 3mm; width: 100%; line-height: 1.1; margin-bottom: 2mm; z-index:2; position: relative; color: #222; background: linear-gradient(90deg, rgba(16,43,78,0) 0%, rgba(16,43,78,0.08) 20%, rgba(16,43,78,0.08) 80%, rgba(16,43,78,0) 100%); border-top: 0.3mm solid rgba(0, 0, 0, 0.1); border-bottom: 0.3mm solid rgba(0, 0, 0, 0.1);}
+.style-royal .card-desc { font-family: 'Crimson Pro', serif; font-size: 11.5px; font-weight: 500; text-align: center; padding: 0 3mm; line-height: 1.2; flex: 1; display: block; z-index:2; position: relative; text-shadow: none; color: #333; }
+.style-royal .card-desc strong { font-weight: 700; color: #000; }
+.style-royal .card-footer { width: 100%; padding: 0.8mm 0 2.2mm; text-align: center; margin-top: auto; z-index:2; position: relative; border-top: 0.4mm solid rgba(0, 0, 0, 0.1); }
+.style-royal .card-footer-text { font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; display: inline-block; transform: translateY(-0.5mm); color: #222;}
+/* Royal Theme Overrides */
+.style-royal.theme-good .card-inner { border: 0.6mm solid #102B4E; }
+.style-royal.theme-good .card-inner::before { border: 0.25mm solid rgba(16, 43, 78, 0.4); }
+.style-royal.theme-good .card-name { color: #102B4E; }
+.style-royal.theme-good .card-name-en { color: #2A6099; }
+.style-royal.theme-good .card-ability { background: linear-gradient(90deg, rgba(16,43,78,0) 0%, rgba(16,43,78,0.08) 20%, rgba(16,43,78,0.08) 80%, rgba(16,43,78,0) 100%); color: #102B4E; border-top: 0.3mm solid rgba(16, 43, 78, 0.25); border-bottom: 0.3mm solid rgba(16, 43, 78, 0.25); }
+.style-royal.theme-evil .card-inner { border: 0.6mm solid #7A0000; }
+.style-royal.theme-evil .card-inner::before { border: 0.25mm solid rgba(122, 0, 0, 0.4); }
+.style-royal.theme-evil .card-name { color: #7A0000; }
+.style-royal.theme-evil .card-name-en { color: #B22222; }
+.style-royal.theme-evil .card-ability { background: linear-gradient(90deg, rgba(122,0,0,0) 0%, rgba(122,0,0,0.08) 20%, rgba(122,0,0,0.08) 80%, rgba(122,0,0,0) 100%); color: #7A0000; border-top: 0.3mm solid rgba(122, 0, 0, 0.25); border-bottom: 0.3mm solid rgba(122, 0, 0, 0.25); }
+.style-royal.theme-neutral .card-inner { border: 0.6mm solid #333333; }
+.style-royal.theme-neutral .card-inner::before { border: 0.25mm solid rgba(51, 51, 51, 0.4); }
+.style-royal.theme-neutral .card-name { color: #222222; }
+.style-royal.theme-neutral .card-name-en { color: #666666; }
+.style-royal.theme-neutral .card-ability { background: linear-gradient(90deg, rgba(51,51,51,0) 0%, rgba(51,51,51,0.08) 20%, rgba(51,51,51,0.08) 80%, rgba(51,51,51,0) 100%); color: #333333; border-top: 0.3mm solid rgba(51, 51, 51, 0.25); border-bottom: 0.3mm solid rgba(51, 51, 51, 0.25); }
+.style-royal.theme-supreme .card-inner { border: 0.8mm solid #D4AF37; background: radial-gradient(circle at center, #2a0a4a 0%, #0d001a 100%); box-shadow: inset 0 0 25px rgba(128,0,255,0.4), 0 0 15px rgba(212,175,55,0.6); }
+.style-royal.theme-supreme .card-inner::before { border: 0.4mm solid rgba(212, 175, 55, 0.8); border-radius: 1.5mm; }
+.style-royal.theme-supreme .card-id { text-shadow: none; color: #a3b2c2; }
+.style-royal.theme-supreme .card-name { color: #D4AF37; text-shadow: 0 0 8px rgba(212,175,55,0.6); font-size: 15px; }
+.style-royal.theme-supreme .card-name-en { color: #B08D28; letter-spacing: 3px; }
+.style-royal.theme-supreme .card-ability { background: linear-gradient(90deg, rgba(128,0,255,0) 0%, rgba(128,0,255,0.3) 50%, rgba(128,0,255,0) 100%); color: #FFFEFA; border-top: 0.3mm solid rgba(212, 175, 55, 0.5); border-bottom: 0.3mm solid rgba(212, 175, 55, 0.5); text-shadow: 0 0 4px rgba(255,255,255,0.5); }
+.style-royal.theme-supreme .card-desc { color: #E0E0E0; text-shadow: 0 1px 2px #000; }
+.style-royal.theme-supreme .card-desc strong { color: #D4AF37; text-shadow: 0 0 5px rgba(212,175,55,0.4); }
+.style-royal.theme-supreme .card-footer { border-top: 0.4mm solid rgba(212, 175, 55, 0.4); background: linear-gradient(to top, rgba(128,0,255,0.15) 0%, rgba(128,0,255,0) 100%); }
+.style-royal.theme-supreme .card-footer-text { color: #D4AF37; text-shadow: 0 0 4px rgba(212,175,55,0.3); }
+.style-royal.theme-back .card-inner { border: 0.6mm solid #D4AF37; background: linear-gradient(135deg, #FFFEFA 0%, #F5F1E6 100%); align-items: center; justify-content: center; box-shadow: inset 0 0 15px rgba(0,0,0,0.02); }
+.style-royal.theme-back .card-inner::before { border: 0.3mm solid rgba(212, 175, 55, 0.8); inset: 1.5mm; }
+
+/* =========================================
+   STYLE 2: DARK MAGIC (Gothic Night)
+   ========================================= */
+.style-dark {
+    font-family: 'Playfair Display', serif;
+    background: #0a0a0c;
+    border: 0.2mm solid #333;
+}
+.style-dark::after { content: ''; position: absolute; inset: 1.5mm; border: 0.5mm solid rgba(255,255,255,0.1); border-radius: 2.5mm; pointer-events: none; z-index: 20; }
+.style-dark .card-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #0a0a0c; overflow: hidden; }
+.style-dark .card-inner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.05) 0%, transparent 70%); pointer-events: none; z-index: 1; }
+.style-dark .card-header { width: 100%; padding: 3mm 3mm 0mm; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 2mm;}
+.style-dark .card-faction { font-family: 'Montserrat', sans-serif; font-size: 7px; font-weight: 800; letter-spacing: 3px; padding: 1mm 2mm; text-transform: uppercase; color: #fff; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 1mm;}
+.style-dark .card-id { font-family: 'Montserrat', sans-serif; font-size: 8px; color: #666; font-weight: 600; text-shadow: none; letter-spacing: 1px;}
+.style-dark .card-icon-wrap { width: 100%; display: flex; align-items: center; justify-content: center; padding: 2mm 0; flex-shrink: 0; z-index:2; position: relative; background: linear-gradient(to bottom, rgba(255,255,255,0.02) 0%, transparent 100%); }
+.style-dark .card-icon-wrap svg { width: 22mm; height: 22mm; display: block; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); }
+.style-dark .card-name-container { text-align: center; margin-bottom: 1mm; width: 100%; z-index:2; position: relative; }
+.style-dark .card-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; line-height: 1; color: #eee; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+.style-dark .card-name-en { font-family: 'Montserrat', sans-serif; font-size: 8px; font-weight: 400; letter-spacing: 4px; text-transform: uppercase; margin-top: 2px; color: #888; }
+.style-dark .card-ability { font-family: 'Montserrat', sans-serif; font-size: 8px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-align: center; padding: 1.5mm 3mm; width: 100%; line-height: 1.1; margin-bottom: 2mm; z-index:2; position: relative; color: #ccc; border-top: 1px dotted rgba(255,255,255,0.1); border-bottom: 1px dotted rgba(255,255,255,0.1); }
+.style-dark .card-desc { font-family: 'Crimson Pro', serif; font-size: 11px; font-weight: 400; text-align: center; padding: 0 4mm; line-height: 1.3; flex: 1; display: block; z-index:2; position: relative; color: #aaa; text-shadow: none; }
+.style-dark .card-desc strong { font-weight: 700; color: #fff; }
+.style-dark .card-footer { width: 100%; padding: 1mm 0 2.5mm; text-align: center; margin-top: auto; z-index:2; position: relative; border-top: 1px solid rgba(255,255,255,0.05); }
+.style-dark .card-footer-text { font-family: 'Montserrat', sans-serif; font-size: 7px; letter-spacing: 3px; text-transform: uppercase; font-weight: 600; display: inline-block; color: #666;}
+/* Dark Magic Overrides */
+.style-dark.theme-good .card-inner { background: linear-gradient(180deg, #050a12 0%, #0a0a0c 100%); }
+.style-dark.theme-good .card-name { color: #60a5fa; }
+.style-dark.theme-evil .card-inner { background: linear-gradient(180deg, #1a0505 0%, #0a0a0c 100%); }
+.style-dark.theme-evil .card-name { color: #f87171; }
+.style-dark.theme-neutral .card-inner { background: linear-gradient(180deg, #111 0%, #0a0a0c 100%); }
+.style-dark.theme-neutral .card-name { color: #e5e7eb; }
+.style-dark.theme-supreme .card-inner { background: linear-gradient(180deg, #2a004a 0%, #0a0a0c 100%); box-shadow: inset 0 0 20px rgba(128,0,255,0.3), inset 0 0 5px #D4AF37; }
+.style-dark.theme-supreme::after { border: 0.5mm solid rgba(212,175,55,0.5); }
+.style-dark.theme-supreme .card-name { color: #D4AF37; text-shadow: 0 0 10px rgba(212,175,55,0.5); font-size: 16px; }
+.style-dark.theme-supreme .card-faction { background: #4A0080; border-color: #D4AF37; color: #D4AF37; }
+.style-dark.theme-supreme .card-desc strong { color: #D4AF37; }
+.style-dark.theme-supreme .card-icon-wrap svg { filter: drop-shadow(0 0 15px rgba(212,175,55,0.6)); }
+.style-dark.theme-back .card-inner { background: #0a0a0c; align-items: center; justify-content: center; }
+.style-dark.theme-back::after { border: 0.5mm solid rgba(255,255,255,0.2); }
+
+/* =========================================
+   STYLE 3: MODERN GLASS (Minimalist UI)
+   ========================================= */
+.style-glass {
+    font-family: 'Space Grotesk', sans-serif;
+    background: #f1f5f9;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+.style-glass .card-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #ffffff; overflow: hidden; border-radius: 4mm; border: 1px solid rgba(0,0,0,0.05); }
+.style-glass .card-inner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 35mm; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); z-index: 1; border-bottom: 1px solid rgba(255,255,255,0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+.style-glass .card-header { width: 100%; padding: 2.5mm 3mm; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
+.style-glass .card-faction { font-size: 7px; font-weight: 700; letter-spacing: 1px; padding: 1mm 2mm; border-radius: 4px; text-transform: uppercase; background: rgba(255,255,255,0.6); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.style-glass .card-id { font-size: 8px; color: #64748b; font-weight: 600; background: rgba(255,255,255,0.6); backdrop-filter: blur(4px); padding: 1mm 2mm; border-radius: 4px; border: 1px solid rgba(255,255,255,0.8); }
+.style-glass .card-icon-wrap { width: 100%; display: flex; align-items: center; justify-content: center; padding: 1.5mm 0; flex-shrink: 0; z-index:2; position: relative; }
+.style-glass .card-icon-wrap svg { width: 18mm; height: 18mm; display: block; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); }
+.style-glass .card-name-container { text-align: center; margin-top: 2mm; margin-bottom: 2mm; width: 100%; z-index:2; position: relative; padding: 0 2mm; }
+.style-glass .card-name { font-size: 16px; font-weight: 700; letter-spacing: -0.5px; text-transform: uppercase; line-height: 1; color: #0f172a; }
+.style-glass .card-name-en { font-size: 9px; font-weight: 400; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; color: #64748b; }
+.style-glass .card-ability { font-size: 8px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; text-align: center; padding: 1.5mm 3mm; width: 85%; margin: 0 auto 2mm; line-height: 1.2; z-index:2; position: relative; color: #334155; background: #f8fafc; border-radius: 4px; border: 1px solid #e2e8f0; }
+.style-glass .card-desc { font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 400; text-align: center; padding: 0 3.5mm; line-height: 1.4; flex: 1; display: block; z-index:2; position: relative; color: #475569; }
+.style-glass .card-desc strong { font-weight: 700; color: #0f172a; }
+.style-glass .card-footer { width: 100%; padding: 2mm 0; text-align: center; margin-top: auto; z-index:2; position: relative; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+.style-glass .card-footer-text { font-size: 7px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; color: #94a3b8; }
+/* Glass Overrides */
+.style-glass.theme-good .card-inner::before { background: linear-gradient(135deg, #eff6ff 0%, #bfdbfe 100%); }
+.style-glass.theme-good .card-faction { color: #1d4ed8; }
+.style-glass.theme-evil .card-inner::before { background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); }
+.style-glass.theme-evil .card-faction { color: #b91c1c; }
+.style-glass.theme-neutral .card-inner::before { background: linear-gradient(135deg, #f3f4f6 0%, #d1d5db 100%); }
+.style-glass.theme-neutral .card-faction { color: #374151; }
+.style-glass.theme-supreme .card-inner { border: 2px solid #a855f7; box-shadow: 0 0 15px rgba(168,85,247,0.3); }
+.style-glass.theme-supreme .card-inner::before { background: linear-gradient(135deg, #f3e8ff 0%, #d8b4fe 100%); }
+.style-glass.theme-supreme .card-faction { color: #7e22ce; background: #faf5ff; }
+.style-glass.theme-supreme .card-name { color: #581c87; }
+.style-glass.theme-back .card-inner { align-items: center; justify-content: center; }
+.style-glass.theme-back .card-inner::before { height: 100%; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+
+/* =========================================
+   STYLE 4: TAROT ARCANA (Vintage Print)
+   ========================================= */
+.style-tarot {
+    font-family: 'Cormorant Garamond', serif;
+    background: #e8ddcb;
+    border: 0.2mm solid #111;
+}
+.style-tarot::before { content: ''; position: absolute; inset: 1mm; border: 1px solid #333; pointer-events: none; z-index: 20; }
+.style-tarot::after { content: ''; position: absolute; inset: 2mm; border: 1px solid #333; pointer-events: none; z-index: 20; }
+.style-tarot .card-inner { position: absolute; inset: 3mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #f4ecd8; overflow: hidden; border: 1px solid #111; }
+.style-tarot .card-header { width: 100%; padding: 2mm 2mm 0mm; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; border-bottom: 1px solid #111; padding-bottom: 1.5mm;}
+.style-tarot .card-faction { font-family: 'Cinzel', serif; font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #111; }
+.style-tarot .card-id { font-family: 'Cinzel', serif; font-size: 8px; color: #333; font-weight: 700; }
+.style-tarot .card-icon-wrap { width: 100%; display: flex; align-items: center; justify-content: center; padding: 1.5mm 0; flex-shrink: 0; z-index:2; position: relative; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" opacity="0.05"><line x1="0" y1="0" x2="10" y2="10" stroke="%23000" stroke-width="0.5"/><line x1="10" y1="0" x2="0" y2="10" stroke="%23000" stroke-width="0.5"/></svg>'); }
+.style-tarot .card-icon-wrap svg { width: 23mm; height: 23mm; display: block; }
+.style-tarot .card-name-container { text-align: center; margin-bottom: 1mm; width: 100%; z-index:2; position: relative; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 1mm 0; background: #e8ddcb; }
+.style-tarot .card-name { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; line-height: 1; color: #111; }
+.style-tarot .card-name-en { font-family: 'Cormorant Garamond', serif; font-size: 10px; font-style: italic; letter-spacing: 1px; margin-top: 1px; color: #333; }
+.style-tarot .card-ability { display: none; /* Hide ability in Tarot style for clean look */ }
+.style-tarot .card-desc { font-family: 'Cormorant Garamond', serif; font-size: 11.5px; font-weight: 600; text-align: center; padding: 1.5mm 3mm 0; line-height: 1.15; flex: 1; display: block; z-index:2; position: relative; color: #222; }
+.style-tarot .card-desc strong { font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+.style-tarot .card-footer { width: 100%; padding: 1mm 0 1.5mm; text-align: center; margin-top: auto; z-index:2; position: relative; border-top: 1px solid #111; background: #e8ddcb; }
+.style-tarot .card-footer-text { font-family: 'Cinzel', serif; font-size: 7px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: #111; }
+/* Tarot Overrides */
+.style-tarot.theme-supreme { background: #d4c5a0; border-color: #8000FF; }
+.style-tarot.theme-supreme::before, .style-tarot.theme-supreme::after { border-color: #8000FF; }
+.style-tarot.theme-supreme .card-inner { border-color: #8000FF; background: #ebdcb5; }
+.style-tarot.theme-supreme .card-header, .style-tarot.theme-supreme .card-name-container, .style-tarot.theme-supreme .card-footer { border-color: #8000FF; }
+.style-tarot.theme-supreme .card-name { color: #4A0080; }
+.style-tarot.theme-back .card-inner { align-items: center; justify-content: center; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" opacity="0.1"><circle cx="10" cy="10" r="8" fill="none" stroke="%23000" stroke-width="1"/><path d="M10,2 L10,18 M2,10 L18,10" stroke="%23000" stroke-width="0.5"/></svg>'); }
+
+/* =========================================
+   STYLE 5: CASINO CHIP (High Roller)
+   ========================================= */
+.style-casino {
+    font-family: 'Montserrat', sans-serif;
+    background: #111;
+    border: 0.5mm solid #fff;
+    border-radius: 4mm;
+}
+.style-casino::before { content: ''; position: absolute; inset: 2mm; border: 1mm dashed rgba(255,255,255,0.2); border-radius: 3mm; pointer-events: none; z-index: 20; }
+.style-casino .card-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: radial-gradient(circle at center, #222 0%, #111 100%); overflow: hidden; }
+.style-casino .card-header { width: 100%; padding: 3mm 3mm 0mm; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
+.style-casino .card-faction { font-size: 7px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #fff; background: #000; padding: 1mm 2mm; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); }
+.style-casino .card-id { font-size: 8px; color: #fff; font-weight: 800; background: #000; padding: 1mm 2mm; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); }
+.style-casino .card-icon-wrap { width: 100%; display: flex; align-items: center; justify-content: center; padding: 1mm 0; flex-shrink: 0; z-index:2; position: relative; }
+.style-casino .card-icon-wrap::before { content: ''; position: absolute; width: 30mm; height: 30mm; border-radius: 50%; background: conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.1) 45deg, transparent 90deg, rgba(255,255,255,0.1) 135deg, transparent 180deg, rgba(255,255,255,0.1) 225deg, transparent 270deg, rgba(255,255,255,0.1) 315deg, transparent 360deg); z-index: -1; animation: spin 20s linear infinite; }
+.style-casino .card-icon-wrap svg { width: 20mm; height: 20mm; display: block; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8)); }
+.style-casino .card-name-container { text-align: center; margin-bottom: 2mm; width: 90%; z-index:2; position: relative; background: #fff; border-radius: 4px; padding: 1.5mm 0; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+.style-casino .card-name { font-size: 16px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; line-height: 1; color: #111; }
+.style-casino .card-name-en { font-size: 8px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: 1px; color: #666; }
+.style-casino .card-ability { font-size: 8px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; text-align: center; padding: 1mm 2mm; width: auto; display: inline-block; margin: 0 auto 2mm; z-index:2; position: relative; color: #fff; background: #d97706; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+.style-casino .card-desc { font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 500; text-align: center; padding: 0 3mm; line-height: 1.3; flex: 1; display: block; z-index:2; position: relative; color: #ccc; }
+.style-casino .card-desc strong { font-weight: 700; color: #fff; }
+.style-casino .card-footer { width: 100%; padding: 2mm 0; text-align: center; margin-top: auto; z-index:2; position: relative; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); }
+.style-casino .card-footer-text { font-size: 7px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: #888; }
+/* Casino Overrides */
+.style-casino.theme-good .card-icon-wrap::before { background: conic-gradient(from 0deg, transparent 0deg, rgba(59,130,246,0.2) 45deg, transparent 90deg, rgba(59,130,246,0.2) 135deg, transparent 180deg, rgba(59,130,246,0.2) 225deg, transparent 270deg, rgba(59,130,246,0.2) 315deg, transparent 360deg); }
+.style-casino.theme-good .card-ability { background: #2563eb; }
+.style-casino.theme-evil .card-icon-wrap::before { background: conic-gradient(from 0deg, transparent 0deg, rgba(239,68,68,0.2) 45deg, transparent 90deg, rgba(239,68,68,0.2) 135deg, transparent 180deg, rgba(239,68,68,0.2) 225deg, transparent 270deg, rgba(239,68,68,0.2) 315deg, transparent 360deg); }
+.style-casino.theme-evil .card-ability { background: #dc2626; }
+.style-casino.theme-neutral .card-icon-wrap::before { background: conic-gradient(from 0deg, transparent 0deg, rgba(156,163,175,0.2) 45deg, transparent 90deg, rgba(156,163,175,0.2) 135deg, transparent 180deg, rgba(156,163,175,0.2) 225deg, transparent 270deg, rgba(156,163,175,0.2) 315deg, transparent 360deg); }
+.style-casino.theme-neutral .card-ability { background: #4b5563; }
+.style-casino.theme-supreme { border-color: #D4AF37; box-shadow: 0 0 20px rgba(212,175,55,0.5); }
+.style-casino.theme-supreme::before { border-color: #D4AF37; border-style: solid; }
+.style-casino.theme-supreme .card-icon-wrap::before { background: conic-gradient(from 0deg, transparent 0deg, rgba(212,175,55,0.3) 45deg, transparent 90deg, rgba(128,0,255,0.3) 135deg, transparent 180deg, rgba(212,175,55,0.3) 225deg, transparent 270deg, rgba(128,0,255,0.3) 315deg, transparent 360deg); }
+.style-casino.theme-supreme .card-ability { background: linear-gradient(90deg, #D4AF37, #8000FF); }
+.style-casino.theme-supreme .card-name-container { background: #D4AF37; }
+.style-casino.theme-supreme .card-name { color: #000; }
+.style-casino.theme-back .card-inner { align-items: center; justify-content: center; }
+
+    </style>
+</head>
+<body>
+    <h1 class="print-title">⚔ 25 Premium Showcase ⚔</h1>
+    
+    <div style="text-align: center; margin-bottom: 20px;" class="download-options">
+        <label for="export-format" style="font-family: 'Crimson Pro', serif; font-size: 16px; font-weight: 600; color: #D4AF37;">Format Unduhan (Klik Ganda Kartu): </label>
+        <select id="export-format" style="font-family: 'Crimson Pro', serif; font-size: 14px; padding: 4px 8px; border-radius: 4px; border: 1px solid #D4AF37; background: #222; color: #fff;">
+            <option value="png">PNG (Transparan)</option>
+            <option value="jpg">JPG (Background Putih)</option>
+        </select>
+    </div>
+
+    <div id="pages-container">
+        <div class="page">
+            <div class="style-title">Classic Royal</div>
+
+    <div class="card style-royal theme-supreme">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-supreme">Khusus</span>
+                <span class="card-id">SP·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#D4AF37" stroke-width="2"/>
+        <path d="M50 15 L85 80 L15 80 Z" fill="none" stroke="#D4AF37" stroke-width="2"/>
+        <path d="M50 25 L75 75 L25 75 Z" fill="#2a0a4a" stroke="#D4AF37" stroke-width="1.5"/>
+        <circle cx="50" cy="55" r="12" fill="#D4AF37" />
+        <circle cx="50" cy="55" r="8" fill="#111" />
+        <circle cx="50" cy="55" r="3" fill="#D4AF37" />
+        <path d="M30 55 Q50 35 70 55" fill="none" stroke="#D4AF37" stroke-width="2"/>
+        <path d="M30 55 Q50 75 70 55" fill="none" stroke="#D4AF37" stroke-width="2"/>
+        <line x1="50" y1="35" x2="50" y2="20" stroke="#D4AF37" stroke-width="2"/>
+        <line x1="50" y1="75" x2="50" y2="90" stroke="#D4AF37" stroke-width="2"/>
+        <circle cx="50" cy="20" r="3" fill="#fff"/>
+        <circle cx="50" cy="90" r="3" fill="#fff"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Sang Narator</div>
+                <div class="card-name-en">Game Moderator</div>
+            </div>
+            <div class="card-ability">Tuhan Desa Werewolf</div>
+            <div class="card-desc">Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain berdasarkan instruksi malam.</div>
+            <div class="card-footer"><span class="card-footer-text">Moderator — Supreme</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-royal theme-good">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-good">Baik</span>
+                <span class="card-id">VL·15</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <path d="M20 80 L20 45 L50 20 L80 45 L80 80 Z" fill="none" stroke="#102B4E" stroke-width="2"/>
+        <path d="M40 80 L40 60 L60 60 L60 80" fill="none" stroke="#102B4E" stroke-width="2"/>
+        <rect x="30" y="45" width="10" height="10" fill="none" stroke="#102B4E" stroke-width="1.5"/>
+        <rect x="60" y="45" width="10" height="10" fill="none" stroke="#102B4E" stroke-width="1.5"/>
+        <circle cx="50" cy="15" r="5" fill="#D4AF37" />
+        <line x1="20" y1="45" x2="80" y2="45" stroke="#102B4E" stroke-width="1"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Warga Desa</div>
+                <div class="card-name-en">Villager</div>
+            </div>
+            <div class="card-ability">Pemilik Suara Demokrasi</div>
+            <div class="card-desc">Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.</div>
+            <div class="card-footer"><span class="card-footer-text">Villager — Tim Desa</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-royal theme-evil">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-evil">Jahat</span>
+                <span class="card-id">WW·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <path d="M30 80 Q50 60 70 80" fill="none" stroke="#7A0000" stroke-width="3"/>
+        <path d="M25 60 Q50 40 75 60" fill="none" stroke="#7A0000" stroke-width="3"/>
+        <path d="M20 40 Q50 20 80 40" fill="none" stroke="#7A0000" stroke-width="3"/>
+        <circle cx="35" cy="50" r="4" fill="#B22222" />
+        <circle cx="65" cy="50" r="4" fill="#B22222" />
+        <path d="M45 65 L50 75 L55 65 Z" fill="#7A0000" />
+        <path d="M15 20 Q50 -10 85 20" fill="none" stroke="#D4AF37" stroke-width="1" stroke-dasharray="2,2"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Serigala</div>
+                <div class="card-name-en">Werewolf</div>
+            </div>
+            <div class="card-ability">Membunuh di Malam Hari</div>
+            <div class="card-desc">Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling mengetahui identitas koloninya. Menang jika jumlah serigala menyamai jumlah warga desa yang tersisa.</div>
+            <div class="card-footer"><span class="card-footer-text">Werewolf — Tim Jahat</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-royal theme-neutral">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-neutral">Netral</span>
+                <span class="card-id">NT·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <path d="M50 80 Q30 80 20 60 Q30 50 50 60 Q70 50 80 60 Q70 80 50 80 Z" fill="none" stroke="#333" stroke-width="2"/>
+        <circle cx="35" cy="45" r="5" fill="none" stroke="#333" stroke-width="2"/>
+        <circle cx="65" cy="45" r="5" fill="none" stroke="#333" stroke-width="2"/>
+        <path d="M40 65 Q50 75 60 65" fill="none" stroke="#7A0000" stroke-width="2"/>
+        <path d="M20 60 Q10 40 25 25 Q40 10 50 30 Q60 10 75 25 Q90 40 80 60" fill="none" stroke="#D4AF37" stroke-width="2"/>
+        <circle cx="25" cy="25" r="4" fill="#333" />
+        <circle cx="75" cy="25" r="4" fill="#333" />
+        <circle cx="50" cy="30" r="6" fill="#7A0000" />
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Badut</div>
+                <div class="card-name-en">Jester</div>
+            </div>
+            <div class="card-ability">Tawa Terakhir</div>
+            <div class="card-desc">Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di siang hari. Jika Badut berhasil membuat dirinya digantung, maka ia memenangkan permainan seorang diri.</div>
+            <div class="card-footer"><span class="card-footer-text">Jester — Tim Netral</span></div>
+        </div>
+    </div>
+    
+        <div class="card style-royal theme-back">
+            <div class="card-inner card-back-inner">
+                <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46" fill="transparent" stroke="#D4AF37" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="41" fill="none" stroke="#D4AF37" stroke-width="1" stroke-dasharray="3,3"/>
+        <circle cx="50" cy="50" r="30" fill="rgba(212,175,55,0.08)" stroke="#D4AF37" stroke-width="1"/>
+        <path d="M50,10 L55,35 L80,50 L55,65 L50,90 L45,65 L20,50 L45,35 Z" fill="#D4AF37" opacity="0.6"/>
+        <path d="M50,20 L53,40 L70,50 L53,60 L50,80 L47,60 L30,50 L47,40 Z" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.9"/>
+        <circle cx="50" cy="50" r="18" fill="#4A0000" stroke="#D4AF37" stroke-width="1.5"/>
+        <text x="39" y="55" font-family="'Cinzel', serif" font-size="14" fill="#D4AF37" text-anchor="middle" font-weight="900">M</text>
+        <text x="61" y="55" font-family="'Cinzel', serif" font-size="14" fill="#D4AF37" text-anchor="middle" font-weight="900">S</text>
+        <text x="50" y="57" font-family="'Cinzel', serif" font-size="24" fill="#FFFEFA" text-anchor="middle" font-weight="900">R</text>
+    </svg>
+            </div>
+        </div>
+                </div>
+        <div class="page">
+            <div class="style-title">Dark Magic</div>
+
+    <div class="card style-dark theme-supreme">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-supreme">Khusus</span>
+                <span class="card-id">SP·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <polygon points="50,10 90,40 75,90 25,90 10,40" fill="none" stroke="#D4AF37" stroke-width="2" opacity="0.8"/>
+        <polygon points="50,20 80,45 65,80 35,80 20,45" fill="none" stroke="#8000FF" stroke-width="1.5" stroke-dasharray="2,2"/>
+        <circle cx="50" cy="50" r="15" fill="#4A0080" stroke="#D4AF37" stroke-width="2"/>
+        <circle cx="50" cy="50" r="5" fill="#fff" />
+        <path d="M30 50 Q50 20 70 50 Q50 80 30 50" fill="none" stroke="#D4AF37" stroke-width="2"/>
+        <circle cx="50" cy="10" r="3" fill="#D4AF37" />
+        <circle cx="90" cy="40" r="3" fill="#D4AF37" />
+        <circle cx="75" cy="90" r="3" fill="#D4AF37" />
+        <circle cx="25" cy="90" r="3" fill="#D4AF37" />
+        <circle cx="10" cy="40" r="3" fill="#D4AF37" />
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Sang Narator</div>
+                <div class="card-name-en">Game Moderator</div>
+            </div>
+            <div class="card-ability">Tuhan Desa Werewolf</div>
+            <div class="card-desc">Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain berdasarkan instruksi malam.</div>
+            <div class="card-footer"><span class="card-footer-text">Moderator — Supreme</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-dark theme-good">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-good">Baik</span>
+                <span class="card-id">VL·15</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <path d="M50 15 L85 40 L85 85 L15 85 L15 40 Z" fill="none" stroke="#60a5fa" stroke-width="2"/>
+        <path d="M30 85 L30 55 C30 50 40 50 50 50 C60 50 70 50 70 55 L70 85" fill="none" stroke="#60a5fa" stroke-width="2"/>
+        <circle cx="50" cy="40" r="4" fill="#fff" />
+        <line x1="15" y1="40" x2="85" y2="40" stroke="#60a5fa" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="50" cy="15" r="3" fill="#fff" />
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Warga Desa</div>
+                <div class="card-name-en">Villager</div>
+            </div>
+            <div class="card-ability">Pemilik Suara Demokrasi</div>
+            <div class="card-desc">Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.</div>
+            <div class="card-footer"><span class="card-footer-text">Villager — Tim Desa</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-dark theme-evil">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-evil">Jahat</span>
+                <span class="card-id">WW·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <path d="M50 80 Q30 50 20 20 Q50 40 80 20 Q70 50 50 80" fill="none" stroke="#f87171" stroke-width="2.5"/>
+        <path d="M40 80 L35 45 L50 60 L65 45 L60 80" fill="none" stroke="#f87171" stroke-width="1.5"/>
+        <circle cx="40" cy="35" r="3" fill="#fff" />
+        <circle cx="60" cy="35" r="3" fill="#fff" />
+        <path d="M50 80 L50 95 M40 80 L35 90 M60 80 L65 90" stroke="#f87171" stroke-width="2"/>
+        <polygon points="45,60 55,60 50,70" fill="#f87171"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Serigala</div>
+                <div class="card-name-en">Werewolf</div>
+            </div>
+            <div class="card-ability">Membunuh di Malam Hari</div>
+            <div class="card-desc">Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling mengetahui identitas koloninya. Menang jika jumlah serigala menyamai jumlah warga desa yang tersisa.</div>
+            <div class="card-footer"><span class="card-footer-text">Werewolf — Tim Jahat</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-dark theme-neutral">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-neutral">Netral</span>
+                <span class="card-id">NT·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <path d="M30 30 Q50 10 70 30 Q80 50 70 70 Q50 90 30 70 Q20 50 30 30" fill="none" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="4,2"/>
+        <path d="M50 20 L60 50 L80 50 L65 65 L70 90 L50 75 L30 90 L35 65 L20 50 L40 50 Z" fill="none" stroke="#888" stroke-width="1.5"/>
+        <circle cx="45" cy="45" r="3" fill="#fff" />
+        <circle cx="55" cy="45" r="3" fill="#fff" />
+        <path d="M40 60 Q50 50 60 60" fill="none" stroke="#e5e7eb" stroke-width="2"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Badut</div>
+                <div class="card-name-en">Jester</div>
+            </div>
+            <div class="card-ability">Tawa Terakhir</div>
+            <div class="card-desc">Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di siang hari. Jika Badut berhasil membuat dirinya digantung, maka ia memenangkan permainan seorang diri.</div>
+            <div class="card-footer"><span class="card-footer-text">Jester — Tim Netral</span></div>
+        </div>
+    </div>
+    
+        <div class="card style-dark theme-back">
+            <div class="card-inner card-back-inner">
+                <svg viewBox="0 0 100 100">
+        <rect x="20" y="20" width="60" height="60" fill="none" stroke="#555" stroke-width="1" transform="rotate(45 50 50)"/>
+        <rect x="25" y="25" width="50" height="50" fill="none" stroke="#888" stroke-width="1.5" transform="rotate(45 50 50)"/>
+        <circle cx="50" cy="50" r="20" fill="#0a0a0c" stroke="#fff" stroke-width="1"/>
+        <circle cx="50" cy="50" r="15" fill="none" stroke="#555" stroke-width="1" stroke-dasharray="2,2"/>
+        <path d="M50 30 L55 45 L70 50 L55 55 L50 70 L45 55 L30 50 L45 45 Z" fill="#666" opacity="0.8"/>
+        <circle cx="50" cy="50" r="5" fill="#fff"/>
+        <circle cx="50" cy="10" r="2" fill="#fff" opacity="0.5"/>
+        <circle cx="50" cy="90" r="2" fill="#fff" opacity="0.5"/>
+        <circle cx="10" cy="50" r="2" fill="#fff" opacity="0.5"/>
+        <circle cx="90" cy="50" r="2" fill="#fff" opacity="0.5"/>
+    </svg>
+            </div>
+        </div>
+                </div>
+        <div class="page">
+            <div class="style-title">Modern Glass</div>
+
+    <div class="card style-glass theme-supreme">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-supreme">Khusus</span>
+                <span class="card-id">SP·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <rect x="25" y="25" width="50" height="50" rx="10" fill="url(#glass-grad-sp)" stroke="#a855f7" stroke-width="2"/>
+        <path d="M35 50 L50 35 L65 50 L50 65 Z" fill="#fff" stroke="#581c87" stroke-width="2"/>
+        <circle cx="50" cy="50" r="5" fill="#581c87"/>
+        <circle cx="50" cy="20" r="4" fill="#a855f7"/>
+        <circle cx="50" cy="80" r="4" fill="#a855f7"/>
+        <circle cx="20" cy="50" r="4" fill="#a855f7"/>
+        <circle cx="80" cy="50" r="4" fill="#a855f7"/>
+        <defs>
+            <linearGradient id="glass-grad-sp" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f3e8ff" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="#d8b4fe" stop-opacity="0.4" />
+            </linearGradient>
+        </defs>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Sang Narator</div>
+                <div class="card-name-en">Game Moderator</div>
+            </div>
+            <div class="card-ability">Tuhan Desa Werewolf</div>
+            <div class="card-desc">Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain berdasarkan instruksi malam.</div>
+            <div class="card-footer"><span class="card-footer-text">Moderator — Supreme</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-glass theme-good">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-good">Baik</span>
+                <span class="card-id">VL·15</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <rect x="30" y="50" width="40" height="30" fill="url(#glass-grad-vl)" stroke="#1d4ed8" stroke-width="2" rx="2"/>
+        <polygon points="20,50 50,25 80,50" fill="#fff" stroke="#1d4ed8" stroke-width="2"/>
+        <rect x="42" y="60" width="16" height="20" fill="#fff" stroke="#1d4ed8" stroke-width="1.5" rx="1"/>
+        <circle cx="53" cy="70" r="1.5" fill="#1d4ed8"/>
+        <defs>
+            <linearGradient id="glass-grad-vl" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#eff6ff" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="#bfdbfe" stop-opacity="0.4" />
+            </linearGradient>
+        </defs>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Warga Desa</div>
+                <div class="card-name-en">Villager</div>
+            </div>
+            <div class="card-ability">Pemilik Suara Demokrasi</div>
+            <div class="card-desc">Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.</div>
+            <div class="card-footer"><span class="card-footer-text">Villager — Tim Desa</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-glass theme-evil">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-evil">Jahat</span>
+                <span class="card-id">WW·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <path d="M30 70 C 30 50, 50 30, 70 50 C 70 70, 50 90, 30 70" fill="url(#glass-grad-ww)" stroke="#b91c1c" stroke-width="2"/>
+        <path d="M40 50 L45 55 L50 45 L55 55 L60 50" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="45" cy="40" r="3" fill="#b91c1c"/>
+        <circle cx="65" cy="50" r="3" fill="#b91c1c"/>
+        <path d="M25 25 L40 40 M75 25 L60 40 M25 75 L40 60" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/>
+        <defs>
+            <linearGradient id="glass-grad-ww" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fef2f2" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="#fecaca" stop-opacity="0.4" />
+            </linearGradient>
+        </defs>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Serigala</div>
+                <div class="card-name-en">Werewolf</div>
+            </div>
+            <div class="card-ability">Membunuh di Malam Hari</div>
+            <div class="card-desc">Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling mengetahui identitas koloninya. Menang jika jumlah serigala menyamai jumlah warga desa yang tersisa.</div>
+            <div class="card-footer"><span class="card-footer-text">Werewolf — Tim Jahat</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-glass theme-neutral">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-neutral">Netral</span>
+                <span class="card-id">NT·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <path d="M25 50 A 25 25 0 1 1 75 50 A 25 25 0 1 0 25 50" fill="url(#glass-grad-nt)" stroke="#374151" stroke-width="2"/>
+        <circle cx="40" cy="45" r="4" fill="#374151"/>
+        <circle cx="60" cy="45" r="4" fill="#374151"/>
+        <path d="M40 60 Q50 70 60 60" fill="none" stroke="#374151" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="50" cy="20" r="6" fill="#fff" stroke="#374151" stroke-width="2"/>
+        <defs>
+            <linearGradient id="glass-grad-nt" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f3f4f6" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="#d1d5db" stop-opacity="0.4" />
+            </linearGradient>
+        </defs>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Badut</div>
+                <div class="card-name-en">Jester</div>
+            </div>
+            <div class="card-ability">Tawa Terakhir</div>
+            <div class="card-desc">Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di siang hari. Jika Badut berhasil membuat dirinya digantung, maka ia memenangkan permainan seorang diri.</div>
+            <div class="card-footer"><span class="card-footer-text">Jester — Tim Netral</span></div>
+        </div>
+    </div>
+    
+        <div class="card style-glass theme-back">
+            <div class="card-inner card-back-inner">
+                <svg viewBox="0 0 100 100">
+        <rect x="25" y="15" width="50" height="70" rx="4" fill="url(#glass-grad-back)" stroke="#cbd5e1" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="15" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/>
+        <path d="M50 35 L50 65 M35 50 L65 50 M40 40 L60 60 M40 60 L60 40" stroke="#94a3b8" stroke-width="1"/>
+        <circle cx="50" cy="50" r="6" fill="#64748b"/>
+        <defs>
+            <linearGradient id="glass-grad-back" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+                <stop offset="100%" stop-color="#e2e8f0" stop-opacity="0.4" />
+            </linearGradient>
+        </defs>
+    </svg>
+            </div>
+        </div>
+                </div>
+        <div class="page">
+            <div class="style-title">Tarot Arcana</div>
+
+    <div class="card style-tarot theme-supreme">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-supreme">Khusus</span>
+                <span class="card-id">SP·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#4A0080" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#4A0080" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <path d="M50 15 L80 80 L20 80 Z" fill="none" stroke="#4A0080" stroke-width="1"/>
+        <path d="M50 85 L20 20 L80 20 Z" fill="none" stroke="#4A0080" stroke-width="1"/>
+        <circle cx="50" cy="50" r="10" fill="none" stroke="#4A0080" stroke-width="1"/>
+        <path d="M45 50 Q50 45 55 50 Q50 55 45 50" fill="#4A0080"/>
+        <circle cx="50" cy="50" r="2" fill="#fff"/>
+        <line x1="50" y1="10" x2="50" y2="90" stroke="#4A0080" stroke-width="0.5"/>
+        <line x1="10" y1="50" x2="90" y2="50" stroke="#4A0080" stroke-width="0.5"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Sang Narator</div>
+                <div class="card-name-en">Game Moderator</div>
+            </div>
+            <div class="card-ability">Tuhan Desa Werewolf</div>
+            <div class="card-desc">Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain berdasarkan instruksi malam.</div>
+            <div class="card-footer"><span class="card-footer-text">Moderator — Supreme</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-tarot theme-good">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-good">Baik</span>
+                <span class="card-id">VL·15</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <rect x="25" y="45" width="50" height="40" fill="none" stroke="#111" stroke-width="1.5"/>
+        <path d="M15 45 L50 20 L85 45" fill="none" stroke="#111" stroke-width="1.5"/>
+        <rect x="40" y="60" width="20" height="25" fill="none" stroke="#111" stroke-width="1"/>
+        <line x1="25" y1="85" x2="75" y2="85" stroke="#111" stroke-width="2"/>
+        <circle cx="50" cy="35" r="4" fill="none" stroke="#111" stroke-width="1"/>
+        <line x1="50" y1="31" x2="50" y2="39" stroke="#111" stroke-width="1"/>
+        <line x1="46" y1="35" x2="54" y2="35" stroke="#111" stroke-width="1"/>
+        <path d="M20 90 Q35 70 50 90 Q65 70 80 90" fill="none" stroke="#111" stroke-width="0.5"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Warga Desa</div>
+                <div class="card-name-en">Villager</div>
+            </div>
+            <div class="card-ability">Pemilik Suara Demokrasi</div>
+            <div class="card-desc">Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.</div>
+            <div class="card-footer"><span class="card-footer-text">Villager — Tim Desa</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-tarot theme-evil">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-evil">Jahat</span>
+                <span class="card-id">WW·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#111" stroke-width="1"/>
+        <path d="M30 60 Q50 30 70 60" fill="none" stroke="#111" stroke-width="2"/>
+        <polygon points="45,60 55,60 50,75" fill="none" stroke="#111" stroke-width="1.5"/>
+        <circle cx="40" cy="50" r="3" fill="#111"/>
+        <circle cx="60" cy="50" r="3" fill="#111"/>
+        <path d="M25 40 Q35 25 50 25 Q65 25 75 40" fill="none" stroke="#111" stroke-width="1" stroke-dasharray="2,2"/>
+        <line x1="50" y1="25" x2="50" y2="15" stroke="#111" stroke-width="1"/>
+        <path d="M30 60 L25 80 M70 60 L75 80" stroke="#111" stroke-width="1.5"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Serigala</div>
+                <div class="card-name-en">Werewolf</div>
+            </div>
+            <div class="card-ability">Membunuh di Malam Hari</div>
+            <div class="card-desc">Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling mengetahui identitas koloninya. Menang jika jumlah serigala menyamai jumlah warga desa yang tersisa.</div>
+            <div class="card-footer"><span class="card-footer-text">Werewolf — Tim Jahat</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-tarot theme-neutral">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-neutral">Netral</span>
+                <span class="card-id">NT·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <path d="M50 30 Q70 10 80 30 C 90 60, 70 80, 50 90 C 30 80, 10 60, 20 30 Q 30 10, 50 30" fill="none" stroke="#111" stroke-width="1.5"/>
+        <path d="M35 50 Q50 65 65 50" fill="none" stroke="#111" stroke-width="2"/>
+        <line x1="35" y1="40" x2="45" y2="45" stroke="#111" stroke-width="1"/>
+        <line x1="65" y1="40" x2="55" y2="45" stroke="#111" stroke-width="1"/>
+        <circle cx="50" cy="20" r="5" fill="none" stroke="#111" stroke-width="1"/>
+        <path d="M50 25 L50 35" stroke="#111" stroke-width="1"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Badut</div>
+                <div class="card-name-en">Jester</div>
+            </div>
+            <div class="card-ability">Tawa Terakhir</div>
+            <div class="card-desc">Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di siang hari. Jika Badut berhasil membuat dirinya digantung, maka ia memenangkan permainan seorang diri.</div>
+            <div class="card-footer"><span class="card-footer-text">Jester — Tim Netral</span></div>
+        </div>
+    </div>
+    
+        <div class="card style-tarot theme-back">
+            <div class="card-inner card-back-inner">
+                <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#111" stroke-width="1"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#111" stroke-width="1"/>
+        <rect x="30" y="30" width="40" height="40" fill="none" stroke="#111" stroke-width="1" transform="rotate(45 50 50)"/>
+        <rect x="30" y="30" width="40" height="40" fill="none" stroke="#111" stroke-width="1"/>
+        <circle cx="50" cy="50" r="10" fill="none" stroke="#111" stroke-width="1.5"/>
+        <path d="M50 40 L60 50 L50 60 L40 50 Z" fill="#111"/>
+    </svg>
+            </div>
+        </div>
+                </div>
+        <div class="page">
+            <div class="style-title">Casino Chip</div>
+
+    <div class="card style-casino theme-supreme">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-supreme">Khusus</span>
+                <span class="card-id">SP·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40" fill="#222" stroke="#D4AF37" stroke-width="4"/>
+        <circle cx="50" cy="50" r="30" fill="none" stroke="#8000FF" stroke-width="2" stroke-dasharray="8,4"/>
+        <polygon points="50,25 60,45 80,50 60,55 50,75 40,55 20,50 40,45" fill="#D4AF37"/>
+        <circle cx="50" cy="50" r="8" fill="#8000FF"/>
+        <circle cx="50" cy="50" r="3" fill="#fff"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Sang Narator</div>
+                <div class="card-name-en">Game Moderator</div>
+            </div>
+            <div class="card-ability">Tuhan Desa Werewolf</div>
+            <div class="card-desc">Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain berdasarkan instruksi malam.</div>
+            <div class="card-footer"><span class="card-footer-text">Moderator — Supreme</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-casino theme-good">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-good">Baik</span>
+                <span class="card-id">VL·15</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40" fill="#111" stroke="#3b82f6" stroke-width="3"/>
+        <circle cx="50" cy="50" r="32" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="4,4"/>
+        <rect x="35" y="45" width="30" height="20" fill="#3b82f6" rx="2"/>
+        <polygon points="30,45 50,30 70,45" fill="#3b82f6"/>
+        <rect x="45" y="52" width="10" height="13" fill="#111"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Warga Desa</div>
+                <div class="card-name-en">Villager</div>
+            </div>
+            <div class="card-ability">Pemilik Suara Demokrasi</div>
+            <div class="card-desc">Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.</div>
+            <div class="card-footer"><span class="card-footer-text">Villager — Tim Desa</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-casino theme-evil">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-evil">Jahat</span>
+                <span class="card-id">WW·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40" fill="#111" stroke="#ef4444" stroke-width="3"/>
+        <circle cx="50" cy="50" r="32" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="4,4"/>
+        <path d="M30 65 L40 45 L50 55 L60 45 L70 65 Z" fill="#ef4444"/>
+        <circle cx="45" cy="50" r="3" fill="#111"/>
+        <circle cx="55" cy="50" r="3" fill="#111"/>
+        <path d="M25 35 Q50 20 75 35" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Serigala</div>
+                <div class="card-name-en">Werewolf</div>
+            </div>
+            <div class="card-ability">Membunuh di Malam Hari</div>
+            <div class="card-desc">Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling mengetahui identitas koloninya. Menang jika jumlah serigala menyamai jumlah warga desa yang tersisa.</div>
+            <div class="card-footer"><span class="card-footer-text">Werewolf — Tim Jahat</span></div>
+        </div>
+    </div>
+    
+    <div class="card style-casino theme-neutral">
+        <div class="card-inner">
+            <div class="card-header">
+                <span class="card-faction faction-neutral">Netral</span>
+                <span class="card-id">NT·01</span>
+            </div>
+            <div class="card-icon-wrap">
+                <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40" fill="#111" stroke="#9ca3af" stroke-width="3"/>
+        <circle cx="50" cy="50" r="32" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="4,4"/>
+        <path d="M30 45 A 20 20 0 0 1 70 45" fill="none" stroke="#9ca3af" stroke-width="4"/>
+        <circle cx="40" cy="35" r="4" fill="#9ca3af"/>
+        <circle cx="60" cy="35" r="4" fill="#9ca3af"/>
+        <path d="M35 60 Q50 75 65 60" fill="none" stroke="#9ca3af" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="50" cy="25" r="5" fill="#fff"/>
+    </svg>
+            </div>
+            <div class="card-name-container">
+                <div class="card-name">Badut</div>
+                <div class="card-name-en">Jester</div>
+            </div>
+            <div class="card-ability">Tawa Terakhir</div>
+            <div class="card-desc">Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di siang hari. Jika Badut berhasil membuat dirinya digantung, maka ia memenangkan permainan seorang diri.</div>
+            <div class="card-footer"><span class="card-footer-text">Jester — Tim Netral</span></div>
+        </div>
+    </div>
+    
+        <div class="card style-casino theme-back">
+            <div class="card-inner card-back-inner">
+                <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#111" stroke="#fff" stroke-width="3"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="10,5"/>
+        <circle cx="50" cy="50" r="25" fill="#222" stroke="#fff" stroke-width="2"/>
+        <path d="M50 25 L50 75 M25 50 L75 50 M32.5 32.5 L67.5 67.5 M32.5 67.5 L67.5 32.5" stroke="#fff" stroke-width="1.5" opacity="0.3"/>
+        <circle cx="50" cy="50" r="8" fill="#fff"/>
+        <circle cx="50" cy="50" r="4" fill="#111"/>
+        <circle cx="50" cy="15" r="3" fill="#fff"/>
+        <circle cx="50" cy="85" r="3" fill="#fff"/>
+        <circle cx="15" cy="50" r="3" fill="#fff"/>
+        <circle cx="85" cy="50" r="3" fill="#fff"/>
+    </svg>
+            </div>
+        </div>
+                </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+<script>
+    document.addEventListener('dblclick', function(e) {
+        const card = e.target.closest('.card');
+        if (!card) return;
+        downloadCard(card);
+    });
+    
+    let lastTap = 0;
+    document.addEventListener('touchend', function(e) {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        if (tapLength < 500 && tapLength > 0) {
+            const card = e.target.closest('.card');
+            if (card) {
+                downloadCard(card);
+                e.preventDefault();
+            }
+        }
+        lastTap = currentTime;
+    });
+    
+    function downloadCard(card) {
+        let format = document.getElementById("export-format").value;
+        format = format.trim().toLowerCase();
+        let mimeType = "image/png";
+        let ext = "png";
+        let bgColor = null;
+        
+        if (format === "jpg" || format === "jpeg") {
+            mimeType = "image/jpeg";
+            ext = "jpg";
+            bgColor = "#ffffff";
+        } else {
+            format = "png";
+        }
+
+        const idElement = card.querySelector('.card-id');
+        let cardId = idElement ? idElement.innerText : 'card-back';
+        cardId = cardId.replace(/·/g, '-');
+        
+        const styleName = card.classList[1];
+        
+        const scale = 10;
+        const style = {
+            transform: 'scale(' + scale + ')',
+            transformOrigin: 'top left',
+            width: card.offsetWidth + 'px',
+            height: card.offsetHeight + 'px'
+        };
+        const param = {
+            height: card.offsetHeight * scale,
+            width: card.offsetWidth * scale,
+            quality: 1,
+            style: style
+        };
+
+        let promise;
+        if (format === "jpg" || format === "jpeg") {
+            param.bgcolor = bgColor;
+            promise = domtoimage.toJpeg(card, param);
+        } else {
+            promise = domtoimage.toPng(card, param);
+        }
+
+        promise.then(dataUrl => {
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = 'Werewolf-' + styleName + '-' + cardId + '.' + ext;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }).catch(error => {
+            console.error('Error generating image!', error);
+        });
+    }
+</script>
+</body>
+</html>
