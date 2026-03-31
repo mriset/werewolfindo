@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet" />
     <style>
         :root {
-            --card-w: 54.5mm;
-            --card-h: 85.5mm;
+            --card-w: 58mm;
+            --card-h: 90mm;
             --gold-light: #fcf6ba;
             --gold-base: #d4af37;
             --gold-dark: #aa771c;
@@ -65,20 +65,17 @@
         }
 
         .page {
-            width: 210mm;
-            min-height: 297mm;
             background: #fff;
             margin: 0 auto 30px;
             padding: 9.15mm 3.75mm;
             display: grid;
-            grid-template-columns: repeat(3, var(--card-w));
-            grid-auto-rows: var(--card-h);
             gap: 6mm;
             justify-content: center;
             align-content: center;
             box-shadow: 0 8px 30px rgba(0,0,0,0.15);
             position: relative;
             border-radius: 2px;
+            /* Layout size/grid is managed dynamically via JS */
         }
 
         .card {
@@ -92,6 +89,16 @@
             page-break-inside: avoid;
             background: #0a0a0c;
             border: none;
+        }
+
+        .safe-area {
+            position: absolute;
+            inset: 2mm;
+            pointer-events: none;
+        }
+
+        .safe-area > * {
+            pointer-events: auto;
         }
 
         .gold-text-fx {
@@ -285,7 +292,7 @@
                 padding: 9.15mm 3.75mm; border: none; background: transparent;
             }
             .page:last-child { page-break-after: auto; }
-            @page { size: A4; margin: 0; }
+            /* @page size managed dynamically via JS */
         }
     </style>
 </head>
@@ -303,6 +310,14 @@
         <select id="export-format" style="font-family: 'Montserrat', sans-serif; font-size: 12px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #111;">
             <option value="png">PNG</option>
             <option value="jpg">JPG</option>
+        </select>
+        <label for="paper-size" style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: #333; margin-left:15px;">Ukuran Kertas: </label>
+        <select id="paper-size" onchange="changePaperSize()" style="font-family: 'Montserrat', sans-serif; font-size: 12px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #111;">
+            <option value="a4">A4 (9 Kartu)</option>
+            <option value="f4">F4 / Folio (9 Kartu)</option>
+            <option value="a3">A3 (20 Kartu)</option>
+            <option value="a3plus">A3+ (25 Kartu)</option>
+            <option value="single">1 Kartu (Cetak Satuan/PVC)</option>
         </select>
         <button id="btn-download-all"
             onclick="downloadAllCards('ObsidianVanguardOve', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#0a0a0c':null})"
@@ -345,74 +360,127 @@
             <div class="card ${themeClass}">
                 <div class="card-bg"></div>
                 <div class="card-ring"></div>
-                <div class="card-header">
-                    <div class="card-id">${card.id}</div>
-                    <div class="card-faction">${factionLabel}</div>
-                </div>
-                <div class="card-svg">
-                    ${svgIcon}
-                </div>
-                <div class="card-content">
-                    <div class="card-name-en">${card.nameEn}</div>
-                    <div class="card-name-id ${textFxClass}">${card.nameId}</div>
-                    <div class="card-ability">✦ ${card.ability} ✦</div>
-                    <div class="card-desc">${card.desc}</div>
-                    <div class="card-footer">${card.footer.replace('—', '//')}</div>
+                <div class="safe-area">
+                    <div class="card-header">
+                        <div class="card-id">${card.id}</div>
+                        <div class="card-faction">${factionLabel}</div>
+                    </div>
+                    <div class="card-svg">
+                        ${svgIcon}
+                    </div>
+                    <div class="card-content">
+                        <div class="card-name-en">${card.nameEn}</div>
+                        <div class="card-name-id ${textFxClass}">${card.nameId}</div>
+                        <div class="card-ability">✦ ${card.ability} ✦</div>
+                        <div class="card-desc">${card.desc}</div>
+                        <div class="card-footer">${card.footer.replace('—', '//')}</div>
+                    </div>
                 </div>
             </div>
             `;
         }
 
-        // Generate pages
-        for (let i = 0; i < cardsData.length; i += cardsPerPage) {
-            const pageCards = cardsData.slice(i, i + cardsPerPage);
-            const pageDiv = document.createElement("div");
-            pageDiv.className = "page";
+        // Layout Logic
+        function changePaperSize() {
+            const paperId = document.getElementById('paper-size').value;
+            const container = document.getElementById("pages-container");
+            container.innerHTML = ""; // Clear existing
 
-            let pageHTML = "";
-            pageCards.forEach(card => {
-                pageHTML += generateCardHTML(card);
-            });
+            let cols = 3, rows = 3;
+            let cssWidth = "210mm", cssHeight = "297mm", cssPadding = "9.15mm 3.75mm";
+            
+            if (paperId === 'a4') {
+                cols = 3; rows = 3; cssWidth = "210mm"; cssHeight = "297mm";
+            } else if (paperId === 'f4') {
+                cols = 3; rows = 3; cssWidth = "215mm"; cssHeight = "330mm";
+            } else if (paperId === 'a3') {
+                cols = 5; rows = 4; cssWidth = "297mm"; cssHeight = "420mm";
+            } else if (paperId === 'a3plus') {
+                cols = 5; rows = 5; cssWidth = "329mm"; cssHeight = "483mm";
+            } else if (paperId === 'single') {
+                cols = 1; rows = 1; cssWidth = "58mm"; cssHeight = "90mm"; cssPadding = "0";
+            }
+            
+            const localCardsPerPage = cols * rows;
 
-            pageDiv.innerHTML = pageHTML;
-            container.appendChild(pageDiv);
-        }
+            // Render Dynamic CSS
+            let styleEl = document.getElementById('dynamic-paper-style');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'dynamic-paper-style';
+                document.head.appendChild(styleEl);
+            }
+            
+            styleEl.innerHTML = `
+                @media print {
+                    @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
+                    .page { width: ${cssWidth}; min-height: ${cssHeight}; padding: ${cssPadding}; }
+                }
+                .page {
+                    width: ${cssWidth};
+                    min-height: ${cssHeight};
+                    padding: ${cssPadding};
+                    grid-template-columns: repeat(${cols}, var(--card-w));
+                    grid-auto-rows: var(--card-h);
+                }
+            `;
 
-        // Card Backs Page
-        const backContent = `
-        <div class="card theme-back">
-            <div class="card-bg"></div>
-            <div class="card-ring"></div>
-            <div class="card-text-top">OBSIDIAN VANGUARD</div>
-            <div class="card-svg">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="48" fill="none" stroke="#d4af37" stroke-width="0.5" opacity="0.5" />
-                    <circle cx="50" cy="50" r="42" fill="none" stroke="#d4af37" stroke-width="1.5" />
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="#d4af37" stroke-width="0.5" stroke-dasharray="2,2" />
-                    <polygon points="50,10 55,35 80,50 55,65 50,90 45,65 20,50 45,35" fill="#0a0a0c" stroke="#d4af37" stroke-width="1" />
-                    <polygon points="50,20 60,40 80,50 60,60 50,80 40,60 20,50 40,40" fill="none" stroke="#aa771c" stroke-width="0.5" />
-                    <circle cx="50" cy="50" r="20" fill="#111" stroke="#d4af37" stroke-width="1.5" />
-                    <path d="M35,55 L42,65 L50,55 L58,65 L65,55 M40,40 L60,40" fill="none" stroke="#d4af37" stroke-width="2" stroke-linejoin="round" />
-                    <circle cx="50" cy="50" r="10" fill="none" stroke="#dc143c" stroke-width="0.5" />
-                    <circle cx="15" cy="15" r="2" fill="#d4af37" />
-                    <circle cx="85" cy="15" r="2" fill="#d4af37" />
-                    <circle cx="15" cy="85" r="2" fill="#d4af37" />
-                    <circle cx="85" cy="85" r="2" fill="#d4af37" />
-                </svg>
+            const backContent = `
+            <div class="card theme-back">
+                <div class="card-bg"></div>
+                <div class="card-ring"></div>
+                <div class="safe-area">
+                    <div class="card-text-top">OBSIDIAN VANGUARD</div>
+                    <div class="card-svg">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="48" fill="none" stroke="#d4af37" stroke-width="0.5" opacity="0.5" />
+                            <circle cx="50" cy="50" r="42" fill="none" stroke="#d4af37" stroke-width="1.5" />
+                            <circle cx="50" cy="50" r="38" fill="none" stroke="#d4af37" stroke-width="0.5" stroke-dasharray="2,2" />
+                            <polygon points="50,10 55,35 80,50 55,65 50,90 45,65 20,50 45,35" fill="#0a0a0c" stroke="#d4af37" stroke-width="1" />
+                            <polygon points="50,20 60,40 80,50 60,60 50,80 40,60 20,50 40,40" fill="none" stroke="#aa771c" stroke-width="0.5" />
+                            <circle cx="50" cy="50" r="20" fill="#111" stroke="#d4af37" stroke-width="1.5" />
+                            <path d="M35,55 L42,65 L50,55 L58,65 L65,55 M40,40 L60,40" fill="none" stroke="#d4af37" stroke-width="2" stroke-linejoin="round" />
+                            <circle cx="50" cy="50" r="10" fill="none" stroke="#dc143c" stroke-width="0.5" />
+                            <circle cx="15" cy="15" r="2" fill="#d4af37" />
+                            <circle cx="85" cy="15" r="2" fill="#d4af37" />
+                            <circle cx="15" cy="85" r="2" fill="#d4af37" />
+                            <circle cx="85" cy="85" r="2" fill="#d4af37" />
+                        </svg>
+                    </div>
+                    <div class="card-text-bottom">WEREWOLF</div>
+                    <div class="card-text-sub">MRSETIAWAN</div>
+                </div>
             </div>
-            <div class="card-text-bottom">WEREWOLF</div>
-            <div class="card-text-sub">MRSETIAWAN</div>
-        </div>
-        `;
+            `;
 
-        const backPageDiv = document.createElement("div");
-        backPageDiv.className = "page";
-        let backPageHTML = "";
-        for (let i = 0; i < 9; i++) {
-            backPageHTML += backContent;
+            // Generate Front Pages
+            for (let i = 0; i < cardsData.length; i += localCardsPerPage) {
+                const pageCards = cardsData.slice(i, i + localCardsPerPage);
+                const pageDiv = document.createElement("div");
+                pageDiv.className = "page";
+
+                let pageHTML = "";
+                pageCards.forEach(card => {
+                    pageHTML += generateCardHTML(card);
+                });
+
+                pageDiv.innerHTML = pageHTML;
+                container.appendChild(pageDiv);
+            }
+
+            // Generate Back Page
+            const backPageDiv = document.createElement("div");
+            backPageDiv.className = "page";
+            let backPageHTML = "";
+            for (let i = 0; i < localCardsPerPage; i++) {
+                backPageHTML += backContent;
+            }
+            backPageDiv.innerHTML = backPageHTML;
+            container.appendChild(backPageDiv);
         }
-        backPageDiv.innerHTML = backPageHTML;
-        container.appendChild(backPageDiv);
+
+        // Initialize first render
+        changePaperSize();
 
         // Download Logic
         document.addEventListener('dblclick', function (e) {
@@ -446,6 +514,6 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="download_helper.js"></script>
+    <script src="download_helper.js?v=2"></script>
 </body>
 </html>

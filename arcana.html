@@ -16,15 +16,13 @@
         .print-subtitle { text-align: center; font-family: 'Montserrat', sans-serif; font-size: 14px; color: #666; margin-bottom: 24px; letter-spacing: 4px; font-weight: 400; }
         .screen-note { text-align: center; font-family: 'Montserrat', sans-serif; font-size: 12px; color: #444; margin: 8px auto 30px; background: #fff; padding: 12px 20px; border-radius: 4px; max-width: 650px; border: 1px solid #ccc; line-height: 1.6; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         
-        .page { width: 210mm; min-height: 297mm; background: #fff; margin: 0 auto 30px; padding: 9.15mm 3.75mm; display: grid; grid-template-columns: repeat(3, 54.5mm); grid-template-rows: repeat(3, 85.5mm); gap: 6mm; justify-content: center; align-content: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); position: relative; }
+        .page { background: #fff; margin: 0 auto 30px; padding: 9.15mm 3.75mm; display: grid; gap: 6mm; justify-content: center; align-content: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); position: relative; }
         
-        .card { width: 54.5mm; height: 85.5mm; position: relative; background: #ffffff; border-radius: 4mm; page-break-inside: avoid; z-index: 1; }
-        
-        /* Trim marks wrapper */
-        .card::before { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; border: 0.2mm dashed #e0e0e0; border-radius: 5mm; z-index: 20; pointer-events: none; }
+        .card { width: 58mm; height: 90mm; position: relative; background: #ffffff; border-radius: 4mm; page-break-inside: avoid; z-index: 1; }
+        .card::before { display: none; }
         
         /* The inner card with thin solid border */
-        .card-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #ffffff; overflow: hidden; padding: 4mm; border: 1px solid #ddd; border-radius: 4mm; }
+        .card-inner { position: absolute; inset: 2mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #ffffff; overflow: hidden; padding: 4mm; border: 1px solid #ddd; border-radius: 4mm; }
         
         /* Minimal Top Bar */
         .card-top-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 2mm; margin-bottom: 3mm; }
@@ -87,7 +85,7 @@
             h1.print-title, .print-subtitle, .screen-note, .screen-only { display: none; }
             .page { margin: 0; box-shadow: none; page-break-after: always; padding: 9.15mm 3.75mm; background: #fff; }
             .page:last-child { page-break-after: auto; }
-            @page { size: A4; margin: 0; }
+            /* @page size formatted via JS */
         }
     </style>
 </head>
@@ -121,6 +119,14 @@
     <select id="export-format" style="font-family: 'Montserrat', sans-serif; font-size: 14px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc;">
         <option value="png">PNG (Transparan)</option>
         <option value="jpg">JPG (Background Putih)</option>
+    </select>
+    <label for="paper-size" style="font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; margin-left: 15px;">Ukuran Kertas: </label>
+    <select id="paper-size" onchange="changePaperSize()" style="font-family: 'Montserrat', sans-serif; font-size: 14px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #111;">
+        <option value="a4">A4 (9 Kartu)</option>
+        <option value="f4">F4 / Folio (9 Kartu)</option>
+        <option value="a3">A3 (20 Kartu)</option>
+        <option value="a3plus">A3+ (25 Kartu)</option>
+        <option value="single">1 Kartu (Cetak Satuan/PVC)</option>
     </select>
     <button id="btn-download-all"
         onclick="downloadAllCards('Arcana', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})"
@@ -157,40 +163,86 @@
         `;
     }
     
-    for (let i = 0; i < cardsData.length; i += cardsPerPage) {
-        const pageCards = cardsData.slice(i, i + cardsPerPage);
-        const pageDiv = document.createElement("div");
-        pageDiv.className = "page";
+    // Layout Logic
+    function changePaperSize() {
+        const paperId = document.getElementById('paper-size').value;
+        const container = document.getElementById("pages-container");
+        container.innerHTML = ""; // Clear existing
+
+        let cols = 3, rows = 3;
+        let cssWidth = "210mm", cssHeight = "297mm", cssPadding = "9.15mm 3.75mm";
         
-        let pageHTML = "";
-        pageCards.forEach(card => {
-            pageHTML += generateCardHTML(card);
-        });
+        if (paperId === 'a4') {
+            cols = 3; rows = 3; cssWidth = "210mm"; cssHeight = "297mm";
+        } else if (paperId === 'f4') {
+            cols = 3; rows = 3; cssWidth = "215mm"; cssHeight = "330mm";
+        } else if (paperId === 'a3') {
+            cols = 5; rows = 4; cssWidth = "297mm"; cssHeight = "420mm";
+        } else if (paperId === 'a3plus') {
+            cols = 5; rows = 5; cssWidth = "329mm"; cssHeight = "483mm";
+        } else if (paperId === 'single') {
+            cols = 1; rows = 1; cssWidth = "58mm"; cssHeight = "90mm"; cssPadding = "0";
+        }
         
-        pageDiv.innerHTML = pageHTML;
-        container.appendChild(pageDiv);
-    }
-    
-    // Add Card Backs
-    const backContent = `
-        <div class="card card-back">
-            <div class="card-inner">
-                <div class="card-back-sigil">
-                    <i class="ra ra-wolf-howl"></i>
+        const localCardsPerPage = cols * rows;
+
+        // Render Dynamic CSS
+        let styleEl = document.getElementById('dynamic-paper-style');
+        if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = 'dynamic-paper-style';
+            document.head.appendChild(styleEl);
+        }
+        
+        styleEl.innerHTML = `
+            @media print {
+                @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
+                .page { width: ${cssWidth}; min-height: ${cssHeight}; padding: ${cssPadding}; }
+            }
+            .page {
+                width: ${cssWidth};
+                min-height: ${cssHeight};
+                padding: ${cssPadding};
+                grid-template-columns: repeat(${cols}, 58mm);
+                grid-template-rows: repeat(${rows}, 90mm);
+            }
+        `;
+
+        let htmlContent = '';
+        for (let i = 0; i < cardsData.length; i += localCardsPerPage) {
+            const pageCards = cardsData.slice(i, i + localCardsPerPage);
+            
+            let pageHTML = `<div class="page">`;
+            pageCards.forEach(card => {
+                pageHTML += generateCardHTML(card);
+            });
+            pageHTML += `</div>`;
+            
+            container.innerHTML += pageHTML;
+        }
+
+        // Add Card Backs
+        const backContent = `
+            <div class="card card-back">
+                <div class="card-inner">
+                    <div class="card-back-sigil">
+                        <i class="ra ra-wolf-howl"></i>
+                    </div>
+                    <div class="card-back-title">WEREWOLF</div>
+                    <div class="card-back-subtitle">MRSETIAWAN</div>
                 </div>
-                <div class="card-back-title">WEREWOLF</div>
-                <div class="card-back-subtitle">MRSETIAWAN</div>
             </div>
-        </div>
-    `;
-    const backPageDiv = document.createElement("div");
-    backPageDiv.className = "page";
-    let backPageHTML = "";
-    for (let i = 0; i < 9; i++) {
-        backPageHTML += backContent;
+        `;
+        let backPageHTML = `<div class="page">`;
+        for (let i = 0; i < localCardsPerPage; i++) {
+            backPageHTML += backContent;
+        }
+        backPageHTML += `</div>`;
+        container.innerHTML += backPageHTML;
     }
-    backPageDiv.innerHTML = backPageHTML;
-    container.appendChild(backPageDiv);
+
+    // Initialize first render
+    changePaperSize();
     
     // Add double click / double tap download functionality
     document.addEventListener('dblclick', function(e) {

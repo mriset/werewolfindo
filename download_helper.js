@@ -162,7 +162,9 @@ function _fixClonedCard(el, doc) {
 async function _renderCardToBlob(card, format, bgColor) {
     const { outW, outH, TARGET_DPI } = _PRINT;
     const cssW = card.offsetWidth || 1;
-    const HIGH_SCALE = Math.ceil((outW / cssW) * 3.5);
+    // Scale exactly to the target 600 DPI resolution, removing unnecessary 3.5x overhead
+    // This makes rendering 12x faster while perfectly maintaining physical print quality.
+    const HIGH_SCALE = outW / cssW;
 
     const hiRes = await html2canvas(card, {
         scale: HIGH_SCALE,
@@ -259,37 +261,42 @@ async function downloadAllCards(prefix = 'Werewolf', options = {}) {
         const zip = new JSZip();
         const folder = zip.folder(`${prefix}-Cards`);
         let cardBackAdded = false; // only include the first card-back
+        let zippedCount = 0;       // tracks actual number of cards added
 
         for (let i = 0; i < cards.length; i++) {
             const card = cards[i];
 
+            // Get card ID element first for reliable back-card detection
+            const idEl = card.querySelector('.card-id') || card.querySelector('.id');
+            
             // Skip duplicate card backs — they're all identical
-            const isBack = card.classList.contains('card-back');
+            const isBack = card.classList.contains('theme-back') || 
+                           card.classList.contains('card-back') || 
+                           !idEl;
+                           
             if (isBack) {
                 if (cardBackAdded) continue; // skip this one
                 cardBackAdded = true;        // render & include only the first
             }
 
-            // Get card ID for filename
-            const idEl = card.querySelector('.card-id') || card.querySelector('.id');
             let cardId = idEl
                 ? idEl.innerText.trim().replace(/·/g, '-').replace(/\s+/g, '-')
-                : (isBack ? 'card-back' : `card-${String(i + 1).padStart(3, '0')}`);
+                : 'card-back';
 
             loader.textContent = `⟳ [${i + 1}/${cards.length}] Rendering ${cardId}…`;
 
             const blob = await _renderCardToBlob(card, format, bgColor);
             folder.file(`${String(i + 1).padStart(3, '0')}_${cardId}.${ext}`, blob);
+            zippedCount++;
 
             // Yield to browser between renders to avoid freezing UI
             await new Promise(r => setTimeout(r, 10));
         }
 
-        loader.textContent = `⟳ Mengemas ZIP (${cards.length} kartu)…`;
+        loader.textContent = `⟳ Mengemas ZIP (${zippedCount} kartu)…`;
         const zipBlob = await zip.generateAsync({
             type: 'blob',
-            compression: 'DEFLATE',
-            compressionOptions: { level: 6 },
+            compression: 'STORE', // Images are already compressed, avoid wasting CPU
         });
 
         const url = URL.createObjectURL(zipBlob);
@@ -299,7 +306,7 @@ async function downloadAllCards(prefix = 'Werewolf', options = {}) {
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        loader.textContent = `✓ ZIP berhasil! ${cards.length} kartu (${outW}×${outH}px @ ${TARGET_DPI}DPI)`;
+        loader.textContent = `✓ ZIP berhasil! ${zippedCount} kartu (${outW}×${outH}px @ ${TARGET_DPI}DPI)`;
         loader.style.color = '#7fff7f';
     } catch (err) {
         console.error('[downloadAllCards]', err);

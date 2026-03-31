@@ -12,14 +12,13 @@
         h1.print-title { text-align: center; font-family: 'Cinzel', serif; font-size: 36px; color: #D4AF37; margin: 10px 0 6px; letter-spacing: 12px; text-transform: uppercase; text-shadow: 0 4px 15px rgba(212, 175, 55, 0.4), 0 1px 2px rgba(0,0,0,0.8); }
         .print-subtitle { text-align: center; font-family: 'Crimson Pro', serif; font-size: 16px; color: #A0AAB5; margin-bottom: 24px; letter-spacing: 4px; font-weight: 300; }
         .screen-note { text-align: center; font-family: 'Crimson Pro', serif; font-size: 14px; color: #D4AF37; margin: 8px auto 30px; font-style: italic; background: rgba(212, 175, 55, 0.05); padding: 12px 20px; border-radius: 8px; max-width: 650px; border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); line-height: 1.6; }
-        .page { width: 210mm; min-height: 297mm; background: #faf8f5; margin: 0 auto 30px; padding: 9.15mm 3.75mm; display: grid; grid-template-columns: repeat(3, 54.5mm); grid-template-rows: repeat(3, 85.5mm); gap: 6mm; justify-content: center; align-content: center; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); position: relative; }
+        .page { background: #faf8f5; margin: 0 auto 30px; padding: 9.15mm 3.75mm; display: grid; gap: 6mm; justify-content: center; align-content: center; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); position: relative; }
         .page::before { content: ''; position: absolute; inset: 0; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.02"><circle cx="50" cy="50" r="1" fill="%23000"/></svg>') repeat; pointer-events: none; z-index: 0; }
-        .card { width: 54.5mm; height: 85.5mm; border-radius: 4mm; position: relative; background: #ffffff; border: 0.2mm solid #d0c8b8; font-family: 'Crimson Pro', serif; page-break-inside: avoid; z-index: 1;}
-        .card::before { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; border: 0.35mm dashed #b0b0b0; border-radius: 5mm; z-index: 20; pointer-events: none; }
-        .card::after { content: ''; position: absolute; top: -1.5mm; bottom: -1.5mm; left: -1.5mm; right: -1.5mm; background: #ffffff; border-radius: 5mm; z-index: -2; }
+        .card { width: 58mm; height: 90mm; border-radius: 4mm; position: relative; background: #ffffff; border: none; font-family: 'Crimson Pro', serif; page-break-inside: avoid; z-index: 1;}
+        .card::before, .card::after { display: none; }
         
         /* Inner container */
-        .card-inner { position: absolute; inset: 1.5mm; border-radius: 2.5mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: linear-gradient(135deg, #FFFEFA 0%, #F5F1E6 100%); overflow: hidden; box-shadow: inset 0 0 15px rgba(0,0,0,0.05); }
+        .card-inner { position: absolute; inset: 3.5mm; border-radius: 2.5mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: linear-gradient(135deg, #FFFEFA 0%, #F5F1E6 100%); overflow: hidden; box-shadow: inset 0 0 15px rgba(0,0,0,0.05); border: 0.2mm solid #d0c8b8; }
         .card-inner::before { content: ''; position: absolute; inset: 0.8mm; border-radius: 1.8mm; pointer-events: none; z-index: 1; opacity: 0.7; }
 
         .card-header { width: 100%; padding: 2mm 2.5mm 0mm; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
@@ -100,7 +99,7 @@
             .page:last-child { page-break-after: auto; }
             .card { box-shadow: none; }
             .card:hover { transform: none; box-shadow: none; }
-            @page { size: A4; margin: 0; }
+            /* @page size formatted via JS */
         }
     </style>
 </head>
@@ -139,6 +138,14 @@
         <option value="png">PNG (Transparan)</option>
         <option value="jpg">JPG (Background Putih)</option>
     </select>
+    <label for="paper-size" style="font-family: 'Crimson Pro', serif; font-size: 16px; font-weight: 600; color: #D4AF37; margin-left: 15px;">Ukuran Kertas: </label>
+    <select id="paper-size" onchange="changePaperSize()" style="font-family: 'Crimson Pro', serif; font-size: 14px; padding: 4px 8px; border-radius: 4px; border: 1px solid #D4AF37; background: #222; color: #fff;">
+        <option value="a4">A4 (9 Kartu)</option>
+        <option value="f4">F4 / Folio (9 Kartu)</option>
+        <option value="a3">A3 (20 Kartu)</option>
+        <option value="a3plus">A3+ (25 Kartu)</option>
+        <option value="single">1 Kartu (Cetak Satuan/PVC)</option>
+    </select>
     <button id="btn-download-all"
         onclick="downloadAllCards('UltraPremium', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})"
         style="margin-left:12px; font-family:'Crimson Pro',serif; font-size:14px; font-weight:700; background:linear-gradient(135deg,#aa771c,#d4af37); color:#000; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; letter-spacing:1px;">
@@ -173,57 +180,103 @@
         `;
     }
     
-    for (let i = 0; i < cardsData.length; i += cardsPerPage) {
-        const pageCards = cardsData.slice(i, i + cardsPerPage);
-        const pageDiv = document.createElement("div");
-        pageDiv.className = "page";
+    // Layout Logic
+    function changePaperSize() {
+        const paperId = document.getElementById('paper-size').value;
+        const container = document.getElementById("pages-container");
+        container.innerHTML = ""; // Clear existing
+
+        let cols = 3, rows = 3;
+        let cssWidth = "210mm", cssHeight = "297mm", cssPadding = "9.15mm 3.75mm";
         
-        let pageHTML = "";
-        pageCards.forEach(card => {
-            pageHTML += generateCardHTML(card);
-        });
+        if (paperId === 'a4') {
+            cols = 3; rows = 3; cssWidth = "210mm"; cssHeight = "297mm";
+        } else if (paperId === 'f4') {
+            cols = 3; rows = 3; cssWidth = "215mm"; cssHeight = "330mm";
+        } else if (paperId === 'a3') {
+            cols = 5; rows = 4; cssWidth = "297mm"; cssHeight = "420mm";
+        } else if (paperId === 'a3plus') {
+            cols = 5; rows = 5; cssWidth = "329mm"; cssHeight = "483mm";
+        } else if (paperId === 'single') {
+            cols = 1; rows = 1; cssWidth = "58mm"; cssHeight = "90mm"; cssPadding = "0";
+        }
         
-        pageDiv.innerHTML = pageHTML;
-        container.appendChild(pageDiv);
-    }
-    
-    // Card Backs
-    const backContent = `
-      <div class="card card-back">
-        <div class="card-inner">
-          <svg width="25mm" height="25mm" viewBox="0 0 100 100">
-            <!-- Light Elegant Background Elements -->
-            <circle cx="50" cy="50" r="46" fill="transparent" stroke="#D4AF37" stroke-width="1.5"/>
-            <circle cx="50" cy="50" r="41" fill="none" stroke="#D4AF37" stroke-width="1" stroke-dasharray="3,3"/>
-            <circle cx="50" cy="50" r="30" fill="rgba(212,175,55,0.08)" stroke="#D4AF37" stroke-width="1"/>
+        const localCardsPerPage = cols * rows;
+
+        // Render Dynamic CSS
+        let styleEl = document.getElementById('dynamic-paper-style');
+        if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = 'dynamic-paper-style';
+            document.head.appendChild(styleEl);
+        }
+        
+        styleEl.innerHTML = `
+            @media print {
+                @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
+                .page { width: ${cssWidth}; min-height: ${cssHeight}; padding: ${cssPadding}; }
+            }
+            .page {
+                width: ${cssWidth};
+                min-height: ${cssHeight};
+                padding: ${cssPadding};
+                grid-template-columns: repeat(${cols}, 58mm);
+                grid-template-rows: repeat(${rows}, 90mm);
+            }
+        `;
+
+        let htmlContent = '';
+        for (let i = 0; i < cardsData.length; i += localCardsPerPage) {
+            const pageCards = cardsData.slice(i, i + localCardsPerPage);
             
-            <!-- Mystic Star Overlay -->
-            <path d="M50,10 L55,35 L80,50 L55,65 L50,90 L45,65 L20,50 L45,35 Z" fill="#D4AF37" opacity="0.6"/>
-            <path d="M50,20 L53,40 L70,50 L53,60 L50,80 L47,60 L30,50 L47,40 Z" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.9"/>
+            let pageHTML = `<div class="page">`;
+            pageCards.forEach(card => {
+                pageHTML += generateCardHTML(card);
+            });
+            pageHTML += `</div>`;
             
-            <!-- Center Shield & Monogram MRS -->
-            <circle cx="50" cy="50" r="18" fill="#4A0000" stroke="#D4AF37" stroke-width="1.5"/>
-            <!-- M -->
-            <text x="39" y="55" font-family="'Cinzel', serif" font-size="14" fill="#D4AF37" text-anchor="middle" font-weight="900">M</text>
-            <!-- S -->
-            <text x="61" y="55" font-family="'Cinzel', serif" font-size="14" fill="#D4AF37" text-anchor="middle" font-weight="900">S</text>
-            <!-- R -->
-            <text x="50" y="57" font-family="'Cinzel', serif" font-size="24" fill="#FFFEFA" text-anchor="middle" font-weight="900">R</text>
-          </svg>
-          <div style="font-family:'Cinzel', serif; font-size:12.5px; font-weight:900; color:#4A0000; margin-top:5mm; letter-spacing:6px;">WEREWOLF</div>
-          <div style="font-family:'Crimson Pro', serif; font-size:10px; font-weight:700; color:#4A0000; letter-spacing:3px; text-transform:uppercase; margin-top:2mm; opacity:0.8;">MRSETIAWAN</div>
-        </div>
-      </div>
-    `;
-    
-    const backPageDiv = document.createElement("div");
-    backPageDiv.className = "page";
-    let backPageHTML = "";
-    for (let i = 0; i < 9; i++) {
-        backPageHTML += backContent;
+            container.innerHTML += pageHTML;
+        }
+
+        // Card Backs
+        const backContent = `
+          <div class="card card-back">
+            <div class="card-inner">
+              <svg width="25mm" height="25mm" viewBox="0 0 100 100">
+                <!-- Light Elegant Background Elements -->
+                <circle cx="50" cy="50" r="46" fill="transparent" stroke="#D4AF37" stroke-width="1.5"/>
+                <circle cx="50" cy="50" r="41" fill="none" stroke="#D4AF37" stroke-width="1" stroke-dasharray="3,3"/>
+                <circle cx="50" cy="50" r="30" fill="rgba(212,175,55,0.08)" stroke="#D4AF37" stroke-width="1"/>
+                
+                <!-- Mystic Star Overlay -->
+                <path d="M50,10 L55,35 L80,50 L55,65 L50,90 L45,65 L20,50 L45,35 Z" fill="#D4AF37" opacity="0.6"/>
+                <path d="M50,20 L53,40 L70,50 L53,60 L50,80 L47,60 L30,50 L47,40 Z" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.9"/>
+                
+                <!-- Center Shield & Monogram MRS -->
+                <circle cx="50" cy="50" r="18" fill="#4A0000" stroke="#D4AF37" stroke-width="1.5"/>
+                <!-- M -->
+                <text x="39" y="55" font-family="'Cinzel', serif" font-size="14" fill="#D4AF37" text-anchor="middle" font-weight="900">M</text>
+                <!-- S -->
+                <text x="61" y="55" font-family="'Cinzel', serif" font-size="14" fill="#D4AF37" text-anchor="middle" font-weight="900">S</text>
+                <!-- R -->
+                <text x="50" y="57" font-family="'Cinzel', serif" font-size="24" fill="#FFFEFA" text-anchor="middle" font-weight="900">R</text>
+              </svg>
+              <div style="font-family:'Cinzel', serif; font-size:12.5px; font-weight:900; color:#4A0000; margin-top:5mm; letter-spacing:6px;">WEREWOLF</div>
+              <div style="font-family:'Crimson Pro', serif; font-size:10px; font-weight:700; color:#4A0000; letter-spacing:3px; text-transform:uppercase; margin-top:2mm; opacity:0.8;">MRSETIAWAN</div>
+            </div>
+          </div>
+        `;
+        
+        let backPageHTML = `<div class="page">`;
+        for (let i = 0; i < localCardsPerPage; i++) {
+            backPageHTML += backContent;
+        }
+        backPageHTML += `</div>`;
+        container.innerHTML += backPageHTML;
     }
-    backPageDiv.innerHTML = backPageHTML;
-    container.appendChild(backPageDiv);
+
+    // Initialize first render
+    changePaperSize();
     
     // Add double click / double tap download functionality
     document.addEventListener('dblclick', function(e) {

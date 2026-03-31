@@ -60,14 +60,10 @@
         }
 
         .page {
-            width: 210mm;
-            min-height: 297mm;
             background: #fff;
             margin: 0 auto 30px;
             padding: 10mm 5mm;
             display: grid;
-            grid-template-columns: repeat(3, 54.5mm);
-            grid-auto-rows: 85.5mm;
             gap: 5mm;
             justify-content: center;
             align-content: start;
@@ -76,8 +72,8 @@
         }
 
         .card {
-            width: 54.5mm;
-            height: 85.5mm;
+            width: 58mm;
+            height: 90mm;
             background: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 4mm;
@@ -91,7 +87,7 @@
         .card::after {
             content: '';
             position: absolute;
-            inset: 3mm;
+            inset: 5mm;
             border: 0.5px solid rgba(0, 0, 0, 0.08);
             pointer-events: none;
             z-index: 10;
@@ -146,7 +142,7 @@
 
         .card-body {
             height: 60%;
-            padding: 4.5mm 4.5mm;
+            padding: 5mm 6mm;
             display: flex;
             flex-direction: column;
             background: #ffffff;
@@ -338,10 +334,7 @@
                 page-break-after: auto;
             }
 
-            @page {
-                size: A4;
-                margin: 0;
-            }
+            /* @page size managed dynamically via JS */
         }
     </style>
 </head>
@@ -368,6 +361,14 @@
         <select id="export-format" style="font-family: 'Outfit', sans-serif; font-size: 14px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc;">
             <option value="png">PNG (Transparan)</option>
             <option value="jpg">JPG (Background Putih)</option>
+        </select>
+        <label for="paper-size" style="font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; margin-left: 15px;">Ukuran Kertas: </label>
+        <select id="paper-size" onchange="changePaperSize()" style="font-family: 'Outfit', sans-serif; font-size: 14px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #111;">
+            <option value="a4">A4 (9 Kartu)</option>
+            <option value="f4">F4 / Folio (9 Kartu)</option>
+            <option value="a3">A3 (20 Kartu)</option>
+            <option value="a3plus">A3+ (25 Kartu)</option>
+            <option value="single">1 Kartu (Cetak Satuan/PVC)</option>
         </select>
         <button id="btn-download-all"
             onclick="downloadAllCards('WhiteMin', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})"
@@ -405,46 +406,92 @@
         `;
         }
 
-        for (let i = 0; i < cardsData.length; i += cardsPerPage) {
-            const pageCards = cardsData.slice(i, i + cardsPerPage);
-            const pageDiv = document.createElement("div");
-            pageDiv.className = "page";
+        // Layout Logic
+        function changePaperSize() {
+            const paperId = document.getElementById('paper-size').value;
+            const container = document.getElementById("pages-container");
+            container.innerHTML = ""; // Clear existing
 
-            let pageHTML = "";
-            pageCards.forEach(card => {
-                pageHTML += generateCardHTML(card);
-            });
+            let cols = 3, rows = 3;
+            let cssWidth = "210mm", cssHeight = "297mm", cssPadding = "10mm 5mm";
+            
+            if (paperId === 'a4') {
+                cols = 3; rows = 3; cssWidth = "210mm"; cssHeight = "297mm";
+            } else if (paperId === 'f4') {
+                cols = 3; rows = 3; cssWidth = "215mm"; cssHeight = "330mm";
+            } else if (paperId === 'a3') {
+                cols = 5; rows = 4; cssWidth = "297mm"; cssHeight = "420mm"; cssPadding = "15mm 10mm";
+            } else if (paperId === 'a3plus') {
+                cols = 5; rows = 5; cssWidth = "329mm"; cssHeight = "483mm"; cssPadding = "15mm 10mm";
+            } else if (paperId === 'single') {
+                cols = 1; rows = 1; cssWidth = "58mm"; cssHeight = "90mm"; cssPadding = "0";
+            }
+            
+            const localCardsPerPage = cols * rows;
 
-            pageDiv.innerHTML = pageHTML;
-            container.appendChild(pageDiv);
-        }
+            // Render Dynamic CSS
+            let styleEl = document.getElementById('dynamic-paper-style');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'dynamic-paper-style';
+                document.head.appendChild(styleEl);
+            }
+            
+            styleEl.innerHTML = `
+                @media print {
+                    @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
+                    .page { width: ${cssWidth}; min-height: ${cssHeight}; padding: ${cssPadding}; }
+                }
+                .page {
+                    width: ${cssWidth};
+                    min-height: ${cssHeight};
+                    padding: ${cssPadding};
+                    grid-template-columns: repeat(${cols}, 58mm);
+                    grid-auto-rows: 90mm;
+                }
+            `;
 
-        // Card Backs
-        const backContent = `
-        <div class="card card-back">
-            <div class="card-body">
-                <svg width="40" height="40" viewBox="0 0 100 100" style="margin-bottom:5mm;">
-                    <circle cx="50" cy="50" r="48" fill="none" stroke="#111" stroke-width="1" />
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="#111" stroke-width="0.5"
-                        stroke-dasharray="2,2" />
-                    <path d="M50,15 L60,40 L85,50 L60,60 L50,85 L40,60 L15,50 L40,40 Z" fill="none" stroke="#111"
-                        stroke-width="1.5" />
-                    <circle cx="50" cy="50" r="10" fill="#111" />
-                </svg>
-                <div class="back-logo">WEREWOLF</div>
-                <div class="back-sub">MRSETIAWAN</div>
+            let htmlContent = '';
+            for (let i = 0; i < cardsData.length; i += localCardsPerPage) {
+                const pageCards = cardsData.slice(i, i + localCardsPerPage);
+                
+                let pageHTML = `<div class="page">`;
+                pageCards.forEach(card => {
+                    pageHTML += generateCardHTML(card);
+                });
+                pageHTML += `</div>`;
+                
+                container.innerHTML += pageHTML;
+            }
+
+            // Card Backs
+            const backContent = `
+            <div class="card card-back">
+                <div class="card-body">
+                    <svg width="40" height="40" viewBox="0 0 100 100" style="margin-bottom:5mm;">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="#111" stroke-width="1" />
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#111" stroke-width="0.5"
+                            stroke-dasharray="2,2" />
+                        <path d="M50,15 L60,40 L85,50 L60,60 L50,85 L40,60 L15,50 L40,40 Z" fill="none" stroke="#111"
+                            stroke-width="1.5" />
+                        <circle cx="50" cy="50" r="10" fill="#111" />
+                    </svg>
+                    <div class="back-logo">WEREWOLF</div>
+                    <div class="back-sub">MRSETIAWAN</div>
+                </div>
             </div>
-        </div>
-    `;
-
-        const backPageDiv = document.createElement("div");
-        backPageDiv.className = "page";
-        let backPageHTML = "";
-        for (let i = 0; i < 9; i++) {
-            backPageHTML += backContent;
+            `;
+            
+            let backPageHTML = `<div class="page">`;
+            for (let i = 0; i < localCardsPerPage; i++) {
+                backPageHTML += backContent;
+            }
+            backPageHTML += `</div>`;
+            container.innerHTML += backPageHTML;
         }
-        backPageDiv.innerHTML = backPageHTML;
-        container.appendChild(backPageDiv);
+
+        // Initialize first render
+        changePaperSize();
 
         // Add double click / double tap download functionality
         document.addEventListener('dblclick', function(e) {

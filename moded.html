@@ -43,19 +43,16 @@
         }
 
         .page { 
-            width: 210mm; 
-            min-height: 297mm; 
             background: #faf8f5; 
             margin: 0 auto 30px; 
             padding: 9.15mm 3.75mm; 
             display: grid; 
-            grid-template-columns: repeat(3, 54.5mm); 
-            grid-template-rows: repeat(3, 85.5mm); 
             gap: 6mm; 
             justify-content: center; 
             align-content: center; 
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15); 
             position: relative; 
+            /* Layout managed dynamically via JS */
         }
 
         .cards-container {
@@ -67,15 +64,15 @@
             .header-title, .header-desc, #export-options-container { display: none !important; }
             .page { box-shadow: none; margin: 0; page-break-after: always; outline: none; background: #fff; }
             .card { box-shadow: inset 0 0 0 1.5mm #F7FAFC !important; }
-            @page { size: A4; margin: 0; }
+            /* @page { size: A4; margin: 0; } - Formatted via JS */
         }
 
         /* ---------------------------------------------------
            COMMON CARD BASE (Modern Editorial Structure)
            --------------------------------------------------- */
         .card {
-            width: 54.5mm;
-            height: 85.5mm;
+            width: 58mm;
+            height: 90mm;
             position: relative;
             background: #ffffff;
             border-radius: 4mm;
@@ -90,7 +87,7 @@
 
         .card .inner {
             position: absolute;
-            inset: 1.5mm;
+            inset: 3.5mm;
             display: flex;
             flex-direction: column;
             padding: 0;
@@ -321,6 +318,14 @@
             <option value="png">PNG (Transparan)</option>
             <option value="jpg">JPG (Background Putih)</option>
         </select>
+        <label for="paper-size" style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 600; color: #1A365D; margin-left: 15px;">Ukuran Kertas: </label>
+        <select id="paper-size" onchange="changePaperSize()" style="font-family: 'Outfit', sans-serif; font-size: 14px; padding: 6px 12px; border-radius: 6px; border: 1px solid #1A365D; background: #fff; color: #111;">
+            <option value="a4">A4 (9 Kartu)</option>
+            <option value="f4">F4 / Folio (9 Kartu)</option>
+            <option value="a3">A3 (20 Kartu)</option>
+            <option value="a3plus">A3+ (25 Kartu)</option>
+            <option value="single">1 Kartu (Cetak Satuan/PVC)</option>
+        </select>
         <button id="btn-download-all"
             onclick="downloadAllCards('Moded', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})"
             style="margin-left:12px; font-family:'Outfit',sans-serif; font-size:14px; font-weight:700; background:linear-gradient(135deg,#1A365D,#2B5299); color:#fff; border:none; padding:7px 16px; border-radius:6px; cursor:pointer; letter-spacing:1px;">
@@ -412,33 +417,82 @@
             `;
         }
 
-        let htmlContent = '';
-        for (let i = 0; i < cardsData.length; i += cardsPerPage) {
-            const pageCards = cardsData.slice(i, i + cardsPerPage);
+        // Layout Logic
+        function changePaperSize() {
+            const paperId = document.getElementById('paper-size').value;
+            const container = document.getElementById("cards-container");
+            container.innerHTML = ""; // Clear existing
+
+            let cols = 3, rows = 3;
+            let cssWidth = "210mm", cssHeight = "297mm", cssPadding = "9.15mm 3.75mm";
             
-            htmlContent += `<div class="page">`;
-            pageCards.forEach(card => {
-                htmlContent += generateCardHTML(card);
-            });
-            htmlContent += `</div>`;
-        }
+            if (paperId === 'a4') {
+                cols = 3; rows = 3; cssWidth = "210mm"; cssHeight = "297mm";
+            } else if (paperId === 'f4') {
+                cols = 3; rows = 3; cssWidth = "215mm"; cssHeight = "330mm";
+            } else if (paperId === 'a3') {
+                cols = 5; rows = 4; cssWidth = "297mm"; cssHeight = "420mm";
+            } else if (paperId === 'a3plus') {
+                cols = 5; rows = 5; cssWidth = "329mm"; cssHeight = "483mm";
+            } else if (paperId === 'single') {
+                cols = 1; rows = 1; cssWidth = "58mm"; cssHeight = "90mm"; cssPadding = "0";
+            }
+            
+            const localCardsPerPage = cols * rows;
 
-        // Add 1 Page of Back Cards (9 cards)
-        htmlContent += `<div class="page">`;
-        for(let i=1; i<=9; i++) {
-            htmlContent += `
-                <div class="card theme-back">
-                    <div class="inner">
-                        ${svgBack}
-                        <div class="title">WEREWOLF</div>
-                        <div class="subtitle">MODERN EDITORIAL</div>
-                    </div>
-                </div>
+            // Render Dynamic CSS
+            let styleEl = document.getElementById('dynamic-paper-style');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'dynamic-paper-style';
+                document.head.appendChild(styleEl);
+            }
+            
+            styleEl.innerHTML = `
+                @media print {
+                    @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
+                    .page { width: ${cssWidth}; min-height: ${cssHeight}; padding: ${cssPadding}; }
+                }
+                .page {
+                    width: ${cssWidth};
+                    min-height: ${cssHeight};
+                    padding: ${cssPadding};
+                    grid-template-columns: repeat(${cols}, 58mm);
+                    grid-template-rows: repeat(${rows}, 90mm);
+                }
             `;
-        }
-        htmlContent += `</div>`;
 
-        cardsContainer.innerHTML = htmlContent;
+            let htmlContent = '';
+            for (let i = 0; i < cardsData.length; i += localCardsPerPage) {
+                const pageCards = cardsData.slice(i, i + localCardsPerPage);
+                
+                htmlContent += `<div class="page">`;
+                pageCards.forEach(card => {
+                    htmlContent += generateCardHTML(card);
+                });
+                htmlContent += `</div>`;
+            }
+
+            // Add Back Cards
+            htmlContent += `<div class="page">`;
+            for(let i = 0; i < localCardsPerPage; i++) {
+                htmlContent += `
+                    <div class="card theme-back">
+                        <div class="inner">
+                            ${svgBack}
+                            <div class="title">WEREWOLF</div>
+                            <div class="subtitle">MODERN EDITORIAL</div>
+                        </div>
+                    </div>
+                `;
+            }
+            htmlContent += `</div>`;
+
+            container.innerHTML = htmlContent;
+        }
+
+        // Initialize first render
+        changePaperSize();
 
         // Double Click to Download logic
         document.addEventListener('dblclick', function(e) {
