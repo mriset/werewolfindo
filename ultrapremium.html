@@ -147,7 +147,7 @@
         <option value="single">1 Kartu (Cetak Satuan/PVC)</option>
     </select>
     <button id="btn-download-all"
-        onclick="downloadAllCards('UltraPremium', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})"
+        onclick="downloadAllCardsDomToImage('UltraPremium', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})"
         style="margin-left:12px; font-family:'Crimson Pro',serif; font-size:14px; font-weight:700; background:linear-gradient(135deg,#aa771c,#d4af37); color:#000; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; letter-spacing:1px;">
         ⬇ Download Semua (ZIP)
     </button>
@@ -305,9 +305,9 @@
         let cardId = idElement ? idElement.innerText : 'card-back';
         cardId = cardId.replace(/·/g, '-');
         const bgColor = format === 'jpg' ? '#ffffff' : null;
-        downloadCardFaithful(card, `Werewolf-${cardId}`, { format, bgColor });
+        downloadCardDomToImage(card, `Werewolf-${cardId}`, { format, bgColor });
     }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="download_helper.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="download_helper.js"></script>
 </body>
 </html>

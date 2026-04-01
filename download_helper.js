@@ -35,6 +35,8 @@ const FONT_URLS = [
     'https://fonts.gstatic.com/s/outfit/v11/QGYyz_MVcBeNP4NjuGObqx1XmO1I4TC1C5g.woff2',
     // Outfit 700
     'https://fonts.gstatic.com/s/outfit/v11/QGYyz_MVcBeNP4NjuGObqx1XmO1I4TC1O4g.woff2',
+    // RPG Awesome (used by arcana)
+    'https://cdn.jsdelivr.net/gh/nagoshiashumari/Rpg-Awesome@master/fonts/rpgawesome-webfont.woff',
 ];
 
 // Cache for base64-encoded fonts
@@ -86,13 +88,15 @@ async function _embedFonts() {
         { family: 'Cormorant Garamond', weight: '400', url: FONT_URLS[11] },
         { family: 'Outfit', weight: '400', url: FONT_URLS[12] },
         { family: 'Outfit', weight: '700', url: FONT_URLS[13] },
+        { family: 'RPGAwesome', weight: '400', url: FONT_URLS[14], format: 'woff' },
     ];
 
     const cssRules = await Promise.all(fontFaces.map(async (f) => {
         const b64 = await _fetchFontAsBase64(f.url);
         if (!b64) return '';
         const style = f.style || 'normal';
-        return `@font-face { font-family: '${f.family}'; font-weight: ${f.weight}; font-style: ${style}; src: url('${b64}') format('woff2'); }`;
+        const format = f.format || 'woff2';
+        return `@font-face { font-family: '${f.family}'; font-weight: ${f.weight}; font-style: ${style}; src: url('${b64}') format('${format}'); }`;
     }));
 
     if (_fontStyleEl) _fontStyleEl.remove();
@@ -109,19 +113,67 @@ async function _embedFonts() {
 
 // ─── Shared print-quality settings ───────────────────────────────────────────
 const _PRINT = {
-    TARGET_DPI  : 600,
+    TARGET_DPI  : 1200,
     CARD_W_MM   : 54.5,
     CARD_H_MM   : 85.5,
     MM_PER_INCH : 25.4,
-    get outW() { return Math.round((this.CARD_W_MM / this.MM_PER_INCH) * this.TARGET_DPI); }, // ~1287px
-    get outH() { return Math.round((this.CARD_H_MM / this.MM_PER_INCH) * this.TARGET_DPI); }, // ~2020px
+    get outW() { return Math.round((this.CARD_W_MM / this.MM_PER_INCH) * this.TARGET_DPI); }, // ~2574px
+    get outH() { return Math.round((this.CARD_H_MM / this.MM_PER_INCH) * this.TARGET_DPI); }, // ~4040px
 };
 
 /**
  * Shared gradient-text + font fix applied to the html2canvas cloned node.
+ * Also injects real <div> elements to replace ::before/::after pseudo-elements
+ * on .t2-bg, which html2canvas cannot render natively.
  */
 function _fixClonedCard(el, doc) {
     if (_fontStyleEl) doc.head.appendChild(_fontStyleEl.cloneNode(true));
+
+    // ── Pseudo-element polyfill for .t2-bg ──────────────────────────────────
+    // html2canvas cannot render ::before / ::after, so we inject real divs
+    // that replicate the stripe pattern (::before) and faction gradient (::after).
+    el.querySelectorAll('.t2-bg').forEach(bg => {
+        const card = bg.closest('.card') || bg.parentElement;
+
+        // ::before  — diagonal gold stripe repeating-linear-gradient
+        const stripeBefore = doc.createElement('div');
+        stripeBefore.style.cssText = [
+            'position:absolute',
+            'inset:0',
+            'pointer-events:none',
+            'z-index:0',
+            'background:repeating-linear-gradient(' +
+                '45deg,' +
+                'transparent,transparent 2mm,' +
+                'rgba(212,175,55,0.03) 2mm,' +
+                'rgba(212,175,55,0.03) 4mm' +
+            ')',
+        ].join(';');
+        bg.appendChild(stripeBefore);
+
+        // ::after  — faction tint gradient at top of card
+        let factionColor = null;
+        if (card && card.classList.contains('faction-supreme')) factionColor = 'rgba(138,43,226,0.15)';
+        else if (card && card.classList.contains('faction-good'))    factionColor = 'rgba(65,131,215,0.10)';
+        else if (card && card.classList.contains('faction-evil'))    factionColor = 'rgba(220,20,60,0.15)';
+        else if (card && card.classList.contains('faction-neutral')) factionColor = 'rgba(160,160,160,0.10)';
+
+        if (factionColor) {
+            const stripeAfter = doc.createElement('div');
+            stripeAfter.style.cssText = [
+                'position:absolute',
+                'top:0',
+                'left:0',
+                'right:0',
+                'height:40%',
+                'pointer-events:none',
+                'z-index:0',
+                `background:linear-gradient(180deg,${factionColor} 0%,transparent 100%)`,
+            ].join(';');
+            bg.appendChild(stripeAfter);
+        }
+    });
+    // ────────────────────────────────────────────────────────────────────────
 
     const gradientFixes = [
         { sel: '.gold-text-fx',      color: '#d4af37' },
@@ -153,6 +205,170 @@ function _fixClonedCard(el, doc) {
         n.style.fontWeight = cs.fontWeight;
         n.style.fontStyle  = cs.fontStyle;
     });
+}
+
+// ─── dom-to-image-more based downloader (supports ::before/::after) ──────────
+/**
+ * Download a single card using dom-to-image-more.
+ * Supports pseudo-elements (::before, ::after) unlike html2canvas.
+ * Requires: <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js">
+ *
+ * @param {HTMLElement} card     - The .card element to capture
+ * @param {string}      filename - Base filename without extension
+ * @param {object}      options  - { format: 'png'|'jpg', bgColor: '#hex'|null }
+ */
+async function downloadCardDomToImage(card, filename, options = {}) {
+    if (typeof domtoimage === 'undefined') {
+        console.warn('[downloadCardDomToImage] dom-to-image-more not loaded, falling back to html2canvas');
+        return downloadCardFaithful(card, filename, options);
+    }
+    const format  = (options.format || 'png').toLowerCase();
+    const ext     = format === 'jpg' ? 'jpg' : 'png';
+    const bgColor = options.bgColor || null;
+    const { outW, outH } = _PRINT;
+
+    const loader = _makeLoader('⟳ Rendering…');
+    try {
+        await _embedFonts();
+        await new Promise(r => requestAnimationFrame(r));
+        await new Promise(r => setTimeout(r, 80));
+
+        const scale = outW / (card.offsetWidth || 1);
+        const param = {
+            height: card.offsetHeight * scale,
+            width:  card.offsetWidth  * scale,
+            style:  {
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
+                width:  card.offsetWidth  + 'px',
+                height: card.offsetHeight + 'px',
+            },
+            bgcolor: bgColor || undefined,
+            quality: 1,
+        };
+
+        let dataUrl;
+        if (format === 'jpg') {
+            dataUrl = await domtoimage.toJpeg(card, param);
+        } else {
+            dataUrl = await domtoimage.toPng(card, param);
+        }
+
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `${filename}.${ext}`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+
+        loader.textContent = `✓ Selesai! (${outW}×${outH}px)`;
+        loader.style.color = '#7fff7f';
+    } catch (err) {
+        console.error('[downloadCardDomToImage]', err);
+        loader.textContent = '✗ Gagal render'; loader.style.color = '#ff6666';
+    } finally { setTimeout(() => loader.remove(), 3000); }
+}
+
+/**
+ * Download ALL .card elements as ZIP using dom-to-image-more.
+ * Requires JSZip + dom-to-image-more.
+ *
+ * @param {string} prefix   - ZIP & filename prefix
+ * @param {object} options  - { format: 'png'|'jpg', bgColor: '#hex'|null }
+ */
+async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
+    if (typeof domtoimage === 'undefined') {
+        console.warn('[downloadAllCardsDomToImage] dom-to-image-more not loaded, falling back to html2canvas');
+        return downloadAllCards(prefix, options);
+    }
+    if (typeof JSZip === 'undefined') {
+        alert('JSZip tidak ditemukan. Pastikan halaman sudah selesai dimuat.'); return;
+    }
+    const format  = (options.format || 'png').toLowerCase();
+    const ext     = format === 'jpg' ? 'jpg' : 'png';
+    const bgColor = options.bgColor || null;
+    const { outW, outH, TARGET_DPI } = _PRINT;
+
+    const cards = Array.from(document.querySelectorAll('.card'));
+    if (!cards.length) { alert('Tidak ada kartu ditemukan.'); return; }
+
+    const loader = _makeLoader('⟳ Mempersiapkan font…');
+    try {
+        await _embedFonts();
+        await new Promise(r => requestAnimationFrame(r));
+        await new Promise(r => setTimeout(r, 80));
+
+        const zip = new JSZip();
+        const folder = zip.folder(`${prefix}-Cards`);
+        let cardBackAdded = false;
+        let zippedCount = 0;
+
+        for (let i = 0; i < cards.length; i++) {
+            const card = cards[i];
+            const idEl = card.querySelector('.card-id') || card.querySelector('.id');
+            const isBack = card.classList.contains('theme-back') ||
+                           card.classList.contains('card-back') ||
+                           !idEl;
+            if (isBack) {
+                if (cardBackAdded) continue;
+                cardBackAdded = true;
+            }
+
+            let cardId = idEl
+                ? idEl.innerText.trim().replace(/·/g, '-').replace(/\s+/g, '-')
+                : 'card-back';
+
+            loader.textContent = `⟳ [${i + 1}/${cards.length}] Rendering ${cardId}…`;
+
+            const scale = outW / (card.offsetWidth || 1);
+            const param = {
+                height: card.offsetHeight * scale,
+                width:  card.offsetWidth  * scale,
+                style: {
+                    transform: `scale(${scale})`,
+                    transformOrigin: 'top left',
+                    width:  card.offsetWidth  + 'px',
+                    height: card.offsetHeight + 'px',
+                },
+                bgcolor: bgColor || undefined,
+                quality: 1,
+            };
+
+            let dataUrl;
+            if (format === 'jpg') {
+                dataUrl = await domtoimage.toJpeg(card, param);
+            } else {
+                dataUrl = await domtoimage.toPng(card, param);
+            }
+
+            // Convert dataUrl to Blob
+            const b64 = dataUrl.split(',')[1];
+            const bin = atob(b64);
+            const bytes = new Uint8Array(bin.length);
+            for (let j = 0; j < bin.length; j++) bytes[j] = bin.charCodeAt(j);
+            const blob = new Blob([bytes], { type: format === 'jpg' ? 'image/jpeg' : 'image/png' });
+
+            folder.file(`${String(i + 1).padStart(3, '0')}_${cardId}.${ext}`, blob);
+            zippedCount++;
+
+            await new Promise(r => setTimeout(r, 10));
+        }
+
+        loader.textContent = `⟳ Mengemas ZIP (${zippedCount} kartu)…`;
+        const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
+
+        const url = URL.createObjectURL(zipBlob);
+        const a   = document.createElement('a');
+        a.href = url;
+        a.download = `${prefix}-AllCards-${TARGET_DPI}DPI.zip`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        loader.textContent = `✓ ZIP berhasil! ${zippedCount} kartu`;
+        loader.style.color = '#7fff7f';
+    } catch (err) {
+        console.error('[downloadAllCardsDomToImage]', err);
+        loader.textContent = '✗ Gagal: ' + err.message;
+        loader.style.color = '#ff6666';
+    } finally { setTimeout(() => loader.remove(), 4000); }
 }
 
 /**

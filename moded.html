@@ -339,6 +339,7 @@
 
     <script src="svg_moded.js"></script>
     <script src="cards.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="download_helper.js"></script>
@@ -521,7 +522,7 @@
             let cardId = idElement ? idElement.innerText : 'Back-Card';
             cardId = cardId.replace(/·/g, '-');
             const bgColor = format === 'jpg' ? '#ffffff' : null;
-            downloadCardFaithful(card, `Werewolf-Editorial-${cardId}`, { format, bgColor });
+            downloadCardDomToImage(card, `Werewolf-Editorial-${cardId}`, { format, bgColor });
         }
 
         function saveImage(dataUrl, cardId, ext) {
