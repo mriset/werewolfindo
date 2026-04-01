@@ -1112,8 +1112,17 @@ function _crc32(buf) {
             const pageW_mm = rect.width  / ppm;
             const pageH_mm = rect.height / ppm;
 
+            const currentPaperSize = document.getElementById('paper-size')?.value;
             PAPERS.forEach(paper => {
-                if (!_activeGuides.has(paper.id)) return;
+                // If single is selected, don't show any print outline, or if defined, only show matching
+                if (currentPaperSize && currentPaperSize !== 'single') {
+                    if (paper.id !== currentPaperSize) return;
+                } else if (!currentPaperSize) {
+                    if (!_activeGuides.has(paper.id)) return;
+                } else {
+                    return; // single or unknown
+                }
+                
                 page.appendChild(_makeOverlay(paper, pageW_mm, pageH_mm));
             });
         });
@@ -1127,7 +1136,7 @@ function _crc32(buf) {
      */
     function _drawCropMarks() {
         document.querySelectorAll('.' + CROP_CLASS).forEach(el => el.remove());
-        if (!_guideVisible || !_cropMarksOn) return;
+        if (!_cropMarksOn) return;
 
         const NS = 'http://www.w3.org/2000/svg';
 
@@ -1266,43 +1275,15 @@ function _crc32(buf) {
         header.appendChild(toggleBtn);
         _toolbar.appendChild(header);
 
-        // Checkboxes
-        const grid = document.createElement('div');
-        grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;';
-
-        PAPERS.forEach(paper => {
-            const row = document.createElement('label');
-            row.style.cssText = 'display:flex;align-items:center;gap:5px;cursor:pointer;';
-
-            const cb = document.createElement('input');
-            cb.type = 'checkbox';
-            cb.checked = _activeGuides.has(paper.id);
-            cb.style.cssText = `accent-color:${paper.color};width:13px;height:13px;cursor:pointer;flex-shrink:0;`;
-            cb.addEventListener('change', () => {
-                if (cb.checked) _activeGuides.add(paper.id);
-                else            _activeGuides.delete(paper.id);
-                _drawGuides();
+        // Automatically bind to main paper-size dropdown to auto-redraw
+        const mainPaperSelect = document.getElementById('paper-size');
+        if (mainPaperSelect) {
+            mainPaperSelect.addEventListener('change', () => {
+                // Short timeout to let the page restructure finish before drawing guides
+                setTimeout(() => { if (_guideVisible) _drawGuides(); _drawCropMarks(); }, 50);
             });
+        }
 
-            const swatch = document.createElement('span');
-            swatch.style.cssText = `display:inline-block;width:7px;height:7px;border-radius:1px;background:${paper.color};flex-shrink:0;`;
-
-            const lbl = document.createElement('span');
-            lbl.style.cssText = 'font-size:11px;font-weight:700;color:#e8d5a3;';
-            lbl.textContent = paper.label;
-
-            const sub = document.createElement('span');
-            sub.style.cssText = 'font-size:9px;color:#666;';
-            sub.textContent = ` ${paper.wMm}×${paper.hMm}`;
-
-            row.appendChild(cb);
-            row.appendChild(swatch);
-            row.appendChild(lbl);
-            row.appendChild(sub);
-            grid.appendChild(row);
-        });
-
-        _toolbar.appendChild(grid);
 
         // ── Divider ───────────────────────────────────────────────────────────
         const divider = document.createElement('div');
