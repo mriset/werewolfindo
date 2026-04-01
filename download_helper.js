@@ -80,8 +80,10 @@ async function _fetchFontAsBase64(url) {
         return new Promise((resolve) => {
             const reader = new FileReader();
             reader.onloadend = () => {
-                _fontCache[url] = reader.result;
-                resolve(reader.result);
+                const base64data = reader.result.split(',')[1];
+                const fixedDataUrl = `data:font/woff2;charset=utf-8;base64,${base64data}`;
+                _fontCache[url] = fixedDataUrl;
+                resolve(fixedDataUrl);
             };
             reader.readAsDataURL(blob);
         });
@@ -91,58 +93,117 @@ async function _fetchFontAsBase64(url) {
 }
 
 /**
- * Injects a <style> tag with all fonts as base64 @font-face rules.
- * This ensures html2canvas can use them during render.
+ * Fetches all Google Fonts referenced in the page's <link> tags,
+ * converts each WOFF2 to base64, and stores them in _fontCache.
+ * Also injects the CSS into the page for normal browser rendering.
+ * 
+ * KEY: dom-to-image SVG <foreignObject> cannot load any external URLs.
+ * The ONLY working solution is to inline base64 directly inside the SVG string
+ * after domtoimage.toSvg() generates it — see _inlineFontsInSvg().
  */
 async function _embedFonts() {
     if (_fontsEmbedded) return;
 
-    const fontFaces = [
-        { family: 'Cinzel', weight: '400', url: FONT_URLS[0] },
-        { family: 'Cinzel', weight: '700', url: FONT_URLS[1] },
-        { family: 'Cinzel', weight: '900', url: FONT_URLS[2] },
-        { family: 'Montserrat', weight: '400', url: FONT_URLS[3] },
-        { family: 'Montserrat', weight: '600', url: FONT_URLS[4] },
-        { family: 'Montserrat', weight: '800', url: FONT_URLS[5] },
-        { family: 'Crimson Pro', weight: '400', style: 'normal', url: FONT_URLS[6] },
-        { family: 'Crimson Pro', weight: '400', style: 'italic', url: FONT_URLS[7] },
-        { family: 'Crimson Pro', weight: '700', style: 'normal', url: FONT_URLS[8] },
-        { family: 'Playfair Display', weight: '400', url: FONT_URLS[9] },
-        { family: 'Playfair Display', weight: '700', url: FONT_URLS[10] },
-        { family: 'Cormorant Garamond', weight: '400', style: 'normal', url: FONT_URLS[11] },
-        { family: 'Outfit', weight: '400', url: FONT_URLS[12] },
-        { family: 'Outfit', weight: '700', url: FONT_URLS[13] },
-        { family: 'RPGAwesome', weight: '400', url: FONT_URLS[14], format: 'woff' },
-        // ── Playfair Display SC (Art Deco Luxe) ──
-        { family: 'Playfair Display SC', weight: '400', style: 'normal', url: FONT_URLS[15] },
-        { family: 'Playfair Display SC', weight: '700', style: 'normal', url: FONT_URLS[16] },
-        { family: 'Playfair Display SC', weight: '900', style: 'normal', url: FONT_URLS[17] },
-        { family: 'Playfair Display SC', weight: '400', style: 'italic', url: FONT_URLS[18] },
-        // ── Cormorant Garamond full set (Art Deco Luxe) ──
-        { family: 'Cormorant Garamond', weight: '300', style: 'normal', url: FONT_URLS[19] },
-        { family: 'Cormorant Garamond', weight: '600', style: 'normal', url: FONT_URLS[20] },
-        { family: 'Cormorant Garamond', weight: '400', style: 'italic', url: FONT_URLS[21] },
-        { family: 'Cormorant Garamond', weight: '600', style: 'italic', url: FONT_URLS[22] },
-    ];
+    const gLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]'));
+    let cssText = '';
 
-    const cssRules = await Promise.all(fontFaces.map(async (f) => {
-        const b64 = await _fetchFontAsBase64(f.url);
-        if (!b64) return '';
-        const style = f.style || 'normal';
-        const format = f.format || 'woff2';
-        return `@font-face { font-family: '${f.family}'; font-weight: ${f.weight}; font-style: ${style}; src: url('${b64}') format('${format}'); }`;
-    }));
+    for (const link of gLinks) {
+        try {
+            const resp = await fetch(link.href);
+            if (resp.ok) cssText += await resp.text() + '\n';
+        } catch (e) {
+            console.warn('Failed to fetch Google Fonts CSS:', link.href, e);
+        }
+    }
+
+    if (!cssText) { console.warn('No Google Fonts links found on page.'); }
+
+    // Extract every font URL (woff2, woff, etc)
+    const urlRegex = /url\((['"]?)(https:\/\/[^)'"]+)\1\)/g;
+    let match;
+    const fetchJobs = [];
+    while ((match = urlRegex.exec(cssText)) !== null) {
+        const fontUrl = match[2];
+        if (!_fontCache[fontUrl]) {
+            fetchJobs.push(_fetchFontAsBase64(fontUrl)); // pre-cache all
+        }
+    }
+    await Promise.all(fetchJobs);
+
+    // Build page-level @font-face CSS with the cached base64
+    let embeddedCss = cssText;
+    const replaceRegex2 = /url\((['"]?)(https:\/\/[^)'"]+)\1\)/g;
+    embeddedCss = embeddedCss.replace(replaceRegex2, (full, q, url) => {
+        const b64 = _fontCache[url];
+        return b64 ? `url('${b64}')` : full;
+    });
 
     if (_fontStyleEl) _fontStyleEl.remove();
     _fontStyleEl = document.createElement('style');
     _fontStyleEl.id = '_ww_embedded_fonts';
-    _fontStyleEl.textContent = cssRules.join('\n');
+    _fontStyleEl.textContent = embeddedCss;
     document.head.appendChild(_fontStyleEl);
 
-    // Force fonts to be applied by the browser
     await document.fonts.ready;
-
     _fontsEmbedded = true;
+}
+
+/**
+ * Post-process an SVG data URL produced by dom-to-image:
+ * Replace all https://fonts.gstatic.com/... URL references inside the
+ * SVG's own <style> blocks with base64 data URIs from our cache.
+ * 
+ * This is the ONLY reliable way to embed fonts into SVG <foreignObject>
+ * because the browser sandbox blocks all external URL loads in that context.
+ */
+async function _inlineFontsInSvg(svgDataUrl) {
+    const prefix = 'data:image/svg+xml;charset=utf-8,';
+    const base64prefix = 'data:image/svg+xml;base64,';
+    let svgText;
+
+    if (svgDataUrl.startsWith(base64prefix)) {
+        // Base64-encoded SVG — decode safely with TextDecoder
+        try {
+            const binStr = atob(svgDataUrl.slice(base64prefix.length));
+            const bytes = new Uint8Array(binStr.length);
+            for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+            svgText = new TextDecoder('utf-8').decode(bytes);
+        } catch (e) {
+            console.warn('[_inlineFontsInSvg] base64 decode failed', e);
+            return svgDataUrl;
+        }
+    } else if (svgDataUrl.startsWith(prefix)) {
+        // Percent-encoded SVG — use a safe decoder that won't throw on bad sequences
+        try {
+            svgText = decodeURIComponent(svgDataUrl.slice(prefix.length));
+        } catch (e) {
+            // Fallback: replace broken sequences minimally
+            svgText = svgDataUrl.slice(prefix.length)
+                .replace(/%(?![0-9A-Fa-f]{2})/g, '%25');
+            try { svgText = decodeURIComponent(svgText); } catch (_) { return svgDataUrl; }
+        }
+    } else {
+        return svgDataUrl; // unknown format, pass through
+    }
+
+    // Find all external font URLs inside the SVG string
+    const urlRegex = /url\((['"]?)(https:\/\/fonts\.gstatic\.com[^)'"]*)\1\)/g;
+    const urlsToFetch = new Set();
+    let m;
+    while ((m = urlRegex.exec(svgText)) !== null) urlsToFetch.add(m[2]);
+
+    // Fetch any not yet cached
+    await Promise.all([...urlsToFetch].map(u => _fetchFontAsBase64(u)));
+
+    // Replace URLs with base64 inline
+    svgText = svgText.replace(urlRegex, (full, q, url) => {
+        const b64 = _fontCache[url];
+        return b64 ? `url('${b64}')` : full;
+    });
+
+    // Re-encode safely: convert to base64 to avoid any encodeURIComponent issues
+    const encoded = btoa(unescape(encodeURIComponent(svgText)));
+    return base64prefix + encoded;
 }
 
 // ─── Shared print-quality settings ───────────────────────────────────────────
@@ -279,27 +340,48 @@ async function downloadCardDomToImage(card, filename, options = {}) {
             },
             bgcolor: bgColor || undefined,
             quality: 1,
-            // Inject embedded font stylesheet into the cloned document
-            onclone: (clonedDoc) => {
+            // Inject embedded font stylesheet into the cloned node directly
+            onclone: (clonedNode) => {
                 if (_fontStyleEl) {
                     const s = _fontStyleEl.cloneNode(true);
-                    clonedDoc.head.appendChild(s);
+                    clonedNode.prepend(s);
                 }
                 // Also copy all existing stylesheets to preserve CSS variables
                 document.querySelectorAll('style').forEach(orig => {
-                    const clone = clonedDoc.createElement('style');
+                    const clone = document.createElement('style');
                     clone.textContent = orig.textContent;
-                    clonedDoc.head.appendChild(clone);
+                    clonedNode.prepend(clone);
                 });
             },
         };
 
-        let dataUrl;
-        if (format === 'jpg') {
-            dataUrl = await domtoimage.toJpeg(card, param);
-        } else {
-            dataUrl = await domtoimage.toPng(card, param);
+        // Step 1: get raw SVG from dom-to-image
+        let svgDataUrl = await domtoimage.toSvg(card, param);
+        
+        // Step 2: inline all font URLs as base64 directly inside the SVG string.
+        // This is the ONLY method that works — SVG <foreignObject> sandbox blocks
+        // all external URL loads, so prepend/onclone approaches fail.
+        svgDataUrl = await _inlineFontsInSvg(svgDataUrl);
+
+        // Step 3: Render to canvas
+        const img = new Image();
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = svgDataUrl;
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = param.width; 
+        canvas.height = param.height;
+        const ctx = canvas.getContext('2d');
+        if (param.bgcolor) { 
+            ctx.fillStyle = param.bgcolor; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height); 
         }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const dataUrl = canvas.toDataURL(format === 'jpg' ? 'image/jpeg' : 'image/png', 0.98);
 
         const a = document.createElement('a');
         a.href = dataUrl;
@@ -337,11 +419,10 @@ async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
     const allCards = Array.from(document.querySelectorAll('.card'));
     if (!allCards.length) { alert('Tidak ada kartu ditemukan.'); return; }
 
-    // ── Range picker dialog ──────────────────────────────────────────────────
-    const range = await _showRangeDialog(allCards.length);
-    if (!range) return; // user cancelled
-    const { from: rangeFrom, to: rangeTo } = range;
-    const cards = allCards.slice(rangeFrom - 1, rangeTo); // 1-indexed → 0-indexed slice
+    // ── Multi-range picker dialog ────────────────────────────────────────────
+    const selectedIndices = await _showRangeDialog(allCards.length);
+    if (!selectedIndices) return; // user cancelled
+    const cards = selectedIndices.map(i => allCards[i - 1]); // 1-indexed → elements
     // ─────────────────────────────────────────────────────────────────────────
 
     const loader = _makeLoader('⟳ Mempersiapkan font…');
@@ -357,7 +438,7 @@ async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
 
         for (let i = 0; i < cards.length; i++) {
             const card = cards[i];
-            const globalIdx = rangeFrom + i; // 1-indexed global position
+            const globalIdx = selectedIndices[i]; // 1-indexed global position
             const idEl = card.querySelector('.card-id') || card.querySelector('.id');
             const isBack = card.classList.contains('theme-back') ||
                            card.classList.contains('card-back') ||
@@ -385,25 +466,40 @@ async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
                 },
                 bgcolor: bgColor || undefined,
                 quality: 1,
-                onclone: (clonedDoc) => {
+                onclone: (clonedNode) => {
                     if (_fontStyleEl) {
                         const s = _fontStyleEl.cloneNode(true);
-                        clonedDoc.head.appendChild(s);
+                        clonedNode.prepend(s);
                     }
                     document.querySelectorAll('style').forEach(orig => {
-                        const clone = clonedDoc.createElement('style');
+                        const clone = document.createElement('style');
                         clone.textContent = orig.textContent;
-                        clonedDoc.head.appendChild(clone);
+                        clonedNode.prepend(clone);
                     });
                 },
             };
 
-            let dataUrl;
-            if (format === 'jpg') {
-                dataUrl = await domtoimage.toJpeg(card, param);
-            } else {
-                dataUrl = await domtoimage.toPng(card, param);
+            let svgDataUrl = await domtoimage.toSvg(card, param);
+            svgDataUrl = await _inlineFontsInSvg(svgDataUrl);
+
+            const img = new Image();
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+                img.src = svgDataUrl;
+            });
+
+            const canvas = document.createElement('canvas');
+            canvas.width = param.width; 
+            canvas.height = param.height;
+            const ctx = canvas.getContext('2d');
+            if (param.bgcolor) { 
+                ctx.fillStyle = param.bgcolor; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height); 
             }
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            const dataUrl = canvas.toDataURL(format === 'jpg' ? 'image/jpeg' : 'image/png', 0.98);
 
             const b64 = dataUrl.split(',')[1];
             const bin = atob(b64);
@@ -420,14 +516,15 @@ async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
         loader.textContent = `⟳ Mengemas ZIP (${zippedCount} kartu)…`;
         const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
 
+        const rangeLabel = _indicesToRangeLabel(selectedIndices);
         const url = URL.createObjectURL(zipBlob);
         const a   = document.createElement('a');
         a.href = url;
-        a.download = `${prefix}-Cards-${rangeFrom}_to_${rangeTo}-${TARGET_DPI}DPI.zip`;
+        a.download = `${prefix}-Cards-[${rangeLabel}]-${TARGET_DPI}DPI.zip`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        loader.textContent = `✓ ZIP berhasil! ${zippedCount} kartu (no. ${rangeFrom}–${rangeTo})`;
+        loader.textContent = `✓ ZIP berhasil! ${zippedCount} kartu (${rangeLabel})`;
         loader.style.color = '#7fff7f';
     } catch (err) {
         console.error('[downloadAllCardsDomToImage]', err);
@@ -533,11 +630,10 @@ async function downloadAllCards(prefix = 'Werewolf', options = {}) {
     const allCards = Array.from(document.querySelectorAll('.card'));
     if (!allCards.length) { alert('Tidak ada kartu ditemukan.'); return; }
 
-    // ── Range picker dialog ──────────────────────────────────────────────────
-    const range = await _showRangeDialog(allCards.length);
-    if (!range) return; // user cancelled
-    const { from: rangeFrom, to: rangeTo } = range;
-    const cards = allCards.slice(rangeFrom - 1, rangeTo); // 1-indexed → 0-indexed slice
+    // ── Multi-range picker dialog ────────────────────────────────────────────
+    const selectedIndices = await _showRangeDialog(allCards.length);
+    if (!selectedIndices) return; // user cancelled
+    const cards = selectedIndices.map(i => allCards[i - 1]); // 1-indexed → elements
     // ─────────────────────────────────────────────────────────────────────────
 
     const loader = _makeLoader(`⟳ Mempersiapkan font…`);
@@ -553,7 +649,7 @@ async function downloadAllCards(prefix = 'Werewolf', options = {}) {
 
         for (let i = 0; i < cards.length; i++) {
             const card = cards[i];
-            const globalIdx = rangeFrom + i; // 1-indexed global position
+            const globalIdx = selectedIndices[i]; // 1-indexed global position
 
             // Get card ID element first for reliable back-card detection
             const idEl = card.querySelector('.card-id') || card.querySelector('.id');
@@ -588,14 +684,15 @@ async function downloadAllCards(prefix = 'Werewolf', options = {}) {
             compression: 'STORE', // Images are already compressed, avoid wasting CPU
         });
 
+        const rangeLabel = _indicesToRangeLabel(selectedIndices);
         const url = URL.createObjectURL(zipBlob);
         const a   = document.createElement('a');
         a.href = url;
-        a.download = `${prefix}-Cards-${rangeFrom}_to_${rangeTo}-${TARGET_DPI}DPI.zip`;
+        a.download = `${prefix}-Cards-[${rangeLabel}]-${TARGET_DPI}DPI.zip`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        loader.textContent = `✓ ZIP berhasil! ${zippedCount} kartu (no. ${rangeFrom}–${rangeTo}, ${outW}×${outH}px @ ${TARGET_DPI}DPI)`;
+        loader.textContent = `✓ ZIP berhasil! ${zippedCount} kartu (${rangeLabel}, ${outW}×${outH}px @ ${TARGET_DPI}DPI)`;
         loader.style.color = '#7fff7f';
     } catch (err) {
         console.error('[downloadAllCards]', err);
@@ -621,12 +718,69 @@ function _makeLoader(text) {
 }
 
 /**
- * Shows a modal dialog to let the user choose a card number range.
- * Returns a Promise that resolves to { from, to } (1-indexed, inclusive),
+ * Parse a multi-range string like "1-5, 12-17, 22, 44-55"
+ * into a sorted, deduplicated array of 1-indexed integers.
+ * Returns null if there are any invalid tokens.
+ *
+ * @param {string} input - The user-typed range expression
+ * @param {number} total - Maximum allowed index
+ * @returns {{ indices: number[], error: string|null }}
+ */
+function _parseMultiRange(input, total) {
+    const parts = input.split(',').map(s => s.trim()).filter(Boolean);
+    if (!parts.length) return { indices: null, error: 'Input kosong.' };
+
+    const set = new Set();
+    for (const part of parts) {
+        const rangePat = /^(\d+)\s*[-–]\s*(\d+)$/.exec(part);
+        const singlePat = /^(\d+)$/.exec(part);
+        if (rangePat) {
+            const a = parseInt(rangePat[1], 10);
+            const b = parseInt(rangePat[2], 10);
+            if (a < 1 || b > total || a > b) return { indices: null, error: `Range "${part}" tidak valid (1–${total}).` };
+            for (let n = a; n <= b; n++) set.add(n);
+        } else if (singlePat) {
+            const n = parseInt(singlePat[1], 10);
+            if (n < 1 || n > total) return { indices: null, error: `Nomor "${part}" di luar rentang (1–${total}).` };
+            set.add(n);
+        } else {
+            return { indices: null, error: `Token "${part}" tidak dikenali.` };
+        }
+    }
+    return { indices: [...set].sort((a, b) => a - b), error: null };
+}
+
+/**
+ * Convert a sorted array of indices back to a compact range string,
+ * e.g. [1,2,3,5,7,8] → "1-3,5,7-8"
+ *
+ * @param {number[]} indices - Sorted 1-indexed array
+ * @returns {string}
+ */
+function _indicesToRangeLabel(indices) {
+    if (!indices || !indices.length) return '';
+    const segments = [];
+    let start = indices[0], end = indices[0];
+    for (let i = 1; i < indices.length; i++) {
+        if (indices[i] === end + 1) {
+            end = indices[i];
+        } else {
+            segments.push(start === end ? `${start}` : `${start}-${end}`);
+            start = end = indices[i];
+        }
+    }
+    segments.push(start === end ? `${start}` : `${start}-${end}`);
+    return segments.join(',');
+}
+
+/**
+ * Shows a modal dialog to let the user choose cards using a multi-range expression.
+ * Supports syntax like: "1-5, 12-17, 22, 44-55"
+ * Returns a Promise that resolves to a sorted number[] of 1-indexed card positions,
  * or null if the user cancelled.
  *
  * @param {number} total - Total number of cards available
- * @returns {Promise<{from:number, to:number}|null>}
+ * @returns {Promise<number[]|null>}
  */
 function _showRangeDialog(total) {
     return new Promise((resolve) => {
@@ -634,92 +788,101 @@ function _showRangeDialog(total) {
         const overlay = document.createElement('div');
         overlay.style.cssText = [
             'position:fixed', 'inset:0', 'z-index:999998',
-            'background:rgba(0,0,0,0.75)',
+            'background:rgba(0,0,0,0.80)',
             'display:flex', 'align-items:center', 'justify-content:center',
         ].join(';');
 
         // Dialog box
         const box = document.createElement('div');
         box.style.cssText = [
-            'background:#1a1208',
+            'background:#12100a',
             'border:1.5px solid rgba(212,175,55,0.55)',
-            'border-radius:12px',
+            'border-radius:14px',
             'padding:28px 32px 24px',
-            'min-width:320px',
+            'width:420px',
             'max-width:95vw',
-            'box-shadow:0 8px 40px rgba(0,0,0,0.8)',
+            'box-shadow:0 12px 60px rgba(0,0,0,0.9)',
             'font-family:sans-serif',
             'color:#e8d5a3',
         ].join(';');
 
         box.innerHTML = `
-            <div style="font-size:15px;font-weight:700;letter-spacing:1px;color:#d4af37;margin-bottom:6px;">
-                🃏 PILIH RANGE KARTU
-            </div>
-            <div style="font-size:11px;color:#999;margin-bottom:18px;">
-                Total tersedia: <strong style="color:#d4af37">${total}</strong> kartu
+            <div style="font-size:15px;font-weight:700;letter-spacing:1.5px;color:#d4af37;margin-bottom:4px;">🃏 PILIH KARTU</div>
+            <div style="font-size:11px;color:#777;margin-bottom:18px;">Total tersedia: <strong style="color:#d4af37">${total}</strong> kartu</div>
+
+            <label style="display:block;font-size:10px;letter-spacing:1px;color:#aaa;margin-bottom:6px;">NOMOR KARTU / RANGE</label>
+            <input id="_wd_range" type="text" placeholder="mis. 1-5, 12-17, 22, 44-55"
+                style="width:100%;box-sizing:border-box;background:#0a0a08;border:1.5px solid rgba(212,175,55,0.45);border-radius:8px;color:#f0d070;font-size:15px;font-weight:600;padding:10px 14px;outline:none;letter-spacing:.5px;">
+
+            <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;" id="_wd_presets">
+                <span style="font-size:10px;color:#666;align-self:center;">Cepat:</span>
+                <button data-v="1-${total}"  style="font-size:10px;padding:3px 9px;border-radius:5px;border:1px solid rgba(212,175,55,0.3);background:rgba(212,175,55,0.08);color:#d4af37;cursor:pointer;">Semua</button>
+                <button data-v="1-9"   style="font-size:10px;padding:3px 9px;border-radius:5px;border:1px solid rgba(212,175,55,0.3);background:rgba(212,175,55,0.08);color:#d4af37;cursor:pointer;">1–9</button>
+                <button data-v="10-18" style="font-size:10px;padding:3px 9px;border-radius:5px;border:1px solid rgba(212,175,55,0.3);background:rgba(212,175,55,0.08);color:#d4af37;cursor:pointer;">10–18</button>
+                <button data-v="19-27" style="font-size:10px;padding:3px 9px;border-radius:5px;border:1px solid rgba(212,175,55,0.3);background:rgba(212,175,55,0.08);color:#d4af37;cursor:pointer;">19–27</button>
             </div>
 
-            <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;">
-                <div style="flex:1">
-                    <label style="display:block;font-size:10px;letter-spacing:.8px;color:#aaa;margin-bottom:5px;">DARI NO.</label>
-                    <input id="_wd_from" type="number" min="1" max="${total}" value="1"
-                        style="width:100%;box-sizing:border-box;background:#0d0d0d;border:1px solid rgba(212,175,55,0.4);border-radius:6px;color:#d4af37;font-size:16px;font-weight:700;padding:8px 10px;outline:none;text-align:center;">
-                </div>
-                <div style="font-size:18px;color:#555;padding-top:18px;">—</div>
-                <div style="flex:1">
-                    <label style="display:block;font-size:10px;letter-spacing:.8px;color:#aaa;margin-bottom:5px;">SAMPAI NO.</label>
-                    <input id="_wd_to" type="number" min="1" max="${total}" value="${total}"
-                        style="width:100%;box-sizing:border-box;background:#0d0d0d;border:1px solid rgba(212,175,55,0.4);border-radius:6px;color:#d4af37;font-size:16px;font-weight:700;padding:8px 10px;outline:none;text-align:center;">
-                </div>
-            </div>
-
-            <div id="_wd_hint" style="font-size:10px;color:#888;min-height:14px;margin-bottom:16px;text-align:center;"></div>
+            <div id="_wd_hint" style="font-size:10.5px;min-height:16px;margin:14px 0 18px;padding:7px 10px;border-radius:6px;background:rgba(255,255,255,0.03);color:#888;"></div>
 
             <div style="display:flex;gap:10px;">
-                <button id="_wd_cancel"
-                    style="flex:1;padding:10px;border:1px solid rgba(212,175,55,0.3);background:transparent;color:#999;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.5px;">
-                    Batal
-                </button>
-                <button id="_wd_ok"
-                    style="flex:2;padding:10px;border:none;background:linear-gradient(135deg,#b8860b,#d4af37);color:#000;border-radius:7px;cursor:pointer;font-size:13px;font-weight:700;letter-spacing:.8px;">
-                    ▶ Download
-                </button>
+                <button id="_wd_cancel" style="flex:1;padding:10px;border:1px solid rgba(212,175,55,0.3);background:transparent;color:#888;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.5px;">Batal</button>
+                <button id="_wd_ok"     style="flex:2;padding:10px;border:none;background:linear-gradient(135deg,#b8860b,#d4af37);color:#000;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;letter-spacing:.8px;">▶ Download</button>
             </div>
         `;
 
         overlay.appendChild(box);
         document.body.appendChild(overlay);
 
-        const fromEl  = box.querySelector('#_wd_from');
-        const toEl    = box.querySelector('#_wd_to');
-        const hintEl  = box.querySelector('#_wd_hint');
-        const okBtn   = box.querySelector('#_wd_ok');
+        const rangeEl   = box.querySelector('#_wd_range');
+        const hintEl    = box.querySelector('#_wd_hint');
+        const okBtn     = box.querySelector('#_wd_ok');
         const cancelBtn = box.querySelector('#_wd_cancel');
 
+        // Preset buttons
+        box.querySelectorAll('#_wd_presets button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                rangeEl.value = btn.dataset.v;
+                _validate();
+                okBtn.focus();
+            });
+        });
+
+        let _lastIndices = null;
+
         function _validate() {
-            const f = parseInt(fromEl.value, 10);
-            const t = parseInt(toEl.value, 10);
-            const ok = !isNaN(f) && !isNaN(t) && f >= 1 && t <= total && f <= t;
-            if (!ok) {
-                hintEl.textContent = `⚠ Masukkan angka valid (1 – ${total}), dari ≤ sampai.`;
-                hintEl.style.color = '#ff7777';
-            } else {
-                const count = t - f + 1;
-                hintEl.textContent = `✓ Akan men-download ${count} kartu (no. ${f} – ${t})`;
-                hintEl.style.color = '#7fd47f';
+            const raw = rangeEl.value.trim();
+            if (!raw) {
+                hintEl.textContent = 'Masukkan nomor kartu, mis. 1-5, 12, 44-55';
+                hintEl.style.color = '#666';
+                okBtn.disabled = true;
+                okBtn.style.opacity = '0.4';
+                _lastIndices = null;
+                return false;
             }
-            okBtn.disabled = !ok;
-            okBtn.style.opacity = ok ? '1' : '0.4';
-            return ok;
+            const { indices, error } = _parseMultiRange(raw, total);
+            if (error) {
+                hintEl.textContent = '⚠ ' + error;
+                hintEl.style.color = '#ff7777';
+                okBtn.disabled = true;
+                okBtn.style.opacity = '0.4';
+                _lastIndices = null;
+                return false;
+            }
+            _lastIndices = indices;
+            const label = _indicesToRangeLabel(indices);
+            hintEl.innerHTML = `✓ <strong style="color:#d4af37">${indices.length}</strong> kartu dipilih &nbsp;·&nbsp; <span style="color:#aaa">${label}</span>`;
+            hintEl.style.color = '#7fd47f';
+            okBtn.disabled = false;
+            okBtn.style.opacity = '1';
+            return true;
         }
 
-        fromEl.addEventListener('input', _validate);
-        toEl.addEventListener('input', _validate);
-        _validate();
+        rangeEl.addEventListener('input', _validate);
 
-        // Focus the "from" field for quick keyboard use
-        setTimeout(() => fromEl.focus(), 50);
+        // Pre-fill with "all" and validate
+        rangeEl.value = `1-${total}`;
+        _validate();
+        setTimeout(() => { rangeEl.select(); rangeEl.focus(); }, 50);
 
         function _close(result) {
             overlay.remove();
@@ -728,13 +891,12 @@ function _showRangeDialog(total) {
 
         okBtn.addEventListener('click', () => {
             if (!_validate()) return;
-            _close({ from: parseInt(fromEl.value, 10), to: parseInt(toEl.value, 10) });
+            _close(_lastIndices);
         });
 
         cancelBtn.addEventListener('click', () => _close(null));
         overlay.addEventListener('click', (e) => { if (e.target === overlay) _close(null); });
 
-        // Enter key confirms
         box.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); okBtn.click(); }
             if (e.key === 'Escape') _close(null);

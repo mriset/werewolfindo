@@ -45,18 +45,29 @@
             font-weight: 300;
         }
 
-        .screen-note {
-            text-align: center;
-            font-family: 'Outfit', sans-serif;
-            font-size: 13px;
-            color: #444;
-            margin: 8px auto 30px;
-            background: #fff;
-            padding: 12px 20px;
-            border-radius: 4px;
-            max-width: 650px;
-            border: 1px solid #ddd;
-            line-height: 1.6;
+        .screen-note { display: none; }
+        
+        /* Modern Control Panel */
+        .control-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; padding: 15px 25px; margin: 0 auto 30px; max-width: 900px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif; position: relative; z-index: 10;}
+        .control-group { display: flex; align-items: center; gap: 8px; background: #f9fafb; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); }
+        .control-group label { font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; }
+        .control-group select { font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 4px; border: 1px solid #e5e7eb; background: #fff; color: #111827; cursor: pointer; outline: none; transition: border-color 0.2s; }
+        .control-group select:focus { border-color: #374151; }
+        .control-btn { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; padding: 10px 18px; border-radius: 8px; cursor: pointer; letter-spacing: 0.5px; border: none; transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; align-items: center; gap: 6px; }
+        .btn-gold { background: linear-gradient(135deg, #1f2937, #374151); color: #fff; box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3); }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(31, 41, 55, 0.5); }
+        .btn-red { background: linear-gradient(135deg, #dc143c, #8a0303); color: #fff; box-shadow: 0 4px 12px rgba(138, 3, 3, 0.3); }
+        .btn-red:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(138, 3, 3, 0.5); }
+        kbd { background: #eee; border-radius: 3px; border: 1px solid #b4b4b4; box-shadow: 0 1px 1px rgba(0,0,0,.2); color: #333; display: inline-block; font-size: .85em; font-weight: 700; line-height: 1; padding: 2px 4px; white-space: nowrap; }
+
+        @media print {
+            body { background: #fff; padding: 0; }
+            .print-title, .print-subtitle, .control-panel { display: none !important; }
+            .page { 
+                box-shadow: none; margin: 0; page-break-after: always; 
+                padding: 10mm 5mm; 
+                background: transparent;
+            }
         }
 
         .page {
@@ -72,8 +83,8 @@
         }
 
         .card {
-            width: 58mm;
-            height: 90mm;
+            width: 54mm;
+            height: 85.6mm;
             background: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 4mm;
@@ -336,6 +347,55 @@
 
             /* @page size managed dynamically via JS */
         }
+    
+        /* Mobile Responsive */
+        @media screen and (max-width: 768px) {
+            body { padding: 15px 5px !important; }
+            h1.print-title, .header-title { font-size: 22px !important; letter-spacing: 5px !important; text-align: center !important; }
+            .print-subtitle, .header-subtitle { font-size: 10px !important; letter-spacing: 2px !important; text-align: center !important; margin-bottom: 15px !important; }
+            .control-panel { 
+                padding: 12px !important; 
+                flex-direction: column !important; 
+                gap: 10px !important;
+                border-radius: 8px !important;
+                margin-left: 10px !important;
+                margin-right: 10px !important;
+            }
+            .control-panel > div {
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+            .control-group { 
+                width: 100% !important; 
+                flex-direction: column !important; 
+                align-items: stretch !important; 
+                gap: 5px !important; 
+            }
+            .control-group label { text-align: left !important; }
+            .control-group select { width: 100% !important; font-size: 14px !important; padding: 8px !important; }
+            .control-btn { width: 100% !important; justify-content: center !important; padding: 12px !important; font-size: 14px !important; }
+            .control-panel > div > div[style*="width: 2px"] { display: none !important; }
+            
+            #pages-container {
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                padding-bottom: 20px !important;
+                padding-top: 5px !important;
+            }
+            
+            #pages-container::after {
+                content: '→ Geser untuk melihat semua kartu →' !important;
+                display: block !important;
+                text-align: center !important;
+                font-size: 11px !important;
+                color: #888 !important;
+                margin-top: 10px !important;
+                font-family: inherit !important;
+                width: max-content !important;
+                min-width: 100% !important;
+            }
+        }
     </style>
 </head>
 
@@ -356,25 +416,52 @@
 
 
 
-    <div style="text-align: center; margin-bottom: 20px;" class="download-options screen-only">
-        <label for="export-format" style="font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;">Format Unduhan (Klik Ganda Kartu): </label>
-        <select id="export-format" style="font-family: 'Outfit', sans-serif; font-size: 14px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc;">
-            <option value="png">PNG (Transparan)</option>
-            <option value="jpg">JPG (Background Putih)</option>
-        </select>
-        <label for="paper-size" style="font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; margin-left: 15px;">Ukuran Kertas: </label>
-        <select id="paper-size" onchange="changePaperSize()" style="font-family: 'Outfit', sans-serif; font-size: 14px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #111;">
-            <option value="a4">A4 (9 Kartu)</option>
-            <option value="f4">F4 / Folio (9 Kartu)</option>
-            <option value="a3">A3 (20 Kartu)</option>
-            <option value="a3plus">A3+ (25 Kartu)</option>
-            <option value="single">1 Kartu (Cetak Satuan/PVC)</option>
-        </select>
-        <button id="btn-download-all"
-            onclick="downloadAllCards('WhiteMin', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})"
-            style="margin-left:12px; font-family:'Outfit',sans-serif; font-size:13px; font-weight:700; background:linear-gradient(135deg,#1f2937,#374151); color:#fff; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; letter-spacing:1px;">
-            ⬇ Download Semua (ZIP)
-        </button>
+    <div class="control-panel screen-only">
+        <div style="width: 100%; text-align: center; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+            <p style="margin: 0; font-size: 13px; color: #374151; font-weight: 500;">
+                <span style="color: #111827; font-weight: 700;">PANDUAN CETAK:</span> Tekan <kbd>Ctrl+P</kbd> dan pastikan opsi <strong>"Background graphics"</strong> tercentang.
+            </p>
+            <p style="margin: 4px 0 0; font-size: 11px; color: #6b7280;">
+                Gunakan panel di bawah ini untuk mengontrol resolusi &amp; format, atau klik ganda pada kartu untuk unduhan instan.
+            </p>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; width: 100%;">
+            <div class="control-group">
+                <label for="paper-size">Kertas:</label>
+                <select id="paper-size" onchange="changePaperSize()">
+                    <option value="a4">A4 (9 Kartu)</option>
+                    <option value="f4">F4 / Folio (9 Kartu)</option>
+                    <option value="a3">A3 (20 Kartu)</option>
+                    <option value="a3plus">A3+ (25 Kartu)</option>
+                    <option value="single">Single (Cetak PVC)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="pdf-dpi">Detail PDF:</label>
+                <select id="pdf-dpi" onchange="changePaperSize()">
+                    <option value="1">Standar (96 DPI)</option>
+                    <option value="2">Tajam (192 DPI)</option>
+                    <option value="4">Ekstrem (384 DPI)</option>
+                </select>
+            </div>
+            <button class="control-btn btn-red" onclick="window.print()" title="Simpan sebagai PDF (Ctrl+P)">
+                🖨️ Simpan PDF
+            </button>
+            
+            <div style="width: 2px; background: #eee; margin: 0 5px; border-radius: 2px;"></div>
+            
+            <div class="control-group">
+                <label for="export-format">Format:</label>
+                <select id="export-format">
+                    <option value="png">PNG (Transparan)</option>
+                    <option value="jpg">JPG (Background Putih)</option>
+                </select>
+            </div>
+            <button id="btn-download-all" class="control-btn btn-gold" onclick="downloadAllCards('WhiteMin', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})">
+                ⬇ Download ZIP
+            </button>
+        </div>
     </div>
 
     <div id="pages-container"></div>
@@ -410,27 +497,33 @@
         function changePaperSize() {
             const paperId = document.getElementById('paper-size').value;
             const container = document.getElementById("pages-container");
+            const dpiScale = parseFloat(document.getElementById('pdf-dpi')?.value || 1);
             container.innerHTML = ""; // Clear existing
 
             let cols = 3, rows = 3;
-            let cssWidth = "210mm", cssHeight = "297mm", cssPadding = "10.5mm 15mm", cssGap = "3mm";
+            let wMM = 210, hMM = 297, cssPadding = "10.5mm 15mm", cssGap = "3mm";
             
             if (paperId === 'a4') {
-                cols = 3; rows = 3; cssWidth = "210mm"; cssHeight = "297mm";
+                cols = 3; rows = 3; wMM = 210; hMM = 297;
                 cssPadding = "10.5mm 15mm"; cssGap = "3mm";
             } else if (paperId === 'f4') {
-                cols = 3; rows = 3; cssWidth = "215mm"; cssHeight = "330mm";
+                cols = 3; rows = 3; wMM = 215; hMM = 330;
                 cssPadding = "25mm 15.5mm"; cssGap = "5mm";
             } else if (paperId === 'a3') {
-                cols = 5; rows = 4; cssWidth = "297mm"; cssHeight = "420mm";
+                cols = 5; rows = 4; wMM = 297; hMM = 420;
                 cssPadding = "28mm 1.1mm"; cssGap = "1.2mm";
             } else if (paperId === 'a3plus') {
-                cols = 5; rows = 5; cssWidth = "329mm"; cssHeight = "483mm";
+                cols = 5; rows = 5; wMM = 329; hMM = 483;
                 cssPadding = "8.5mm 11.5mm"; cssGap = "4mm";
             } else if (paperId === 'single') {
-                cols = 1; rows = 1; cssWidth = "58mm"; cssHeight = "90mm";
+                cols = 1; rows = 1; wMM = 54; hMM = 85.6;
                 cssPadding = "0"; cssGap = "0mm";
             }
+            
+            const cssWidth = wMM + "mm";
+            const cssHeight = hMM + "mm";
+            const printTargetWidth = parseFloat((wMM * dpiScale).toFixed(2)) + "mm";
+            const printTargetHeight = parseFloat((hMM * dpiScale).toFixed(2)) + "mm";
             
             const localCardsPerPage = cols * rows;
 
@@ -443,10 +536,15 @@
             }
             
             styleEl.innerHTML = `
-                @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
+                @page { size: ${printTargetWidth} ${printTargetHeight}; margin: 0; }
                 @media print {
-                    .page { width: ${cssWidth}; height: ${cssHeight}; padding: ${cssPadding} !important; gap: ${cssGap} !important; margin: 0; page-break-after: always; page-break-inside: avoid; display: grid; overflow: hidden; }
                     .screen-only, .print-title, .print-subtitle, .screen-note { display: none !important; }
+                    .page { 
+                        width: ${cssWidth}; height: ${cssHeight}; 
+                        padding: ${cssPadding} !important; gap: ${cssGap} !important; 
+                        margin: 0; page-break-after: always; page-break-inside: avoid; display: grid; overflow: hidden; 
+                        zoom: ${dpiScale};
+                    }
                 }
                 .page {
                     width: ${cssWidth};
@@ -454,8 +552,8 @@
                     padding: ${cssPadding};
                     gap: ${cssGap};
                     display: grid;
-                    grid-template-columns: repeat(${cols}, 58mm);
-                    grid-auto-rows: 90mm;
+                    grid-template-columns: repeat(${cols}, 54mm);
+                    grid-auto-rows: 85.6mm;
                     align-content: start;
                     justify-content: center;
                 }
@@ -533,10 +631,8 @@
             downloadCardDomToImage(card, `Werewolf-${cardId}`, { format, bgColor });
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="download_helper.js"></script>
+    <script src="download_helper.js?v=2"></script>
 </body>
 
 </html>

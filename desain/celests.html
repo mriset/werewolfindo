@@ -171,6 +171,55 @@
             font-family: 'Cinzel', serif; color: var(--sup-dark); font-size: 10px; letter-spacing: 3px;
         }
 
+    
+        /* Mobile Responsive */
+        @media screen and (max-width: 768px) {
+            body { padding: 15px 5px !important; }
+            h1.print-title, .header-title { font-size: 22px !important; letter-spacing: 5px !important; text-align: center !important; }
+            .print-subtitle, .header-subtitle { font-size: 10px !important; letter-spacing: 2px !important; text-align: center !important; margin-bottom: 15px !important; }
+            .control-panel { 
+                padding: 12px !important; 
+                flex-direction: column !important; 
+                gap: 10px !important;
+                border-radius: 8px !important;
+                margin-left: 10px !important;
+                margin-right: 10px !important;
+            }
+            .control-panel > div {
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+            .control-group { 
+                width: 100% !important; 
+                flex-direction: column !important; 
+                align-items: stretch !important; 
+                gap: 5px !important; 
+            }
+            .control-group label { text-align: left !important; }
+            .control-group select { width: 100% !important; font-size: 14px !important; padding: 8px !important; }
+            .control-btn { width: 100% !important; justify-content: center !important; padding: 12px !important; font-size: 14px !important; }
+            .control-panel > div > div[style*="width: 2px"] { display: none !important; }
+            
+            #pages-container {
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                padding-bottom: 20px !important;
+                padding-top: 5px !important;
+            }
+            
+            #pages-container::after {
+                content: '→ Geser untuk melihat semua kartu →' !important;
+                display: block !important;
+                text-align: center !important;
+                font-size: 11px !important;
+                color: #888 !important;
+                margin-top: 10px !important;
+                font-family: inherit !important;
+                width: max-content !important;
+                min-width: 100% !important;
+            }
+        }
     </style>
 </head>
 <body>
