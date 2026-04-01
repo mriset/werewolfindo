@@ -29,20 +29,44 @@ const FONT_URLS = [
     'https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvUDQ.woff2',
     // Playfair Display 700
     'https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKd3vUDQ.woff2',
-    // Cormorant Garamond 400
-    'https://fonts.gstatic.com/s/cormorantgaramond/v16/co3YmX5slCNuHLi8bLeY9MK7whWMhyjQAllvuQ.woff2',
+    // Cormorant Garamond 400 normal (Latin)
+    'https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2',
     // Outfit 400
     'https://fonts.gstatic.com/s/outfit/v11/QGYyz_MVcBeNP4NjuGObqx1XmO1I4TC1C5g.woff2',
     // Outfit 700
     'https://fonts.gstatic.com/s/outfit/v11/QGYyz_MVcBeNP4NjuGObqx1XmO1I4TC1O4g.woff2',
     // RPG Awesome (used by arcana)
     'https://cdn.jsdelivr.net/gh/nagoshiashumari/Rpg-Awesome@master/fonts/rpgawesome-webfont.woff',
+    // ── Playfair Display SC (used by newcard Art Deco Luxe) ──
+    // Playfair Display SC 400 normal (Latin)
+    'https://fonts.gstatic.com/s/playfairdisplaysc/v18/ke85OhoaMkR6-hSn7kbHVoFf7ZfgMPr_lbkMEA.woff2',
+    // Playfair Display SC 700 normal (Latin)
+    'https://fonts.gstatic.com/s/playfairdisplaysc/v18/ke80OhoaMkR6-hSn7kbHVoFf7ZfgMPr_nQIpBcwXLg.woff2',
+    // Playfair Display SC 900 normal (Latin)
+    'https://fonts.gstatic.com/s/playfairdisplaysc/v18/ke80OhoaMkR6-hSn7kbHVoFf7ZfgMPr_nTorBcwXLg.woff2',
+    // Playfair Display SC 400 italic (Latin)
+    'https://fonts.gstatic.com/s/playfairdisplaysc/v18/ke87OhoaMkR6-hSn7kbHVoFf7ZfgMPr_lbw8Eusy.woff2',
+    // ── Cormorant Garamond full set (used by newcard Art Deco Luxe) ──
+    // Cormorant Garamond 300 normal (Latin)
+    'https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2',
+    // Cormorant Garamond 600 normal (Latin)
+    'https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2',
+    // Cormorant Garamond 400 italic (Latin)
+    'https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSo.woff2',
+    // Cormorant Garamond 600 italic (Latin)
+    'https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSo.woff2',
 ];
 
 // Cache for base64-encoded fonts
 const _fontCache = {};
 let _fontsEmbedded = false;
 let _fontStyleEl = null;
+
+// Reset font cache when called (useful for newcard.html which loads after helper)
+function resetFontCache() {
+    _fontsEmbedded = false;
+    if (_fontStyleEl) { _fontStyleEl.remove(); _fontStyleEl = null; }
+}
 
 /**
  * Fetch a font file and return as base64 data URI.
@@ -85,10 +109,20 @@ async function _embedFonts() {
         { family: 'Crimson Pro', weight: '700', style: 'normal', url: FONT_URLS[8] },
         { family: 'Playfair Display', weight: '400', url: FONT_URLS[9] },
         { family: 'Playfair Display', weight: '700', url: FONT_URLS[10] },
-        { family: 'Cormorant Garamond', weight: '400', url: FONT_URLS[11] },
+        { family: 'Cormorant Garamond', weight: '400', style: 'normal', url: FONT_URLS[11] },
         { family: 'Outfit', weight: '400', url: FONT_URLS[12] },
         { family: 'Outfit', weight: '700', url: FONT_URLS[13] },
         { family: 'RPGAwesome', weight: '400', url: FONT_URLS[14], format: 'woff' },
+        // ── Playfair Display SC (Art Deco Luxe) ──
+        { family: 'Playfair Display SC', weight: '400', style: 'normal', url: FONT_URLS[15] },
+        { family: 'Playfair Display SC', weight: '700', style: 'normal', url: FONT_URLS[16] },
+        { family: 'Playfair Display SC', weight: '900', style: 'normal', url: FONT_URLS[17] },
+        { family: 'Playfair Display SC', weight: '400', style: 'italic', url: FONT_URLS[18] },
+        // ── Cormorant Garamond full set (Art Deco Luxe) ──
+        { family: 'Cormorant Garamond', weight: '300', style: 'normal', url: FONT_URLS[19] },
+        { family: 'Cormorant Garamond', weight: '600', style: 'normal', url: FONT_URLS[20] },
+        { family: 'Cormorant Garamond', weight: '400', style: 'italic', url: FONT_URLS[21] },
+        { family: 'Cormorant Garamond', weight: '600', style: 'italic', url: FONT_URLS[22] },
     ];
 
     const cssRules = await Promise.all(fontFaces.map(async (f) => {
@@ -245,6 +279,19 @@ async function downloadCardDomToImage(card, filename, options = {}) {
             },
             bgcolor: bgColor || undefined,
             quality: 1,
+            // Inject embedded font stylesheet into the cloned document
+            onclone: (clonedDoc) => {
+                if (_fontStyleEl) {
+                    const s = _fontStyleEl.cloneNode(true);
+                    clonedDoc.head.appendChild(s);
+                }
+                // Also copy all existing stylesheets to preserve CSS variables
+                document.querySelectorAll('style').forEach(orig => {
+                    const clone = clonedDoc.createElement('style');
+                    clone.textContent = orig.textContent;
+                    clonedDoc.head.appendChild(clone);
+                });
+            },
         };
 
         let dataUrl;
@@ -287,8 +334,15 @@ async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
     const bgColor = options.bgColor || null;
     const { outW, outH, TARGET_DPI } = _PRINT;
 
-    const cards = Array.from(document.querySelectorAll('.card'));
-    if (!cards.length) { alert('Tidak ada kartu ditemukan.'); return; }
+    const allCards = Array.from(document.querySelectorAll('.card'));
+    if (!allCards.length) { alert('Tidak ada kartu ditemukan.'); return; }
+
+    // ── Range picker dialog ──────────────────────────────────────────────────
+    const range = await _showRangeDialog(allCards.length);
+    if (!range) return; // user cancelled
+    const { from: rangeFrom, to: rangeTo } = range;
+    const cards = allCards.slice(rangeFrom - 1, rangeTo); // 1-indexed → 0-indexed slice
+    // ─────────────────────────────────────────────────────────────────────────
 
     const loader = _makeLoader('⟳ Mempersiapkan font…');
     try {
@@ -303,6 +357,7 @@ async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
 
         for (let i = 0; i < cards.length; i++) {
             const card = cards[i];
+            const globalIdx = rangeFrom + i; // 1-indexed global position
             const idEl = card.querySelector('.card-id') || card.querySelector('.id');
             const isBack = card.classList.contains('theme-back') ||
                            card.classList.contains('card-back') ||
@@ -330,6 +385,17 @@ async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
                 },
                 bgcolor: bgColor || undefined,
                 quality: 1,
+                onclone: (clonedDoc) => {
+                    if (_fontStyleEl) {
+                        const s = _fontStyleEl.cloneNode(true);
+                        clonedDoc.head.appendChild(s);
+                    }
+                    document.querySelectorAll('style').forEach(orig => {
+                        const clone = clonedDoc.createElement('style');
+                        clone.textContent = orig.textContent;
+                        clonedDoc.head.appendChild(clone);
+                    });
+                },
             };
 
             let dataUrl;
@@ -339,14 +405,13 @@ async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
                 dataUrl = await domtoimage.toPng(card, param);
             }
 
-            // Convert dataUrl to Blob
             const b64 = dataUrl.split(',')[1];
             const bin = atob(b64);
             const bytes = new Uint8Array(bin.length);
             for (let j = 0; j < bin.length; j++) bytes[j] = bin.charCodeAt(j);
             const blob = new Blob([bytes], { type: format === 'jpg' ? 'image/jpeg' : 'image/png' });
 
-            folder.file(`${String(i + 1).padStart(3, '0')}_${cardId}.${ext}`, blob);
+            folder.file(`${String(globalIdx).padStart(3, '0')}_${cardId}.${ext}`, blob);
             zippedCount++;
 
             await new Promise(r => setTimeout(r, 10));
@@ -358,11 +423,11 @@ async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
         const url = URL.createObjectURL(zipBlob);
         const a   = document.createElement('a');
         a.href = url;
-        a.download = `${prefix}-AllCards-${TARGET_DPI}DPI.zip`;
+        a.download = `${prefix}-Cards-${rangeFrom}_to_${rangeTo}-${TARGET_DPI}DPI.zip`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        loader.textContent = `✓ ZIP berhasil! ${zippedCount} kartu`;
+        loader.textContent = `✓ ZIP berhasil! ${zippedCount} kartu (no. ${rangeFrom}–${rangeTo})`;
         loader.style.color = '#7fff7f';
     } catch (err) {
         console.error('[downloadAllCardsDomToImage]', err);
@@ -465,8 +530,15 @@ async function downloadAllCards(prefix = 'Werewolf', options = {}) {
     const bgColor = options.bgColor || null;
     const { outW, outH, TARGET_DPI } = _PRINT;
 
-    const cards = Array.from(document.querySelectorAll('.card'));
-    if (!cards.length) { alert('Tidak ada kartu ditemukan.'); return; }
+    const allCards = Array.from(document.querySelectorAll('.card'));
+    if (!allCards.length) { alert('Tidak ada kartu ditemukan.'); return; }
+
+    // ── Range picker dialog ──────────────────────────────────────────────────
+    const range = await _showRangeDialog(allCards.length);
+    if (!range) return; // user cancelled
+    const { from: rangeFrom, to: rangeTo } = range;
+    const cards = allCards.slice(rangeFrom - 1, rangeTo); // 1-indexed → 0-indexed slice
+    // ─────────────────────────────────────────────────────────────────────────
 
     const loader = _makeLoader(`⟳ Mempersiapkan font…`);
     try {
@@ -481,6 +553,7 @@ async function downloadAllCards(prefix = 'Werewolf', options = {}) {
 
         for (let i = 0; i < cards.length; i++) {
             const card = cards[i];
+            const globalIdx = rangeFrom + i; // 1-indexed global position
 
             // Get card ID element first for reliable back-card detection
             const idEl = card.querySelector('.card-id') || card.querySelector('.id');
@@ -502,7 +575,7 @@ async function downloadAllCards(prefix = 'Werewolf', options = {}) {
             loader.textContent = `⟳ [${i + 1}/${cards.length}] Rendering ${cardId}…`;
 
             const blob = await _renderCardToBlob(card, format, bgColor);
-            folder.file(`${String(i + 1).padStart(3, '0')}_${cardId}.${ext}`, blob);
+            folder.file(`${String(globalIdx).padStart(3, '0')}_${cardId}.${ext}`, blob);
             zippedCount++;
 
             // Yield to browser between renders to avoid freezing UI
@@ -518,11 +591,11 @@ async function downloadAllCards(prefix = 'Werewolf', options = {}) {
         const url = URL.createObjectURL(zipBlob);
         const a   = document.createElement('a');
         a.href = url;
-        a.download = `${prefix}-AllCards-${TARGET_DPI}DPI.zip`;
+        a.download = `${prefix}-Cards-${rangeFrom}_to_${rangeTo}-${TARGET_DPI}DPI.zip`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        loader.textContent = `✓ ZIP berhasil! ${zippedCount} kartu (${outW}×${outH}px @ ${TARGET_DPI}DPI)`;
+        loader.textContent = `✓ ZIP berhasil! ${zippedCount} kartu (no. ${rangeFrom}–${rangeTo}, ${outW}×${outH}px @ ${TARGET_DPI}DPI)`;
         loader.style.color = '#7fff7f';
     } catch (err) {
         console.error('[downloadAllCards]', err);
@@ -545,6 +618,128 @@ function _makeLoader(text) {
     el.textContent = text;
     document.body.appendChild(el);
     return el;
+}
+
+/**
+ * Shows a modal dialog to let the user choose a card number range.
+ * Returns a Promise that resolves to { from, to } (1-indexed, inclusive),
+ * or null if the user cancelled.
+ *
+ * @param {number} total - Total number of cards available
+ * @returns {Promise<{from:number, to:number}|null>}
+ */
+function _showRangeDialog(total) {
+    return new Promise((resolve) => {
+        // Overlay
+        const overlay = document.createElement('div');
+        overlay.style.cssText = [
+            'position:fixed', 'inset:0', 'z-index:999998',
+            'background:rgba(0,0,0,0.75)',
+            'display:flex', 'align-items:center', 'justify-content:center',
+        ].join(';');
+
+        // Dialog box
+        const box = document.createElement('div');
+        box.style.cssText = [
+            'background:#1a1208',
+            'border:1.5px solid rgba(212,175,55,0.55)',
+            'border-radius:12px',
+            'padding:28px 32px 24px',
+            'min-width:320px',
+            'max-width:95vw',
+            'box-shadow:0 8px 40px rgba(0,0,0,0.8)',
+            'font-family:sans-serif',
+            'color:#e8d5a3',
+        ].join(';');
+
+        box.innerHTML = `
+            <div style="font-size:15px;font-weight:700;letter-spacing:1px;color:#d4af37;margin-bottom:6px;">
+                🃏 PILIH RANGE KARTU
+            </div>
+            <div style="font-size:11px;color:#999;margin-bottom:18px;">
+                Total tersedia: <strong style="color:#d4af37">${total}</strong> kartu
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;">
+                <div style="flex:1">
+                    <label style="display:block;font-size:10px;letter-spacing:.8px;color:#aaa;margin-bottom:5px;">DARI NO.</label>
+                    <input id="_wd_from" type="number" min="1" max="${total}" value="1"
+                        style="width:100%;box-sizing:border-box;background:#0d0d0d;border:1px solid rgba(212,175,55,0.4);border-radius:6px;color:#d4af37;font-size:16px;font-weight:700;padding:8px 10px;outline:none;text-align:center;">
+                </div>
+                <div style="font-size:18px;color:#555;padding-top:18px;">—</div>
+                <div style="flex:1">
+                    <label style="display:block;font-size:10px;letter-spacing:.8px;color:#aaa;margin-bottom:5px;">SAMPAI NO.</label>
+                    <input id="_wd_to" type="number" min="1" max="${total}" value="${total}"
+                        style="width:100%;box-sizing:border-box;background:#0d0d0d;border:1px solid rgba(212,175,55,0.4);border-radius:6px;color:#d4af37;font-size:16px;font-weight:700;padding:8px 10px;outline:none;text-align:center;">
+                </div>
+            </div>
+
+            <div id="_wd_hint" style="font-size:10px;color:#888;min-height:14px;margin-bottom:16px;text-align:center;"></div>
+
+            <div style="display:flex;gap:10px;">
+                <button id="_wd_cancel"
+                    style="flex:1;padding:10px;border:1px solid rgba(212,175,55,0.3);background:transparent;color:#999;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.5px;">
+                    Batal
+                </button>
+                <button id="_wd_ok"
+                    style="flex:2;padding:10px;border:none;background:linear-gradient(135deg,#b8860b,#d4af37);color:#000;border-radius:7px;cursor:pointer;font-size:13px;font-weight:700;letter-spacing:.8px;">
+                    ▶ Download
+                </button>
+            </div>
+        `;
+
+        overlay.appendChild(box);
+        document.body.appendChild(overlay);
+
+        const fromEl  = box.querySelector('#_wd_from');
+        const toEl    = box.querySelector('#_wd_to');
+        const hintEl  = box.querySelector('#_wd_hint');
+        const okBtn   = box.querySelector('#_wd_ok');
+        const cancelBtn = box.querySelector('#_wd_cancel');
+
+        function _validate() {
+            const f = parseInt(fromEl.value, 10);
+            const t = parseInt(toEl.value, 10);
+            const ok = !isNaN(f) && !isNaN(t) && f >= 1 && t <= total && f <= t;
+            if (!ok) {
+                hintEl.textContent = `⚠ Masukkan angka valid (1 – ${total}), dari ≤ sampai.`;
+                hintEl.style.color = '#ff7777';
+            } else {
+                const count = t - f + 1;
+                hintEl.textContent = `✓ Akan men-download ${count} kartu (no. ${f} – ${t})`;
+                hintEl.style.color = '#7fd47f';
+            }
+            okBtn.disabled = !ok;
+            okBtn.style.opacity = ok ? '1' : '0.4';
+            return ok;
+        }
+
+        fromEl.addEventListener('input', _validate);
+        toEl.addEventListener('input', _validate);
+        _validate();
+
+        // Focus the "from" field for quick keyboard use
+        setTimeout(() => fromEl.focus(), 50);
+
+        function _close(result) {
+            overlay.remove();
+            resolve(result);
+        }
+
+        okBtn.addEventListener('click', () => {
+            if (!_validate()) return;
+            _close({ from: parseInt(fromEl.value, 10), to: parseInt(toEl.value, 10) });
+        });
+
+        cancelBtn.addEventListener('click', () => _close(null));
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) _close(null); });
+
+        // Enter key confirms
+        box.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); okBtn.click(); }
+            if (e.key === 'Escape') _close(null);
+        });
+    });
 }
 
 // ─── PNG pHYs DPI Metadata Injector ──────────────────────────────────────────
@@ -620,3 +815,420 @@ function _crc32(buf) {
     for (let i = 0; i < buf.length; i++) crc = _crc32._t[(crc ^ buf[i]) & 0xff] ^ (crc >>> 8);
     return (crc ^ 0xffffffff) >>> 0;
 }
+
+// ─── Print Guide Overlay System ────────────────────────────────────────────────
+/**
+ * Print Guide: tampilkan garis bantu berupa outline kertas (A4/F4/A3/A3+)
+ * yang diinjeksi langsung ke dalam setiap elemen .page menggunakan CSS mm units.
+ * Toolbar floating di pojok kiri bawah.
+ *
+ * Ukuran kertas standar (portrait, dalam mm):
+ *   A4    : 210 × 297
+ *   F4    : 215 × 330  (Folio / Legal Indonesia)
+ *   A3    : 297 × 420
+ *   A3+   : 329 × 483  (Super B / 13×19")
+ */
+(function _initPrintGuide() {
+    const PAPERS = [
+        { id: 'a4',     label: 'A4',  wMm: 210, hMm: 297, color: '#4fc3f7' },
+        { id: 'f4',     label: 'F4',  wMm: 215, hMm: 330, color: '#81c784' },
+        { id: 'a3',     label: 'A3',  wMm: 297, hMm: 420, color: '#ffb74d' },
+        { id: 'a3plus', label: 'A3+', wMm: 329, hMm: 483, color: '#ce93d8' },
+    ];
+
+    const OV_CLASS   = '_pg_overlay';
+    const CROP_CLASS = '_pg_crop';
+
+    let _guideVisible  = false;
+    let _cropMarksOn   = true;       // crop marks default ON when guide is ON
+    let _activeGuides  = new Set(['a4', 'f4', 'a3', 'a3plus']);
+    let _toolbar       = null;
+
+    function _injectBaseCSS() {
+        if (document.getElementById('_pg_base_css')) return;
+        const s = document.createElement('style');
+        s.id = '_pg_base_css';
+        // Paper overlays: screen only.  Crop marks: visible during print too.
+        s.textContent = `@media print{.${OV_CLASS},#_pg_toolbar{display:none!important}}`;
+        document.head.appendChild(s);
+    }
+
+    function _clearOverlays() {
+        document.querySelectorAll('.' + OV_CLASS).forEach(el => el.remove());
+        document.querySelectorAll('.' + CROP_CLASS).forEach(el => el.remove());
+    }
+
+    /**
+     * Build one paper-outline overlay using CSS mm units.
+     * Injected as position:absolute inside .page (which is position:relative).
+     * CSS mm automatically matches the browser's page layout — no pixel math needed.
+     */
+    function _makeOverlay(paper, pageW_mm, pageH_mm) {
+        const offX = (pageW_mm - paper.wMm) / 2;
+        const offY = (pageH_mm - paper.hMm) / 2;
+
+        const wrap = document.createElement('div');
+        wrap.className = OV_CLASS;
+        wrap.setAttribute('data-paper', paper.id);
+        wrap.style.cssText = [
+            'position:absolute',
+            'pointer-events:none',
+            'z-index:99990',
+            `left:${offX}mm`,
+            `top:${offY}mm`,
+            `width:${paper.wMm}mm`,
+            `height:${paper.hMm}mm`,
+            'box-sizing:border-box',
+            `border:0.5mm dashed ${paper.color}`,
+            'border-radius:0.5mm',
+        ].join(';');
+
+        // Label badge
+        const badge = document.createElement('div');
+        badge.style.cssText = [
+            'position:absolute', 'top:0', 'left:0',
+            `background:${paper.color}`,
+            'color:#000', 'font-size:8px', 'font-weight:900',
+            'font-family:sans-serif', 'letter-spacing:.5px',
+            'padding:1px 6px', 'border-radius:0 0 3px 0',
+            'line-height:16px', 'white-space:nowrap',
+        ].join(';');
+        badge.textContent = `${paper.label}  ${paper.wMm}×${paper.hMm}mm`;
+        wrap.appendChild(badge);
+
+        // Corner crosshairs (4 corners)
+        [
+            { top: '-4mm',    left: '-4mm'  },
+            { top: '-4mm',    right: '-4mm' },
+            { bottom: '-4mm', left: '-4mm'  },
+            { bottom: '-4mm', right: '-4mm' },
+        ].forEach(pos => {
+            const c = document.createElement('div');
+            const posCSS = Object.entries(pos).map(([k, v]) => `${k}:${v}`).join(';');
+            c.style.cssText = `position:absolute;width:8mm;height:8mm;pointer-events:none;${posCSS}`;
+            c.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                <line x1="4" y1="0" x2="4" y2="8" stroke="${paper.color}" stroke-width="0.7" opacity="0.85"/>
+                <line x1="0" y1="4" x2="8" y2="4" stroke="${paper.color}" stroke-width="0.7" opacity="0.85"/>
+                <circle cx="4" cy="4" r="0.9" fill="${paper.color}"/>
+            </svg>`;
+            wrap.appendChild(c);
+        });
+
+        // Faint centre guides
+        const hRule = document.createElement('div');
+        hRule.style.cssText = `position:absolute;top:${paper.hMm/2}mm;left:0;width:${paper.wMm}mm;height:0;border-top:0.2mm dashed ${paper.color};opacity:0.20;`;
+        wrap.appendChild(hRule);
+
+        const vRule = document.createElement('div');
+        vRule.style.cssText = `position:absolute;left:${paper.wMm/2}mm;top:0;width:0;height:${paper.hMm}mm;border-left:0.2mm dashed ${paper.color};opacity:0.20;`;
+        wrap.appendChild(vRule);
+
+        return wrap;
+    }
+
+    function _drawGuides() {
+        _clearOverlays();
+        if (!_guideVisible) return;
+
+        const pages = Array.from(document.querySelectorAll('.page'));
+        if (!pages.length) return;
+
+        pages.forEach(page => {
+            // Ensure .page can host absolutely-positioned children
+            const cs = getComputedStyle(page);
+            if (cs.position === 'static') page.style.position = 'relative';
+
+            // Measure page size in mm using a temporary mm-ruler injected into the page.
+            // This way we don't need any viewport pixel math — CSS mm units match exactly.
+            const ruler = document.createElement('div');
+            ruler.style.cssText = 'position:absolute;width:100mm;height:0;visibility:hidden;pointer-events:none;top:0;left:0;';
+            page.appendChild(ruler);
+            const ppm = ruler.getBoundingClientRect().width / 100; // px per mm
+            ruler.remove();
+
+            const rect = page.getBoundingClientRect();
+            const pageW_mm = rect.width  / ppm;
+            const pageH_mm = rect.height / ppm;
+
+            PAPERS.forEach(paper => {
+                if (!_activeGuides.has(paper.id)) return;
+                page.appendChild(_makeOverlay(paper, pageW_mm, pageH_mm));
+            });
+        });
+    }
+    /**
+     * Draw crop marks (garis potong) at the corner of each .card using SVG.
+     * One <svg> element is injected per .page — SVG renders reliably in print
+     * preview, unlike zero-height divs with borders.
+     * overflow:visible lets lines extend outside the SVG's own bounding box
+     * into the gap area between cards.
+     */
+    function _drawCropMarks() {
+        document.querySelectorAll('.' + CROP_CLASS).forEach(el => el.remove());
+        if (!_guideVisible || !_cropMarksOn) return;
+
+        const NS = 'http://www.w3.org/2000/svg';
+
+        document.querySelectorAll('.page').forEach(page => {
+            const cs = getComputedStyle(page);
+            if (cs.position === 'static') page.style.position = 'relative';
+
+            // Measure px-per-mm via a temporary ruler div
+            const ruler = document.createElement('div');
+            ruler.style.cssText = 'position:absolute;width:100mm;height:0;visibility:hidden;pointer-events:none;top:0;left:0;';
+            page.appendChild(ruler);
+            const ppm = ruler.getBoundingClientRect().width / 100; // px per mm
+            ruler.remove();
+
+            const pageRect = page.getBoundingClientRect();
+            const pageW    = pageRect.width;
+            const pageH    = pageRect.height;
+
+            // One SVG that covers the entire .page, overflow:visible so
+            // lines can extend into the gap between cards
+            const svg = document.createElementNS(NS, 'svg');
+            svg.classList.add(CROP_CLASS);
+            svg.setAttribute('xmlns', NS);
+            svg.setAttribute('width',  pageW);
+            svg.setAttribute('height', pageH);
+            svg.setAttribute('viewBox', `0 0 ${pageW} ${pageH}`);
+            svg.style.cssText = [
+                'position:absolute', 'top:0', 'left:0',
+                'pointer-events:none',
+                'z-index:99992',
+                'overflow:visible',
+                '-webkit-print-color-adjust:exact',
+                'print-color-adjust:exact',
+            ].join(';');
+
+            const MARK_PX = 3   * ppm;   // 3 mm
+            const GAP_PX  = 0.8 * ppm;   // 0.8 mm gap from card edge
+            const STR_W   = Math.max(0.5, 0.3 * ppm); // stroke width ≥ 0.5px
+
+            page.querySelectorAll('.card').forEach(card => {
+                const cRect = card.getBoundingClientRect();
+
+                // Card position in px relative to .page
+                const cx0 = cRect.left - pageRect.left;
+                const cy0 = cRect.top  - pageRect.top;
+                const cx1 = cx0 + cRect.width;
+                const cy1 = cy0 + cRect.height;
+
+                // [corner x, corner y, h-direction, v-direction]
+                const corners = [
+                    [cx0, cy0, -1, -1],   // top-left
+                    [cx1, cy0, +1, -1],   // top-right
+                    [cx0, cy1, -1, +1],   // bottom-left
+                    [cx1, cy1, +1, +1],   // bottom-right
+                ];
+
+                corners.forEach(([cx, cy, hd, vd]) => {
+                    // Horizontal arm
+                    const hx1 = hd < 0 ? cx - GAP_PX - MARK_PX : cx + GAP_PX;
+                    const hx2 = hd < 0 ? cx - GAP_PX            : cx + GAP_PX + MARK_PX;
+                    const hLine = document.createElementNS(NS, 'line');
+                    hLine.setAttribute('x1', hx1); hLine.setAttribute('y1', cy);
+                    hLine.setAttribute('x2', hx2); hLine.setAttribute('y2', cy);
+                    hLine.setAttribute('stroke', '#000');
+                    hLine.setAttribute('stroke-width', STR_W);
+                    hLine.setAttribute('stroke-linecap', 'butt');
+                    svg.appendChild(hLine);
+
+                    // Vertical arm
+                    const vy1 = vd < 0 ? cy - GAP_PX - MARK_PX : cy + GAP_PX;
+                    const vy2 = vd < 0 ? cy - GAP_PX            : cy + GAP_PX + MARK_PX;
+                    const vLine = document.createElementNS(NS, 'line');
+                    vLine.setAttribute('x1', cx); vLine.setAttribute('y1', vy1);
+                    vLine.setAttribute('x2', cx); vLine.setAttribute('y2', vy2);
+                    vLine.setAttribute('stroke', '#000');
+                    vLine.setAttribute('stroke-width', STR_W);
+                    vLine.setAttribute('stroke-linecap', 'butt');
+                    svg.appendChild(vLine);
+                });
+            });
+
+            page.appendChild(svg);
+        });
+    }
+
+    function _buildToolbar() {
+        if (_toolbar) return;
+        _injectBaseCSS();
+
+        _toolbar = document.createElement('div');
+        _toolbar.id = '_pg_toolbar';
+        _toolbar.style.cssText = [
+            'position:fixed', 'bottom:20px', 'left:20px',
+            'z-index:99997',
+            'background:rgba(10,8,4,0.93)',
+            'border:1.5px solid rgba(212,175,55,0.45)',
+            'border-radius:12px',
+            'padding:10px 14px 12px',
+            'font-family:sans-serif',
+            'box-shadow:0 6px 32px rgba(0,0,0,0.7)',
+            'user-select:none',
+            'min-width:210px',
+        ].join(';');
+
+        // Header
+        const header = document.createElement('div');
+        header.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;';
+
+        const title = document.createElement('span');
+        title.style.cssText = 'flex:1;font-size:11px;font-weight:800;letter-spacing:1.2px;color:#d4af37;';
+        title.textContent = '📐 GARIS BANTU CETAK';
+
+        const toggleBtn = document.createElement('button');
+        toggleBtn.id = '_pg_toggle';
+        toggleBtn.style.cssText = [
+            'background:linear-gradient(135deg,#7a3200,#c04000)',
+            'color:#fff', 'border:none', 'border-radius:5px',
+            'font-size:10px', 'font-weight:800', 'letter-spacing:.7px',
+            'padding:3px 10px', 'cursor:pointer', 'min-width:36px',
+        ].join(';');
+        toggleBtn.textContent = 'OFF';
+
+        function _setToggleState(on) {
+            _guideVisible = on;
+            toggleBtn.textContent = on ? 'ON' : 'OFF';
+            toggleBtn.style.background = on
+                ? 'linear-gradient(135deg,#1b5e20,#43a047)'
+                : 'linear-gradient(135deg,#7a3200,#c04000)';
+            _drawGuides();
+            _drawCropMarks();
+        }
+
+        toggleBtn.addEventListener('click', () => _setToggleState(!_guideVisible));
+
+        header.appendChild(title);
+        header.appendChild(toggleBtn);
+        _toolbar.appendChild(header);
+
+        // Checkboxes
+        const grid = document.createElement('div');
+        grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;';
+
+        PAPERS.forEach(paper => {
+            const row = document.createElement('label');
+            row.style.cssText = 'display:flex;align-items:center;gap:5px;cursor:pointer;';
+
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.checked = _activeGuides.has(paper.id);
+            cb.style.cssText = `accent-color:${paper.color};width:13px;height:13px;cursor:pointer;flex-shrink:0;`;
+            cb.addEventListener('change', () => {
+                if (cb.checked) _activeGuides.add(paper.id);
+                else            _activeGuides.delete(paper.id);
+                _drawGuides();
+            });
+
+            const swatch = document.createElement('span');
+            swatch.style.cssText = `display:inline-block;width:7px;height:7px;border-radius:1px;background:${paper.color};flex-shrink:0;`;
+
+            const lbl = document.createElement('span');
+            lbl.style.cssText = 'font-size:11px;font-weight:700;color:#e8d5a3;';
+            lbl.textContent = paper.label;
+
+            const sub = document.createElement('span');
+            sub.style.cssText = 'font-size:9px;color:#666;';
+            sub.textContent = ` ${paper.wMm}×${paper.hMm}`;
+
+            row.appendChild(cb);
+            row.appendChild(swatch);
+            row.appendChild(lbl);
+            row.appendChild(sub);
+            grid.appendChild(row);
+        });
+
+        _toolbar.appendChild(grid);
+
+        // ── Divider ───────────────────────────────────────────────────────────
+        const divider = document.createElement('div');
+        divider.style.cssText = 'border-top:1px solid rgba(212,175,55,0.15);margin:10px -2px 8px;';
+        _toolbar.appendChild(divider);
+
+        // ── Crop Marks toggle row ─────────────────────────────────────────────
+        const cropRow = document.createElement('div');
+        cropRow.style.cssText = 'display:flex;align-items:center;gap:8px;';
+
+        const cropLabel = document.createElement('span');
+        cropLabel.style.cssText = 'flex:1;font-size:10.5px;font-weight:700;color:#e8d5a3;letter-spacing:.3px;';
+        cropLabel.textContent = '\u2702 Garis Potong Kartu';
+
+        const cropBtn = document.createElement('button');
+        cropBtn.style.cssText = [
+            'background:linear-gradient(135deg,#1b5e20,#43a047)',
+            'color:#fff', 'border:none', 'border-radius:5px',
+            'font-size:10px', 'font-weight:800', 'letter-spacing:.7px',
+            'padding:3px 8px', 'cursor:pointer', 'min-width:36px',
+        ].join(';');
+        cropBtn.textContent = 'ON';
+        cropBtn.addEventListener('click', () => {
+            _cropMarksOn = !_cropMarksOn;
+            cropBtn.textContent = _cropMarksOn ? 'ON' : 'OFF';
+            cropBtn.style.background = _cropMarksOn
+                ? 'linear-gradient(135deg,#1b5e20,#43a047)'
+                : 'linear-gradient(135deg,#7a3200,#c04000)';
+            _drawCropMarks();
+        });
+
+        cropRow.appendChild(cropLabel);
+        cropRow.appendChild(cropBtn);
+        _toolbar.appendChild(cropRow);
+
+        const cropHint = document.createElement('div');
+        cropHint.style.cssText = 'font-size:8.5px;color:#555;margin-top:4px;line-height:1.4;';
+        cropHint.textContent = 'Panduan potong kartu \u2014 ikut tercetak';
+        _toolbar.appendChild(cropHint);
+
+        // Refresh button
+        const refreshBtn = document.createElement('button');
+        refreshBtn.style.cssText = [
+            'margin-top:10px', 'width:100%',
+            'background:rgba(212,175,55,0.08)',
+            'border:1px solid rgba(212,175,55,0.3)',
+            'color:#d4af37', 'border-radius:5px',
+            'font-size:10px', 'font-weight:700', 'letter-spacing:.5px',
+            'padding:5px', 'cursor:pointer',
+        ].join(';');
+        refreshBtn.textContent = '\u27f3 Refresh Posisi';
+        refreshBtn.addEventListener('click', () => { _drawGuides(); _drawCropMarks(); });
+        _toolbar.appendChild(refreshBtn);
+
+        document.body.appendChild(_toolbar);
+
+        // Redraw on scroll / resize (debounced)
+        let _raf = null;
+        const _redraw = () => {
+            if (_raf) cancelAnimationFrame(_raf);
+            _raf = requestAnimationFrame(() => { _drawGuides(); _drawCropMarks(); });
+        };
+        window.addEventListener('scroll', () => { if (_guideVisible) _redraw(); }, { passive: true });
+        window.addEventListener('resize', () => { if (_guideVisible) _redraw(); }, { passive: true });
+    }
+
+    // Auto-init after DOM ready — wait for document.body
+    function _init() {
+        if (document.body) {
+            _buildToolbar();
+        } else {
+            document.addEventListener('DOMContentLoaded', _buildToolbar);
+        }
+    }
+
+    // Expose globally so pages can call togglePrintGuide() if needed
+    window.togglePrintGuide = function() {
+        _guideVisible = !_guideVisible;
+        const btn = document.getElementById('_pg_toggle');
+        if (btn) {
+            btn.click(); // reuse toggle logic
+            // prevent double-click by restoring state
+            _guideVisible = !_guideVisible;
+            btn.click();
+        } else {
+            _drawGuides();
+        }
+    };
+
+    _init();
+})();
