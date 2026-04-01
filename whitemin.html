@@ -320,7 +320,7 @@
             .print-subtitle,
             .screen-note,
             .screen-only {
-                display: none;
+                display: none !important;
             }
 
             .page {
@@ -381,7 +381,7 @@
     <script src="svg_whitemin.js"></script>
     <script src="cards.js"></script>
     <script>
-        const cardsPerPage = 9;
+        // cardsPerPage is determined dynamically per paper size
         const container = document.getElementById("pages-container");
 
         function generateCardHTML(card) {
@@ -413,18 +413,23 @@
             container.innerHTML = ""; // Clear existing
 
             let cols = 3, rows = 3;
-            let cssWidth = "210mm", cssHeight = "297mm", cssPadding = "10mm 5mm";
+            let cssWidth = "210mm", cssHeight = "297mm", cssPadding = "10.5mm 15mm", cssGap = "3mm";
             
             if (paperId === 'a4') {
                 cols = 3; rows = 3; cssWidth = "210mm"; cssHeight = "297mm";
+                cssPadding = "10.5mm 15mm"; cssGap = "3mm";
             } else if (paperId === 'f4') {
                 cols = 3; rows = 3; cssWidth = "215mm"; cssHeight = "330mm";
+                cssPadding = "25mm 15.5mm"; cssGap = "5mm";
             } else if (paperId === 'a3') {
-                cols = 5; rows = 4; cssWidth = "297mm"; cssHeight = "420mm"; cssPadding = "15mm 10mm";
+                cols = 5; rows = 4; cssWidth = "297mm"; cssHeight = "420mm";
+                cssPadding = "28mm 1.1mm"; cssGap = "1.2mm";
             } else if (paperId === 'a3plus') {
-                cols = 5; rows = 5; cssWidth = "329mm"; cssHeight = "483mm"; cssPadding = "15mm 10mm";
+                cols = 5; rows = 5; cssWidth = "329mm"; cssHeight = "483mm";
+                cssPadding = "8.5mm 11.5mm"; cssGap = "4mm";
             } else if (paperId === 'single') {
-                cols = 1; rows = 1; cssWidth = "58mm"; cssHeight = "90mm"; cssPadding = "0";
+                cols = 1; rows = 1; cssWidth = "58mm"; cssHeight = "90mm";
+                cssPadding = "0"; cssGap = "0mm";
             }
             
             const localCardsPerPage = cols * rows;
@@ -438,16 +443,21 @@
             }
             
             styleEl.innerHTML = `
+                @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
                 @media print {
-                    @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
-                    .page { width: ${cssWidth}; min-height: ${cssHeight}; padding: ${cssPadding}; }
+                    .page { width: ${cssWidth}; height: ${cssHeight}; padding: ${cssPadding} !important; gap: ${cssGap} !important; margin: 0; page-break-after: always; page-break-inside: avoid; display: grid; overflow: hidden; }
+                    .screen-only, .print-title, .print-subtitle, .screen-note { display: none !important; }
                 }
                 .page {
                     width: ${cssWidth};
                     min-height: ${cssHeight};
                     padding: ${cssPadding};
+                    gap: ${cssGap};
+                    display: grid;
                     grid-template-columns: repeat(${cols}, 58mm);
                     grid-auto-rows: 90mm;
+                    align-content: start;
+                    justify-content: center;
                 }
             `;
 

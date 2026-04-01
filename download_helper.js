@@ -1232,3 +1232,399 @@ function _crc32(buf) {
 
     _init();
 })();
+
+// ─── Card Print Selector ────────────────────────────────────────────────────────
+/**
+ * Lets the user pick exactly which cards appear in the print layout.
+ * On "Terapkan", selected cards are re-packed into .page divs according
+ * to the current paper size grid (cols × rows auto-detected from DOM).
+ *
+ * Public API:
+ *   showPrintCardSelector()  — open the dialog
+ *   resetPrintCardSelector() — restore original layout
+ */
+(function _initCardSelector() {
+
+    // ── Snapshot storage ──────────────────────────────────────────────────────
+    // We store the original page HTML so we can always reset.
+    let _originalPages = null; // serialised HTML of #pages-container children
+
+    function _saveSnapshot() {
+        const c = _getContainer();
+        if (c && !_originalPages) _originalPages = c.innerHTML;
+    }
+
+    function _getContainer() {
+        return document.getElementById('pages-container') ||
+               document.querySelector('.pages-container');
+    }
+
+    // ── Detect layout metrics ─────────────────────────────────────────────────
+    function _detectLayout() {
+        // Returns { cardsPerPage, frontPages, backPage }
+        const allPages = Array.from(document.querySelectorAll('.page'));
+        // A "back page" has no .card-id elements in its cards
+        const frontPages = allPages.filter(p =>
+            p.querySelector('.card-id, [class*="card-id"], .id') !== null
+        );
+        const backPages = allPages.filter(p =>
+            p.querySelector('.card-id, [class*="card-id"], .id') === null &&
+            p.querySelectorAll('.card').length > 0
+        );
+
+        const cardsPerPage = frontPages.length > 0
+            ? frontPages[0].querySelectorAll('.card').length
+            : 9;
+
+        return { cardsPerPage, frontPages, backPage: backPages[0] || null };
+    }
+
+    // ── Collect front card info ───────────────────────────────────────────────
+    function _collectCards(frontPages) {
+        const cards = [];
+        frontPages.forEach(page => {
+            page.querySelectorAll('.card').forEach(card => {
+                const idEl = card.querySelector('.card-id, .id');
+                const nameEl = card.querySelector(
+                    '.card-name, .t2-name, .name, h2, [class*="name"]'
+                );
+                const roleEl = card.querySelector('.card-role, .role, .subtitle');
+                cards.push({
+                    el:   card,
+                    id:   idEl   ? idEl.innerText.trim()   : `#${cards.length + 1}`,
+                    name: nameEl ? nameEl.innerText.trim() : '',
+                    role: roleEl ? roleEl.innerText.trim() : '',
+                });
+            });
+        });
+        return cards;
+    }
+
+    // ── Apply selection: re-pack cards into pages ─────────────────────────────
+    function _applySelection(cardInfos, selectedIds, cardsPerPage, backPage) {
+        const container = _getContainer();
+        if (!container) return;
+
+        _saveSnapshot(); // ensure snapshot exists before we modify DOM
+
+        const selected = cardInfos.filter(c => selectedIds.has(c.id));
+        if (selected.length === 0) return;
+
+        // Build new front pages
+        const newPages = [];
+        for (let i = 0; i < selected.length; i += cardsPerPage) {
+            const chunk = selected.slice(i, i + cardsPerPage);
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'page';
+            chunk.forEach(info => pageDiv.appendChild(info.el.cloneNode(true)));
+            newPages.push(pageDiv);
+        }
+
+        // Rebuild back page(s) to match new page count
+        const backPages = [];
+        if (backPage) {
+            // Clone a single back card to tile
+            const backCardTemplate = backPage.querySelector('.card');
+            if (backCardTemplate) {
+                // One back page per front page
+                newPages.forEach(() => {
+                    const bp = document.createElement('div');
+                    bp.className = 'page';
+                    // Fill with same count as cardsPerPage
+                    for (let i = 0; i < cardsPerPage; i++) {
+                        bp.appendChild(backCardTemplate.cloneNode(true));
+                    }
+                    backPages.push(bp);
+                });
+            }
+        }
+
+        // Re-draw container
+        container.innerHTML = '';
+        newPages.forEach(p  => container.appendChild(p));
+        backPages.forEach(p => container.appendChild(p));
+
+        // Re-trigger crop marks / paper guide if active
+        if (window._pg_redraw) window._pg_redraw();
+    }
+
+    // ── Reset to original layout ──────────────────────────────────────────────
+    function resetPrintCardSelector() {
+        const container = _getContainer();
+        if (container && _originalPages !== null) {
+            container.innerHTML = _originalPages;
+            _originalPages = null; // allow re-snapshot if changed again
+        }
+    }
+    window.resetPrintCardSelector = resetPrintCardSelector;
+
+    // ── Dialog ────────────────────────────────────────────────────────────────
+    function showPrintCardSelector() {
+        _saveSnapshot();
+
+        const { cardsPerPage, frontPages, backPage } = _detectLayout();
+        const cardInfos = _collectCards(frontPages);
+
+        if (cardInfos.length === 0) {
+            alert('Tidak ada kartu ditemukan di halaman ini.'); return;
+        }
+
+        // Current selection state (all ON by default)
+        const selected = new Set(cardInfos.map(c => c.id));
+
+        // ── Overlay ───────────────────────────────────────────────────────────
+        const overlay = document.createElement('div');
+        overlay.id = '_pcs_overlay';
+        overlay.style.cssText = [
+            'position:fixed', 'inset:0', 'z-index:999999',
+            'background:rgba(0,0,0,0.82)',
+            'display:flex', 'align-items:center', 'justify-content:center',
+            'font-family:sans-serif',
+            'backdrop-filter:blur(3px)',
+        ].join(';');
+
+        // ── Modal ─────────────────────────────────────────────────────────────
+        const modal = document.createElement('div');
+        modal.style.cssText = [
+            'background:#100d06',
+            'border:1.5px solid rgba(212,175,55,0.50)',
+            'border-radius:16px',
+            'padding:22px 26px 18px',
+            'width:min(720px, 96vw)',
+            'max-height:88vh',
+            'overflow:hidden',
+            'display:flex',
+            'flex-direction:column',
+            'gap:12px',
+            'box-shadow:0 20px 80px rgba(0,0,0,0.9)',
+            'color:#e8d5a3',
+        ].join(';');
+
+        // Header
+        const headerHTML = `
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="flex:1">
+                    <div style="font-size:15px;font-weight:800;letter-spacing:1.2px;color:#d4af37;">🃏 PILIH KARTU UNTUK DICETAK</div>
+                    <div style="font-size:10px;color:#666;margin-top:3px;">
+                        Layout: <strong style="color:#d4af37">${cardsPerPage}</strong> kartu/halaman &nbsp;·&nbsp;
+                        Total: <strong style="color:#d4af37">${cardInfos.length}</strong> kartu
+                    </div>
+                </div>
+                <div style="text-align:right;line-height:1.3">
+                    <div id="_pcs_badge" style="font-size:20px;font-weight:900;color:#d4af37;">
+                        ${cardInfos.length}
+                    </div>
+                    <div style="font-size:9px;color:#666;">kartu dipilih</div>
+                </div>
+            </div>`;
+
+        // Quick-select toolbar
+        const toolbarHTML = `
+            <div style="display:flex;gap:7px;flex-shrink:0;">
+                <button id="_pcs_all"    style="${_btnStyle('#d4af37', 'rgba(212,175,55,0.12)')}">☑ Semua</button>
+                <button id="_pcs_none"   style="${_btnStyle('#888', 'rgba(255,255,255,0.04)')}">☐ Kosongkan</button>
+                <button id="_pcs_invert" style="${_btnStyle('#888', 'rgba(255,255,255,0.04)')}">⇄ Balik</button>
+                <div style="flex:1"></div>
+                <div id="_pcs_pages_info" style="
+                    font-size:10px;color:#7fd47f;align-self:center;font-weight:700;
+                "></div>
+            </div>`;
+
+        // Card grid container
+        const gridHTML = `
+            <div id="_pcs_grid" style="
+                display:grid;
+                grid-template-columns:repeat(auto-fill, minmax(148px, 1fr));
+                gap:8px;
+                overflow-y:auto;
+                flex:1;
+                padding:2px 4px 2px 2px;
+            "></div>`;
+
+        // Footer
+        const footerHTML = `
+            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                <button id="_pcs_reset"  style="${_btnStyle('#f88', 'rgba(255,100,100,0.10)',true)}">↺ Reset Layout</button>
+                <div style="flex:1"></div>
+                <button id="_pcs_cancel" style="${_btnStyle('#777', 'transparent',true)}">Batal</button>
+                <button id="_pcs_apply"  style="
+                    padding:10px 24px;
+                    background:linear-gradient(135deg,#b8860b,#d4af37);
+                    color:#000;border:none;border-radius:8px;
+                    cursor:pointer;font-size:13px;font-weight:900;letter-spacing:.5px;
+                ">▶ Terapkan ke Layout</button>
+            </div>`;
+
+        modal.innerHTML = headerHTML + toolbarHTML + gridHTML + footerHTML;
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // ── Populate card grid ────────────────────────────────────────────────
+        const grid      = modal.querySelector('#_pcs_grid');
+        const badge     = modal.querySelector('#_pcs_badge');
+        const pagesInfo = modal.querySelector('#_pcs_pages_info');
+        const cbMap     = {};
+
+        function _updateUI() {
+            const n = selected.size;
+            const pages = Math.ceil(n / cardsPerPage);
+            badge.textContent = n;
+            badge.style.color = n > 0 ? '#d4af37' : '#f88';
+            pagesInfo.textContent = n > 0
+                ? `→ ${pages} halaman`
+                : '⚠ belum dipilih';
+            pagesInfo.style.color = n > 0 ? '#7fd47f' : '#f88';
+        }
+
+        cardInfos.forEach((info, idx) => {
+            const item = document.createElement('label');
+            item.style.cssText = [
+                'display:flex', 'align-items:flex-start', 'gap:8px',
+                'background:rgba(255,255,255,0.03)',
+                'border:1px solid rgba(212,175,55,0.15)',
+                'border-radius:8px', 'padding:9px 10px',
+                'cursor:pointer', 'transition:all .12s',
+            ].join(';');
+
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.checked = true;
+            cb.style.cssText = 'width:15px;height:15px;accent-color:#d4af37;flex-shrink:0;margin-top:1px;cursor:pointer;';
+            cbMap[info.id] = cb;
+
+            cb.addEventListener('change', () => {
+                if (cb.checked) { selected.add(info.id); }
+                else            { selected.delete(info.id); }
+                _styleItem(item, cb.checked);
+                _updateUI();
+            });
+
+            const num = document.createElement('span');
+            num.style.cssText = 'font-size:9px;color:#555;font-weight:700;flex-shrink:0;padding-top:1px;min-width:18px;';
+            num.textContent = String(idx + 1).padStart(2, '0');
+
+            const text = document.createElement('div');
+            text.style.cssText = 'flex:1;min-width:0;';
+            text.innerHTML = `
+                <div style="font-size:10px;font-weight:800;color:#d4af37;letter-spacing:.5px;line-height:1.2;">${info.id}</div>
+                ${info.name ? `<div style="font-size:9.5px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${info.name}</div>` : ''}
+                ${info.role ? `<div style="font-size:8.5px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${info.role}</div>` : ''}
+            `;
+
+            item.appendChild(cb);
+            item.appendChild(num);
+            item.appendChild(text);
+            _styleItem(item, true);
+            grid.appendChild(item);
+        });
+
+        _updateUI();
+
+        // Quick-select buttons
+        function _setAll(val) {
+            cardInfos.forEach(info => {
+                const cb = cbMap[info.id];
+                const changed = cb.checked !== val;
+                cb.checked = val;
+                if (val) selected.add(info.id); else selected.delete(info.id);
+                _styleItem(cb.closest('label'), val);
+            });
+            _updateUI();
+        }
+
+        modal.querySelector('#_pcs_all').addEventListener('click',    () => _setAll(true));
+        modal.querySelector('#_pcs_none').addEventListener('click',   () => _setAll(false));
+        modal.querySelector('#_pcs_invert').addEventListener('click', () => {
+            cardInfos.forEach(info => {
+                const cb = cbMap[info.id];
+                cb.checked = !cb.checked;
+                if (cb.checked) selected.add(info.id); else selected.delete(info.id);
+                _styleItem(cb.closest('label'), cb.checked);
+            });
+            _updateUI();
+        });
+
+        // Close
+        function _close() { overlay.remove(); }
+        modal.querySelector('#_pcs_cancel').addEventListener('click', _close);
+        overlay.addEventListener('click', e => { if (e.target === overlay) _close(); });
+
+        // Reset
+        modal.querySelector('#_pcs_reset').addEventListener('click', () => {
+            resetPrintCardSelector();
+            _close();
+        });
+
+        // Apply
+        modal.querySelector('#_pcs_apply').addEventListener('click', () => {
+            if (selected.size === 0) { alert('Pilih minimal satu kartu.'); return; }
+            _applySelection(cardInfos, selected, cardsPerPage, backPage);
+            _close();
+        });
+    }
+
+    // Helper: style a card item based on checked state
+    function _styleItem(item, checked) {
+        item.style.background     = checked ? 'rgba(212,175,55,0.08)' : 'rgba(255,255,255,0.02)';
+        item.style.borderColor    = checked ? 'rgba(212,175,55,0.35)' : 'rgba(212,175,55,0.10)';
+        item.style.opacity        = checked ? '1' : '0.45';
+    }
+
+    // Helper: button style
+    function _btnStyle(color, bg, small) {
+        return [
+            `padding:${small ? '8px 14px' : '7px 12px'}`,
+            `background:${bg}`,
+            `border:1px solid ${color}40`,
+            `color:${color}`,
+            'border-radius:7px', 'cursor:pointer',
+            'font-size:11px', 'font-weight:700',
+        ].join(';');
+    }
+
+    // ── Floating trigger button ───────────────────────────────────────────────
+    function _buildTriggerBtn() {
+        if (document.getElementById('_pcs_trigger')) return;
+        const btn = document.createElement('button');
+        btn.id = '_pcs_trigger';
+        btn.textContent = '🃏 Pilih Kartu';
+        btn.title = 'Pilih kartu mana saja yang akan dicetak';
+        btn.style.cssText = [
+            'position:fixed', 'bottom:20px', 'right:20px',
+            'z-index:99997',
+            'background:linear-gradient(135deg,#1a1208,#2e2208)',
+            'border:1.5px solid rgba(212,175,55,0.55)',
+            'color:#d4af37',
+            'border-radius:10px',
+            'padding:10px 16px',
+            'font-family:sans-serif',
+            'font-size:12px', 'font-weight:800', 'letter-spacing:.5px',
+            'cursor:pointer',
+            'box-shadow:0 4px 20px rgba(0,0,0,0.6)',
+            'transition:all .15s',
+        ].join(';');
+
+        btn.addEventListener('mouseenter', () => {
+            btn.style.background = 'linear-gradient(135deg,#2a1e08,#4a3610)';
+            btn.style.borderColor = 'rgba(212,175,55,0.85)';
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.background = 'linear-gradient(135deg,#1a1208,#2e2208)';
+            btn.style.borderColor = 'rgba(212,175,55,0.55)';
+        });
+        btn.addEventListener('click', showPrintCardSelector);
+
+        document.body.appendChild(btn);
+    }
+
+    // Expose globally
+    window.showPrintCardSelector = showPrintCardSelector;
+
+    // Auto-init
+    function _init() {
+        if (document.body) { _buildTriggerBtn(); }
+        else { document.addEventListener('DOMContentLoaded', _buildTriggerBtn); }
+    }
+    _init();
+
+})();

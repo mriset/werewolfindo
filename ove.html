@@ -286,7 +286,7 @@
 
         @media print {
             body { background: #fff; padding: 0; min-height: auto; }
-            .header-title, .header-subtitle, .screen-note, .screen-only, .download-options { display: none; }
+            .header-title, .header-subtitle, .screen-note, .screen-only, .download-options { display: none !important; }
             .page {
                 margin: 0; box-shadow: none; page-break-after: always;
                 padding: 9.15mm 3.75mm; border: none; background: transparent;
@@ -331,7 +331,7 @@
     <script src="cards.js"></script>
     <script src="svg_ove.js"></script>
     <script>
-        const cardsPerPage = 9;
+        // cardsPerPage is determined dynamically per paper size
         const container = document.getElementById("pages-container");
 
         function generateCardHTML(card) {
@@ -412,9 +412,10 @@
             }
             
             styleEl.innerHTML = `
+                @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
                 @media print {
-                    @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
-                    .page { width: ${cssWidth}; min-height: ${cssHeight}; padding: ${cssPadding}; }
+                    .page { width: ${cssWidth}; height: ${cssHeight}; padding: ${cssPadding}; gap: 6mm; grid-template-columns: repeat(${cols}, var(--card-w)); grid-auto-rows: var(--card-h); display: grid; margin: 0; page-break-after: always; page-break-inside: avoid; overflow: hidden; }
+                    .screen-only, .download-options, .header-title, .header-subtitle, .screen-note { display: none !important; }
                 }
                 .page {
                     width: ${cssWidth};
