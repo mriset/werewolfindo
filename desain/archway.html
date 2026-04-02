@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Obsidian Vanguard - White Archway Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@300;500;700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Dimensi presisi untuk cetak */
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+            
+            /* Palet Dasar Putih Mewah */
+            --paper-white: #fdfdfd;
+            --cream-white: #f5f4f0;
+            --pearl-white: #eae8e3;
+            --text-dark: #1a1a1a;
+            --text-muted: #555555;
+            
+            /* Warna Faksi */
+            --gold-light: #fcf6ba;
+            --gold-base: #d4af37;
+            --gold-dark: #aa771c;
+            
+            --supreme-dark: #2d0b3e;
+            --alliance-dark: #1a3c28;
+            --shadow-red: #8b0000;
+            --jester-purple: #4a0082;
+            --jester-neon: #39ff14;
+            
+            /* Warna Tambahan Guardian */
+            --guardian-blue: #2a5276;
+            --guardian-light: #4183d7;
+            
+            /* Warna Tambahan Cupid */
+            --cupid-pink: #c84b71;
+            --cupid-light: #f19eb5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e0e0e0;
+            background-image: radial-gradient(circle at center, #f0f0f0 0%, #c0c0c0 100%);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-dark);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255,255,255,0.8);
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #fff;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold-dark);
+            font-size: 2.2rem;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            max-width: 1400px;
+        }
+
+        /* --- BASE CARD LAYOUT (VILLAGER ARCHWAY STYLE) --- */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            position: relative;
+            border-radius: 4mm;
+            overflow: hidden;
+            background: var(--paper-white);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(0,0,0,0.05);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        /* Glossy Print Overlay */
+        .card::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(125deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.3) 100%);
+            mix-blend-mode: screen; pointer-events: none; z-index: 100;
+        }
+
+        /* Common Elements */
+        .arch-bg {
+            position: absolute; top: 2mm; left: 2mm; right: 2mm; bottom: 35mm;
+            border-radius: 25mm 25mm 2mm 2mm;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .top-bar {
+            position: absolute; top: 4mm; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 4mm; z-index: 5;
+        }
+        
+        .id-code { font-size: 6px; font-weight: 900; font-family: 'Cinzel', serif; letter-spacing: 1px; }
+        .faction { font-size: 5px; padding: 0.5mm 2mm; border-radius: 1mm; font-weight: 800; letter-spacing: 1.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); text-transform: uppercase; }
+        
+        .illustration {
+            position: absolute; top: 12mm; width: 100%; height: 38mm; display: flex; justify-content: center; align-items: center; z-index: 5;
+        }
+        .illustration svg { width: 32mm; height: 32mm; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
+
+        .content-scroll {
+            position: absolute; bottom: 2mm; left: 2mm; right: 2mm; height: 34mm;
+            background: var(--cream-white);
+            border-radius: 2mm; padding: 2.5mm; text-align: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+        }
+        .name-en { font-size: 5px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid #ddd; margin-bottom: 1mm; padding-bottom: 0.5mm; width: 80%; }
+        .name-id { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 900; margin-bottom: 1.5mm; line-height: 1.1; }
+        .ability { font-size: 5px; color: #fff; padding: 0.8mm 2mm; border-radius: 1mm; margin-bottom: 1.5mm; font-weight: bold; letter-spacing: 1px; display: inline-block; text-transform: uppercase; }
+        .desc { font-size: 5px; color: var(--text-dark); line-height: 1.4; text-align: justify; text-align-last: center; font-weight: 500; width: 100%; }
+
+        /* ==============================================================
+           1. MODERATOR (SUPREME) - White & Gold Celestial
+           ============================================================== */
+        .card-moderator .arch-bg {
+            background: radial-gradient(circle at 50% 100%, #fdfbf7 0%, #f4ebd8 100%);
+            border: 1.5px solid var(--gold-base);
+        }
+        .card-moderator .arch-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background-image: radial-gradient(var(--gold-base) 1px, transparent 1px);
+            background-size: 6px 6px; opacity: 0.2;
+        }
+        .card-moderator .id-code { color: var(--supreme-dark); }
+        .card-moderator .faction { background: var(--supreme-dark); color: var(--gold-light); border: 0.5px solid var(--gold-base); }
+        .card-moderator .content-scroll { border-top: 3px solid var(--gold-base); }
+        .card-moderator .name-id { color: var(--supreme-dark); }
+        .card-moderator .ability { background: linear-gradient(135deg, var(--gold-dark), var(--gold-base)); color: #000; box-shadow: 0 2px 4px rgba(212,175,55,0.4); }
+
+        /* ==============================================================
+           2. VILLAGER (ALLIANCE) - White & Forest Green
+           ============================================================== */
+        .card-villager .arch-bg {
+            background: radial-gradient(circle at 50% 100%, #f2f7f4 0%, #e1ebe5 100%);
+            border: 1.5px solid #88aadd;
+        }
+        .card-villager .arch-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background: repeating-linear-gradient(45deg, rgba(26,60,40,0.03) 0px, rgba(26,60,40,0.03) 1px, transparent 1px, transparent 4px);
+        }
+        .card-villager .id-code { color: var(--alliance-dark); }
+        .card-villager .faction { background: var(--alliance-dark); color: #fff; border: 0.5px solid #88aadd; }
+        .card-villager .content-scroll { border-top: 3px solid #88aadd; background: #faf9f6; }
+        .card-villager .name-id { color: var(--alliance-dark); }
+        .card-villager .ability { background: var(--alliance-dark); color: #fff; }
+
+        /* ==============================================================
+           3. WEREWOLF (SHADOWS) - White, Crimson Blood, Jagged
+           ============================================================== */
+        .card-werewolf .arch-bg {
+            background: radial-gradient(circle at 50% 100%, #fff0f0 0%, #fbe6e6 100%);
+            border: 1.5px solid var(--shadow-red);
+        }
+        .card-werewolf .arch-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background: 
+                linear-gradient(110deg, transparent 40%, rgba(139,0,0,0.08) 41%, rgba(139,0,0,0.15) 45%, transparent 46%),
+                linear-gradient(115deg, transparent 50%, rgba(139,0,0,0.08) 51%, rgba(139,0,0,0.2) 55%, transparent 56%),
+                linear-gradient(120deg, transparent 60%, rgba(139,0,0,0.08) 61%, rgba(139,0,0,0.15) 65%, transparent 66%);
+        }
+        .card-werewolf .id-code { color: var(--shadow-red); }
+        .card-werewolf .faction { background: var(--shadow-red); color: #fff; border: 0.5px solid #ff3333; }
+        .card-werewolf .content-scroll { border-top: 3px solid var(--shadow-red); background: #fdf5f5; }
+        .card-werewolf .name-id { color: var(--shadow-red); font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: -0.5px; }
+        .card-werewolf .ability { background: var(--shadow-red); color: #fff; box-shadow: 0 2px 5px rgba(139,0,0,0.3); }
+
+        /* ==============================================================
+           4. JESTER (NEUTRAL) - White, Purple/Neon Harlequin
+           ============================================================== */
+        .card-jester .arch-bg {
+            background: radial-gradient(circle at 50% 100%, #f9f5ff 0%, #efe5f8 100%);
+            border: 1.5px dashed var(--jester-purple);
+        }
+        .card-jester .arch-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background-image: 
+                linear-gradient(45deg, rgba(74, 0, 130, 0.05) 25%, transparent 25%, transparent 75%, rgba(74, 0, 130, 0.05) 75%, rgba(74, 0, 130, 0.05)), 
+                linear-gradient(45deg, rgba(74, 0, 130, 0.05) 25%, transparent 25%, transparent 75%, rgba(74, 0, 130, 0.05) 75%, rgba(74, 0, 130, 0.05));
+            background-size: 8mm 8mm;
+            background-position: 0 0, 4mm 4mm;
+        }
+        .card-jester .id-code { color: var(--jester-purple); }
+        .card-jester .faction { background: var(--jester-neon); color: var(--text-dark); border: 0.5px solid var(--jester-purple); }
+        .card-jester .content-scroll { border-top: 3px solid var(--jester-purple); border-bottom: 2px solid var(--jester-neon); }
+        .card-jester .name-id { color: var(--jester-purple); }
+        .card-jester .ability { background: var(--jester-purple); color: var(--jester-neon); }
+
+        /* ==============================================================
+           5. GUARDIAN (ALLIANCE) - White & Azure Blue
+           ============================================================== */
+        .card-guardian .arch-bg {
+            background: radial-gradient(circle at 50% 100%, #eef5fc 0%, #d9e8f5 100%);
+            border: 1.5px solid var(--guardian-light);
+        }
+        .card-guardian .arch-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(30deg, transparent 45%, rgba(65, 131, 215, 0.05) 45%, rgba(65, 131, 215, 0.05) 55%, transparent 55%);
+            background-size: 10mm 10mm;
+        }
+        .card-guardian .id-code { color: var(--guardian-blue); }
+        .card-guardian .faction { background: var(--guardian-blue); color: #fff; border: 0.5px solid var(--guardian-light); }
+        .card-guardian .content-scroll { border-top: 3px solid var(--guardian-light); background: #f4f8fc; }
+        .card-guardian .name-id { color: var(--guardian-blue); }
+        .card-guardian .ability { background: var(--guardian-blue); color: #fff; box-shadow: 0 2px 4px rgba(42, 82, 118, 0.3); }
+
+        /* ==============================================================
+           6. CUPID (ALLIANCE) - White & Rose Pink
+           ============================================================== */
+        .card-cupid .arch-bg {
+            background: radial-gradient(circle at 50% 100%, #fdf2f5 0%, #f5dce3 100%);
+            border: 1.5px solid var(--cupid-light);
+        }
+        .card-cupid .arch-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background: repeating-linear-gradient(45deg, rgba(200, 75, 113, 0.03) 0px, rgba(200, 75, 113, 0.03) 2px, transparent 2px, transparent 6px);
+        }
+        .card-cupid .id-code { color: var(--cupid-pink); }
+        .card-cupid .faction { background: var(--cupid-pink); color: #fff; border: 0.5px solid var(--cupid-light); }
+        .card-cupid .content-scroll { border-top: 3px solid var(--cupid-light); background: #fbf5f7; }
+        .card-cupid .name-id { color: var(--cupid-pink); }
+        .card-cupid .ability { background: var(--cupid-pink); color: #fff; box-shadow: 0 2px 4px rgba(200, 75, 113, 0.3); }
+
+        /* ==============================================================
+           7. CARD BACK - Pure White & Gold Obsidian Vanguard
+           ============================================================== */
+        .card-back .arch-bg {
+            background: #ffffff;
+            border: 2px solid var(--gold-base);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .card-back .arch-bg::before {
+            content: ''; position: absolute; inset: 2mm;
+            border: 1px dashed var(--gold-dark); border-radius: 23mm 23mm 1mm 1mm; opacity: 0.5;
+        }
+        .card-back .logo-text-top {
+            position: absolute; top: 6mm; width: 100%; text-align: center;
+            font-family: 'Cinzel', serif; font-size: 6px; color: var(--gold-dark); font-weight: 800; letter-spacing: 3px; z-index: 5;
+        }
+        .card-back .mandala {
+            position: relative; width: 38mm; height: 38mm; z-index: 5; margin-top: -5mm;
+        }
+        .card-back .mandala svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 4px rgba(212,175,55,0.3)); }
+
+        .card-back .content-scroll {
+            background: var(--gold-base);
+            border: none; color: #fff;
+            justify-content: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .card-back .edition-text {
+            font-family: 'Cinzel', serif; font-size: 12px; color: #fff; font-weight: 900; letter-spacing: 8px; margin-bottom: 2mm; text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        .card-back .roman-num {
+            font-family: 'Montserrat', sans-serif; font-size: 5px; color: #fff; letter-spacing: 4px; font-weight: 600;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Obsidian Vanguard: Light Edition</h1>
+        <p>7 DESAIN KARTU TEMA PUTIH MEWAH DENGAN LAYOUT LENGKUNGAN (ARCHWAY)</p>
+    </div>
+
+    <div class="cards-container">
+
+        <!-- 1. MODERATOR (SUPREME) -->
+        <div class="card card-moderator">
+            <div class="arch-bg"></div>
+            <div class="top-bar">
+                <div class="id-code">SP·01</div>
+                <div class="faction">SUPREME</div>
+            </div>
+            <div class="illustration">
+                <!-- Supreme SVG: Radiant Zenith Eye -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="modGlowLight" cx="50%" cy="50%">
+                            <stop offset="0%" stop-color="#d4af37" stop-opacity="0.5" />
+                            <stop offset="100%" stop-color="#fff" stop-opacity="0" />
+                        </radialGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="45" fill="url(#modGlowLight)" />
+                    <!-- Intersecting Ornate Hexagram -->
+                    <polygon points="50,15 80,32 80,68 50,85 20,68 20,32" fill="none" stroke="#aa771c" stroke-width="1.5" />
+                    <polygon points="50,22 72,38 72,62 50,78 28,62 28,38" fill="rgba(45,11,62,0.1)" stroke="#d4af37" stroke-width="2" />
+                    <!-- Outer Rings -->
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#2d0b3e" stroke-width="0.75" stroke-dasharray="2 4" />
+                    <!-- The Zenith Eye (Dark Purple) -->
+                    <path d="M30,50 Q50,30 70,50 Q50,70 30,50 Z" fill="#fff" stroke="#2d0b3e" stroke-width="2.5" />
+                    <circle cx="50" cy="50" r="10" fill="#2d0b3e" stroke="#d4af37" stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="3" fill="#fff" />
+                    <!-- Holy Rays -->
+                    <line x1="50" y1="15" x2="50" y2="5" stroke="#aa771c" stroke-width="2" />
+                    <line x1="50" y1="85" x2="50" y2="95" stroke="#aa771c" stroke-width="2" />
+                    <line x1="20" y1="32" x2="12" y2="28" stroke="#aa771c" stroke-width="2" />
+                    <line x1="80" y1="68" x2="88" y2="72" stroke="#aa771c" stroke-width="2" />
+                </svg>
+            </div>
+            <div class="content-scroll">
+                <div class="name-en">Game Moderator</div>
+                <div class="name-id">SANG NARATOR</div>
+                <div class="ability">✦ Tuhan Desa Werewolf ✦</div>
+                <div class="desc">Tugas pemegang ini absolut, bukan lagi menjadi pemain. Dilarang memihak. Mengatur malam dan siang, memandu langkah, serta <strong>mencabut nyawa</strong> berdasarkan instruksi malam.</div>
+            </div>
+        </div>
+
+        <!-- 2. VILLAGER (ALLIANCE) -->
+        <div class="card card-villager">
+            <div class="arch-bg"></div>
+            <div class="top-bar">
+                <div class="id-code">VL·14</div>
+                <div class="faction">ALLIANCE</div>
+            </div>
+            <div class="illustration">
+                <!-- Alliance SVG: Shield and Tree of Life -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="shieldGradLight" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#ffffff" />
+                            <stop offset="100%" stop-color="#e1ebe5" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Main Shield -->
+                    <path d="M20,15 L80,15 L80,55 C80,80 50,95 50,95 C50,95 20,80 20,55 Z" fill="url(#shieldGradLight)" stroke="#1a3c28" stroke-width="2.5" stroke-linejoin="round" />
+                    <path d="M26,20 L74,20 L74,53 C74,73 50,88 50,88 C50,88 26,73 26,53 Z" fill="none" stroke="#88aadd" stroke-width="1" stroke-dasharray="3 3" />
+                    <!-- Tree of Life / Wheat (Dark Green) -->
+                    <path d="M50,80 L50,35" stroke="#1a3c28" stroke-width="2" stroke-linecap="round" />
+                    <path d="M50,70 Q40,60 30,50" fill="none" stroke="#1a3c28" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M50,70 Q60,60 70,50" fill="none" stroke="#1a3c28" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M50,55 Q40,45 35,35" fill="none" stroke="#1a3c28" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M50,55 Q60,45 65,35" fill="none" stroke="#1a3c28" stroke-width="1.5" stroke-linecap="round" />
+                    <!-- Leaves (Gold) -->
+                    <circle cx="30" cy="50" r="3.5" fill="#d4af37" />
+                    <circle cx="70" cy="50" r="3.5" fill="#d4af37" />
+                    <circle cx="35" cy="35" r="3.5" fill="#d4af37" />
+                    <circle cx="65" cy="35" r="3.5" fill="#d4af37" />
+                    <circle cx="50" cy="25" r="4.5" fill="#d4af37" />
+                    <!-- Sun rise behind shield -->
+                    <path d="M35,15 A15,15 0 0,1 65,15" fill="none" stroke="#88aadd" stroke-width="2" />
+                    <line x1="50" y1="0" x2="50" y2="10" stroke="#88aadd" stroke-width="1.5" />
+                </svg>
+            </div>
+            <div class="content-scroll">
+                <div class="name-en">Villager</div>
+                <div class="name-id">Warga Desa</div>
+                <div class="ability">Suara Demokrasi</div>
+                <div class="desc">Tidak memiliki kemampuan magis di malam hari. Kekuatan utama terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.</div>
+            </div>
+        </div>
+
+        <!-- 3. WEREWOLF (SHADOWS) -->
+        <div class="card card-werewolf">
+            <div class="arch-bg"></div>
+            <div class="top-bar">
+                <div class="id-code">WW·01</div>
+                <div class="faction">SHADOWS</div>
+            </div>
+            <div class="illustration">
+                <!-- Shadows SVG: Crimson Skull on Light Background -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Red Moon Halo -->
+                    <circle cx="50" cy="50" r="40" fill="#ffcccc" opacity="0.5" />
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="#8b0000" stroke-width="1" stroke-dasharray="8 4" />
+                    <!-- Angular Skull Base (Dark Red/Black) -->
+                    <polygon points="50,15 75,30 80,60 60,75 70,95 50,85 30,95 40,75 20,60 25,30" fill="#2a0000" stroke="#8b0000" stroke-width="2" stroke-linejoin="round" />
+                    <!-- Shadow / Depth -->
+                    <polygon points="50,15 75,30 80,60 60,75 50,85 50,15" fill="#4a0000" />
+                    <!-- Menacing Eyes (Bright White/Red) -->
+                    <polygon points="35,45 45,55 30,60" fill="#fff" stroke="#ff0000" stroke-width="1" />
+                    <polygon points="65,45 55,55 70,60" fill="#fff" stroke="#ff0000" stroke-width="1" />
+                    <circle cx="40" cy="52" r="2" fill="#ff0000" />
+                    <circle cx="60" cy="52" r="2" fill="#ff0000" />
+                    <!-- Fangs (Silver/White) -->
+                    <polygon points="45,78 48,90 50,85" fill="#fff" stroke="#8b0000" stroke-width="0.5" />
+                    <polygon points="55,78 52,90 50,85" fill="#fff" stroke="#8b0000" stroke-width="0.5" />
+                    <!-- Scars -->
+                    <line x1="30" y1="30" x2="45" y2="40" stroke="#fff" stroke-width="1.5" />
+                    <line x1="75" y1="70" x2="65" y2="80" stroke="#fff" stroke-width="1.5" />
+                </svg>
+            </div>
+            <div class="content-scroll">
+                <div class="name-en">Werewolf</div>
+                <div class="name-id">SERIGALA</div>
+                <div class="ability">Membunuh Malam Hari</div>
+                <div class="desc">Setiap malam, serigala memilih satu pemain untuk dibunuh. Menang jika jumlah kawanan menyamai jumlah warga desa yang tersisa di siang hari.</div>
+            </div>
+        </div>
+
+        <!-- 4. JESTER (NEUTRAL) -->
+        <div class="card card-jester">
+            <div class="arch-bg"></div>
+            <div class="top-bar">
+                <div class="id-code">NT·01</div>
+                <div class="faction">NEUTRAL</div>
+            </div>
+            <div class="illustration">
+                <!-- Neutral SVG: Purple & Neon Mask -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="maskGradLight" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ffffff" />
+                            <stop offset="100%" stop-color="#d8b4e2" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Background Swirls -->
+                    <path d="M20,50 C20,20 80,80 80,50" fill="none" stroke="#4a0082" stroke-width="1.5" stroke-dasharray="4 4" />
+                    <path d="M50,20 C80,20 20,80 50,80" fill="none" stroke="#39ff14" stroke-width="1.5" stroke-dasharray="4 4" />
+                    <!-- Split Mask Left (Smile) -->
+                    <path d="M48,15 C20,15 15,45 25,75 C35,90 48,85 48,85 Z" fill="url(#maskGradLight)" stroke="#4a0082" stroke-width="2" />
+                    <!-- Split Mask Right (Frown - Broken off) -->
+                    <path d="M55,18 C80,25 85,55 70,80 C60,95 52,85 52,85 Z" fill="#2a004d" stroke="#39ff14" stroke-width="2" transform="rotate(10 55 50)" />
+                    <!-- Left Eye (Happy) -->
+                    <path d="M25,40 Q35,30 40,45" fill="none" stroke="#4a0082" stroke-width="2" />
+                    <!-- Right Eye (Sad) -->
+                    <path d="M60,45 Q70,30 80,45" fill="none" stroke="#39ff14" stroke-width="2" transform="rotate(10 55 50)" />
+                    <!-- Left Mouth (Grin) -->
+                    <path d="M30,60 Q40,75 48,65" fill="none" stroke="#4a0082" stroke-width="2" />
+                    <!-- Right Mouth (Frown) -->
+                    <path d="M55,70 Q65,60 75,75" fill="none" stroke="#39ff14" stroke-width="2" transform="rotate(10 55 50)" />
+                    <!-- Crack lines -->
+                    <path d="M48,15 L52,30 L45,45 L55,60 L48,85" fill="none" stroke="#39ff14" stroke-width="1.5" />
+                </svg>
+            </div>
+            <div class="content-scroll">
+                <div class="name-en">Jester</div>
+                <div class="name-id">SANG BADUT</div>
+                <div class="ability">Tawa Terakhir</div>
+                <div class="desc">Tujuan utamanya hanya satu: memprovokasi agar <strong>dieksekusi</strong> warga di siang hari. Jika digantung, ia memenangkan permainan seorang diri.</div>
+            </div>
+        </div>
+
+        <!-- 5. GUARDIAN (ALLIANCE) -->
+        <div class="card card-guardian">
+            <div class="arch-bg"></div>
+            <div class="top-bar">
+                <div class="id-code">VL·02</div>
+                <div class="faction">ALLIANCE</div>
+            </div>
+            <div class="illustration">
+                <!-- Guardian SVG: Holy Shield & Wings on Light Background -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="guardGlowLight" cx="50%" cy="50%">
+                            <stop offset="0%" stop-color="#4183d7" stop-opacity="0.3" />
+                            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+                        </radialGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="45" fill="url(#guardGlowLight)" />
+                    <!-- Wing Structures (Blue/Gold) -->
+                    <path d="M50,45 Q70,25 90,40 Q80,55 50,65" fill="none" stroke="#4183d7" stroke-width="1.5" />
+                    <path d="M50,45 Q90,10 95,30 Q85,45 50,55" fill="none" stroke="#88aadd" stroke-width="1" />
+                    <path d="M50,45 Q30,25 10,40 Q20,55 50,65" fill="none" stroke="#4183d7" stroke-width="1.5" />
+                    <path d="M50,45 Q10,10 5,30 Q15,45 50,55" fill="none" stroke="#88aadd" stroke-width="1" />
+                    
+                    <!-- Shield Aegis -->
+                    <path d="M30,30 L70,30 L70,50 C70,70 50,90 50,90 C50,90 30,70 30,50 Z" fill="#ffffff" stroke="#2a5276" stroke-width="2.5" />
+                    <path d="M40,30 L60,30 L60,50 C60,65 50,80 50,80 C50,80 40,65 40,50 Z" fill="#eef5fc" stroke="#4183d7" stroke-width="1.5" />
+                    
+                    <!-- Cross Element -->
+                    <line x1="50" y1="35" x2="50" y2="75" stroke="#d4af37" stroke-width="2" />
+                    <line x1="35" y1="45" x2="65" y2="45" stroke="#d4af37" stroke-width="2" />
+                    
+                    <!-- Core Gem -->
+                    <polygon points="50,38 56,45 50,52 44,45" fill="#d4af37" stroke="#fff" stroke-width="1.5" />
+                    <circle cx="50" cy="45" r="2" fill="#fff" />
+                    
+                    <!-- Halo -->
+                    <path d="M35,20 C45,10 55,10 65,20" fill="none" stroke="#d4af37" stroke-width="2" />
+                </svg>
+            </div>
+            <div class="content-scroll">
+                <div class="name-en">Guardian</div>
+                <div class="name-id">PENJAGA</div>
+                <div class="ability">Pelindung Malam</div>
+                <div class="desc">Setiap malam, memilih satu pemain untuk dilindungi dari serangan serigala. Penjaga tidak boleh melindungi dirinya atau pemain yang sama dua malam berturut-turut.</div>
+            </div>
+        </div>
+
+        <!-- 6. CUPID (ALLIANCE) -->
+        <div class="card card-cupid">
+            <div class="arch-bg"></div>
+            <div class="top-bar">
+                <div class="id-code">VL·03</div>
+                <div class="faction">ALLIANCE</div>
+            </div>
+            <div class="illustration">
+                <!-- Cupid SVG: Holy Bow & Heart on Light Background -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="cupidGlowLight" cx="50%" cy="50%">
+                            <stop offset="0%" stop-color="#f19eb5" stop-opacity="0.4" />
+                            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+                        </radialGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="45" fill="url(#cupidGlowLight)" />
+                    <!-- Golden Bow -->
+                    <path d="M30,20 C10,40 10,60 30,80" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" />
+                    <!-- Bow String -->
+                    <line x1="30" y1="20" x2="30" y2="80" stroke="#f19eb5" stroke-width="1" stroke-dasharray="2 3" />
+                    <!-- Golden Arrow -->
+                    <line x1="15" y1="50" x2="85" y2="50" stroke="#d4af37" stroke-width="1.5" />
+                    <!-- Arrow Head -->
+                    <polygon points="85,50 75,45 75,55" fill="#d4af37" />
+                    <!-- Arrow Fletching -->
+                    <path d="M15,50 L22,44 M15,50 L22,56 M20,50 L27,44 M20,50 L27,56" stroke="#d4af37" stroke-width="1.5" />
+                    <!-- Glowing Heart Pierced by Arrow -->
+                    <path d="M50,40 C50,40 45,28 35,28 C20,28 20,48 20,48 C20,48 35,65 50,75 C65,65 80,48 80,48 C80,48 80,28 65,28 C55,28 50,40 50,40 Z" fill="#ffffff" stroke="#c84b71" stroke-width="2.5" />
+                    <!-- Inner Heart -->
+                    <path d="M50,44 C50,44 46,34 38,34 C28,34 28,46 28,46 C28,46 38,58 50,66 C62,58 72,46 72,46 C72,46 72,34 62,34 C54,34 50,44 50,44 Z" fill="#fdf2f5" stroke="#f19eb5" stroke-width="1" />
+                    <!-- Decorative Sparkles -->
+                    <circle cx="75" cy="25" r="2" fill="#c84b71" />
+                    <circle cx="25" cy="80" r="1.5" fill="#c84b71" />
+                    <circle cx="80" cy="70" r="1" fill="#d4af37" />
+                </svg>
+            </div>
+            <div class="content-scroll">
+                <div class="name-en">Cupid</div>
+                <div class="name-id">DEWA CINTA</div>
+                <div class="ability">Panah Asmara</div>
+                <div class="desc">Pada malam pertama, Cupid memilih dua pemain untuk dipasangkan sebagai kekasih. Jika salah satu kekasih mati, pasangannya akan ikut mati karena patah hati.</div>
+            </div>
+        </div>
+
+        <!-- 7. CARD BACK -->
+        <div class="card card-back">
+            <div class="arch-bg">
+                <div class="logo-text-top">OBSIDIAN VANGUARD</div>
+                
+                <div class="mandala">
+                    <!-- White/Gold Mandala SVG -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Outer Circles -->
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="#d4af37" stroke-width="1" stroke-dasharray="2 3" />
+                        <circle cx="50" cy="50" r="44" fill="none" stroke="#aa771c" stroke-width="1.5" />
+                        
+                        <!-- Hexagram / Geometry -->
+                        <polygon points="50,10 84.6,30 84.6,70 50,90 15.4,70 15.4,30" fill="#fdfbf7" stroke="#aa771c" stroke-width="1" />
+                        <polygon points="50,10 84.6,30 84.6,70 50,90 15.4,70 15.4,30" fill="none" stroke="#d4af37" stroke-width="0.5" transform="rotate(30 50 50)" />
+                        <rect x="25" y="25" width="50" height="50" fill="none" stroke="#d4af37" stroke-width="1.5" transform="rotate(45 50 50)" />
+                        
+                        <!-- Inner Sanctum -->
+                        <circle cx="50" cy="50" r="22" fill="#fff" stroke="#d4af37" stroke-width="2" />
+                        <circle cx="50" cy="50" r="18" fill="none" stroke="#aa771c" stroke-width="1" stroke-dasharray="2 2" />
+                        
+                        <!-- Central Emblem (Diamond Eye) -->
+                        <path d="M50,35 L60,50 L50,65 L40,50 Z" fill="#aa771c" stroke="#d4af37" stroke-width="1" />
+                        <circle cx="50" cy="50" r="5" fill="#fff" />
+                        <circle cx="50" cy="50" r="2" fill="#d4af37" />
+                        
+                        <!-- Decor Dots -->
+                        <circle cx="50" cy="5" r="2" fill="#aa771c" />
+                        <circle cx="50" cy="95" r="2" fill="#aa771c" />
+                        <circle cx="5" cy="50" r="2" fill="#aa771c" />
+                        <circle cx="95" cy="50" r="2" fill="#aa771c" />
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="content-scroll">
+                <div class="edition-text">EDITION</div>
+                <div class="roman-num">M M X X I V</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
