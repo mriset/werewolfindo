@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obsidian Vanguard - Slash Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+            
+            /* Faction Gradients (Foil Effects) */
+            --foil-gold: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --foil-rosegold: linear-gradient(135deg, #b76e79, #e0bfb8, #c07c88, #f0d9d5, #a55c65);
+            --foil-blue: linear-gradient(135deg, #0f2c59, #4183d7, #1e4b8f, #88aadd, #0a1b38);
+            --foil-crimson: linear-gradient(135deg, #8b0000, #ff4d4d, #590000, #ff6666, #330000);
+            --foil-amethyst: linear-gradient(135deg, #4a154b, #9b59b6, #2c003e, #d2b4de, #1a0024);
+        }
+
+        body {
+            background: #1a1a1a;
+            background-image: radial-gradient(circle at 50% 50%, #2a2a2a 0%, #111 100%);
+            margin: 0;
+            padding: 40px 20px;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .presentation-title {
+            width: 100%;
+            text-align: center;
+            color: #fcf6ba;
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+            text-shadow: 0 4px 15px rgba(252, 246, 186, 0.3);
+        }
+
+        /* Base Card Styling */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            position: relative;
+            border-radius: 3.5mm;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.4);
+            overflow: hidden;
+            background-color: #f8f8f8;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.15);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.8);
+            z-index: 10;
+        }
+
+        /* Lighting Overlay (Gloss effect) */
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            animation: shine 6s infinite;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        /* Unified Layout Structure based on the Werewolf Card */
+        .slash-top { position: absolute; z-index: 1; }
+        .slash-bot { position: absolute; z-index: 1; }
+        
+        .inner-box { 
+            position: absolute; inset: 1.5mm; background: #ffffff; 
+            z-index: 2; border-radius: 2mm; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.15); 
+        }
+
+        .header { position: absolute; top: 2mm; left: 3mm; text-align: left; z-index: 5;}
+        .id { font-size: 6.5px; font-weight: 900; letter-spacing: 1px; }
+        .faction { 
+            font-size: 4px; padding: 1.5px 4px; font-weight: 800; 
+            text-transform: uppercase; margin-top: 1.5px; display: inline-block;
+            border-radius: 1px; letter-spacing: 1px;
+        }
+
+        .svg-container { 
+            position: absolute; top: 12mm; left: 50%; transform: translateX(-50%); 
+            width: 38mm; height: 38mm; z-index: 5;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .content { position: absolute; bottom: 3mm; left: 3.5mm; right: 3.5mm; z-index: 5; text-align: left;}
+        .title-en { font-size: 5px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: -1px;}
+        .title-id { font-size: 15px; font-family: 'Cinzel', serif; font-weight: 900; line-height: 0.9; margin-bottom: 3px; letter-spacing: -0.5px;}
+        .ability { 
+            font-size: 6px; font-weight: 800; color: #fff; 
+            display: inline-block; padding: 1.5px 5px; margin-bottom: 3.5px; 
+            transform: skewX(-10deg); letter-spacing: 0.5px;
+        }
+        .desc { 
+            font-size: 7px; line-height: 1.35; color: #222; font-weight: 600; 
+            padding-left: 2mm; border-left: 2px solid;
+            text-align: justify;
+        }
+        .desc strong { font-weight: 900; }
+        
+        .footer { position: absolute; bottom: 1.5mm; right: 3mm; font-size: 4.5px; font-weight: bold; z-index: 5; text-transform: uppercase;}
+
+        /* =========================================
+           1. MODERATOR (SUPREME) - Pearl & Pure Gold
+           ========================================= */
+        .fac-mod { background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="2" cy="2" r="1" fill="rgba(212,175,55,0.2)"/></svg>'), #fcfcfc; }
+        .fac-mod .slash-top { top: -8mm; right: -8mm; width: 45mm; height: 45mm; background: var(--foil-gold); transform: rotate(45deg); }
+        .fac-mod .slash-bot { bottom: -10mm; left: -15mm; width: 55mm; height: 35mm; background: var(--foil-gold); transform: rotate(30deg); }
+        .fac-mod .inner-box { border: 1px solid rgba(212, 175, 55, 0.3); }
+        .fac-mod .id { color: #aa771c; }
+        .fac-mod .faction { background: #111; color: #fcf6ba; }
+        .fac-mod .title-en { color: #aa771c; }
+        .fac-mod .title-id { color: #111; text-shadow: 1px 1px 0px rgba(212,175,55,0.3); }
+        .fac-mod .ability { background: #aa771c; }
+        .fac-mod .desc { border-color: #aa771c; }
+        .fac-mod .desc strong { color: #aa771c; }
+        .fac-mod .footer { color: #888; }
+
+        /* =========================================
+           2. WARGA (ALLIANCE) - Ivory & Royal Blue
+           ========================================= */
+        .fac-vil { background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><path d="M0 20 Q10 10 20 20 T40 20" fill="none" stroke="rgba(65,131,215,0.15)" stroke-width="0.5"/></svg>'), #fdfbf7; }
+        .fac-vil .slash-top { top: -10mm; left: -15mm; width: 50mm; height: 35mm; background: var(--foil-blue); transform: rotate(-20deg); }
+        .fac-vil .slash-bot { bottom: -8mm; right: -8mm; width: 40mm; height: 40mm; background: var(--foil-blue); transform: rotate(-45deg); }
+        .fac-vil .inner-box { border: 1px solid rgba(65, 131, 215, 0.3); }
+        .fac-vil .id { color: #4183d7; }
+        .fac-vil .faction { background: #111; color: #88aadd; }
+        .fac-vil .title-en { color: #4183d7; }
+        .fac-vil .title-id { color: #111; text-shadow: 1px 1px 0px rgba(65,131,215,0.3); }
+        .fac-vil .ability { background: #0f2c59; }
+        .fac-vil .desc { border-color: #4183d7; }
+        .fac-vil .desc strong { color: #0f2c59; }
+        .fac-vil .footer { color: #888; }
+
+        /* =========================================
+           3. WEREWOLF (SHADOWS) - Marble & Crimson
+           ========================================= */
+        .fac-ww { background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M0,0 L10,20 L5,30 L15,40 L0,50 Z" fill="rgba(0,0,0,0.02)"/></svg>'), #f5f5f5; }
+        .fac-ww .slash-top { top: -5mm; left: -5mm; width: 40mm; height: 40mm; background: var(--foil-crimson); transform: rotate(45deg); }
+        .fac-ww .slash-bot { bottom: -10mm; right: -15mm; width: 50mm; height: 30mm; background: var(--foil-crimson); transform: rotate(-30deg); }
+        .fac-ww .inner-box { border: 1px solid rgba(139, 0, 0, 0.2); }
+        .fac-ww .id { color: #8b0000; }
+        .fac-ww .faction { background: #111; color: #ff6666; }
+        .fac-ww .title-en { color: #8b0000; }
+        .fac-ww .title-id { color: #111; text-shadow: 1px 1px 0px rgba(139,0,0,0.3); }
+        .fac-ww .ability { background: #8b0000; }
+        .fac-ww .desc { border-color: #8b0000; }
+        .fac-ww .desc strong { color: #8b0000; }
+        .fac-ww .footer { color: #888; }
+
+        /* =========================================
+           4. JESTER (NEUTRAL) - Porcelain & Amethyst
+           ========================================= */
+        .fac-jst { background: repeating-linear-gradient(45deg, rgba(74, 21, 75, 0.03) 0px, transparent 2px, transparent 10px), #fcfcfc; }
+        .fac-jst .slash-top { top: -15mm; right: 10mm; width: 60mm; height: 25mm; background: var(--foil-amethyst); transform: rotate(-10deg); }
+        .fac-jst .slash-bot { bottom: -15mm; left: 10mm; width: 60mm; height: 25mm; background: var(--foil-amethyst); transform: rotate(-10deg); }
+        .fac-jst .inner-box { border: 1px solid rgba(74, 21, 75, 0.2); }
+        .fac-jst .id { color: #4a154b; }
+        .fac-jst .faction { background: #111; color: #d2b4de; }
+        .fac-jst .title-en { color: #9b59b6; }
+        .fac-jst .title-id { color: #111; text-shadow: 1px 1px 0px rgba(74,21,75,0.3); }
+        .fac-jst .ability { background: #4a154b; }
+        .fac-jst .desc { border-color: #9b59b6; }
+        .fac-jst .desc strong { color: #4a154b; }
+        .fac-jst .footer { color: #888; }
+
+        /* =========================================
+           5. KARTU BELAKANG - Pitch Black & Pure Gold
+           ========================================= */
+        .fac-back { background: #050505; }
+        /* 4 Slashes inward to create a diamond focal point */
+        .fac-back .slash-tl { position: absolute; top: -15mm; left: -15mm; width: 30mm; height: 30mm; background: var(--foil-gold); transform: rotate(45deg); z-index: 1;}
+        .fac-back .slash-tr { position: absolute; top: -15mm; right: -15mm; width: 30mm; height: 30mm; background: var(--foil-gold); transform: rotate(-45deg); z-index: 1;}
+        .fac-back .slash-bl { position: absolute; bottom: -15mm; left: -15mm; width: 30mm; height: 30mm; background: var(--foil-gold); transform: rotate(-45deg); z-index: 1;}
+        .fac-back .slash-br { position: absolute; bottom: -15mm; right: -15mm; width: 30mm; height: 30mm; background: var(--foil-gold); transform: rotate(45deg); z-index: 1;}
+        
+        .fac-back .inner-box { background: #0a0a0c; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: inset 0 0 30px rgba(0,0,0,1); display: flex; flex-direction: column; justify-content: center; align-items: center;}
+        
+        .fac-back .back-title { font-family: 'Cinzel', serif; font-size: 7px; font-weight: 800; color: #fcf6ba; letter-spacing: 3px; margin-bottom: 5mm; z-index: 5;}
+        .fac-back .back-svg { width: 45mm; height: 45mm; filter: drop-shadow(0 0 10px rgba(212,175,55,0.3)); z-index: 5;}
+        .fac-back .back-subtitle { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 900; background: var(--foil-gold); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: 6px; margin-top: 5mm; z-index: 5;}
+        .fac-back .back-footer { position: absolute; bottom: 2mm; font-size: 4px; color: #888; font-weight: bold; letter-spacing: 2px; z-index: 5;}
+
+    </style>
+</head>
+<body>
+
+    <div class="presentation-title">OBSIDIAN VANGUARD<br><span style="font-size: 14px; color: #aaa; font-family: 'Montserrat';">UNIFIED SLASH EXCLUSIVE EDITION</span></div>
+
+    <!-- KARTU 1: MODERATOR (SUPREME) -->
+    <div class="card card-slashed fac-mod">
+        <div class="slash-top"></div>
+        <div class="slash-bot"></div>
+        <div class="inner-box">
+            <div class="header">
+                <div class="id">SP·01</div>
+                <div class="faction">SUPREME</div>
+            </div>
+            <div class="svg-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                    <!-- Supreme All-Seeing Astrolabe -->
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="#d4af37" stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="34" fill="none" stroke="#aa771c" stroke-width="0.5" stroke-dasharray="2,2" />
+                    <ellipse cx="50" cy="50" rx="42" ry="12" fill="none" stroke="#bf953f" stroke-width="1" transform="rotate(45 50 50)" />
+                    <ellipse cx="50" cy="50" rx="42" ry="12" fill="none" stroke="#bf953f" stroke-width="1" transform="rotate(-45 50 50)" />
+                    <!-- Pyramid Eye -->
+                    <polygon points="50,20 25,65 75,65" fill="#fcfcfc" stroke="#aa771c" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M 35,52 Q 50,42 65,52 Q 50,62 35,52 Z" fill="#fff" stroke="#d4af37" stroke-width="1.5" />
+                    <circle cx="50" cy="52" r="6" fill="#d4af37" />
+                    <circle cx="50" cy="52" r="2" fill="#111" />
+                    <path d="M 50,5 L 50,15 M 50,85 L 50,95 M 5,50 L 15,50 M 85,50 L 95,50" stroke="#aa771c" stroke-width="2" />
+                </svg>
+            </div>
+            <div class="content">
+                <div class="title-en">Game Moderator</div>
+                <div class="title-id">SANG NARATOR</div>
+                <div class="ability">Tuhan Desa Werewolf</div>
+                <div class="desc">
+                    Tugas pemegang kartu ini absolut. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam & siang, memandu alur, serta <strong>Mencabut Nyawa</strong> pemain berdasarkan instruksi malam.
+                </div>
+            </div>
+            <div class="footer">Moderator // Supreme</div>
+        </div>
+    </div>
+
+    <!-- KARTU 2: WARGA (ALLIANCE) -->
+    <div class="card card-slashed fac-vil">
+        <div class="slash-top"></div>
+        <div class="slash-bot"></div>
+        <div class="inner-box">
+            <div class="header">
+                <div class="id">VL·14</div>
+                <div class="faction">ALLIANCE</div>
+            </div>
+            <div class="svg-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                    <!-- Royal Blue Village Crest -->
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="#4183d7" stroke-width="2" stroke-dasharray="4,2"/>
+                    <!-- Shield -->
+                    <path d="M 35,25 L 65,25 L 65,55 C 65,75 50,85 50,85 C 50,85 35,75 35,55 Z" fill="#fff" stroke="#0f2c59" stroke-width="2" stroke-linejoin="round"/>
+                    <!-- Wheat / Sun inside shield -->
+                    <path d="M 50,35 L 52,28 L 55,32 L 50,25 Z" fill="#4183d7" />
+                    <line x1="50" y1="35" x2="50" y2="28" stroke="#0f2c59" stroke-width="1" />
+                    <line x1="45" y1="45" x2="55" y2="70" stroke="#0f2c59" stroke-width="1.5" />
+                    <line x1="55" y1="45" x2="45" y2="70" stroke="#0f2c59" stroke-width="1.5" />
+                    <circle cx="50" cy="57" r="3" fill="#4183d7" />
+                    <!-- External Laurel -->
+                    <path d="M 25,70 Q 15,45 40,30" fill="none" stroke="#88aadd" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M 75,70 Q 85,45 60,30" fill="none" stroke="#88aadd" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="content">
+                <div class="title-en">Villager</div>
+                <div class="title-id">WARGA DESA</div>
+                <div class="ability">Pemilik Suara Demokrasi</div>
+                <div class="desc">
+                    Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara mutlak (voting)</strong> di siang hari untuk membasmi serigala.
+                </div>
+            </div>
+            <div class="footer">Villager // Tim Desa</div>
+        </div>
+    </div>
+
+    <!-- KARTU 3: WEREWOLF (SHADOWS) -->
+    <div class="card card-slashed fac-ww">
+        <div class="slash-top"></div>
+        <div class="slash-bot"></div>
+        <div class="inner-box">
+            <div class="header">
+                <div class="id">WW·01</div>
+                <div class="faction">SHADOWS</div>
+            </div>
+            <div class="svg-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                    <!-- Crimson Angular Wolf Skull -->
+                    <polygon points="50,15 75,35 70,60 55,85 45,85 30,60 25,35" fill="#fcfcfc" stroke="#8b0000" stroke-width="2.5" stroke-linejoin="round" />
+                    <!-- Eye sockets -->
+                    <polygon points="35,45 45,55 35,60" fill="#8b0000" />
+                    <polygon points="65,45 55,55 65,60" fill="#8b0000" />
+                    <circle cx="40" cy="52" r="1.5" fill="#fff" />
+                    <circle cx="60" cy="52" r="1.5" fill="#fff" />
+                    <!-- Fangs -->
+                    <polygon points="45,85 48,95 50,85" fill="#8b0000" />
+                    <polygon points="55,85 52,95 50,85" fill="#8b0000" />
+                    <!-- Bloody Claw Marks Overlay -->
+                    <path d="M 15,20 Q 40,55 30,90" fill="none" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+                    <path d="M 25,10 Q 55,50 40,85" fill="none" stroke="#ff4d4d" stroke-width="2.5" stroke-linecap="round" opacity="0.8" />
+                    <path d="M 40,5 Q 70,45 55,80" fill="none" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+                </svg>
+            </div>
+            <div class="content">
+                <div class="title-en">Werewolf</div>
+                <div class="title-id">SERIGALA</div>
+                <div class="ability">Membunuh di Malam Hari</div>
+                <div class="desc">
+                    Setiap malam, kawanan serigala memilih satu pemain untuk <strong>dibunuh secara buas</strong>. Serigala saling mengenali. Menang jika jumlah kalian menyamai jumlah warga yang tersisa.
+                </div>
+            </div>
+            <div class="footer">Werewolf // Tim Jahat</div>
+        </div>
+    </div>
+
+    <!-- KARTU 4: JESTER (NEUTRAL) -->
+    <div class="card card-slashed fac-jst">
+        <div class="slash-top"></div>
+        <div class="slash-bot"></div>
+        <div class="inner-box">
+            <div class="header">
+                <div class="id">NT·01</div>
+                <div class="faction">NEUTRAL</div>
+            </div>
+            <div class="svg-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                    <!-- Split Porcelain Mask -->
+                    <!-- Left Face: Sad/Amethyst -->
+                    <path d="M 50,20 C 20,20 20,55 25,80 Q 50,100 50,85 Z" fill="#fff" stroke="#4a154b" stroke-width="2" />
+                    <path d="M 35,50 Q 40,45 45,50" fill="none" stroke="#4a154b" stroke-width="1.5" />
+                    <circle cx="40" cy="53" r="2" fill="#4a154b" />
+                    <path d="M 40,57 L 38,65" stroke="#4a154b" stroke-width="1" /> <!-- Tear -->
+                    <path d="M 30,75 Q 40,70 45,75" fill="none" stroke="#4a154b" stroke-width="1.5" /> <!-- Frown -->
+                    
+                    <!-- Right Face: Happy/Emerald -->
+                    <path d="M 50,20 C 80,20 80,55 75,80 Q 50,100 50,85 Z" fill="#f0f0f0" stroke="#9b59b6" stroke-width="2" />
+                    <path d="M 65,47 Q 60,52 55,47" fill="none" stroke="#9b59b6" stroke-width="1.5" />
+                    <circle cx="60" cy="53" r="2" fill="#9b59b6" />
+                    <path d="M 70,70 Q 60,80 55,70" fill="none" stroke="#9b59b6" stroke-width="1.5" /> <!-- Smile -->
+                    
+                    <!-- Jester Hat / Diamonds -->
+                    <polygon points="50,20 30,5 35,25" fill="#4a154b" />
+                    <circle cx="30" cy="5" r="3" fill="#9b59b6" />
+                    <polygon points="50,20 70,5 65,25" fill="#9b59b6" />
+                    <circle cx="70" cy="5" r="3" fill="#4a154b" />
+                    <!-- Shatter crack down the middle -->
+                    <path d="M 50,20 L 48,40 L 52,60 L 49,75 L 50,85" fill="none" stroke="#222" stroke-width="1" />
+                </svg>
+            </div>
+            <div class="content">
+                <div class="title-en">Jester</div>
+                <div class="title-id">BADUT</div>
+                <div class="ability">Tawa Terakhir</div>
+                <div class="desc">
+                    Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di siang hari. Jika Badut berhasil membuat dirinya digantung, maka ia memenangkan permainan seorang diri.
+                </div>
+            </div>
+            <div class="footer">Jester // Tim Netral</div>
+        </div>
+    </div>
+
+    <!-- KARTU 5: KARTU BELAKANG (CARD BACK) -->
+    <div class="card card-slashed fac-back">
+        <div class="slash-tl"></div>
+        <div class="slash-tr"></div>
+        <div class="slash-bl"></div>
+        <div class="slash-br"></div>
+        
+        <div class="inner-box">
+            <div class="back-title">OBSIDIAN VANGUARD</div>
+            
+            <div class="back-svg">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                    <!-- Pure Gold Mandala/Crest on Black -->
+                    <defs>
+                        <linearGradient id="backGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fcf6ba" />
+                            <stop offset="50%" stop-color="#d4af37" />
+                            <stop offset="100%" stop-color="#aa771c" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Outer Rings -->
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="url(#backGold)" stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#aa771c" stroke-width="0.5" stroke-dasharray="2,3" />
+                    
+                    <!-- Hexagram Base -->
+                    <polygon points="50,8 86,29 86,71 50,92 14,71 14,29" fill="none" stroke="#aa771c" stroke-width="1" />
+                    <polygon points="50,15 80,33 80,67 50,85 20,67 20,33" fill="none" stroke="#d4af37" stroke-width="0.5" transform="rotate(30 50 50)" />
+                    
+                    <!-- Center Crescent Moon & Wolf Silhouette -->
+                    <circle cx="50" cy="50" r="24" fill="#111" stroke="url(#backGold)" stroke-width="2" />
+                    <path d="M 56,33 A 16,16 0 1,1 39,66 A 19,19 0 1,0 56,33 Z" fill="#d4af37" />
+                    <!-- Wolf howling up at the moon -->
+                    <path d="M 45,69 L 48,54 Q 52,46 59,43 Q 61,49 55,55 Q 58,61 67,69 Z" fill="#050505" stroke="#fcf6ba" stroke-width="0.5" />
+                    
+                    <!-- Compass Points -->
+                    <polygon points="50,0 54,8 50,10 46,8" fill="url(#backGold)" />
+                    <polygon points="50,100 54,92 50,90 46,92" fill="url(#backGold)" />
+                    <polygon points="0,50 8,46 10,50 8,54" fill="url(#backGold)" />
+                    <polygon points="100,50 92,46 90,50 92,54" fill="url(#backGold)" />
+                </svg>
+            </div>
+            
+            <div class="back-subtitle">WEREWOLF</div>
+            <div class="back-footer">EDISI EKSKLUSIF</div>
+        </div>
+    </div>
+
+</body>
+</html>
