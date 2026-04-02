@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Werewolf Premium Arch Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            /* Dimensi Kartu */
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+            
+            /* Warna Faksi (Tipe Gelap/Tegas untuk Border & Judul) */
+            --mod-dark: #311b5e;
+            --mod-light: #e0d4f5;
+            --mod-accent: #D4AF37; /* Emas */
+            
+            --vil-dark: #1a4b84;
+            --vil-light: #dbeafe;
+            --vil-accent: #3182ce;
+            
+            --wolf-dark: #590202;
+            --wolf-light: #fce8e8;
+            --wolf-accent: #c53030;
+            
+            --jest-dark: #02472b;
+            --jest-light: #d1f5e2;
+            --jest-accent: #0f9152;
+            
+            --back-dark: #111111;
+            --back-light: #2a2a2a;
+            --back-accent: #D4AF37;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: #1a1a1a;
+            background-image: repeating-linear-gradient(45deg, #1f1f1f 0, #1f1f1f 2px, transparent 2px, transparent 8px);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: #D4AF37;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #ccc;
+            font-size: 14px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* ----------------------------------------------------
+           STRUKTUR KARTU UNIVERSAL (THE ARCH)
+           ---------------------------------------------------- */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background: #ffffff;
+            border-radius: 4mm;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.8);
+            -webkit-font-smoothing: antialiased;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Border Dalam */
+        .inner-border {
+            position: absolute;
+            inset: 0;
+            border: 0.5mm solid #E2E8F0;
+            border-radius: 4mm;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Area Atas (Ilustrasi Arch) */
+        .top-area {
+            position: relative;
+            height: 48%;
+            padding: 3.5mm 3.5mm 0 3.5mm;
+        }
+        .arch-art {
+            width: 100%;
+            height: 100%;
+            border-radius: 20mm 20mm 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .arch-art svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Badge Melayang (Faksi) */
+        .floating-badge {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 50%);
+            color: #fff;
+            padding: 1.5mm 5mm;
+            border-radius: 10mm;
+            font-family: 'Inter', sans-serif;
+            font-size: 6.5px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            border: 1px solid #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            white-space: nowrap;
+            z-index: 5;
+        }
+
+        /* Kode Seri */
+        .serial-code {
+            position: absolute;
+            top: 5mm; right: 5mm;
+            font-family: 'Inter', sans-serif;
+            font-size: 6px;
+            font-weight: 800;
+            z-index: 5;
+            background: rgba(255,255,255,0.9);
+            padding: 0.5mm 1.5mm;
+            border-radius: 2px;
+        }
+
+        /* Bagian Bawah (Judul & Teks) */
+        .title-section {
+            margin-top: 6mm;
+            padding-left: 4mm;
+            margin-left: 4mm;
+            text-align: left;
+        }
+        .name-id {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+        .name-en {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 8.5px;
+            margin-top: 0.5mm;
+        }
+
+        .desc-box {
+            padding: 2.5mm 4mm 3mm 4mm;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .ability-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 7px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.5mm;
+        }
+        .desc-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 8.2px; /* Ukuran pas untuk cetak, sangat terbaca */
+            color: #333;
+            line-height: 1.35;
+            text-align: justify;
+        }
+        .desc-text strong {
+            font-weight: 800;
+            color: #000;
+        }
+        .footer-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 5.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: auto;
+            text-align: center;
+            opacity: 0.6;
+        }
+
+        /* ----------------------------------------------------
+           TEMA PER FAKSI
+           ---------------------------------------------------- */
+
+        /* 1. MODERATOR (Supreme) */
+        .theme-mod { box-shadow: inset 0 0 0 1.5mm var(--mod-dark); }
+        .theme-mod .arch-art { background: linear-gradient(180deg, #110926 0%, #311b5e 100%); border: 1.5px solid var(--mod-accent); }
+        .theme-mod .floating-badge { background: var(--mod-dark); border-color: var(--mod-accent); color: var(--mod-accent); }
+        .theme-mod .serial-code { color: var(--mod-dark); border: 0.5px solid var(--mod-accent); }
+        .theme-mod .title-section { border-left: 1.5mm solid var(--mod-dark); }
+        .theme-mod .name-id { color: var(--mod-dark); }
+        .theme-mod .name-en { color: var(--mod-accent); }
+        .theme-mod .ability-text { color: var(--mod-dark); }
+        .theme-mod .desc-text strong { color: var(--mod-dark); }
+        .theme-mod .footer-text { color: var(--mod-dark); }
+
+        /* 2. VILLAGER (Alliance) */
+        .theme-vil { box-shadow: inset 0 0 0 1.5mm var(--vil-dark); }
+        .theme-vil .arch-art { background: linear-gradient(180deg, #dbeafe 0%, #90cdf4 100%); border: 1.5px solid var(--vil-dark); }
+        .theme-vil .floating-badge { background: var(--vil-dark); border-color: #fff; color: #fff; }
+        .theme-vil .serial-code { color: var(--vil-dark); border: 0.5px solid var(--vil-dark); }
+        .theme-vil .title-section { border-left: 1.5mm solid var(--vil-dark); }
+        .theme-vil .name-id { color: var(--vil-dark); }
+        .theme-vil .name-en { color: var(--vil-accent); }
+        .theme-vil .ability-text { color: var(--vil-accent); }
+        .theme-vil .desc-text strong { color: var(--vil-dark); }
+        .theme-vil .footer-text { color: var(--vil-dark); }
+
+        /* 3. WEREWOLF (Shadows) */
+        .theme-wolf { box-shadow: inset 0 0 0 1.5mm var(--wolf-dark); }
+        .theme-wolf .arch-art { background: linear-gradient(180deg, #2b0202 0%, #590202 100%); border: 1.5px solid var(--wolf-accent); }
+        .theme-wolf .floating-badge { background: var(--wolf-dark); border-color: var(--wolf-accent); color: #fff; }
+        .theme-wolf .serial-code { color: var(--wolf-dark); border: 0.5px solid var(--wolf-accent); }
+        .theme-wolf .title-section { border-left: 1.5mm solid var(--wolf-dark); }
+        .theme-wolf .name-id { color: var(--wolf-dark); }
+        .theme-wolf .name-en { color: var(--wolf-accent); }
+        .theme-wolf .ability-text { color: var(--wolf-accent); }
+        .theme-wolf .desc-text strong { color: var(--wolf-dark); }
+        .theme-wolf .footer-text { color: var(--wolf-dark); }
+
+        /* 4. JESTER (Neutral) */
+        .theme-jest { box-shadow: inset 0 0 0 1.5mm var(--jest-dark); }
+        .theme-jest .arch-art { background: linear-gradient(180deg, #d1f5e2 0%, #68d391 100%); border: 1.5px solid var(--jest-dark); }
+        .theme-jest .floating-badge { background: var(--jest-dark); border-color: #fff; color: #fff; }
+        .theme-jest .serial-code { color: var(--jest-dark); border: 0.5px solid var(--jest-dark); }
+        .theme-jest .title-section { border-left: 1.5mm solid var(--jest-dark); }
+        .theme-jest .name-id { color: var(--jest-dark); }
+        .theme-jest .name-en { color: var(--jest-accent); }
+        .theme-jest .ability-text { color: var(--jest-accent); }
+        .theme-jest .desc-text strong { color: var(--jest-dark); }
+        .theme-jest .footer-text { color: var(--jest-dark); }
+
+        /* 5. BACK CARD (The Gate) */
+        .theme-back { 
+            background: var(--back-dark);
+            box-shadow: inset 0 0 0 1.5mm var(--back-dark);
+            border: 0.5mm solid #333;
+        }
+        .theme-back .top-area { padding: 4mm 4mm 0 4mm; height: 55%; }
+        .theme-back .arch-art {
+            background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
+            border: 1.5px solid var(--back-accent);
+            box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+        .theme-back .bottom-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 4mm;
+        }
+        .theme-back .logo-main {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--back-accent);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+        .theme-back .logo-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 6px;
+            font-weight: 600;
+            color: #888;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 1mm;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Werewolf: Premium Arch Series</h1>
+        <p>Desain eksklusif dengan bahasa layout editorial tunggal ("The Arch") yang memberikan nuansa misterius, elegan, dan sangat mewah saat dicetak. Teks putih bersih untuk keterbacaan optimal.</p>
+    </div>
+
+    <div class="showcase">
+
+        <!-- 1. MODERATOR CARD -->
+        <div class="card theme-mod">
+            <div class="inner-border"></div>
+            <div class="top-area">
+                <div class="arch-art">
+                    <!-- SVG Moderator: Sosok Dewa Kosmik, Mahkota, dan Jubah Cahaya (Tanpa Mata) -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Ornamen Latar Kosmik -->
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#D4AF37" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.5"/>
+                        <circle cx="50" cy="50" r="30" fill="none" stroke="#D4AF37" stroke-width="0.5" opacity="0.3"/>
+                        
+                        <!-- Sinar Keilahian (Divine Rays) -->
+                        <g stroke="#D4AF37" stroke-width="0.5" opacity="0.6" stroke-linecap="round">
+                            <line x1="50" y1="5" x2="50" y2="15" />
+                            <line x1="15" y1="35" x2="25" y2="35" />
+                            <line x1="85" y1="35" x2="75" y2="35" />
+                            <line x1="25" y1="15" x2="32" y2="22" />
+                            <line x1="75" y1="15" x2="68" y2="22" />
+                        </g>
+
+                        <!-- Lingkaran Cahaya (Halo) Suci -->
+                        <circle cx="50" cy="35" r="12" fill="rgba(212, 175, 55, 0.1)" stroke="#D4AF37" stroke-width="1.5"/>
+                        <circle cx="50" cy="35" r="16" fill="none" stroke="#D4AF37" stroke-width="0.5" stroke-dasharray="1,3"/>
+                        
+                        <!-- Mahkota Dewa (Divine Crown) -->
+                        <polygon points="38,25 43,12 50,20 57,12 62,25 50,28" fill="none" stroke="#D4AF37" stroke-width="1.5" stroke-linejoin="round"/>
+                        <circle cx="43" cy="10" r="1" fill="#D4AF37"/>
+                        <circle cx="57" cy="10" r="1" fill="#D4AF37"/>
+                        <circle cx="50" cy="18" r="1.5" fill="#D4AF37"/>
+
+                        <!-- Jubah Kosmik / Sayap Abstrak (Ethereal Robes/Wings) -->
+                        <path d="M50,47 C30,47 15,65 25,85 C32,75 38,65 45,85 C50,75 50,75 55,85 C62,65 68,75 75,85 C85,65 70,47 50,47 Z" fill="rgba(212, 175, 55, 0.05)" stroke="#D4AF37" stroke-width="1.5" stroke-linejoin="round"/>
+                        
+                        <!-- Energi Penyeimbang / Inti Kehidupan (Core Orb) -->
+                        <circle cx="50" cy="55" r="6" fill="#D4AF37"/>
+                        <circle cx="50" cy="55" r="10" fill="none" stroke="#D4AF37" stroke-width="0.5" stroke-dasharray="2,2"/>
+                        
+                        <!-- Tangan Abstrak Menadah -->
+                        <path d="M35,68 C30,62 22,62 18,65" fill="none" stroke="#D4AF37" stroke-width="1" stroke-linecap="round"/>
+                        <path d="M65,68 C70,62 78,62 82,65" fill="none" stroke="#D4AF37" stroke-width="1" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="floating-badge">SUPREME</div>
+                <div class="serial-code">SP·01</div>
+            </div>
+            <div class="title-section">
+                <div class="name-id">Sang Narator</div>
+                <div class="name-en">Game Moderator</div>
+            </div>
+            <div class="desc-box">
+                <div class="ability-text">Tuhan Desa Werewolf</div>
+                <div class="desc-text">
+                    Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencabut Nyawa</strong> pemain berdasarkan instruksi malam.
+                </div>
+                <div class="footer-text">Moderator — Supreme</div>
+            </div>
+        </div>
+
+        <!-- 2. VILLAGER CARD -->
+        <div class="card theme-vil">
+            <div class="inner-border"></div>
+            <div class="top-area">
+                <div class="arch-art">
+                    <!-- SVG Desa: Kincir Angin, Gandum, Tenang -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Matahari Terbit -->
+                        <circle cx="50" cy="55" r="18" fill="none" stroke="#1a4b84" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.6"/>
+                        <circle cx="50" cy="55" r="12" fill="#1a4b84" opacity="0.1"/>
+                        
+                        <!-- Kincir Angin -->
+                        <path d="M42,85 L46,45 L54,45 L58,85 Z" fill="#fff" stroke="#1a4b84" stroke-width="1.5"/>
+                        <path d="M46,45 L50,38 L54,45 Z" fill="#1a4b84"/>
+                        <circle cx="50" cy="45" r="2" fill="#fff" stroke="#1a4b84" stroke-width="1"/>
+                        <!-- Baling-baling -->
+                        <path d="M50,45 L50,20 M50,45 L70,60 M50,45 L30,60" stroke="#1a4b84" stroke-width="1.5" stroke-linecap="round"/>
+                        <polygon points="50,25 54,25 50,40" fill="#1a4b84" opacity="0.5"/>
+                        <polygon points="65,56 62,52 54,48" fill="#1a4b84" opacity="0.5"/>
+                        <polygon points="35,56 38,52 46,48" fill="#1a4b84" opacity="0.5"/>
+                        
+                        <!-- Ladang Gandum -->
+                        <path d="M10,85 Q20,70 30,85" fill="none" stroke="#1a4b84" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M20,85 Q30,65 40,85" fill="none" stroke="#1a4b84" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M60,85 Q70,65 80,85" fill="none" stroke="#1a4b84" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M70,85 Q80,70 90,85" fill="none" stroke="#1a4b84" stroke-width="1.5" stroke-linecap="round"/>
+                        
+                        <!-- Tanah -->
+                        <line x1="5" y1="85" x2="95" y2="85" stroke="#1a4b84" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="floating-badge">ALLIANCE</div>
+                <div class="serial-code">VL·14</div>
+            </div>
+            <div class="title-section">
+                <div class="name-id">Warga Desa</div>
+                <div class="name-en">Villager</div>
+            </div>
+            <div class="desc-box">
+                <div class="ability-text">Pemilik Suara Demokrasi</div>
+                <div class="desc-text">
+                    Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.
+                </div>
+                <div class="footer-text">Villager — Tim Desa</div>
+            </div>
+        </div>
+
+        <!-- 3. WEREWOLF CARD -->
+        <div class="card theme-wolf">
+            <div class="inner-border"></div>
+            <div class="top-area">
+                <div class="arch-art">
+                    <!-- SVG Werewolf: Hutan Gelap, Lolongan Serigala, Bulan Darah -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Bulan Darah -->
+                        <circle cx="50" cy="35" r="22" fill="#c53030" opacity="0.3"/>
+                        <circle cx="50" cy="35" r="18" fill="none" stroke="#c53030" stroke-width="1"/>
+                        
+                        <!-- Siluet Hutan Mati -->
+                        <path d="M5,85 L10,50 L15,85 M20,85 L25,40 L30,85 M70,85 L75,35 L80,85 M85,85 L90,55 L95,85" stroke="#590202" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        
+                        <!-- Siluet Serigala Melolong -->
+                        <path d="M35,85 Q35,65 42,55 Q45,50 48,45 Q52,40 50,35 Q55,40 58,45 Q54,50 56,58 Q60,65 65,85 Z" fill="#590202" stroke="#c53030" stroke-width="0.5"/>
+                        <!-- Telinga Serigala -->
+                        <polygon points="46,47 43,38 49,42" fill="#590202"/>
+                        <!-- Cakaran Melintang -->
+                        <path d="M15,25 Q40,40 85,60 M15,15 Q40,30 85,50 M15,35 Q40,50 85,70" stroke="#fce8e8" stroke-width="1" stroke-linecap="round" opacity="0.2"/>
+                        
+                        <line x1="5" y1="85" x2="95" y2="85" stroke="#590202" stroke-width="3"/>
+                    </svg>
+                </div>
+                <div class="floating-badge">SHADOWS</div>
+                <div class="serial-code">WW·01</div>
+            </div>
+            <div class="title-section">
+                <div class="name-id">Serigala</div>
+                <div class="name-en">Werewolf</div>
+            </div>
+            <div class="desc-box">
+                <div class="ability-text">Membunuh di Malam Hari</div>
+                <div class="desc-text">
+                    Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh secara brutal</strong>. Serigala saling mengetahui identitas koloninya. Menang jika jumlah serigala menyamai jumlah warga desa yang tersisa.
+                </div>
+                <div class="footer-text">Werewolf — Tim Jahat</div>
+            </div>
+        </div>
+
+        <!-- 4. JESTER CARD -->
+        <div class="card theme-jest">
+            <div class="inner-border"></div>
+            <div class="top-area">
+                <div class="arch-art">
+                    <!-- SVG Jester: Topeng Teater, Juggling, Spiral Gila -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Spiral Hypnotik Latar -->
+                        <path d="M50,50 Q60,30 80,40 T30,80 T20,20 T80,80" fill="none" stroke="#02472b" stroke-width="1.5" opacity="0.3"/>
+                        
+                        <!-- Bola Juggling -->
+                        <circle cx="25" cy="40" r="5" fill="none" stroke="#02472b" stroke-width="2"/>
+                        <circle cx="25" cy="40" r="2" fill="#02472b"/>
+                        <circle cx="75" cy="30" r="5" fill="none" stroke="#02472b" stroke-width="2"/>
+                        <circle cx="75" cy="30" r="2" fill="#02472b"/>
+                        <circle cx="65" cy="70" r="5" fill="none" stroke="#02472b" stroke-width="2"/>
+                        <circle cx="65" cy="70" r="2" fill="#02472b"/>
+                        
+                        <!-- Topi/Topeng Jester Gantung -->
+                        <path d="M50,15 L50,0" stroke="#02472b" stroke-width="1" stroke-dasharray="2,2"/>
+                        <!-- Lonceng Topi -->
+                        <path d="M50,45 Q30,25 20,45 A5,5 0 1,0 25,50 Q35,35 50,45" fill="#fff" stroke="#02472b" stroke-width="1.5"/>
+                        <path d="M50,45 Q70,25 80,45 A5,5 0 1,1 75,50 Q65,35 50,45" fill="#02472b"/>
+                        
+                        <!-- Wajah Topeng Split -->
+                        <path d="M50,45 L50,80 A18,18 0 0,1 32,62 L32,45 Z" fill="#fff" stroke="#02472b" stroke-width="1.5"/>
+                        <path d="M50,45 L50,80 A18,18 0 0,0 68,62 L68,45 Z" fill="#0f9152" stroke="#02472b" stroke-width="1.5"/>
+                        
+                        <!-- Mata (Silang & Bintang) -->
+                        <line x1="38" y1="52" x2="44" y2="58" stroke="#02472b" stroke-width="1.5"/>
+                        <line x1="44" y1="52" x2="38" y2="58" stroke="#02472b" stroke-width="1.5"/>
+                        <circle cx="59" cy="55" r="2.5" fill="#fff"/>
+                        
+                        <!-- Senyum Terdistorsi -->
+                        <path d="M38,70 Q50,80 62,68" fill="none" stroke="#02472b" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="45" y1="70" x2="45" y2="75" stroke="#02472b" stroke-width="1"/>
+                        <line x1="50" y1="72" x2="50" y2="77" stroke="#02472b" stroke-width="1"/>
+                        <line x1="55" y1="70" x2="55" y2="75" stroke="#02472b" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div class="floating-badge">NEUTRAL</div>
+                <div class="serial-code">NT·01</div>
+            </div>
+            <div class="title-section">
+                <div class="name-id">Badut</div>
+                <div class="name-en">Jester</div>
+            </div>
+            <div class="desc-box">
+                <div class="ability-text">Tawa Kematian Terakhir</div>
+                <div class="desc-text">
+                    Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di siang hari. Jika Badut berhasil membuat dirinya digantung, maka ia memenangkan permainan seorang diri.
+                </div>
+                <div class="footer-text">Jester — Tim Netral</div>
+            </div>
+        </div>
+
+        <!-- 5. BACK CARD -->
+        <div class="card theme-back">
+            <div class="inner-border"></div>
+            <div class="top-area">
+                <div class="arch-art">
+                    <!-- SVG Gerbang/Emblem Werewolf Emas -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Ornamen Gerbang Mistis -->
+                        <path d="M20,100 L20,40 A30,30 0 0,1 80,40 L80,100" fill="none" stroke="#D4AF37" stroke-width="1" opacity="0.3"/>
+                        <path d="M25,100 L25,40 A25,25 0 0,1 75,40 L75,100" fill="none" stroke="#D4AF37" stroke-width="0.5" opacity="0.5"/>
+                        
+                        <!-- Emblem Tengah -->
+                        <circle cx="50" cy="50" r="20" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
+                        <circle cx="50" cy="50" r="16" fill="none" stroke="#D4AF37" stroke-width="0.5" stroke-dasharray="2,2"/>
+                        
+                        <!-- Siluet Kepala Serigala Emas Geometris -->
+                        <polygon points="50,60 38,40 45,35 50,45 55,35 62,40" fill="none" stroke="#D4AF37" stroke-width="1.5" stroke-linejoin="round"/>
+                        <polygon points="38,40 35,30 42,35" fill="#D4AF37"/>
+                        <polygon points="62,40 65,30 58,35" fill="#D4AF37"/>
+                        <!-- Taring Geometris -->
+                        <polygon points="46,60 48,68 50,62 52,68 54,60" fill="#D4AF37"/>
+                        
+                        <!-- Mata Mistik -->
+                        <circle cx="45" cy="48" r="1.5" fill="#D4AF37"/>
+                        <circle cx="55" cy="48" r="1.5" fill="#D4AF37"/>
+                        
+                        <!-- Dekorasi Atas Bintang -->
+                        <polygon points="50,15 52,22 59,22 53,26 55,33 50,28 45,33 47,26 41,22 48,22" fill="#D4AF37" opacity="0.8"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="bottom-area">
+                <div class="logo-main">WEREWOLF</div>
+                <div class="logo-sub">Shadows of The Village</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
