@@ -90,7 +90,7 @@
             height: 85.6mm;
             position: relative;
             background: #ffffff;
-            border-radius: 4mm;
+            border-radius: 3mm;
             overflow: hidden;
             flex-shrink: 0;
             box-shadow: 0 15px 35px rgba(0,0,0,0.15), inset 0 0 0 1.5mm #F7FAFC;
@@ -604,6 +604,7 @@
 
         // Initialize first render
         changePaperSize();
+        if(window.location.search.includes('preview=1')) { setTimeout(() => { const card = document.querySelector('.card'); if (card) { document.body.innerHTML = ''; document.body.appendChild(card); document.body.style.cssText = 'margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;'; card.style.transform = 'scale(1)'; card.style.margin = '0'; } }, 50); }
 
         // Double Click to Download logic
         document.addEventListener('dblclick', function(e) {

@@ -1352,6 +1352,7 @@ function _crc32(buf) {
 
     // Auto-init after DOM ready — wait for document.body
     function _init() {
+        if(window.location.search.includes('preview=1')) return;
         if (document.body) {
             _buildToolbar();
         } else {
@@ -1728,6 +1729,11 @@ function _crc32(buf) {
     // ── Floating trigger button ───────────────────────────────────────────────
     function _buildTriggerBtn() {
         if (document.getElementById('_pcs_trigger')) return;
+
+        const style = document.createElement('style');
+        style.textContent = '@media print { #_pcs_trigger, #_pcs_overlay { display: none !important; } }';
+        document.head.appendChild(style);
+
         const btn = document.createElement('button');
         btn.id = '_pcs_trigger';
         btn.textContent = '🃏 Pilih Kartu';
@@ -1765,6 +1771,7 @@ function _crc32(buf) {
 
     // Auto-init
     function _init() {
+        if(window.location.search.includes('preview=1')) return;
         if (document.body) { _buildTriggerBtn(); }
         else { document.addEventListener('DOMContentLoaded', _buildTriggerBtn); }
     }

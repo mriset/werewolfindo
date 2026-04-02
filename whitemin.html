@@ -87,7 +87,7 @@
             height: 85.6mm;
             background: #ffffff;
             border: 1px solid #e5e7eb;
-            border-radius: 4mm;
+            border-radius: 3mm;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -600,6 +600,7 @@
 
         // Initialize first render
         changePaperSize();
+        if(window.location.search.includes('preview=1')) { setTimeout(() => { const card = document.querySelector('.card'); if (card) { document.body.innerHTML = ''; document.body.appendChild(card); document.body.style.cssText = 'margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;'; card.style.transform = 'scale(1)'; card.style.margin = '0'; } }, 50); }
 
         // Add double click / double tap download functionality
         document.addEventListener('dblclick', function(e) {

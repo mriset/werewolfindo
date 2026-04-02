@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf Card Deck Collection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        /* BASE & THEME */
+        :root {
+            --bg-color: #050505;
+            --surface-color: #111111;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --gold-light: #fef08a;
+            --gold-main: #d4af37;
+            --gold-dark: #b45309;
+            --accent-glow: rgba(212, 175, 55, 0.15);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 50% 0%, #1a1a1a 0%, transparent 60%),
+                linear-gradient(to bottom, transparent, #000000);
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold-main), transparent);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-main), var(--gold-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 20px var(--accent-glow);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        p.subtitle {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        /* GALLERY GRID */
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 40px;
+            justify-content: center;
+        }
+
+        /* CARD ITEM */
+        .deck-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .deck-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .preview-wrapper {
+            width: 260px;
+            height: 410px;
+            border-radius: 16px;
+            background: var(--surface-color);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
+            transition: all 0.4s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .preview-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.8) 0%, transparent 40%, transparent 60%, rgba(212, 175, 55, 0.3) 100%);
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 18px;
+        }
+
+        .deck-item:hover .preview-wrapper {
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2), inset 0 0 0 1px rgba(212, 175, 55, 0.2);
+        }
+
+        .deck-item:hover .preview-wrapper::before {
+            opacity: 1;
+            animation: pulse-border 2s linear infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .preview-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            pointer-events: none; /* Prevent iframe grabbing clicks */
+            position: relative;
+            z-index: 1;
+            /* iframe scales its own view via the inner script */
+        }
+
+        /* TEXT INFO */
+        .deck-info {
+            margin-top: 24px;
+            text-align: center;
+            width: 100%;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .deck-title {
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .deck-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            line-height: 1.5;
+            opacity: 0.8;
+        }
+
+        .deck-item:hover .deck-title {
+            color: var(--gold-main);
+        }
+
+        /* LOADING SPINNER */
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top-color: var(--gold-main);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            header { padding: 40px 15px 30px; }
+            h1 { font-size: 26px; }
+            .gallery-container { padding: 30px 15px; gap: 30px; }
+            .preview-wrapper { width: 240px; height: 380px; }
+        }
+        @media (max-width: 480px) {
+            .preview-wrapper { width: 100%; max-width: 260px; height: 410px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Master Collection</h1>
+        <p class="subtitle">Premium Werewolf Card Decks</p>
+    </header>
+
+    <div class="gallery-container" id="gallery">
+        <!-- Generates via JS -->
+    </div>
+
+    <script>
+        const decks = [
+            { id: 'obsidianv',     name: 'Obsidian Vanguard',   desc: 'Dark Theme, Golden Glow, Premium UI.', target: 'obsidianv.html' },
+            { id: 'arcana',        name: 'Gothic Arcana',       desc: 'Antique Aesthetic, Intricate Magic Sigils.', target: 'arcana.html' },
+            { id: 'ove',           name: 'OVE Edition',         desc: 'Classic Refined Dark Edition System.', target: 'ove.html' },
+            { id: 'lightcelest',   name: 'Light Celest',        desc: 'Bright Divine Theme, Radiant Golds.', target: 'lightcelest.html' },
+            { id: 'ultrapremium',  name: 'Ultra Premium',       desc: 'Minimalist Elite Design, Clean Look.', target: 'ultrapremium.html' },
+            { id: 'whitemin',      name: 'White Minimalist',    desc: 'Bright, Pure White Layouts.', target: 'whitemin.html' },
+            { id: 'linearted',     name: 'Linearted Edition',   desc: 'Gothic Outlined Vectors, Simple Elegance.', target: 'linearted.html' },
+            { id: 'moded',         name: 'M.O.D.E.D',           desc: 'Modern Editorial & Typography-driven.', target: 'moded.html' }
+        ];
+
+        const gallery = document.getElementById('gallery');
+
+        decks.forEach(deck => {
+            const anchor = document.createElement('a');
+            anchor.href = deck.target;
+            anchor.className = 'deck-item';
+            
+            anchor.innerHTML = `
+                <div class="preview-wrapper">
+                    <div class="loading-spinner"></div>
+                    <iframe src="${deck.target}?preview=1" class="preview-iframe" scrolling="no" tabindex="-1"></iframe>
+                </div>
+                <div class="deck-info">
+                    <h3 class="deck-title">${deck.name}</h3>
+                    <div class="deck-desc">${deck.desc}</div>
+                </div>
+            `;
+            
+            // Clean up spinner when iframe loads
+            const iframe = anchor.querySelector('iframe');
+            iframe.onload = () => {
+                const spinner = anchor.querySelector('.loading-spinner');
+                if(spinner) spinner.style.display = 'none';
+            };
+
+            gallery.appendChild(anchor);
+        });
+    </script>
+</body>
+</html>

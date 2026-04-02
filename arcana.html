@@ -29,11 +29,11 @@
         
         .page { background: #fff; margin: 0 auto 30px; padding: 9.15mm 3.75mm; display: grid; gap: 6mm; justify-content: center; align-content: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); position: relative; }
         
-        .card { width: 54mm; height: 85.6mm; position: relative; background: #ffffff; border-radius: 4mm; page-break-inside: avoid; z-index: 1; }
+        .card { width: 54mm; height: 85.6mm; position: relative; background: #ffffff; border-radius: 3mm; page-break-inside: avoid; z-index: 1; }
         .card::before { display: none; }
         
         /* The inner card with thin solid border */
-        .card-inner { position: absolute; inset: 2mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #ffffff; overflow: hidden; padding: 4mm; border: 1px solid #ddd; border-radius: 4mm; }
+        .card-inner { position: absolute; inset: 2mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #ffffff; overflow: hidden; padding: 4mm; border: 1px solid #ddd; border-radius: 2mm; }
         
         /* Minimal Top Bar */
         .card-top-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 2mm; margin-bottom: 3mm; }
@@ -351,6 +351,7 @@
 
     // Initialize first render
     changePaperSize();
+    if(window.location.search.includes('preview=1')) { setTimeout(() => { const card = document.querySelector('.card'); if (card) { document.body.innerHTML = ''; document.body.appendChild(card); document.body.style.cssText = 'margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;'; card.style.transform = 'scale(1)'; card.style.margin = '0'; } }, 50); }
     
     // Add double click / double tap download functionality
     document.addEventListener('dblclick', function(e) {
