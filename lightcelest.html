@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf - 4 Factions (Light Mode Symmetrical Design)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Supreme (Gold) */
+            --sup-light: #fdf5c9; --sup-base: #d4af37; --sup-dark: #8a5a19;
+            /* Good (Blue/Silver) */
+            --good-light: #e0f7fa; --good-base: #00acc1; --good-dark: #006064;
+            /* Evil (Red) */
+            --evil-light: #ffebee; --evil-base: #e53935; --evil-dark: #b71c1c;
+            /* Neutral (Purple) */
+            --neu-light: #f3e5f5; --neu-base: #8e24aa; --neu-dark: #4a148c;
+            /* Cupid (Pink/Rose) */
+            --cupid-light: #fce4ec; --cupid-base: #e91e63; --cupid-dark: #880e4f;
+            /* Hunter (Green/Forest) */
+            --hunter-light: #e8f5e9; --hunter-base: #4caf50; --hunter-dark: #1b5e20;
+            /* Guard (Slate/Steel) */
+            --guard-light: #f1f5f9; --guard-base: #64748b; --guard-dark: #334155;
+            /* Witch (Amber/Orange) */
+            --witch-light: #fff8e1; --witch-base: #ff8f00; --witch-dark: #e65100;
+            /* Wizard (Indigo/Magic) */
+            --wizard-light: #e8eaf6; --wizard-base: #5c6bc0; --wizard-dark: #1a237e;
+            /* Veteran (Bronze/Brown) */
+            --soldier-light: #efebe9; --soldier-base: #8d6e63; --soldier-dark: #3e2723;
+            /* Bodyguard (Charcoal/Obsidian) */
+            --bodyguard-light: #f5f5f5; --bodyguard-base: #757575; --bodyguard-dark: #212121;
+            /* Priest (Divine Yellow/Gold) */
+            --priest-light: #fffde7; --priest-base: #fbc02d; --priest-dark: #f57f17;
+            /* Mayor (Royal Blue/Sapphire) */
+            --mayor-light: #e3f2fd; --mayor-base: #1e88e5; --mayor-dark: #0d47a1;
+            /* Sheriff (Gunmetal/Blue Grey) */
+            --sheriff-light: #eceff1; --sheriff-base: #607d8b; --sheriff-dark: #263238;
+            /* Lone Wolf (Teal/Midnight) */
+            --lonewolf-light: #e0f2f1; --lonewolf-base: #00897b; --lonewolf-dark: #004d40;
+            /* Doppelganger (Violet/Phantom) */
+            --doppel-light: #f5f3ff; --doppel-base: #7c3aed; --doppel-dark: #4c1d95;
+            /* Serial Killer (Crimson/Steel) */
+            --killer-light: #ffcdd2; --killer-base: #b71c1c; --killer-dark: #111111;
+            /* Idiot (Lime/Mustard) - New Role */
+            --idiot-light: #f9fbe7; --idiot-base: #c0ca33; --idiot-dark: #827717;
+            /* Prince (Copper/Deep Orange) - New Role */
+            --prince-light: #fbe9e7; --prince-base: #ff5722; --prince-dark: #bf360c;
+            /* Little Girl (Magenta/Berry) - New Role */
+            --girl-light: #fce4ec; --girl-base: #d81b60; --girl-dark: #880e4f;
+
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+            --scale: 1; /* Pas di dalam canvas A4 */
+        }
+
+        body {
+            margin: 0;
+            padding: 40px;
+            background: #cbd5e1;
+            background-image: radial-gradient(circle at 50% 50%, #e2e8f0 0%, #94a3b8 100%);
+            display: flex;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            color: #1f2937;
+        }
+
+        /* A4 PAGE CANVAS */
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            background: #ffffff;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+            padding: 15mm;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5mm;
+            align-content: flex-start;
+            justify-content: flex-start;
+        }
+
+        /* BASE CARD STYLE */
+        .card {
+            width: calc(var(--card-w) * var(--scale));
+            height: calc(var(--card-h) * var(--scale));
+            position: relative;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05) inset;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            border-radius: 8px;
+            pointer-events: none;
+            border-width: 1px;
+            border-style: solid;
+        }
+        
+        .c-header { position: absolute; top: 25px; left: 10px; right: 10px; text-align: center; }
+        .c-header h1 { font-family: 'Cinzel', serif; font-size: 15px; margin: 0; }
+        .c-header h2 { font-size: 7px; margin: 2px 0 0 0; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+        
+        .c-svg-wrapper {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -55%);
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        .c-content { position: absolute; bottom: 12px; left: 12px; right: 12px; text-align: center; }
+        .ability-title { font-family: 'Cinzel', serif; font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;}
+        .desc-text { font-size: 7px; line-height: 1.4; text-align: justify; color: #4b5563; font-weight: 500;} 
+        
+        .c-code { position: absolute; top: 10px; left: 10px; font-size: 7px; font-weight: bold; }
+        .c-faction { position: absolute; top: 10px; right: 10px; font-size: 7px; font-weight: bold; text-transform: uppercase; }
+
+
+        /* FACTION STYLES */
+        .f-supreme { background: linear-gradient(135deg, #ffffff 0%, #fffdf0 100%); border: 1.5px solid var(--sup-base); }
+        .f-supreme:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(212, 175, 55, 0.4); }
+        .f-supreme::before { border-color: rgba(212, 175, 55, 0.4); }
+        .f-supreme .c-header h1, .f-supreme .ability-title, .f-supreme .c-code, .f-supreme .c-faction, .f-supreme .c-header h2 { color: var(--sup-dark); }
+        .f-supreme .c-svg-wrapper { background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%); }
+
+        .f-good { background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%); border: 1.5px solid var(--good-base); }
+        .f-good:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(0, 172, 193, 0.4); }
+        .f-good::before { border-color: rgba(0, 172, 193, 0.4); }
+        .f-good .c-header h1, .f-good .ability-title, .f-good .c-code, .f-good .c-faction, .f-good .c-header h2 { color: var(--good-dark); }
+        .f-good .c-svg-wrapper { background: radial-gradient(circle, rgba(0, 172, 193, 0.1) 0%, transparent 70%); border: 1px dashed rgba(0,172,193,0.3); }
+
+        .f-evil { background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%); border: 1.5px solid var(--evil-base); }
+        .f-evil:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(229, 57, 53, 0.4); }
+        .f-evil::before { border-color: rgba(229, 57, 53, 0.3); }
+        .f-evil .c-header h1, .f-evil .ability-title, .f-evil .c-code, .f-evil .c-faction, .f-evil .c-header h2 { color: var(--evil-dark); }
+        .f-evil .c-svg-wrapper { background: radial-gradient(circle, rgba(229, 57, 53, 0.1) 0%, transparent 70%); }
+
+        .f-neutral { background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%); border: 1.5px solid var(--neu-base); }
+        .f-neutral:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(142, 36, 170, 0.4); }
+        .f-neutral::before { border-color: rgba(142, 36, 170, 0.3); }
+        .f-neutral .c-header h1, .f-neutral .ability-title, .f-neutral .c-code, .f-neutral .c-faction, .f-neutral .c-header h2 { color: var(--neu-dark); }
+        .f-neutral .c-svg-wrapper { background: radial-gradient(circle, rgba(142, 36, 170, 0.1) 0%, transparent 70%); }
+
+        .f-cupid { background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 100%); border: 1.5px solid var(--cupid-base); }
+        .f-cupid:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(233, 30, 99, 0.4); }
+        .f-cupid::before { border-color: rgba(233, 30, 99, 0.3); }
+        .f-cupid .c-header h1, .f-cupid .ability-title, .f-cupid .c-code, .f-cupid .c-faction, .f-cupid .c-header h2 { color: var(--cupid-dark); }
+        .f-cupid .c-svg-wrapper { background: radial-gradient(circle, rgba(233, 30, 99, 0.1) 0%, transparent 70%); }
+
+        .f-hunter { background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%); border: 1.5px solid var(--hunter-base); }
+        .f-hunter:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(76, 175, 80, 0.4); }
+        .f-hunter::before { border-color: rgba(76, 175, 80, 0.3); }
+        .f-hunter .c-header h1, .f-hunter .ability-title, .f-hunter .c-code, .f-hunter .c-faction, .f-hunter .c-header h2 { color: var(--hunter-dark); }
+        .f-hunter .c-svg-wrapper { background: radial-gradient(circle, rgba(76, 175, 80, 0.1) 0%, transparent 70%); }
+
+        .f-guard { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border: 1.5px solid var(--guard-base); }
+        .f-guard:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(100, 116, 139, 0.4); }
+        .f-guard::before { border-color: rgba(100, 116, 139, 0.3); }
+        .f-guard .c-header h1, .f-guard .ability-title, .f-guard .c-code, .f-guard .c-faction, .f-guard .c-header h2 { color: var(--guard-dark); }
+        .f-guard .c-svg-wrapper { background: radial-gradient(circle, rgba(100, 116, 139, 0.1) 0%, transparent 70%); }
+
+        .f-witch { background: linear-gradient(135deg, #ffffff 0%, #fff8e1 100%); border: 1.5px solid var(--witch-base); }
+        .f-witch:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(255, 143, 0, 0.4); }
+        .f-witch::before { border-color: rgba(255, 143, 0, 0.3); }
+        .f-witch .c-header h1, .f-witch .ability-title, .f-witch .c-code, .f-witch .c-faction, .f-witch .c-header h2 { color: var(--witch-dark); }
+        .f-witch .c-svg-wrapper { background: radial-gradient(circle, rgba(255, 143, 0, 0.1) 0%, transparent 70%); }
+
+        .f-wizard { background: linear-gradient(135deg, #ffffff 0%, #e8eaf6 100%); border: 1.5px solid var(--wizard-base); }
+        .f-wizard:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(92, 107, 192, 0.4); }
+        .f-wizard::before { border-color: rgba(92, 107, 192, 0.3); }
+        .f-wizard .c-header h1, .f-wizard .ability-title, .f-wizard .c-code, .f-wizard .c-faction, .f-wizard .c-header h2 { color: var(--wizard-dark); }
+        .f-wizard .c-svg-wrapper { background: radial-gradient(circle, rgba(92, 107, 192, 0.1) 0%, transparent 70%); }
+
+        .f-soldier { background: linear-gradient(135deg, #ffffff 0%, #efebe9 100%); border: 1.5px solid var(--soldier-base); }
+        .f-soldier:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(141, 110, 99, 0.4); }
+        .f-soldier::before { border-color: rgba(141, 110, 99, 0.3); }
+        .f-soldier .c-header h1, .f-soldier .ability-title, .f-soldier .c-code, .f-soldier .c-faction, .f-soldier .c-header h2 { color: var(--soldier-dark); }
+        .f-soldier .c-svg-wrapper { background: radial-gradient(circle, rgba(141, 110, 99, 0.1) 0%, transparent 70%); }
+
+        .f-bodyguard { background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%); border: 1.5px solid var(--bodyguard-base); }
+        .f-bodyguard:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(117, 117, 117, 0.4); }
+        .f-bodyguard::before { border-color: rgba(117, 117, 117, 0.3); }
+        .f-bodyguard .c-header h1, .f-bodyguard .ability-title, .f-bodyguard .c-code, .f-bodyguard .c-faction, .f-bodyguard .c-header h2 { color: var(--bodyguard-dark); }
+        .f-bodyguard .c-svg-wrapper { background: radial-gradient(circle, rgba(117, 117, 117, 0.1) 0%, transparent 70%); }
+
+        .f-priest { background: linear-gradient(135deg, #ffffff 0%, #fffde7 100%); border: 1.5px solid var(--priest-base); }
+        .f-priest:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(251, 192, 45, 0.4); }
+        .f-priest::before { border-color: rgba(251, 192, 45, 0.3); }
+        .f-priest .c-header h1, .f-priest .ability-title, .f-priest .c-code, .f-priest .c-faction, .f-priest .c-header h2 { color: var(--priest-dark); }
+        .f-priest .c-svg-wrapper { background: radial-gradient(circle, rgba(251, 192, 45, 0.1) 0%, transparent 70%); }
+
+        .f-mayor { background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%); border: 1.5px solid var(--mayor-base); }
+        .f-mayor:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(30, 136, 229, 0.4); }
+        .f-mayor::before { border-color: rgba(30, 136, 229, 0.3); }
+        .f-mayor .c-header h1, .f-mayor .ability-title, .f-mayor .c-code, .f-mayor .c-faction, .f-mayor .c-header h2 { color: var(--mayor-dark); }
+        .f-mayor .c-svg-wrapper { background: radial-gradient(circle, rgba(30, 136, 229, 0.1) 0%, transparent 70%); }
+
+        .f-sheriff { background: linear-gradient(135deg, #ffffff 0%, #eceff1 100%); border: 1.5px solid var(--sheriff-base); }
+        .f-sheriff:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(96, 125, 139, 0.4); }
+        .f-sheriff::before { border-color: rgba(96, 125, 139, 0.3); }
+        .f-sheriff .c-header h1, .f-sheriff .ability-title, .f-sheriff .c-code, .f-sheriff .c-faction, .f-sheriff .c-header h2 { color: var(--sheriff-dark); }
+        .f-sheriff .c-svg-wrapper { background: radial-gradient(circle, rgba(96, 125, 139, 0.1) 0%, transparent 70%); }
+
+        .f-lonewolf { background: linear-gradient(135deg, #ffffff 0%, #e0f2f1 100%); border: 1.5px solid var(--lonewolf-base); }
+        .f-lonewolf:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(0, 137, 123, 0.4); }
+        .f-lonewolf::before { border-color: rgba(0, 137, 123, 0.3); }
+        .f-lonewolf .c-header h1, .f-lonewolf .ability-title, .f-lonewolf .c-code, .f-lonewolf .c-faction, .f-lonewolf .c-header h2 { color: var(--lonewolf-dark); }
+        .f-lonewolf .c-svg-wrapper { background: radial-gradient(circle, rgba(0, 137, 123, 0.1) 0%, transparent 70%); }
+
+        .f-doppel { background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%); border: 1.5px solid var(--doppel-base); }
+        .f-doppel:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(124, 58, 237, 0.4); }
+        .f-doppel::before { border-color: rgba(124, 58, 237, 0.3); }
+        .f-doppel .c-header h1, .f-doppel .ability-title, .f-doppel .c-code, .f-doppel .c-faction, .f-doppel .c-header h2 { color: var(--doppel-dark); }
+        .f-doppel .c-svg-wrapper { background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%); }
+
+        .f-killer { background: linear-gradient(135deg, #ffffff 0%, var(--killer-light) 100%); border: 1.5px solid var(--killer-base); }
+        .f-killer:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(183, 28, 28, 0.5); }
+        .f-killer::before { border-color: rgba(183, 28, 28, 0.4); }
+        .f-killer .c-header h1 { color: var(--killer-dark); text-shadow: 0 1px 3px rgba(183, 28, 28, 0.4); }
+        .f-killer .c-header h2, .f-killer .c-code, .f-killer .c-faction { color: var(--killer-base); opacity: 1; font-weight: 800; }
+        .f-killer .ability-title { color: var(--killer-base); }
+        .f-killer .c-svg-wrapper { background: radial-gradient(circle, rgba(183, 28, 28, 0.15) 0%, transparent 70%); }
+
+        .f-idiot { background: linear-gradient(135deg, #ffffff 0%, #f9fbe7 100%); border: 1.5px solid var(--idiot-base); }
+        .f-idiot:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(192, 202, 51, 0.4); }
+        .f-idiot::before { border-color: rgba(192, 202, 51, 0.3); }
+        .f-idiot .c-header h1 { color: var(--idiot-dark); text-shadow: 0 1px 3px rgba(192, 202, 51, 0.3); }
+        .f-idiot .c-header h2, .f-idiot .c-code, .f-idiot .c-faction { color: var(--idiot-dark); opacity: 0.8; }
+        .f-idiot .ability-title { color: var(--idiot-dark); }
+        .f-idiot .c-svg-wrapper { background: radial-gradient(circle, rgba(192, 202, 51, 0.1) 0%, transparent 70%); }
+
+        .f-prince { background: linear-gradient(135deg, #ffffff 0%, #fbe9e7 100%); border: 1.5px solid var(--prince-base); }
+        .f-prince:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(255, 87, 34, 0.4); }
+        .f-prince::before { border-color: rgba(255, 87, 34, 0.3); }
+        .f-prince .c-header h1 { color: var(--prince-dark); text-shadow: 0 1px 3px rgba(255, 87, 34, 0.3); }
+        .f-prince .c-header h2, .f-prince .c-code, .f-prince .c-faction { color: var(--prince-dark); opacity: 0.8; }
+        .f-prince .ability-title { color: var(--prince-dark); }
+        .f-prince .c-svg-wrapper { background: radial-gradient(circle, rgba(255, 87, 34, 0.1) 0%, transparent 70%); }
+
+        /* =========================================================
+           LITTLE GIRL (Magenta / Berry) - NEW
+           ========================================================= */
+        .f-girl { background: linear-gradient(135deg, #ffffff 0%, #fce4ec 100%); border: 1.5px solid var(--girl-base); }
+        .f-girl:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(216, 27, 96, 0.4); }
+        .f-girl::before { border-color: rgba(216, 27, 96, 0.3); }
+        .f-girl .c-header h1 { color: var(--girl-dark); text-shadow: 0 1px 3px rgba(216, 27, 96, 0.2); }
+        .f-girl .c-header h2 { color: var(--girl-dark); opacity: 0.8; }
+        .f-girl .c-svg-wrapper { background: radial-gradient(circle, rgba(216, 27, 96, 0.1) 0%, transparent 70%); }
+        .f-girl .ability-title { color: var(--girl-dark); }
+        .f-girl .c-code, .f-girl .c-faction { color: var(--girl-dark); opacity: 0.8; }
+
+        /* =========================================================
+           KARTU: CARD BACK (Belakang)
+           ========================================================= */
+        .f-back { background: #ffffff; }
+        .f-back:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 15px rgba(212, 175, 55, 0.4); }
+        .f-back::before { border-color: var(--sup-base); inset: 6px; opacity: 0.5; }
+        .back-pattern {
+            position: absolute; inset: 0; opacity: 0.08;
+            background-image: repeating-linear-gradient(45deg, var(--sup-dark) 0, var(--sup-dark) 1px, transparent 1px, transparent 8px),
+                              repeating-linear-gradient(-45deg, var(--sup-dark) 0, var(--sup-dark) 1px, transparent 1px, transparent 8px);
+        }
+        .back-center-logo {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 120px; height: 120px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .back-text-top {
+            position: absolute; top: 15px; left: 0; right: 0; text-align: center;
+            font-family: 'Cinzel', serif; color: var(--sup-dark); font-size: 10px; letter-spacing: 4px; text-shadow: 0 1px 3px rgba(212, 175, 55, 0.2); font-weight: 700;
+        }
+        .back-text-bottom {
+            position: absolute; bottom: 15px; left: 0; right: 0; text-align: center;
+            font-family: 'Cinzel', serif; color: var(--sup-dark); font-size: 7px; letter-spacing: 2px; font-weight: 700;
+        }
+
+        /* PRINT MEDIA QUERY */
+        @media print {
+            @page { size: A4; margin: 0; }
+            body { background: none; padding: 0; }
+            .a4-page { box-shadow: none; margin: 0; padding: 15mm; page-break-after: always; }
+            .card { box-shadow: none !important; transform: none !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="a4-page">
+    <!-- 1. KARTU SUPREME (MODERATOR) -->
+    <div class="card f-supreme">
+        <div class="c-code">SP·01</div>
+        <div class="c-faction">Supreme</div>
+        <div class="c-header">
+            <h1>Sang Narator</h1>
+            <h2>Game Moderator</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="supGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#d4af37" />
+                        <stop offset="50%" stop-color="#8a5a19" />
+                        <stop offset="100%" stop-color="#5c3a0d" />
+                    </linearGradient>
+                    <filter id="supDropShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#8a5a19" flood-opacity="0.3"/>
+                    </filter>
+                </defs>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#supGrad)" stroke-width="0.5" opacity="0.8"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="url(#supGrad)" stroke-width="1.5" stroke-dasharray="2 4"/>
+                <polygon points="50,20 80,85 20,85" fill="none" stroke="url(#supGrad)" stroke-width="1.5" opacity="0.6"/>
+                <polygon points="50,20 65,85 35,85" fill="url(#supGrad)" opacity="0.1"/>
+                <polygon points="50,20 50,85 35,85" fill="url(#supGrad)" opacity="0.2"/>
+                <g filter="url(#supDropShadow)">
+                    <path d="M 30 45 Q 50 30 70 45 Q 50 60 30 45 Z" fill="#ffffff" stroke="url(#supGrad)" stroke-width="2"/>
+                    <circle cx="50" cy="45" r="8" fill="url(#supGrad)"/>
+                    <circle cx="50" cy="45" r="3" fill="#ffffff"/>
+                </g>
+                <line x1="50" y1="5" x2="50" y2="15" stroke="url(#supGrad)" stroke-width="1.5"/>
+                <line x1="50" y1="75" x2="50" y2="95" stroke="url(#supGrad)" stroke-width="1.5"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Tuhan Desa Werewolf</div>
+            <div class="desc-text">
+                Tugas pemegang kartu ini absolut. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencabut Nyawa</strong> pemain berdasarkan instruksi malam.
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. KARTU DESA (GOOD) -->
+    <div class="card f-good">
+        <div class="c-code">VL·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Peramal</h1>
+            <h2>The Seer</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="goodGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#00acc1" />
+                        <stop offset="50%" stop-color="#00838f" />
+                        <stop offset="100%" stop-color="#004d40" />
+                    </linearGradient>
+                    <filter id="goodShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#00838f" flood-opacity="0.3"/>
+                    </filter>
+                </defs>
+                <polygon points="50,15 65,50 50,85 35,50" fill="none" stroke="url(#goodGrad)" stroke-width="1.5" opacity="0.7"/>
+                <polygon points="50,25 60,50 50,75 40,50" fill="url(#goodGrad)" opacity="0.15"/>
+                <path d="M48,10 L52,10 L52,70 L48,70 Z" fill="url(#goodGrad)"/>
+                <polygon points="50,5 53,10 47,10" fill="url(#goodGrad)"/>
+                <path d="M35,70 L65,70 L65,74 L35,74 Z" fill="url(#goodGrad)"/>
+                <circle cx="50" cy="80" r="4" fill="url(#goodGrad)"/>
+                <g stroke="url(#goodGrad)" fill="none" stroke-width="2">
+                    <path d="M 45 40 Q 20 20 10 40 Q 20 50 35 60" />
+                    <path d="M 45 45 Q 15 35 15 55 Q 25 60 38 65" />
+                    <path d="M 46 50 Q 25 50 25 65 Q 35 68 42 70" />
+                    <path d="M 55 40 Q 80 20 90 40 Q 80 50 65 60" />
+                    <path d="M 55 45 Q 85 35 85 55 Q 75 60 62 65" />
+                    <path d="M 54 50 Q 75 50 75 65 Q 65 68 58 70" />
+                </g>
+                <circle cx="50" cy="50" r="6" fill="#00bcd4" filter="url(#goodShadow)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Penerawang Identitas</div>
+            <div class="desc-text">
+                Setiap malam, peramal dapat menunjuk satu pemain. Moderator akan mengonfirmasi secara rahasia apakah pemain tersebut <strong>Serigala atau bukan</strong>. Anda adalah pilar kebenaran desa.
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. KARTU SERIGALA (EVIL) -->
+    <div class="card f-evil">
+        <div class="c-code">WW·01</div>
+        <div class="c-faction">Shadows</div>
+        <div class="c-header">
+            <h1>Alpha Serigala</h1>
+            <h2>Alpha Werewolf</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="evilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#e53935" />
+                        <stop offset="50%" stop-color="#b71c1c" />
+                        <stop offset="100%" stop-color="#7f0000" />
+                    </linearGradient>
+                    <filter id="evilShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#d32f2f" flood-opacity="0.5"/>
+                    </filter>
+                </defs>
+                <g fill="none" stroke="url(#evilGrad)" stroke-width="1.5" stroke-linejoin="round">
+                    <polygon points="50,10 70,30 85,25 75,50 80,75 50,95 20,75 25,50 15,25 30,30" opacity="0.5"/>
+                    <polygon points="50,20 65,35 75,35 65,55 70,75 50,85 30,75 35,55 25,35 35,35" stroke-width="2"/>
+                    <polygon points="50,55 60,70 50,85 40,70" />
+                    <polygon points="50,75 55,80 50,85 45,80" fill="url(#evilGrad)"/>
+                    <path d="M 50 20 L 50 45 M 40 30 L 50 40 L 60 30" />
+                </g>
+                <g filter="url(#evilShadow)">
+                    <polygon points="35,45 45,48 40,53" fill="#ff1744" />
+                    <polygon points="65,45 55,48 60,53" fill="#ff1744" />
+                </g>
+                <polygon points="45,85 48,95 50,85" fill="#e53935" />
+                <polygon points="55,85 52,95 50,85" fill="#e53935" />
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Sang Pemimpin Malam</div>
+            <div class="desc-text">
+                Pemimpin klan serigala. Sekali dalam satu permainan, jika ada voting seri di antara komplotan Serigala di malam hari, keputusan mutlak pembunuhan berada di tangan Anda.
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. KARTU NETRAL (NEUTRAL) -->
+    <div class="card f-neutral">
+        <div class="c-code">NT·04</div>
+        <div class="c-faction">Neutral</div>
+        <div class="c-header">
+            <h1>Si Badut</h1>
+            <h2>The Jester</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="neuGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#8e24aa" />
+                        <stop offset="50%" stop-color="#6a1b9a" />
+                        <stop offset="100%" stop-color="#4a148c" />
+                    </linearGradient>
+                    <filter id="neuShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#8e24aa" flood-opacity="0.4"/>
+                    </filter>
+                </defs>
+                <path d="M 10 50 Q 50 10 90 50 Q 50 90 10 50" fill="none" stroke="url(#neuGrad)" stroke-width="1.5" opacity="0.4"/>
+                <path d="M 25 50 Q 50 25 75 50 Q 50 75 25 50" fill="none" stroke="url(#neuGrad)" stroke-width="1.5" opacity="0.6"/>
+                <polygon points="20,40 35,50 50,35 65,50 80,40 70,20 50,15 30,20" fill="none" stroke="url(#neuGrad)" stroke-width="2"/>
+                <circle cx="20" cy="40" r="3" fill="url(#neuGrad)"/>
+                <circle cx="50" cy="35" r="3" fill="url(#neuGrad)"/>
+                <circle cx="80" cy="40" r="3" fill="url(#neuGrad)"/>
+                <path d="M 35 50 C 35 40 65 40 65 50 C 65 70 55 85 50 85 C 45 85 35 70 35 50 Z" fill="#ffffff" stroke="url(#neuGrad)" stroke-width="2"/>
+                <circle cx="43" cy="55" r="5" fill="#d500f9" filter="url(#neuShadow)"/>
+                <circle cx="57" cy="55" r="5" fill="#651fff" filter="url(#neuShadow)"/>
+                <path d="M 40 75 Q 50 80 60 75" fill="none" stroke="url(#neuGrad)" stroke-width="2"/>
+                <line x1="45" y1="73" x2="45" y2="78" stroke="url(#neuGrad)" stroke-width="2"/>
+                <line x1="50" y1="74" x2="50" y2="79" stroke="url(#neuGrad)" stroke-width="2"/>
+                <line x1="55" y1="73" x2="55" y2="78" stroke="url(#neuGrad)" stroke-width="2"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Martir Sinting</div>
+            <div class="desc-text">
+                Tujuan Anda hanya satu: Membuat warga desa muak dan menggantung/memvoting Anda di siang hari. Jika Anda berhasil mati di tiang gantungan, permainan berakhir dan Anda adalah pemenangnya!
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. KARTU CUPID -->
+    <div class="card f-cupid">
+        <div class="c-code">CP·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Cupid</h1>
+            <h2>The Matchmaker</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="cupidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#e91e63" />
+                        <stop offset="50%" stop-color="#c2185b" />
+                        <stop offset="100%" stop-color="#880e4f" />
+                    </linearGradient>
+                    <filter id="cupidShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#c2185b" flood-opacity="0.4"/>
+                    </filter>
+                </defs>
+                <path d="M 15 50 C 15 25 50 15 50 15 C 50 15 85 25 85 50 C 85 75 50 85 50 85 C 50 85 15 75 15 50 Z" fill="none" stroke="url(#cupidGrad)" stroke-width="1.5" opacity="0.2"/>
+                <g fill="none" stroke="url(#cupidGrad)" stroke-width="1.5" opacity="0.6">
+                    <path d="M 45 40 Q 25 25 15 35 Q 25 45 35 50" />
+                    <path d="M 40 50 Q 20 40 10 50 Q 20 60 35 60" />
+                    <path d="M 42 60 Q 25 55 15 65 Q 25 70 38 68" />
+                    <path d="M 55 40 Q 75 25 85 35 Q 75 45 65 50" />
+                    <path d="M 60 50 Q 80 40 90 50 Q 80 60 65 60" />
+                    <path d="M 58 60 Q 75 55 85 65 Q 75 70 62 68" />
+                </g>
+                <path d="M 50 40 C 50 25 35 25 25 35 C 15 45 30 65 50 85 C 70 65 85 45 75 35 C 65 25 50 25 50 40 Z" fill="#ffffff" stroke="url(#cupidGrad)" stroke-width="2"/>
+                <path d="M 50 45 C 50 35 40 35 32 42 C 25 50 35 65 50 80 C 65 65 75 50 68 42 C 60 35 50 35 50 45 Z" fill="url(#cupidGrad)" opacity="0.15"/>
+                <line x1="50" y1="10" x2="50" y2="85" stroke="url(#cupidGrad)" stroke-width="2"/>
+                <polygon points="45,75 55,75 50,85" fill="#f50057" filter="url(#cupidShadow)"/>
+                <path d="M 45 15 L 50 20 L 55 15 M 45 22 L 50 27 L 55 22 M 45 29 L 50 34 L 55 29" stroke="url(#cupidGrad)" fill="none" stroke-width="1.5"/>
+                <circle cx="35" cy="45" r="3" fill="#ff4081" filter="url(#cupidShadow)"/>
+                <circle cx="65" cy="45" r="3" fill="#ff4081" filter="url(#cupidShadow)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Panah Asmara</div>
+            <div class="desc-text">
+                Pada malam pertama, Anda dapat memilih dua pemain untuk menjadi sepasang kekasih. Jika salah satu dari mereka terbunuh, pasangannya akan ikut mati karena patah hati.
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. KARTU PEMBURU -->
+    <div class="card f-hunter">
+        <div class="c-code">HN·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Pemburu</h1>
+            <h2>The Hunter</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="hunterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#4caf50" />
+                        <stop offset="50%" stop-color="#2e7d32" />
+                        <stop offset="100%" stop-color="#1b5e20" />
+                    </linearGradient>
+                    <filter id="hunterShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#2e7d32" flood-opacity="0.4"/>
+                    </filter>
+                </defs>
+                <circle cx="50" cy="50" r="35" fill="none" stroke="url(#hunterGrad)" stroke-width="1.5" opacity="0.4" stroke-dasharray="4 4"/>
+                <circle cx="50" cy="50" r="25" fill="none" stroke="url(#hunterGrad)" stroke-width="1" opacity="0.6"/>
+                <line x1="10" y1="50" x2="90" y2="50" stroke="url(#hunterGrad)" stroke-width="1" opacity="0.4"/>
+                <line x1="50" y1="10" x2="50" y2="90" stroke="url(#hunterGrad)" stroke-width="1" opacity="0.4"/>
+                <path d="M 15 60 Q 50 30 85 60" fill="none" stroke="url(#hunterGrad)" stroke-width="2.5"/>
+                <path d="M 20 65 Q 50 40 80 65" fill="none" stroke="url(#hunterGrad)" stroke-width="1.5" opacity="0.6"/>
+                <path d="M 15 60 L 50 75 L 85 60" fill="none" stroke="url(#hunterGrad)" stroke-width="1" opacity="0.8"/>
+                <polygon points="46,85 54,85 52,35 48,35" fill="url(#hunterGrad)" opacity="0.2"/>
+                <line x1="50" y1="35" x2="50" y2="85" stroke="url(#hunterGrad)" stroke-width="2"/>
+                <line x1="50" y1="75" x2="50" y2="15" stroke="url(#hunterGrad)" stroke-width="2.5"/>
+                <polygon points="45,25 55,25 50,10" fill="#4caf50" filter="url(#hunterShadow)"/>
+                <path d="M 45 65 L 50 70 L 55 65 M 45 70 L 50 75 L 55 70" fill="none" stroke="url(#hunterGrad)" stroke-width="1.5"/>
+                <circle cx="35" cy="50" r="3" fill="#81c784" filter="url(#hunterShadow)"/>
+                <circle cx="65" cy="50" r="3" fill="#81c784" filter="url(#hunterShadow)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Tembakan Terakhir</div>
+            <div class="desc-text">
+                Jika Anda mati karena dibunuh di malam hari atau digantung pada siang hari, Anda dapat menembak dan membunuh satu pemain lain sebelum Anda gugur.
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. KARTU PENJAGA -->
+    <div class="card f-guard">
+        <div class="c-code">GD·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Penjaga</h1>
+            <h2>The Guard</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="guardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#94a3b8" />
+                        <stop offset="50%" stop-color="#64748b" />
+                        <stop offset="100%" stop-color="#334155" />
+                    </linearGradient>
+                    <filter id="guardShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#475569" flood-opacity="0.4"/>
+                    </filter>
+                </defs>
+                <path d="M 50 10 L 85 25 L 85 55 C 85 80 50 95 50 95 C 50 95 15 80 15 55 L 15 25 Z" fill="none" stroke="url(#guardGrad)" stroke-width="2.5" opacity="0.4"/>
+                <path d="M 50 18 L 78 30 L 78 55 C 78 75 50 88 50 88 C 50 88 22 75 22 55 L 22 30 Z" fill="none" stroke="url(#guardGrad)" stroke-width="1.5" opacity="0.8"/>
+                <path d="M 50 25 L 70 34 L 70 55 C 70 70 50 80 50 80 C 50 80 30 70 30 55 L 30 34 Z" fill="url(#guardGrad)" opacity="0.15"/>
+                <line x1="50" y1="25" x2="50" y2="80" stroke="url(#guardGrad)" stroke-width="2"/>
+                <line x1="30" y1="52" x2="70" y2="52" stroke="url(#guardGrad)" stroke-width="2"/>
+                <polygon points="50,45 52,50 57,52 52,54 50,59 48,54 43,52 48,50" fill="#cbd5e1" filter="url(#guardShadow)"/>
+                <circle cx="50" cy="18" r="1.5" fill="url(#guardGrad)"/>
+                <circle cx="78" cy="30" r="1.5" fill="url(#guardGrad)"/>
+                <circle cx="22" cy="30" r="1.5" fill="url(#guardGrad)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Perisai Malam</div>
+            <div class="desc-text">
+                Setiap malam, Anda dapat menunjuk satu pemain untuk dilindungi. Jika pemain tersebut diserang, ia akan selamat. Anda dilarang melindungi orang yang sama dalam dua malam berturut-turut.
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. KARTU PENYIHIR -->
+    <div class="card f-witch">
+        <div class="c-code">WT·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Penyihir</h1>
+            <h2>The Witch</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="witchGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#ffb300" />
+                        <stop offset="50%" stop-color="#ff8f00" />
+                        <stop offset="100%" stop-color="#e65100" />
+                    </linearGradient>
+                    <filter id="witchShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#e65100" flood-opacity="0.4"/>
+                    </filter>
+                </defs>
+                <polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="url(#witchGrad)" stroke-width="1.5" opacity="0.3"/>
+                <circle cx="50" cy="50" r="30" fill="none" stroke="url(#witchGrad)" stroke-width="1" opacity="0.4" stroke-dasharray="2 4"/>
+                <path d="M 42 25 L 58 25 L 56 40 L 75 75 C 80 85 70 90 50 90 C 30 90 20 85 25 75 L 44 40 Z" fill="none" stroke="url(#witchGrad)" stroke-width="2.5"/>
+                <polygon points="38,20 62,20 60,25 40,25" fill="url(#witchGrad)"/>
+                <polygon points="45,10 55,10 52,20 48,20" fill="none" stroke="url(#witchGrad)" stroke-width="1.5"/>
+                <path d="M 32 60 L 68 60 L 72 70 C 75 80 65 85 50 85 C 35 85 25 80 28 70 Z" fill="url(#witchGrad)" opacity="0.15"/>
+                <path d="M 32 60 Q 50 70 68 60 Q 50 50 32 60 Z" fill="url(#witchGrad)" opacity="0.4"/>
+                <circle cx="45" cy="75" r="2.5" fill="#ffffff" opacity="0.9"/>
+                <circle cx="55" cy="68" r="1.5" fill="#ffffff" opacity="0.7"/>
+                <circle cx="50" cy="80" r="1.5" fill="#ffffff" opacity="0.8"/>
+                <path d="M 40 10 Q 30 0 20 15 T 15 5" fill="none" stroke="url(#witchGrad)" stroke-width="1.5" opacity="0.8"/>
+                <path d="M 60 10 Q 70 0 80 15 T 85 5" fill="none" stroke="url(#witchGrad)" stroke-width="1.5" opacity="0.8"/>
+                <circle cx="25" cy="50" r="4" fill="#ffb300" filter="url(#witchShadow)"/>
+                <circle cx="75" cy="50" r="4" fill="#ffb300" filter="url(#witchShadow)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Ramuan Ganda</div>
+            <div class="desc-text">
+                Anda memiliki dua ramuan: <strong>Kehidupan</strong> (menyelamatkan korban serigala) dan <strong>Kematian</strong> (membunuh seorang pemain). Masing-masing hanya dapat digunakan sekali.
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. KARTU SERIGALA 2 (ROARING) -->
+    <div class="card f-evil">
+        <div class="c-code">WW·02</div>
+        <div class="c-faction">Shadows</div>
+        <div class="c-header">
+            <h1>Serigala</h1>
+            <h2>Werewolf</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="wwGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#e53935" />
+                        <stop offset="50%" stop-color="#b71c1c" />
+                        <stop offset="100%" stop-color="#7f0000" />
+                    </linearGradient>
+                    <filter id="wwShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#d32f2f" flood-opacity="0.8"/>
+                    </filter>
+                </defs>
+                <g stroke="url(#wwGrad)" stroke-width="2" opacity="0.2" stroke-linecap="round">
+                    <path d="M 15 20 L 30 80 M 85 20 L 70 80" />
+                    <path d="M 5 40 L 20 90 M 95 40 L 80 90" />
+                </g>
+                <path d="M 30 15 L 40 25 L 50 20 L 60 25 L 70 15 L 75 35 L 85 50 L 70 60 L 80 85 L 60 80 L 50 95 L 40 80 L 20 85 L 30 60 L 15 50 L 25 35 Z" fill="url(#wwGrad)" opacity="0.1"/>
+                <path d="M 30 15 L 40 25 L 50 20 L 60 25 L 70 15 L 75 35 L 85 50 L 70 60 L 80 85 L 60 80 L 50 95 L 40 80 L 20 85 L 30 60 L 15 50 L 25 35 Z" fill="none" stroke="url(#wwGrad)" stroke-width="2" opacity="0.8"/>
+                <path d="M 32 20 L 38 30 L 42 27" fill="none" stroke="url(#wwGrad)" stroke-width="1.5"/>
+                <path d="M 68 20 L 62 30 L 58 27" fill="none" stroke="url(#wwGrad)" stroke-width="1.5"/>
+                <path d="M 28 40 L 42 46 L 50 38 L 58 46 L 72 40" fill="none" stroke="url(#wwGrad)" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M 45 46 L 42 62 L 50 66 L 58 62 L 55 46" fill="url(#wwGrad)" opacity="0.15" stroke="url(#wwGrad)" stroke-width="1"/>
+                <polygon points="46,62 54,62 50,68" fill="url(#wwGrad)"/>
+                <g filter="url(#wwShadow)">
+                    <polygon points="36,46 43,47 40,51" fill="#ff1744" />
+                    <polygon points="64,46 57,47 60,51" fill="#ff1744" />
+                </g>
+                <path d="M 38 72 Q 50 66 62 72 L 55 86 C 52 88 48 88 45 86 Z" fill="#4a0000" stroke="url(#wwGrad)" stroke-width="2" opacity="0.6"/>
+                <polygon points="39,72 42,82 44,71" fill="url(#wwGrad)"/>
+                <polygon points="61,72 58,82 56,71" fill="url(#wwGrad)"/>
+                <polygon points="46,69 47,74 49,69" fill="url(#wwGrad)"/>
+                <polygon points="54,69 53,74 51,69" fill="url(#wwGrad)"/>
+                <polygon points="43,84 46,75 48,86" fill="url(#wwGrad)"/>
+                <polygon points="57,84 54,75 52,86" fill="url(#wwGrad)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Insting Pemangsa</div>
+            <div class="desc-text">
+                Setiap malam, Anda bangun bersama kawan serigala lainnya di faksi Shadows untuk berdiskusi secara rahasia dan menunjuk satu pemain warga desa untuk dieksekusi.
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. KARTU MAGUS -->
+    <div class="card f-wizard">
+        <div class="c-code">WZ·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Magus</h1>
+            <h2>The Wizard</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="wizardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#7986cb" />
+                        <stop offset="50%" stop-color="#3f51b5" />
+                        <stop offset="100%" stop-color="#1a237e" />
+                    </linearGradient>
+                    <filter id="wizardShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#303f9f" flood-opacity="0.5"/>
+                    </filter>
+                </defs>
+                <circle cx="50" cy="40" r="25" fill="none" stroke="url(#wizardGrad)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6"/>
+                <circle cx="50" cy="40" r="30" fill="none" stroke="url(#wizardGrad)" stroke-width="1" stroke-dasharray="1 3" opacity="0.4"/>
+                <polygon points="50,15 58,32 75,32 62,43 67,60 50,50 33,60 38,43 25,32 42,32" fill="none" stroke="url(#wizardGrad)" stroke-width="1.5" opacity="0.3"/>
+                <path d="M 50 85 C 30 85 15 75 15 75 L 15 55 C 15 55 30 65 50 65 Z" fill="url(#wizardGrad)" opacity="0.15"/>
+                <path d="M 50 85 C 30 85 15 75 15 75 L 15 55 C 15 55 30 65 50 65" fill="none" stroke="url(#wizardGrad)" stroke-width="2"/>
+                <path d="M 50 85 C 70 85 85 75 85 75 L 85 55 C 85 55 70 65 50 65 Z" fill="url(#wizardGrad)" opacity="0.15"/>
+                <path d="M 50 85 C 70 85 85 75 85 75 L 85 55 C 85 55 70 65 50 65" fill="none" stroke="url(#wizardGrad)" stroke-width="2"/>
+                <line x1="50" y1="65" x2="50" y2="85" stroke="url(#wizardGrad)" stroke-width="2.5"/>
+                <polygon points="50,25 58,40 50,55 42,40" fill="#ffffff" stroke="url(#wizardGrad)" stroke-width="2"/>
+                <polygon points="50,25 54,40 50,55" fill="url(#wizardGrad)" opacity="0.4"/>
+                <circle cx="35" cy="30" r="2.5" fill="#8c9eff" filter="url(#wizardShadow)"/>
+                <circle cx="65" cy="30" r="2.5" fill="#8c9eff" filter="url(#wizardShadow)"/>
+                <circle cx="50" cy="15" r="2" fill="#8c9eff" filter="url(#wizardShadow)"/>
+                <path d="M 30 60 Q 40 50 45 45" fill="none" stroke="url(#wizardGrad)" stroke-width="1.5" stroke-dasharray="2 2"/>
+                <path d="M 70 60 Q 60 50 55 45" fill="none" stroke="url(#wizardGrad)" stroke-width="1.5" stroke-dasharray="2 2"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Mantra Penukar</div>
+            <div class="desc-text">
+                Sekali dalam permainan pada malam hari, Anda dapat menukar kartu peran dua pemain pilihan Anda. Kedua pemain tersebut akan melanjutkan permainan dengan identitas dan faksi yang baru.
+            </div>
+        </div>
+    </div>
+
+    <!-- 11. KARTU VETERAN -->
+    <div class="card f-soldier">
+        <div class="c-code">VT·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Veteran</h1>
+            <h2>The Veteran</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="soldierGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#bcaaa4" />
+                        <stop offset="50%" stop-color="#8d6e63" />
+                        <stop offset="100%" stop-color="#3e2723" />
+                    </linearGradient>
+                    <filter id="soldierShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#3e2723" flood-opacity="0.6"/>
+                    </filter>
+                </defs>
+                <line x1="25" y1="80" x2="75" y2="30" stroke="url(#soldierGrad)" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+                <line x1="75" y1="80" x2="25" y2="30" stroke="url(#soldierGrad)" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+                <polygon points="22,83 28,77 25,75" fill="url(#soldierGrad)" opacity="0.6"/>
+                <polygon points="78,83 72,77 75,75" fill="url(#soldierGrad)" opacity="0.6"/>
+                <path d="M 50 10 C 35 10 25 25 25 25 C 30 20 40 18 50 18 C 60 18 70 20 75 25 C 75 25 65 10 50 10 Z" fill="url(#soldierGrad)" opacity="0.8"/>
+                <path d="M 50 12 C 40 12 30 22 28 25 C 35 22 42 20 50 20 C 58 20 65 22 72 25 C 70 22 60 12 50 12 Z" fill="#ffffff" opacity="0.3"/>
+                <path d="M 35 25 C 28 40 30 70 35 80 L 45 70 L 50 75 L 55 70 L 65 80 C 70 70 72 40 65 25 C 55 20 45 20 35 25 Z" fill="#ffffff" stroke="url(#soldierGrad)" stroke-width="2.5"/>
+                <path d="M 35 25 C 28 40 30 70 35 80 L 45 70 L 50 75 L 55 70 L 65 80 C 70 70 72 40 65 25 C 55 20 45 20 35 25 Z" fill="url(#soldierGrad)" opacity="0.1"/>
+                <path d="M 40 40 L 60 40 L 60 46 L 53 46 L 53 65 L 47 65 L 47 46 L 40 46 Z" fill="#3e2723" filter="url(#soldierShadow)"/>
+                <circle cx="38" cy="32" r="1.5" fill="url(#soldierGrad)"/>
+                <circle cx="62" cy="32" r="1.5" fill="url(#soldierGrad)"/>
+                <circle cx="43" cy="72" r="1.5" fill="url(#soldierGrad)"/>
+                <circle cx="57" cy="72" r="1.5" fill="url(#soldierGrad)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Ketahanan Veteran</div>
+            <div class="desc-text">
+                Anda adalah pejuang desa yang paling tangguh. Jika serigala menyerang Anda untuk pertama kalinya di malam hari, Anda tidak akan mati dan tetap bertahan hidup.
+            </div>
+        </div>
+    </div>
+
+    <!-- 12. KARTU PENGAWAL -->
+    <div class="card f-bodyguard">
+        <div class="c-code">BG·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Pengawal</h1>
+            <h2>The Bodyguard</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="bodyguardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#9e9e9e" />
+                        <stop offset="50%" stop-color="#616161" />
+                        <stop offset="100%" stop-color="#212121" />
+                    </linearGradient>
+                    <filter id="bodyguardShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#212121" flood-opacity="0.6"/>
+                    </filter>
+                </defs>
+                <circle cx="50" cy="50" r="30" fill="none" stroke="url(#bodyguardGrad)" stroke-width="2" opacity="0.2"/>
+                <path d="M 30 15 L 70 15 L 70 70 C 70 85 50 95 50 95 C 50 95 30 85 30 70 Z" fill="#ffffff" stroke="url(#bodyguardGrad)" stroke-width="2.5" filter="url(#bodyguardShadow)"/>
+                <path d="M 30 15 L 70 15 L 70 70 C 70 85 50 95 50 95 C 50 95 30 85 30 70 Z" fill="url(#bodyguardGrad)" opacity="0.15"/>
+                <path d="M 38 23 L 62 23 L 62 68 C 62 78 50 85 50 85 C 50 85 38 78 38 68 Z" fill="none" stroke="url(#bodyguardGrad)" stroke-width="1.5" opacity="0.6"/>
+                <line x1="50" y1="15" x2="50" y2="95" stroke="url(#bodyguardGrad)" stroke-width="2" opacity="0.4"/>
+                <line x1="15" y1="40" x2="35" y2="50" stroke="#d32f2f" stroke-width="1.5"/>
+                <polygon points="32,48 38,51 34,54" fill="#d32f2f"/>
+                <path d="M 15 40 L 12 35 M 15 40 L 10 42" stroke="#d32f2f" stroke-width="1"/>
+                <line x1="85" y1="65" x2="65" y2="75" stroke="#d32f2f" stroke-width="1.5"/>
+                <polygon points="68,73 62,76 66,79" fill="#d32f2f"/>
+                <path d="M 85 65 L 88 60 M 85 65 L 90 67" stroke="#d32f2f" stroke-width="1"/>
+                <path d="M 50 45 C 50 35 40 35 35 42 C 30 50 40 60 50 70 C 60 60 70 50 65 42 C 60 35 50 35 50 45 Z" fill="#ffffff" stroke="url(#bodyguardGrad)" stroke-width="2"/>
+                <path d="M 50 45 C 50 35 40 35 35 42 C 30 50 40 60 50 70 C 60 60 70 50 65 42 C 60 35 50 35 50 45 Z" fill="url(#bodyguardGrad)" opacity="0.4"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Pengorbanan Nyawa</div>
+            <div class="desc-text">
+                Melindungi satu pemain setiap malam. Berbeda dengan Penjaga, jika target yang Anda lindungi diserang oleh serigala, Anda yang akan terbunuh menggantikan target tersebut.
+            </div>
+        </div>
+    </div>
+
+    <!-- 13. KARTU PENDETA -->
+    <div class="card f-priest">
+        <div class="c-code">PR·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Pendeta</h1>
+            <h2>The Priest</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="priestGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#fff59d" />
+                        <stop offset="50%" stop-color="#fbc02d" />
+                        <stop offset="100%" stop-color="#f57f17" />
+                    </linearGradient>
+                    <filter id="priestShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#fbc02d" flood-opacity="0.6"/>
+                    </filter>
+                </defs>
+                <g stroke="url(#priestGrad)" stroke-width="1.5" opacity="0.3">
+                    <line x1="50" y1="5" x2="50" y2="95"/>
+                    <line x1="5" y1="50" x2="95" y2="50"/>
+                    <line x1="18" y1="18" x2="82" y2="82"/>
+                    <line x1="18" y1="82" x2="82" y2="18"/>
+                </g>
+                <circle cx="50" cy="50" r="35" fill="none" stroke="url(#priestGrad)" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.5"/>
+                <path d="M 35 85 L 65 85 L 60 75 L 40 75 Z" fill="url(#priestGrad)" opacity="0.8"/>
+                <path d="M 46 75 L 54 75 L 52 65 L 48 65 Z" fill="url(#priestGrad)"/>
+                <ellipse cx="50" cy="65" rx="8" ry="3" fill="#ffffff" filter="url(#priestShadow)"/>
+                <path d="M 48 65 L 52 65 L 50 55 Z" fill="url(#priestGrad)"/>
+                <path d="M 50 55 C 30 55 25 35 25 25 C 25 22 75 22 75 25 C 75 35 70 55 50 55 Z" fill="#ffffff" stroke="url(#priestGrad)" stroke-width="2" filter="url(#priestShadow)"/>
+                <path d="M 50 55 C 30 55 25 35 25 25 C 25 22 75 22 75 25 C 75 35 70 55 50 55 Z" fill="url(#priestGrad)" opacity="0.2"/>
+                <path d="M 50 8 C 50 8 44 18 44 22 C 44 26 56 26 56 22 C 56 18 50 8 50 8 Z" fill="#ffffff" stroke="url(#priestGrad)" stroke-width="1.5" filter="url(#priestShadow)"/>
+                <polygon points="30,15 32,20 37,22 32,24 30,29 28,24 23,22 28,20" fill="url(#priestGrad)"/>
+                <polygon points="70,15 72,20 77,22 72,24 70,29 68,24 63,22 68,20" fill="url(#priestGrad)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Air Suci</div>
+            <div class="desc-text">
+                Sekali dalam permainan, Anda dapat menyiramkan Air Suci ke satu pemain. Jika target adalah Serigala, ia akan mati terbakar. Jika target adalah warga desa, Anda yang akan mati.
+            </div>
+        </div>
+    </div>
+
+    <!-- 14. KARTU KEPALA DESA -->
+    <div class="card f-mayor">
+        <div class="c-code">MY·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Kepala Desa</h1>
+            <h2>The Mayor</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="mayorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#64b5f6" />
+                        <stop offset="50%" stop-color="#1e88e5" />
+                        <stop offset="100%" stop-color="#0d47a1" />
+                    </linearGradient>
+                    <filter id="mayorShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#0d47a1" flood-opacity="0.5"/>
+                    </filter>
+                </defs>
+                <g stroke="url(#mayorGrad)" stroke-width="1.5" opacity="0.2">
+                    <line x1="50" y1="5" x2="50" y2="95"/>
+                    <line x1="5" y1="50" x2="95" y2="50"/>
+                    <line x1="18" y1="18" x2="82" y2="82"/>
+                    <line x1="18" y1="82" x2="82" y2="18"/>
+                </g>
+                <path d="M 40 45 L 28 85 L 38 78 L 45 88 L 50 45 Z" fill="url(#mayorGrad)" opacity="0.6"/>
+                <path d="M 60 45 L 72 85 L 62 78 L 55 88 L 50 45 Z" fill="url(#mayorGrad)" opacity="0.6"/>
+                <path d="M 15 15 Q 50 60 85 15" fill="none" stroke="url(#mayorGrad)" stroke-width="2.5" stroke-dasharray="4 2" opacity="0.8"/>
+                <path d="M 25 10 Q 50 50 75 10" fill="none" stroke="url(#mayorGrad)" stroke-width="1.5" opacity="0.5"/>
+                <polygon points="50,20 60,28 72,25 68,38 80,45 68,52 72,65 60,62 50,70 40,62 28,65 32,52 20,45 32,38 28,25 40,28" fill="#ffffff" stroke="url(#mayorGrad)" stroke-width="2" filter="url(#mayorShadow)"/>
+                <polygon points="50,25 58,32 68,30 64,40 74,45 64,50 68,60 58,58 50,65 42,58 32,60 36,50 26,45 36,40 32,30 42,32" fill="url(#mayorGrad)" opacity="0.15"/>
+                <circle cx="50" cy="45" r="15" fill="#ffffff" stroke="url(#mayorGrad)" stroke-width="2.5"/>
+                <circle cx="50" cy="45" r="10" fill="none" stroke="url(#mayorGrad)" stroke-width="1" stroke-dasharray="2 2"/>
+                <polygon points="50,34 53,42 61,42 55,47 57,55 50,50 43,55 45,47 39,42 47,42" fill="url(#mayorGrad)" filter="url(#mayorShadow)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Suara Otoritas</div>
+            <div class="desc-text">
+                Pengaruh Anda di desa sangat dihormati. Pada saat sesi pemungutan suara (voting) gantung di siang hari, keputusan suara Anda dihitung sebagai <strong>dua suara</strong>.
+            </div>
+        </div>
+    </div>
+
+    <!-- 15. KARTU SHERIFF -->
+    <div class="card f-sheriff">
+        <div class="c-code">SH·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Sheriff</h1>
+            <h2>The Sheriff</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="sheriffGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#b0bec5" />
+                        <stop offset="50%" stop-color="#78909c" />
+                        <stop offset="100%" stop-color="#37474f" />
+                    </linearGradient>
+                    <filter id="sheriffShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#263238" flood-opacity="0.5"/>
+                    </filter>
+                </defs>
+                <line x1="20" y1="80" x2="80" y2="20" stroke="url(#sheriffGrad)" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+                <line x1="80" y1="80" x2="20" y2="20" stroke="url(#sheriffGrad)" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+                <line x1="20" y1="80" x2="30" y2="70" stroke="url(#sheriffGrad)" stroke-width="4.5" stroke-linecap="round" opacity="0.7"/>
+                <line x1="80" y1="80" x2="70" y2="70" stroke="url(#sheriffGrad)" stroke-width="4.5" stroke-linecap="round" opacity="0.7"/>
+                <polygon points="50,15 80,70 20,70" fill="#ffffff" stroke="url(#sheriffGrad)" stroke-width="2.5" filter="url(#sheriffShadow)"/>
+                <polygon points="50,15 80,70 20,70" fill="url(#sheriffGrad)" opacity="0.15"/>
+                <polygon points="50,85 80,30 20,30" fill="#ffffff" stroke="url(#sheriffGrad)" stroke-width="2.5" filter="url(#sheriffShadow)"/>
+                <polygon points="50,85 80,30 20,30" fill="url(#sheriffGrad)" opacity="0.15"/>
+                <circle cx="50" cy="15" r="2.5" fill="#ffffff" stroke="url(#sheriffGrad)" stroke-width="1.5"/>
+                <circle cx="80" cy="70" r="2.5" fill="#ffffff" stroke="url(#sheriffGrad)" stroke-width="1.5"/>
+                <circle cx="20" cy="70" r="2.5" fill="#ffffff" stroke="url(#sheriffGrad)" stroke-width="1.5"/>
+                <circle cx="50" cy="85" r="2.5" fill="#ffffff" stroke="url(#sheriffGrad)" stroke-width="1.5"/>
+                <circle cx="80" cy="30" r="2.5" fill="#ffffff" stroke="url(#sheriffGrad)" stroke-width="1.5"/>
+                <circle cx="20" cy="30" r="2.5" fill="#ffffff" stroke="url(#sheriffGrad)" stroke-width="1.5"/>
+                <circle cx="50" cy="50" r="18" fill="#ffffff" stroke="url(#sheriffGrad)" stroke-width="2"/>
+                <circle cx="50" cy="50" r="14" fill="url(#sheriffGrad)" opacity="0.2"/>
+                <polygon points="50,40 53,47 60,47 54,52 56,59 50,55 44,59 46,52 40,47 47,47" fill="url(#sheriffGrad)" filter="url(#sheriffShadow)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Eksekusi Publik</div>
+            <div class="desc-text">
+                Memiliki wewenang penegak hukum mutlak. Sekali dalam permainan, Anda dapat mengungkap peran Anda di siang hari untuk membatalkan hasil voting dan langsung <strong>mengeksekusi mati</strong> satu pemain.
+            </div>
+        </div>
+    </div>
+
+    <!-- 16. KARTU WARGA DESA 1 -->
+    <div class="card f-good">
+        <div class="c-code">WD·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Warga Desa</h1>
+            <h2>The Villager</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="goodGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#00acc1" />
+                        <stop offset="50%" stop-color="#00838f" />
+                        <stop offset="100%" stop-color="#004d40" />
+                    </linearGradient>
+                    <filter id="goodShadow1">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#00838f" flood-opacity="0.3"/>
+                    </filter>
+                </defs>
+                <circle cx="50" cy="50" r="35" fill="none" stroke="url(#goodGrad1)" stroke-width="1.5" stroke-dasharray="3 4" opacity="0.4"/>
+                <rect x="30" y="30" width="6" height="15" fill="none" stroke="url(#goodGrad1)" stroke-width="1.5"/>
+                <rect x="64" y="30" width="6" height="15" fill="none" stroke="url(#goodGrad1)" stroke-width="1.5"/>
+                <polygon points="50,25 80,55 20,55" fill="url(#goodGrad1)" opacity="0.2"/>
+                <polygon points="50,25 80,55 20,55" fill="none" stroke="url(#goodGrad1)" stroke-width="2.5" stroke-linejoin="round"/>
+                <polygon points="28,55 72,55 72,85 28,85" fill="none" stroke="url(#goodGrad1)" stroke-width="2"/>
+                <path d="M 42 85 L 42 65 C 42 60 58 60 58 65 L 58 85 Z" fill="#00bcd4" filter="url(#goodShadow1)"/>
+                <path d="M 50 62 L 50 85" stroke="#ffffff" stroke-width="1.5"/>
+                <rect x="32" y="65" width="6" height="8" fill="url(#goodGrad1)" opacity="0.6"/>
+                <rect x="62" y="65" width="6" height="8" fill="url(#goodGrad1)" opacity="0.6"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Suara Mayoritas</div>
+            <div class="desc-text">
+                Anda tidak memiliki kemampuan khusus di malam hari. Senjata utama Anda adalah insting, pengamatan, dan hak suara di siang hari untuk menemukan dan menggantung para Serigala.
+            </div>
+        </div>
+    </div>
+
+    <!-- 17. KARTU WARGA DESA 2 -->
+    <div class="card f-good">
+        <div class="c-code">WD·02</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Warga Desa</h1>
+            <h2>The Villager</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="goodGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#00acc1" />
+                        <stop offset="50%" stop-color="#00838f" />
+                        <stop offset="100%" stop-color="#004d40" />
+                    </linearGradient>
+                    <filter id="goodShadow2">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#00838f" flood-opacity="0.3"/>
+                    </filter>
+                </defs>
+                <circle cx="50" cy="50" r="35" fill="none" stroke="url(#goodGrad2)" stroke-width="1.5" stroke-dasharray="3 4" opacity="0.4"/>
+                <polygon points="50,15 85,50 15,50" fill="none" stroke="url(#goodGrad2)" stroke-width="2" stroke-linejoin="round"/>
+                <polygon points="50,30 75,50 25,50" fill="url(#goodGrad2)" opacity="0.3"/>
+                <polygon points="50,30 75,50 25,50" fill="none" stroke="url(#goodGrad2)" stroke-width="1.5"/>
+                <polygon points="20,50 80,50 80,85 20,85" fill="none" stroke="url(#goodGrad2)" stroke-width="2"/>
+                <line x1="35" y1="50" x2="35" y2="85" stroke="url(#goodGrad2)" stroke-width="2"/>
+                <line x1="65" y1="50" x2="65" y2="85" stroke="url(#goodGrad2)" stroke-width="2"/>
+                <polygon points="40,85 40,60 60,60 60,85" fill="#00bcd4" filter="url(#goodShadow2)"/>
+                <line x1="50" y1="60" x2="50" y2="85" stroke="#ffffff" stroke-width="2"/>
+                <circle cx="50" cy="40" r="4" fill="#ffffff" filter="url(#goodShadow2)"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Suara Mayoritas</div>
+            <div class="desc-text">
+                Anda tidak memiliki kemampuan khusus di malam hari. Senjata utama Anda adalah insting, pengamatan, dan hak suara di siang hari untuk menemukan dan menggantung para Serigala.
+            </div>
+        </div>
+    </div>
+
+    <!-- 18. KARTU WARGA DESA 3 -->
+    <div class="card f-good">
+        <div class="c-code">WD·03</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Warga Desa</h1>
+            <h2>The Villager</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="goodGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#00acc1" />
+                        <stop offset="50%" stop-color="#00838f" />
+                        <stop offset="100%" stop-color="#004d40" />
+                    </linearGradient>
+                    <filter id="goodShadow3">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#00838f" flood-opacity="0.3"/>
+                    </filter>
+                </defs>
+                <circle cx="50" cy="50" r="35" fill="none" stroke="url(#goodGrad3)" stroke-width="1.5" stroke-dasharray="3 4" opacity="0.4"/>
+                <polygon points="50,20 70,35 80,60 20,60 30,35" fill="url(#goodGrad3)" opacity="0.15" stroke="url(#goodGrad3)" stroke-width="2" stroke-linejoin="round"/>
+                <polygon points="25,60 75,60 75,85 25,85" fill="none" stroke="url(#goodGrad3)" stroke-width="2"/>
+                <line x1="25" y1="60" x2="75" y2="85" stroke="url(#goodGrad3)" stroke-width="1.5" opacity="0.5"/>
+                <line x1="75" y1="60" x2="25" y2="85" stroke="url(#goodGrad3)" stroke-width="1.5" opacity="0.5"/>
+                <polygon points="50,35 58,45 50,55 42,45" fill="#00bcd4" filter="url(#goodShadow3)"/>
+                <polygon points="40,65 60,65 60,85 40,85" fill="#ffffff" opacity="0.9"/>
+                <polygon points="40,65 60,65 60,85 40,85" fill="none" stroke="url(#goodGrad3)" stroke-width="2"/>
+                <line x1="50" y1="65" x2="50" y2="85" stroke="url(#goodGrad3)" stroke-width="1.5"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Suara Mayoritas</div>
+            <div class="desc-text">
+                Anda tidak memiliki kemampuan khusus di malam hari. Senjata utama Anda adalah insting, pengamatan, dan hak suara di siang hari untuk menemukan dan menggantung para Serigala.
+            </div>
+        </div>
+    </div>
+
+    <!-- 19. KARTU SERIGALA 3 (TENGKORAK) -->
+    <div class="card f-evil">
+        <div class="c-code">WW·03</div>
+        <div class="c-faction">Shadows</div>
+        <div class="c-header">
+            <h1>Serigala</h1>
+            <h2>Werewolf</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="ww3Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#e53935" />
+                        <stop offset="50%" stop-color="#b71c1c" />
+                        <stop offset="100%" stop-color="#7f0000" />
+                    </linearGradient>
+                    <filter id="ww3Shadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#d32f2f" flood-opacity="0.8"/>
+                    </filter>
+                </defs>
+                <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="url(#ww3Grad)" stroke-width="1.5" opacity="0.3"/>
+                <circle cx="50" cy="50" r="28" fill="none" stroke="url(#ww3Grad)" stroke-width="1" opacity="0.4" stroke-dasharray="2 4"/>
+                <g stroke="url(#ww3Grad)" stroke-linejoin="round" stroke-linecap="round">
+                    <path d="M 50 20 C 30 20 22 35 25 50 C 28 60 38 60 40 70 L 42 80 L 58 80 L 60 70 C 62 60 72 60 75 50 C 78 35 70 20 50 20 Z" fill="url(#ww3Grad)" opacity="0.15" stroke-width="2"/>
+                    <path d="M 50 20 L 50 45" fill="none" stroke-width="1.5" opacity="0.5"/>
+                    <path d="M 35 28 C 30 35 30 45 35 50" fill="none" stroke-width="1.5" opacity="0.5"/>
+                    <path d="M 65 28 C 70 35 70 45 65 50" fill="none" stroke-width="1.5" opacity="0.5"/>
+                    <path d="M 43 45 C 35 45 30 52 32 55 C 38 55 42 50 43 45 Z" fill="#4a0000" stroke-width="1.5"/>
+                    <path d="M 57 45 C 65 45 70 52 68 55 C 62 55 58 50 57 45 Z" fill="#4a0000" stroke-width="1.5"/>
+                    <circle cx="36" cy="52" r="2" fill="#ff1744" filter="url(#ww3Shadow)"/>
+                    <circle cx="64" cy="52" r="2" fill="#ff1744" filter="url(#ww3Shadow)"/>
+                    <polygon points="50,60 46,70 54,70" fill="#4a0000" stroke-width="1.5"/>
+                    <path d="M 42 80 L 42 88 L 45 82 L 48 86 L 50 82 L 52 86 L 55 82 L 58 88 L 58 80" fill="none" stroke-width="1.5"/>
+                    <path d="M 40 80 L 38 92 L 43 83" fill="url(#ww3Grad)" stroke-width="1.5"/>
+                    <path d="M 60 80 L 62 92 L 57 83" fill="url(#ww3Grad)" stroke-width="1.5"/>
+                    <path d="M 38 95 C 45 102 55 102 62 95 L 58 92 C 55 96 45 96 42 92 Z" fill="url(#ww3Grad)" opacity="0.6" stroke-width="1.5"/>
+                    <path d="M 42 92 L 40 85 L 44 93" fill="url(#ww3Grad)" stroke-width="1.5"/>
+                    <path d="M 58 92 L 60 85 L 56 93" fill="url(#ww3Grad)" stroke-width="1.5"/>
+                </g>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Insting Pemangsa</div>
+            <div class="desc-text">
+                Setiap malam, Anda bangun bersama kawan serigala lainnya di faksi Shadows untuk berdiskusi secara rahasia dan menunjuk satu pemain warga desa untuk dieksekusi.
+            </div>
+        </div>
+    </div>
+
+    <!-- 20. KARTU LONE WOLF -->
+    <div class="card f-lonewolf">
+        <div class="c-code">LW·01</div>
+        <div class="c-faction">Neutral</div>
+        <div class="c-header">
+            <h1>Sang Penyendiri</h1>
+            <h2>The Lone Wolf</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="lwGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#4db6ac" />
+                        <stop offset="50%" stop-color="#00897b" />
+                        <stop offset="100%" stop-color="#004d40" />
+                    </linearGradient>
+                    <filter id="lwShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#004d40" flood-opacity="0.6"/>
+                    </filter>
+                </defs>
+                <path d="M 50 15 C 30 15 15 30 15 50 C 15 40 30 30 50 30 C 70 30 85 40 85 50 C 85 30 70 15 50 15 Z" fill="url(#lwGrad)" opacity="0.7"/>
+                <g stroke="url(#lwGrad)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+                    <path d="M 35 50 L 25 65 L 35 75 L 45 85" fill="none" opacity="0.6"/>
+                    <path d="M 65 50 L 75 65 L 65 75 L 55 85" fill="none" opacity="0.6"/>
+                    <polygon points="50,35 38,50 42,75 50,85 58,75 62,50" fill="url(#lwGrad)" opacity="0.15"/>
+                    <polygon points="50,35 38,50 42,75 50,85 58,75 62,50" fill="none"/>
+                    <polygon points="38,50 32,25 45,43" fill="none"/>
+                    <polygon points="62,50 68,25 55,43" fill="none"/>
+                    <polygon points="50,55 42,75 50,85 58,75" fill="none"/>
+                    <polygon points="47,80 53,80 50,85" fill="url(#lwGrad)"/>
+                    <line x1="50" y1="35" x2="50" y2="55" opacity="0.5"/>
+                </g>
+                <polygon points="40,55 45,57 42,60" fill="#1de9b6" filter="url(#lwShadow)"/>
+                <polygon points="60,55 55,57 58,60" fill="#1de9b6" filter="url(#lwShadow)"/>
+                <g fill="none" stroke="url(#lwGrad)" stroke-width="1.5">
+                    <circle cx="25" cy="80" r="3"/>
+                    <circle cx="18" cy="85" r="3" stroke-dasharray="2 2"/>
+                    <circle cx="75" cy="80" r="3"/>
+                    <circle cx="82" cy="85" r="3" stroke-dasharray="2 2"/>
+                </g>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Infeksi Serigala</div>
+            <div class="desc-text">
+                Awalnya Anda berstatus sebagai warga biasa. Namun, jika Serigala menyerang atau menemukan Anda di malam hari, Anda tidak akan mati, melainkan berubah menjadi <strong>Serigala penuh</strong> dan bergabung dengan mereka.
+            </div>
+        </div>
+    </div>
+
+    <!-- 21. KARTU PENIRU -->
+    <div class="card f-doppel">
+        <div class="c-code">DP·01</div>
+        <div class="c-faction">Neutral</div>
+        <div class="c-header">
+            <h1>Sang Peniru</h1>
+            <h2>The Doppelganger</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="doppelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#a78bfa" />
+                        <stop offset="50%" stop-color="#7c3aed" />
+                        <stop offset="100%" stop-color="#4c1d95" />
+                    </linearGradient>
+                    <filter id="doppelShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#4c1d95" flood-opacity="0.5"/>
+                    </filter>
+                </defs>
+                <circle cx="50" cy="50" r="28" fill="none" stroke="url(#doppelGrad)" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.5"/>
+                <path d="M 50 20 C 30 20 25 35 25 50 C 25 65 35 80 50 85 Z" fill="url(#doppelGrad)"/>
+                <path d="M 50 20 C 70 20 75 35 75 50 C 75 65 65 80 50 85 Z" fill="none" stroke="url(#doppelGrad)" stroke-width="2"/>
+                <path d="M 45 45 C 40 45 35 48 38 52 C 42 52 45 48 45 45 Z" fill="#ffffff"/>
+                <path d="M 55 45 C 60 45 65 48 62 52 C 58 52 55 48 55 45 Z" fill="#7c3aed" filter="url(#doppelShadow)"/>
+                <line x1="50" y1="15" x2="50" y2="90" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4 2"/>
+                <path d="M 45 70 Q 40 72 35 68" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                <path d="M 55 70 Q 60 72 65 68" fill="none" stroke="url(#doppelGrad)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M 20 30 Q 30 20 50 15" fill="none" stroke="url(#doppelGrad)" stroke-width="1.5" opacity="0.6"/>
+                <path d="M 80 30 Q 70 20 50 15" fill="none" stroke="url(#doppelGrad)" stroke-width="1.5" opacity="0.6"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Cermin Jiwa</div>
+            <div class="desc-text">
+                Di malam pertama, pilih satu pemain secara rahasia. Jika pemain tersebut mati, Anda akan langsung <strong>mengambil alih</strong> peran dan faksinya hingga permainan berakhir.
+            </div>
+        </div>
+    </div>
+
+    <!-- 22. KARTU SERIAL KILLER -->
+    <div class="card f-killer">
+        <div class="c-code">SK·01</div>
+        <div class="c-faction">Neutral</div>
+        <div class="c-header">
+            <h1>Sang Pembunuh</h1>
+            <h2>The Serial Killer</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="killerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#9e9e9e" />
+                        <stop offset="50%" stop-color="#424242" />
+                        <stop offset="100%" stop-color="#212121" />
+                    </linearGradient>
+                    <filter id="killerShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#d32f2f" flood-opacity="0.6"/>
+                    </filter>
+                </defs>
+                <g stroke="url(#killerGrad)" stroke-width="1.5" stroke-linecap="round" opacity="0.3">
+                    <line x1="25" y1="25" x2="75" y2="75" />
+                    <line x1="75" y1="25" x2="25" y2="75" />
+                    <circle cx="50" cy="50" r="32" fill="none" stroke-dasharray="2 6"/>
+                </g>
+                <path d="M 35 25 L 45 40 L 30 55 M 65 25 L 55 40 L 70 55" fill="none" stroke="#d32f2f" stroke-width="1" opacity="0.4"/>
+                <circle cx="50" cy="15" r="4" fill="url(#killerGrad)"/>
+                <circle cx="50" cy="15" r="1.5" fill="#d32f2f" filter="url(#killerShadow)"/>
+                <path d="M 46 19 L 54 19 L 53 35 L 47 35 Z" fill="url(#killerGrad)"/>
+                <line x1="47" y1="23" x2="53" y2="23" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+                <line x1="47" y1="27" x2="53" y2="27" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+                <line x1="47" y1="31" x2="53" y2="31" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+                <path d="M 35 35 L 65 35 L 60 40 L 40 40 Z" fill="url(#killerGrad)"/>
+                <polygon points="35,35 40,30 45,35" fill="url(#killerGrad)"/>
+                <polygon points="65,35 60,30 55,35" fill="url(#killerGrad)"/>
+                <path d="M 45 40 L 55 40 L 52 75 L 50 85 L 48 75 Z" fill="#ffffff" stroke="url(#killerGrad)" stroke-width="2.5" filter="url(#killerShadow)"/>
+                <path d="M 45 40 L 55 40 L 52 75 L 50 85 L 48 75 Z" fill="url(#killerGrad)" opacity="0.15"/>
+                <line x1="50" y1="40" x2="50" y2="65" stroke="url(#killerGrad)" stroke-width="1.5" opacity="0.8"/>
+                <path d="M 49 60 Q 52 65 51 72 Q 50 80 50 85 L 48 75 Q 47 68 49 60 Z" fill="#d32f2f" opacity="0.9"/>
+                <path d="M 50 88 C 48 93 52 93 50 88 Z" fill="#d32f2f" filter="url(#killerShadow)"/>
+                <circle cx="50" cy="95" r="1.5" fill="#d32f2f"/>
+                <circle cx="53" cy="91" r="1" fill="#d32f2f" opacity="0.7"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Niat Membunuh</div>
+            <div class="desc-text">
+                Setiap malam, Anda <strong>wajib</strong> memilih satu pemain untuk dibunuh. Anda kebal terhadap serangan Serigala. Anda menang jika berhasil menjadi satu-satunya pemain yang tersisa hidup.
+            </div>
+        </div>
+    </div>
+
+    <!-- 23. KARTU IDIOT -->
+    <div class="card f-idiot">
+        <div class="c-code">OD·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Dungu</h1>
+            <h2>The Idiot</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="idiotGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#dce775" />
+                        <stop offset="50%" stop-color="#c0ca33" />
+                        <stop offset="100%" stop-color="#827717" />
+                    </linearGradient>
+                    <filter id="idiotShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#827717" flood-opacity="0.4"/>
+                    </filter>
+                </defs>
+                <circle cx="50" cy="50" r="35" fill="none" stroke="url(#idiotGrad)" stroke-width="2" stroke-dasharray="4 6" opacity="0.5"/>
+                <circle cx="50" cy="50" r="25" fill="none" stroke="url(#idiotGrad)" stroke-width="2" stroke-dasharray="2 4" opacity="0.3"/>
+                <polygon points="30,12 32,16 36,17 32,19 30,23 28,19 24,17 28,16" fill="url(#idiotGrad)"/>
+                <polygon points="70,12 72,16 76,17 72,19 70,23 68,19 64,17 68,16" fill="url(#idiotGrad)"/>
+                <polygon points="50,2 52,5 55,6 52,8 50,11 48,8 45,6 48,5" fill="url(#idiotGrad)"/>
+                <circle cx="50" cy="65" r="18" fill="url(#idiotGrad)" opacity="0.15"/>
+                <circle cx="50" cy="65" r="18" fill="none" stroke="url(#idiotGrad)" stroke-width="2"/>
+                <g stroke="url(#idiotGrad)" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="40" y1="58" x2="44" y2="62"/>
+                    <line x1="44" y1="58" x2="40" y2="62"/>
+                    <line x1="56" y1="58" x2="60" y2="62"/>
+                    <line x1="60" y1="58" x2="56" y2="62"/>
+                </g>
+                <path d="M 40 70 Q 50 78 60 70" fill="none" stroke="url(#idiotGrad)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M 47 74 L 47 82 C 47 86 53 86 53 82 L 53 74 Z" fill="#ff5252" filter="url(#idiotShadow)"/>
+                <line x1="50" y1="74" x2="50" y2="80" stroke="#b71c1c" stroke-width="1"/>
+                <path d="M 28 48 L 50 15 L 72 48 Z" fill="#ffffff" stroke="url(#idiotGrad)" stroke-width="2"/>
+                <path d="M 28 48 L 50 15 L 72 48 Z" fill="url(#idiotGrad)" opacity="0.3"/>
+                <ellipse cx="50" cy="48" rx="26" ry="5" fill="#ffffff" stroke="url(#idiotGrad)" stroke-width="2"/>
+                <ellipse cx="50" cy="48" rx="26" ry="5" fill="url(#idiotGrad)" opacity="0.5"/>
+                <polygon points="45,30 55,28 58,38 48,40" fill="url(#idiotGrad)" stroke="#ffffff" stroke-width="1.5"/>
+                <line x1="43" y1="32" x2="47" y2="28" stroke="#ffffff" stroke-width="1.5"/>
+                <line x1="53" y1="26" x2="57" y2="30" stroke="#ffffff" stroke-width="1.5"/>
+                <line x1="56" y1="40" x2="60" y2="36" stroke="#ffffff" stroke-width="1.5"/>
+                <line x1="46" y1="42" x2="50" y2="38" stroke="#ffffff" stroke-width="1.5"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Keberuntungan Bodoh</div>
+            <div class="desc-text">
+                Jika Anda divoting untuk digantung pada siang hari, identitas Anda akan terungkap dan Anda <strong>selamat dari eksekusi</strong>. Namun, setelah itu Anda akan kehilangan hak suara untuk selamanya.
+            </div>
+        </div>
+    </div>
+
+    <!-- 24. KARTU PANGERAN -->
+    <div class="card f-prince">
+        <div class="c-code">PR·02</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Sang Pangeran</h1>
+            <h2>The Prince</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="princeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#ff8a65" />
+                        <stop offset="50%" stop-color="#ff5722" />
+                        <stop offset="100%" stop-color="#d84315" />
+                    </linearGradient>
+                    <filter id="princeShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#d84315" flood-opacity="0.5"/>
+                    </filter>
+                </defs>
+                <polygon points="50,10 85,50 50,90 15,50" fill="none" stroke="url(#princeGrad)" stroke-width="1.5" opacity="0.3" stroke-dasharray="2 4"/>
+                <polygon points="50,20 75,50 50,80 25,50" fill="none" stroke="url(#princeGrad)" stroke-width="1" opacity="0.5"/>
+                <path d="M 20 65 L 25 35 L 35 50 L 50 25 L 65 50 L 75 35 L 80 65 Z" fill="#ffffff" stroke="url(#princeGrad)" stroke-width="2.5" filter="url(#princeShadow)"/>
+                <path d="M 20 65 L 25 35 L 35 50 L 50 25 L 65 50 L 75 35 L 80 65 Z" fill="url(#princeGrad)" opacity="0.2"/>
+                <path d="M 22 70 L 78 70 L 75 80 L 25 80 Z" fill="url(#princeGrad)" stroke="url(#princeGrad)" stroke-width="1.5"/>
+                <line x1="30" y1="65" x2="70" y2="65" stroke="url(#princeGrad)" stroke-width="1.5"/>
+                <circle cx="50" cy="25" r="3.5" fill="#ff1744" filter="url(#princeShadow)"/>
+                <circle cx="25" cy="35" r="2.5" fill="#ff1744" filter="url(#princeShadow)"/>
+                <circle cx="75" cy="35" r="2.5" fill="#ff1744" filter="url(#princeShadow)"/>
+                <polygon points="50,45 53,50 50,55 47,50" fill="#00bcd4" filter="url(#princeShadow)"/>
+                <circle cx="35" cy="75" r="1.5" fill="#ffffff"/>
+                <circle cx="50" cy="75" r="2" fill="#ffffff"/>
+                <circle cx="65" cy="75" r="1.5" fill="#ffffff"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Darah Biru</div>
+            <div class="desc-text">
+                Jika Anda menjadi target voting untuk digantung pada siang hari, identitas Anda akan terungkap dan eksekusi <strong>dibatalkan</strong>. Berbeda dengan Orang Dungu, Anda tetap mempertahankan hak suara.
+            </div>
+        </div>
+    </div>
+
+    <!-- 25. KARTU GADIS KECIL (LITTLE GIRL) - NEW -->
+    <div class="card f-girl">
+        <div class="c-code">GL·01</div>
+        <div class="c-faction">Alliance</div>
+        <div class="c-header">
+            <h1>Gadis Kecil</h1>
+            <h2>The Little Girl</h2>
+        </div>
+        <div class="c-svg-wrapper">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="girlGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#f06292" />
+                        <stop offset="50%" stop-color="#d81b60" />
+                        <stop offset="100%" stop-color="#880e4f" />
+                    </linearGradient>
+                    <filter id="girlShadow">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#880e4f" flood-opacity="0.4"/>
+                    </filter>
+                </defs>
+
+                <!-- Soft mysterious aura -->
+                <circle cx="50" cy="50" r="35" fill="none" stroke="url(#girlGrad)" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.6"/>
+                <circle cx="50" cy="50" r="28" fill="none" stroke="url(#girlGrad)" stroke-width="1" opacity="0.3"/>
+
+                <!-- Vintage Keyhole Frame -->
+                <path d="M 50 15 C 30 15 25 35 30 50 C 25 65 30 85 50 85 C 70 85 75 65 70 50 C 75 35 70 15 50 15 Z" fill="none" stroke="url(#girlGrad)" stroke-width="1.5" opacity="0.4"/>
+
+                <!-- The Keyhole Base -->
+                <path d="M 50 30 C 40 30 36 38 42 46 L 36 70 L 64 70 L 58 46 C 64 38 60 30 50 30 Z" fill="#ffffff" stroke="url(#girlGrad)" stroke-width="2.5" filter="url(#girlShadow)"/>
+                <path d="M 50 30 C 40 30 36 38 42 46 L 36 70 L 64 70 L 58 46 C 64 38 60 30 50 30 Z" fill="url(#girlGrad)" opacity="0.15"/>
+
+                <!-- The Hole -->
+                <path d="M 50 38 C 45 38 43 44 46 48 L 43 62 L 57 62 L 54 48 C 57 44 55 38 50 38 Z" fill="#4a0000" opacity="0.8"/>
+
+                <!-- Glowing Eye inside -->
+                <path d="M 46 44 C 50 41 54 44 54 44 C 54 44 50 47 46 44 Z" fill="#ffffff" opacity="0.9"/>
+                <circle cx="50" cy="44" r="1.5" fill="#ff1744" filter="url(#girlShadow)"/>
+
+                <!-- Creepy stitch marks on the sides -->
+                <line x1="20" y1="50" x2="25" y2="50" stroke="url(#girlGrad)" stroke-width="1.5"/>
+                <line x1="22" y1="48" x2="22" y2="52" stroke="url(#girlGrad)" stroke-width="1.5"/>
+
+                <line x1="75" y1="50" x2="80" y2="50" stroke="url(#girlGrad)" stroke-width="1.5"/>
+                <line x1="78" y1="48" x2="78" y2="52" stroke="url(#girlGrad)" stroke-width="1.5"/>
+            </svg>
+        </div>
+        <div class="c-content">
+            <div class="ability-title">Intipan Rahasia</div>
+            <div class="desc-text">
+                Di malam hari, Anda diperbolehkan diam-diam membuka mata saat Serigala bangun untuk mengintip. Namun awas, jika Anda ketahuan oleh Serigala, Anda akan langsung <strong>dibunuh</strong> tanpa ampun!
+            </div>
+        </div>
+    </div>
+
+    <!-- 26. KARTU BELAKANG (CARD BACK) -->
+    <div class="card f-back">
+        <div class="back-pattern"></div>
+        <div class="back-text-top">WEREWOLF</div>
+        <div class="back-center-logo">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="backGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#d4af37" />
+                        <stop offset="50%" stop-color="#8a5a19" />
+                        <stop offset="100%" stop-color="#5c3a0d" />
+                    </linearGradient>
+                </defs>
+                <circle cx="100" cy="100" r="90" fill="none" stroke="url(#backGrad)" stroke-width="1.5" stroke-dasharray="4 4"/>
+                <circle cx="100" cy="100" r="85" fill="none" stroke="url(#backGrad)" stroke-width="2.5"/>
+                <circle cx="100" cy="100" r="75" fill="none" stroke="url(#backGrad)" stroke-width="1"/>
+                <circle cx="100" cy="20" r="6" fill="url(#backGrad)"/>
+                <circle cx="100" cy="180" r="6" fill="none" stroke="url(#backGrad)" stroke-width="2"/>
+                <circle cx="20" cy="100" r="6" fill="url(#backGrad)" opacity="0.7"/>
+                <circle cx="180" cy="100" r="6" fill="url(#backGrad)" opacity="0.7"/>
+                <polygon points="100,25 175,100 100,175 25,100" fill="none" stroke="url(#backGrad)" stroke-width="1.5" opacity="0.5"/>
+                <polygon points="100,40 160,100 100,160 40,100" fill="none" stroke="url(#backGrad)" stroke-width="1.5" opacity="0.7"/>
+                <circle cx="100" cy="100" r="50" fill="none" stroke="url(#backGrad)" stroke-width="2.5"/>
+                <path d="M 100 130 C 80 130 70 110 75 90 C 78 80 85 70 85 60 C 85 55 90 50 95 55 C 92 65 95 75 105 80 C 115 85 120 70 120 65 C 122 62 128 65 125 70 C 120 85 130 100 120 120 C 115 125 110 130 100 130 Z" fill="url(#backGrad)"/>
+                <polygon points="100,60 102,65 107,65 103,68 104,73 100,70 96,73 97,68 93,65 98,65" fill="url(#backGrad)"/>
+            </svg>
+        </div>
+        <div class="back-text-bottom">OBSIDIAN VANGUARD</div>
+    </div>
+
+</div>
+
+</body>
+</html>
