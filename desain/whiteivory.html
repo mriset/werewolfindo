@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Desain Kartu Mewah - Archway Unified Edition</title>
+    <!-- Font Mewah untuk Judul dan Teks -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Montserrat:wght@400;500;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+            
+            /* Global Gold */
+            --gold-light: #F9F1DC;
+            --gold-base: #D4AF37;
+            --gold-dark: #997A15;
+            
+            /* Faction: Supreme (Moderator) */
+            --sup-main: #6A1B9A;
+            --sup-dark: #38006b;
+            
+            /* Faction: Alliance (Villager) */
+            --vil-main: #0D47A1;
+            --vil-dark: #002171;
+            
+            /* Faction: Shadows (Werewolf) */
+            --ww-main: #B71C1C;
+            --ww-dark: #7f0000;
+            
+            /* Faction: Neutral (Jester) */
+            --jes-main: #00695C;
+            --jes-dark: #003d33;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            background-color: #d5d8dc;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            padding: 40px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* -------------------------------------
+           BASE CARD STRUCTURE (ARCHWAY)
+        ------------------------------------- */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            position: relative;
+            background: #FFFFFF;
+            border-radius: 3.5mm;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.05);
+            /* Tekstur kertas Ivory */
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
+        }
+
+        .arch-header {
+            height: 38mm;
+            border-bottom-left-radius: 50% 10mm;
+            border-bottom-right-radius: 50% 10mm;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: white;
+            padding-top: 3mm;
+            overflow: hidden; /* Untuk tekstur di dalam arch */
+        }
+
+        .arch-header::after {
+            content:''; position:absolute; bottom: 1mm; left: 5%; width: 90%; height: 10mm;
+            border-bottom: 1.5px solid rgba(255,255,255,0.4); border-radius: 50% 10mm;
+            pointer-events: none;
+        }
+
+        .code {
+            position: absolute; top: 3.5mm; left: 4mm;
+            font-size: 6px; font-weight: 800; letter-spacing: 1px;
+            z-index: 2; text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .faction {
+            position: absolute; top: 3.5mm; right: 4mm;
+            font-size: 5.5px; font-weight: 800; letter-spacing: 1.5px;
+            background: rgba(255,255,255,0.15);
+            padding: 0.8mm 2mm; border-radius: 1mm;
+            border: 0.5px solid rgba(255,255,255,0.3);
+            z-index: 2; backdrop-filter: blur(2px);
+        }
+
+        .art-container {
+            width: 32mm; height: 32mm; margin: 3.5mm auto 0;
+            position: relative; z-index: 2;
+            filter: drop-shadow(0 6px 8px rgba(0,0,0,0.4));
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .text-box {
+            margin: 2mm 4.5mm;
+            padding: 3mm 0;
+            position: relative;
+            text-align: center;
+        }
+
+        .title-en {
+            font-family: 'Montserrat', sans-serif; font-size: 6px; letter-spacing: 2.5px; font-weight: 800; text-transform: uppercase;
+        }
+
+        .title-id {
+            font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 700; color: #111; margin-top: 0.5mm; line-height: 1.1;
+        }
+
+        .divider {
+            width: 18mm; height: 1.5px; margin: 2mm auto;
+        }
+
+        .ability {
+            font-size: 6px; font-weight: 800; margin-bottom: 2mm; text-transform: uppercase; letter-spacing: 0.5px;
+            display: inline-block; padding: 1mm 2mm; border-radius: 1mm;
+        }
+
+        .desc {
+            font-size: 6.5px; color: #444; line-height: 1.4; text-align: justify; text-align-last: center;
+        }
+
+        .footer {
+            position: absolute; bottom: 3.5mm; left: 0; width: 100%; text-align: center;
+            font-size: 5px; color: #888; font-weight: 700; letter-spacing: 1.5px;
+        }
+
+        /* -------------------------------------
+           1. THEME SUPREME (MODERATOR)
+           Ciri: Cosmic/Celestial pattern, Purple
+        ------------------------------------- */
+        .theme-sup .arch-header {
+            background: linear-gradient(135deg, var(--sup-main), var(--sup-dark));
+        }
+        .theme-sup .arch-header::before {
+            content:''; position:absolute; inset:0;
+            background-image: radial-gradient(rgba(255,255,255,0.2) 1px, transparent 1px);
+            background-size: 8px 8px; opacity: 0.5; /* Stars */
+        }
+        .theme-sup .title-en { color: var(--sup-main); }
+        .theme-sup .divider { background: linear-gradient(90deg, transparent, var(--sup-main), transparent); height: 1px; }
+        .theme-sup .ability { color: white; background: var(--sup-main); box-shadow: 0 2px 5px rgba(106, 27, 154, 0.3); }
+        .theme-sup .desc strong { color: var(--sup-main); }
+
+        /* -------------------------------------
+           2. THEME ALLIANCE (VILLAGER)
+           Ciri: Castle brick pattern, Royal Blue
+        ------------------------------------- */
+        .theme-vil .arch-header {
+            background: linear-gradient(135deg, var(--vil-main), var(--vil-dark));
+        }
+        .theme-vil .arch-header::before {
+            content:''; position:absolute; inset:0;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(255,255,255,0.05) 4px, rgba(255,255,255,0.05) 5px), repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,255,255,0.05) 8px, rgba(255,255,255,0.05) 9px);
+            opacity: 0.8; /* Brick wall */
+        }
+        .theme-vil .title-en { color: var(--vil-main); }
+        .theme-vil .divider { background: var(--gold-base); }
+        .theme-vil .ability { color: var(--vil-main); background: rgba(13, 71, 161, 0.1); border: 0.5px solid var(--vil-main);}
+        .theme-vil .desc strong { color: var(--vil-main); }
+
+        /* -------------------------------------
+           3. THEME SHADOWS (WEREWOLF)
+           Ciri: Scratch/Slash pattern, Crimson Red
+        ------------------------------------- */
+        .theme-ww .arch-header {
+            background: linear-gradient(135deg, var(--ww-main), var(--ww-dark));
+        }
+        .theme-ww .arch-header::before {
+            content:''; position:absolute; inset:0;
+            background: repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 10px);
+            opacity: 0.7; /* Aggressive slashes */
+        }
+        .theme-ww .title-en { color: var(--ww-main); }
+        .theme-ww .divider { 
+            background: var(--ww-main); clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+        }
+        .theme-ww .ability { color: white; background: var(--ww-dark); border-left: 2px solid var(--ww-main); border-radius: 0;}
+        .theme-ww .desc strong { color: var(--ww-main); }
+
+        /* -------------------------------------
+           4. THEME NEUTRAL (JESTER)
+           Ciri: Harlequin Diamond pattern, Emerald
+        ------------------------------------- */
+        .theme-jes .arch-header {
+            background: linear-gradient(135deg, var(--jes-main), var(--jes-dark));
+        }
+        .theme-jes .arch-header::before {
+            content:''; position:absolute; inset:0;
+            background-image: linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05)), linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05));
+            background-size: 10px 10px; background-position: 0 0, 5px 5px; /* Diamonds */
+        }
+        .theme-jes .title-en { color: var(--jes-main); }
+        .theme-jes .divider { background: transparent; border-bottom: 1.5px dotted var(--jes-main); }
+        .theme-jes .ability { color: var(--jes-main); }
+        .theme-jes .desc strong { color: var(--jes-main); }
+
+        /* -------------------------------------
+           5. THEME BACK (CARD BACK)
+           Ciri: Pitch Black, Gold Arch, Mysterious
+        ------------------------------------- */
+        .theme-back {
+            background: #111111;
+        }
+        .theme-back .arch-header {
+            background: linear-gradient(135deg, #222, #000);
+            border-bottom: 2px solid var(--gold-base);
+        }
+        .theme-back .arch-header::before {
+            content:''; position:absolute; inset:0;
+            background-image: radial-gradient(var(--gold-dark) 0.5px, transparent 0.5px);
+            background-size: 6px 6px; opacity: 0.15;
+        }
+        .theme-back .arch-header::after { border-bottom-color: rgba(212, 175, 55, 0.3); }
+        .theme-back .title-en { color: var(--gold-base); font-size: 8px; letter-spacing: 4px; margin-top: 5mm; }
+        .theme-back .title-id { color: #fff; font-family: 'Cinzel Decorative', serif; font-size: 16px; letter-spacing: 2px; }
+        .theme-back .divider { background: var(--gold-base); width: 25mm; }
+        .theme-back .footer { color: #555; }
+        .theme-back .crest-large {
+            width: 38mm; height: 38mm; margin: -5mm auto 0; position: relative; z-index: 2;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. KARTU MODERATOR (SUPREME) -->
+    <div class="card theme-sup">
+        <div class="arch-header">
+            <div class="code">SP·01</div>
+            <div class="faction">✦ SUPREME ✦</div>
+            <div class="art-container">
+                <!-- SVG Moderator: Celestial Eye & Pyramid dalam Archway -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <defs>
+                        <linearGradient id="supGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#D4AF37"/>
+                            <stop offset="100%" stop-color="#F9F1DC"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="48" fill="rgba(0,0,0,0.2)"/>
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#supGrad)" stroke-width="1.5" stroke-dasharray="3,3"/>
+                    
+                    <!-- Pyramid Base -->
+                    <polygon points="50,20 85,75 15,75" fill="none" stroke="#fff" stroke-width="2"/>
+                    <polygon points="50,20 85,75 15,75" fill="rgba(255,255,255,0.1)"/>
+                    
+                    <!-- The All-Seeing Eye -->
+                    <path d="M30,55 Q50,40 70,55 Q50,70 30,55 Z" fill="#fff" stroke="url(#supGrad)" stroke-width="2"/>
+                    <circle cx="50" cy="55" r="9" fill="#6A1B9A"/>
+                    <circle cx="50" cy="55" r="3" fill="#111"/>
+                    <circle cx="52" cy="53" r="1.5" fill="#fff"/>
+                    
+                    <!-- Holy Rays -->
+                    <line x1="50" y1="5" x2="50" y2="15" stroke="url(#supGrad)" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="20" y1="25" x2="28" y2="33" stroke="url(#supGrad)" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="80" y1="25" x2="72" y2="33" stroke="url(#supGrad)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+        <div class="text-box">
+            <div class="title-en">Game Moderator</div>
+            <div class="title-id">Sang Narator</div>
+            <div class="divider"></div>
+            <div class="ability">Tuhan Desa Werewolf</div>
+            <div class="desc">
+                Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur fase malam dan siang, memandu langkah, serta <strong>Mencabut Nyawa</strong> pemain berdasarkan instruksi malam.
+            </div>
+        </div>
+        <div class="footer">MODERATOR // SUPREME</div>
+    </div>
+
+    <!-- 2. KARTU VILLAGER (ALLIANCE) -->
+    <div class="card theme-vil">
+        <div class="arch-header">
+            <div class="code">VL·14</div>
+            <div class="faction">ALLIANCE</div>
+            <div class="art-container">
+                <!-- SVG Villager: Shield, Wheat, Architecture -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <defs>
+                        <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FFFFFF"/>
+                            <stop offset="100%" stop-color="#A0B0C0"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="48" fill="rgba(0,0,0,0.2)"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="2,4"/>
+                    
+                    <!-- Wheat stalks -->
+                    <path d="M25,70 Q40,50 50,25" fill="none" stroke="#D4AF37" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M75,70 Q60,50 50,25" fill="none" stroke="#D4AF37" stroke-width="2.5" stroke-linecap="round"/>
+                    <ellipse cx="40" cy="45" rx="5" ry="2.5" fill="#D4AF37" transform="rotate(45 40 45)"/>
+                    <ellipse cx="60" cy="45" rx="5" ry="2.5" fill="#D4AF37" transform="rotate(-45 60 45)"/>
+                    
+                    <!-- Main Shield -->
+                    <path d="M32,30 L68,30 L68,55 C68,75 50,88 50,88 C50,88 32,75 32,55 Z" fill="url(#silverGrad)" stroke="#D4AF37" stroke-width="2"/>
+                    
+                    <!-- Castle emblem on shield -->
+                    <polygon points="42,50 46,50 46,45 54,45 54,50 58,50 58,65 42,65" fill="#0D47A1"/>
+                    <rect x="48" y="55" width="4" height="10" fill="url(#silverGrad)"/>
+                </svg>
+            </div>
+        </div>
+        <div class="text-box">
+            <div class="title-en">VILLAGER</div>
+            <div class="title-id">Warga Desa</div>
+            <div class="divider"></div>
+            <div class="ability">Pemilik Suara Demokrasi</div>
+            <div class="desc">
+                Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala secara musyawarah.
+            </div>
+        </div>
+        <div class="footer">VILLAGER // TIM DESA</div>
+    </div>
+
+    <!-- 3. KARTU WEREWOLF (SHADOWS) -->
+    <div class="card theme-ww">
+        <div class="arch-header">
+            <div class="code">WW·01</div>
+            <div class="faction">SHADOWS</div>
+            <div class="art-container">
+                <!-- SVG Werewolf: Sharp Skulls & Claws -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <circle cx="50" cy="50" r="48" fill="rgba(0,0,0,0.3)"/>
+                    <!-- Claw Marks Background -->
+                    <path d="M30,20 Q40,50 35,80 M50,15 Q60,50 50,85 M70,25 Q75,50 65,75" fill="none" stroke="#7f0000" stroke-width="4" stroke-linecap="round"/>
+                    
+                    <!-- Angular Wolf Skull Silhouette -->
+                    <polygon points="50,25 30,50 40,60 20,80 35,85 55,70 85,45" fill="#111" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+                    
+                    <!-- Jaws and Fangs -->
+                    <polygon points="20,80 35,70 25,85" fill="#D4AF37"/>
+                    <polygon points="35,85 45,75 40,90" fill="#D4AF37"/>
+                    
+                    <!-- Glowing Red Eye -->
+                    <polygon points="45,45 55,42 50,50" fill="#ff0000"/>
+                    <circle cx="50" cy="46" r="1.5" fill="#fff"/>
+                </svg>
+            </div>
+        </div>
+        <div class="text-box">
+            <div class="title-en">WEREWOLF</div>
+            <div class="title-id">Serigala</div>
+            <div class="divider"></div>
+            <div class="ability">Membunuh di Malam Hari</div>
+            <div class="desc">
+                Setiap malam, kawanan serigala memilih satu pemain untuk <strong>dibunuh secara brutal</strong>. Anda saling mengetahui identitas koloni. Menang jika jumlah serigala menyamai jumlah warga desa yang tersisa.
+            </div>
+        </div>
+        <div class="footer">WEREWOLF // TIM JAHAT</div>
+    </div>
+
+    <!-- 4. KARTU JESTER (NEUTRAL) -->
+    <div class="card theme-jes">
+        <div class="arch-header">
+            <div class="code">NT·01</div>
+            <div class="faction">NEUTRAL</div>
+            <div class="art-container">
+                <!-- SVG Jester: Twisted Mask -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <circle cx="50" cy="50" r="48" fill="rgba(0,0,0,0.25)"/>
+                    <polygon points="50,5 95,50 50,95 5,50" fill="none" stroke="#D4AF37" stroke-width="1.5" stroke-dasharray="4,4"/>
+                    
+                    <g transform="translate(0, 5)">
+                        <!-- Jester Hat -->
+                        <path d="M25,45 Q35,15 50,25 Q65,15 75,45 Q60,35 50,45 Q40,35 25,45 Z" fill="#111" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>
+                        <circle cx="25" cy="45" r="4" fill="#D4AF37"/>
+                        <circle cx="75" cy="45" r="4" fill="#D4AF37"/>
+                        
+                        <!-- Mask Half/Half -->
+                        <path d="M35,45 C35,70 50,75 50,75 L50,45 Z" fill="#fff" stroke="#111" stroke-width="1"/>
+                        <path d="M65,45 C65,70 50,75 50,75 L50,45 Z" fill="#D4AF37" stroke="#111" stroke-width="1"/>
+                        
+                        <!-- Eyes -->
+                        <circle cx="42" cy="52" r="3.5" fill="#00695C"/>
+                        <circle cx="58" cy="52" r="3.5" fill="#111"/>
+                        
+                        <!-- Sinister Smile -->
+                        <path d="M40,65 Q50,75 60,65" fill="none" stroke="#111" stroke-width="2"/>
+                        <line x1="45" y1="64" x2="45" y2="69" stroke="#111" stroke-width="1"/>
+                        <line x1="50" y1="66" x2="50" y2="71" stroke="#111" stroke-width="1"/>
+                        <line x1="55" y1="64" x2="55" y2="69" stroke="#111" stroke-width="1"/>
+                    </g>
+                </svg>
+            </div>
+        </div>
+        <div class="text-box">
+            <div class="title-en">JESTER</div>
+            <div class="title-id">Badut</div>
+            <div class="divider"></div>
+            <div class="ability">Tawa Terakhir</div>
+            <div class="desc">
+                Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di persidangan siang hari. Jika Badut berhasil membuat dirinya digantung, maka ia memenangkan permainan seorang diri.
+            </div>
+        </div>
+        <div class="footer">JESTER // TIM NETRAL</div>
+    </div>
+
+    <!-- 5. KARTU BELAKANG (CARD BACK) -->
+    <div class="card theme-back">
+        <div class="arch-header">
+            <!-- Archway kosong di belakang, hanya memberikan nuansa jendela/gerbang -->
+            <div class="crest-large">
+                <!-- SVG Card Back Crest (Centered perfectly inside the archway logic) -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <defs>
+                        <linearGradient id="goldBack" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#F9F1DC"/>
+                            <stop offset="50%" stop-color="#D4AF37"/>
+                            <stop offset="100%" stop-color="#997A15"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="48" fill="rgba(212, 175, 55, 0.05)"/>
+                    
+                    <!-- Outer Rings -->
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#D4AF37" stroke-width="1"/>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="url(#goldBack)" stroke-width="1.5" stroke-dasharray="6,4"/>
+                    
+                    <!-- Hexagon Geometry -->
+                    <polygon points="50,15 80,32.5 80,67.5 50,85 20,67.5 20,32.5" fill="none" stroke="#D4AF37" stroke-width="1"/>
+                    <polygon points="50,22 74,36 74,64 50,78 26,64 26,36" fill="none" stroke="#D4AF37" stroke-width="1"/>
+                    
+                    <!-- Center Core (Obsidian Vanguard Wolf) -->
+                    <circle cx="50" cy="50" r="20" fill="#000" stroke="#D4AF37" stroke-width="2"/>
+                    <path d="M60,35 A15,15 0 1,0 60,65 A18,18 0 0,1 60,35 Z" fill="url(#goldBack)"/>
+                    <polygon points="55,60 40,70 45,55 30,45 48,45 55,30" fill="#fff" opacity="0.9"/>
+                    <circle cx="50" cy="50" r="1.5" fill="#B71C1C"/>
+                </svg>
+            </div>
+        </div>
+        <div class="text-box" style="margin-top: 6mm;">
+            <div class="title-en">OBSIDIAN VANGUARD</div>
+            <div class="divider"></div>
+            <div class="title-id" style="font-size: 19px; color: var(--gold-base); letter-spacing: 5px;">WEREWOLF</div>
+        </div>
+        <div class="footer">MRSETIAWAN DESIGN</div>
+    </div>
+
+</body>
+</html>
