@@ -1562,6 +1562,37 @@ function _crc32(buf) {
                 </div>
             </div>`;
 
+        // Deck Selection Dropdown
+        const deckSelectHTML = `
+            <div style="margin-top: 14px; margin-bottom: 10px;">
+                <select id="_pcs_deck_select" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    background: #0a0a08;
+                    border: 1.5px solid rgba(212,175,55,0.45);
+                    border-radius: 8px;
+                    color: #f0d070;
+                    font-size: 13px;
+                    font-weight: 600;
+                    outline: none;
+                    cursor: pointer;
+                    appearance: none;
+                ">
+                    <option value="custom">Pilih Deck Prasetel...</option>
+                    <option value="starter">1. Starter Deck (9 Kartu) - "Classic Village"</option>
+                    <option value="expansion">2. Expansion Deck (18 Kartu) - "Town in Panic"</option>
+                    <option value="main">3. Main Deck (25 Kartu) - "Obsidian Vanguard"</option>
+                    <option value="advanced">4. Advanced Deck (35 Kartu) - "Blood & Magic"</option>
+                    <option value="large">5. Large Deck (45 Kartu) - "The Grand Inquisition"</option>
+                    <option value="jumbo">6. Jumbo Deck (50 Kartu) - "Vampire's Eclipse"</option>
+                    <option value="alliance">7a. Pure Alliance Deck (39 Kartu)</option>
+                    <option value="shadows">7b. Shadows Core Deck (14 Kartu)</option>
+                    <option value="neutral">7c. Neutral Chaos Deck (18 Kartu)</option>
+                    <option value="full">8. The Full Deck (72 Kartu) - "Absolute Vanguard"</option>
+                </select>
+            </div>
+        `;
+
         // Quick-select toolbar
         const toolbarHTML = `
             <div style="display:flex;gap:7px;flex-shrink:0;">
@@ -1599,7 +1630,7 @@ function _crc32(buf) {
                 ">▶ Terapkan ke Layout</button>
             </div>`;
 
-        modal.innerHTML = headerHTML + toolbarHTML + gridHTML + footerHTML;
+        modal.innerHTML = headerHTML + deckSelectHTML + toolbarHTML + gridHTML + footerHTML;
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
 
@@ -1684,6 +1715,57 @@ function _crc32(buf) {
                 cb.checked = !cb.checked;
                 if (cb.checked) selected.add(info.id); else selected.delete(info.id);
                 _styleItem(cb.closest('label'), cb.checked);
+            });
+            _updateUI();
+            modal.querySelector('#_pcs_deck_select').value = 'custom';
+        });
+
+        // Add event listeners that reset deck select to "custom"
+        modal.querySelector('#_pcs_all').addEventListener('click', () => { modal.querySelector('#_pcs_deck_select').value = 'custom'; });
+        modal.querySelector('#_pcs_none').addEventListener('click', () => { modal.querySelector('#_pcs_deck_select').value = 'custom'; });
+        // And for individual clicks, let's just observe changes to checkboxes
+        grid.addEventListener('change', (e) => {
+            if(e.target.type === 'checkbox') {
+                modal.querySelector('#_pcs_deck_select').value = 'custom';
+            }
+        });
+
+        // Deck selection logic
+        const deckDefinitions = {
+            starter: ['SP·01', 'WW·01', 'WW·02', 'VL·01', 'VL·02', 'VL·03', 'VL·14', 'VL·15', 'VL·16'],
+            expansion: ['SP·01', 'WW·01', 'WW·02', 'VL·01', 'VL·02', 'VL·03', 'VL·14', 'VL·15', 'VL·16', 'WW·03', 'WW·05', 'VL·04', 'VL·07', 'VL·09', 'VL·10', 'VL·26', 'NT·01', 'NT·03'],
+            main: ['SP·01', 'WW·01', 'WW·02', 'VL·01', 'VL·02', 'VL·03', 'VL·14', 'VL·15', 'VL·16', 'WW·03', 'WW·05', 'VL·04', 'VL·07', 'VL·09', 'VL·10', 'VL·26', 'NT·01', 'NT·03', 'VL·13', 'VL·18', 'VL·19', 'VL·20', 'VL·35', 'NT·04', 'NT·05'],
+            advanced: ['SP·01', 'WW·01', 'WW·02', 'VL·01', 'VL·02', 'VL·03', 'VL·14', 'VL·15', 'VL·16', 'WW·03', 'WW·05', 'VL·04', 'VL·07', 'VL·09', 'VL·10', 'VL·26', 'NT·01', 'NT·03', 'VL·13', 'VL·18', 'VL·19', 'VL·20', 'VL·35', 'NT·04', 'NT·05', 'WW·06', 'WW·04', 'VL·05', 'VL·06', 'VL·08', 'VL·11', 'VL·12', 'VL·21', 'NT·13', 'NT·02'],
+            large: ['SP·01', 'WW·01', 'WW·02', 'VL·01', 'VL·02', 'VL·03', 'VL·14', 'VL·15', 'VL·16', 'WW·03', 'WW·05', 'VL·04', 'VL·07', 'VL·09', 'VL·10', 'VL·26', 'NT·01', 'NT·03', 'VL·13', 'VL·18', 'VL·19', 'VL·20', 'VL·35', 'NT·04', 'NT·05', 'WW·06', 'WW·04', 'VL·05', 'VL·06', 'VL·08', 'VL·11', 'VL·12', 'VL·21', 'NT·13', 'NT·02', 'WW·07', 'WW·08', 'WW·10', 'VL·17', 'VL·22', 'VL·29', 'VL·30', 'VL·38', 'NT·06', 'NT·07'],
+            jumbo: ['SP·01', 'WW·01', 'WW·02', 'VL·01', 'VL·02', 'VL·03', 'VL·14', 'VL·15', 'VL·16', 'WW·03', 'WW·05', 'VL·04', 'VL·07', 'VL·09', 'VL·10', 'VL·26', 'NT·01', 'NT·03', 'VL·13', 'VL·18', 'VL·19', 'VL·20', 'VL·35', 'NT·04', 'NT·05', 'WW·06', 'WW·04', 'VL·05', 'VL·06', 'VL·08', 'VL·11', 'VL·12', 'VL·21', 'NT·13', 'NT·02', 'WW·07', 'WW·08', 'WW·10', 'VL·17', 'VL·22', 'VL·29', 'VL·30', 'VL·38', 'NT·06', 'NT·07', 'WW·09', 'VL·23', 'VL·24', 'NT·08', 'NT·09'],
+        };
+
+        modal.querySelector('#_pcs_deck_select').addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'custom') return;
+
+            let idsToSelect = new Set();
+            
+            if (val === 'full') {
+                cardInfos.forEach(c => idsToSelect.add(c.id));
+            } else if (val === 'alliance') {
+                cardInfos.forEach(c => { if (c.id.startsWith('VL·')) idsToSelect.add(c.id); });
+            } else if (val === 'shadows') {
+                cardInfos.forEach(c => { if (c.id.startsWith('WW·')) idsToSelect.add(c.id); });
+            } else if (val === 'neutral') {
+                cardInfos.forEach(c => { if (c.id.startsWith('NT·')) idsToSelect.add(c.id); });
+            } else if (deckDefinitions[val]) {
+                deckDefinitions[val].forEach(id => idsToSelect.add(id));
+            }
+
+            cardInfos.forEach(info => {
+                const cb = cbMap[info.id];
+                const shouldBeChecked = idsToSelect.has(info.id);
+                if (cb.checked !== shouldBeChecked) {
+                    cb.checked = shouldBeChecked;
+                    if (shouldBeChecked) selected.add(info.id); else selected.delete(info.id);
+                    _styleItem(cb.closest('label'), shouldBeChecked);
+                }
             });
             _updateUI();
         });
