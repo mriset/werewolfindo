@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf: Nightmare Asylum Deck (25 Cards)</title>
+    <!-- Kombinasi Font: Serif Seram, Sans Bersih, dan Monospace (Mesin Tik) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;600;700&family=Oswald:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu (Eropa Standard) */
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+            --scale: 1;
+            
+            /* Palet Dasar - Tema Putih Horor Dokumen */
+            --bg-paper: #f0f0f0;
+            --ink-black: #0f1115;
+            --blood-dark: #6e0000;
+            
+            /* Palet Faksi (Digunakan sebagai aksen tinta/stempel) */
+            --fac-sup: #3b0059; /* Moderator: Void Purple */
+            --fac-all: #113247; /* Warga: Cold Steel Blue */
+            --fac-shd: #8b0000; /* Werewolf: Crimson Blood */
+            --fac-chs: #0a421b; /* Jester / Cupid: Toxic Green */
+            
+            /* Emas untuk Kartu Belakang */
+            --gold-dark: #8c6a21;
+            --gold-light: #d4af37;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            font-family: 'Oswald', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: 'Cinzel', serif;
+        }
+        .header-title h1 {
+            font-size: 2.8rem;
+            color: #333;
+            background: #fff;
+            border: 1px solid #ccc;
+            letter-spacing: 6px;
+            text-shadow: 0 0 15px rgba(255,255,255,0.2), 0 0 30px rgba(139,0,0,0.6);
+            margin: 0;
+        }
+        .header-title p {
+            color: #888;
+            font-family: 'Courier Prime', monospace;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* --- CONTROL PANEL (From LightCelest) --- */
+        .screen-only { }
+        .control-panel { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(0, 0, 0, 0.1); 
+            border-radius: 12px; 
+            padding: 15px 25px; 
+            margin: 0 auto 30px; 
+            max-width: 900px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            align-items: center; 
+            justify-content: center; 
+            font-family: 'Montserrat', sans-serif; 
+            position: relative; 
+            z-index: 10;
+        }
+        .control-group { display: flex; align-items: center; gap: 8px; background: #f9f9f9; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); }
+        .control-group label { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; }
+        .control-group select { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #333; cursor: pointer; outline: none; transition: border-color 0.2s; }
+        .control-group select:focus { border-color: #d4af37; }
+        .control-btn { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; padding: 10px 18px; border-radius: 8px; cursor: pointer; letter-spacing: 0.5px; border: none; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        .btn-gold { background: linear-gradient(135deg, #aa771c, #d4af37); color: #fff; box-shadow: 0 4px 12px rgba(170, 119, 28, 0.3); }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(170, 119, 28, 0.5); }
+        kbd { background: #f0f2f5; border-radius: 3px; border: 1px solid #555; color: #333; display: inline-block; font-size: .85em; font-weight: 700; padding: 2px 4px; }
+        
+        @media print {
+            .screen-only, .control-panel, .header-title { display: none !important; }
+        }
+
+        /* --- PAGES CONTAINER (Grid from LightCelest) --- */
+        .page { 
+            background: #ffffff; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            margin: 0 auto 40px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            align-content: flex-start; 
+            justify-content: flex-start; 
+            box-sizing: border-box; 
+        }
+        @media print {
+            .page { box-shadow: none; margin: 0; page-break-after: always; }
+            body { background: none; padding: 0; }
+        }
+
+        /* --- BASE CARD SETUP --- */
+        .card {
+            width: calc(var(--card-w) * var(--scale));
+            height: calc(var(--card-h) * var(--scale));
+            border-radius: 4mm;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            user-select: none; 
+            flex-shrink: 0;
+            background: var(--ink-black); /* Fallback */
+        }
+        @media print {
+            .card { box-shadow: none !important; transform: none !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2), 0 0 0 2px var(--blood-dark);
+            z-index: 10;
+        }
+
+        /* --- THEMED GRITTY LAYOUT --- */
+        .card-front {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            background-color: var(--bg-paper);
+            background-image: radial-gradient(#bcbcbc 1px, transparent 1px);
+            background-size: 2.5mm 2.5mm;
+            border-radius: 4mm;
+            padding: 3.5mm;
+            overflow: hidden;
+            color: var(--ink-black);
+            border: 1px solid #dcdcdc;
+        }
+
+        /* Kotoran Latar Belakang */
+        .grime-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+            width: 100%; height: 100%;
+        }
+
+        .c-code {
+            font-family: 'Courier Prime', monospace;
+            font-size: 5pt;
+            position: absolute;
+            top: 10mm;
+            right: 3.5mm;
+            font-weight: 700;
+            color: var(--ink-black);
+            z-index: 5;
+        }
+
+
+        .c-stamp {
+            border: 1.5px dashed var(--theme-color);
+            padding: 1mm 2.5mm;
+            position: absolute;
+            top: 3.5mm;
+            right: 3.5mm;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 5;
+        }
+        .c-stamp-text {
+            font-family: 'Courier Prime', monospace;
+            font-size: 6pt;
+            font-weight: bold;
+            color: var(--theme-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .c-title-box {
+            position: absolute;
+            top: 3.5mm;
+            left: 3.5mm;
+            z-index: 5;
+            max-width: 32mm;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+        }
+        .c-title-id {
+            font-family: 'Oswald', sans-serif;
+            font-size: 15pt;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: var(--ink-black);
+            transform: scaleY(1.15); 
+            transform-origin: left;
+            line-height: 1;
+            letter-spacing: -0.5px;
+        }
+        .c-title-en {
+            font-family: 'Courier Prime', monospace;
+            font-size: 6pt;
+            background: var(--ink-black);
+            color: white;
+            display: inline-block;
+            padding: 0.3mm 1.5mm;
+            margin-top: 0.5mm;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .c-art {
+            position: absolute;
+            left: 3.25mm; /* dipassahkan ke tengah (54.5 - 48) / 2 */
+            top: 12mm; /* dinaikkan lagi agar tepat di bawah badge julukan */
+            width: 48mm;
+            height: 48mm;
+            opacity: 0.95;
+            z-index: 2;
+            filter: drop-shadow(0px 4px 2px rgba(0,0,0,0.1));
+        }
+
+        .c-footer {
+            position: absolute;
+            bottom: 3mm;
+            left: 3.5mm;
+            right: 3.5mm;
+            border-left: 3px solid var(--theme-color);
+            padding-left: 2.5mm;
+            background: rgba(240,240,240,0.85);
+            backdrop-filter: blur(2px);
+            z-index: 5;
+            padding-top: 1mm;
+            padding-bottom: 1mm;
+        }
+        
+        .c-quote {
+            font-family: 'Courier Prime', monospace;
+            font-size: 6.5pt;
+            line-height: 1.4;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 2mm;
+        }
+        
+        .c-ability {
+            font-family: 'Oswald', sans-serif;
+            font-size: 7.5pt;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--theme-color);
+            line-height: 1.2;
+        }
+
+        /* ===== ROLE-SPECIFIC ACCENT SYSTEM ===== */
+        /* Subtitle tag below role name */
+        .c-subtitle {
+            font-family: 'Courier Prime', monospace;
+            font-size: 6pt;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: var(--theme-color);
+            color: #fff;
+            display: inline-block;
+            padding: 0.3mm 1.5mm;
+            margin-top: 0;
+            white-space: nowrap;
+        }
+
+        /* Role corner emblem */
+        .c-role-emblem {
+            position: absolute;
+            bottom: 14mm;
+            left: 3.5mm;
+            z-index: 6;
+            width: 7mm;
+            height: 7mm;
+            opacity: 0.15;
+        }
+
+        /* Role top-left decorative line */
+        .c-accent-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* === MODERATOR — Void Purple / Architect === */
+        .role-moderator .c-footer { border-left: 3px double var(--theme-color); }
+
+        /* === SEER — Cold Steel Blue / Third Eye === */
+        .role-seer .c-footer { border-left: 3px solid var(--theme-color); border-image: linear-gradient(to bottom, var(--theme-color), transparent) 1; }
+
+        /* === ALPHA WOLF — Crimson / Blood Commander === */
+        .role-alphawolf .c-footer { border-left: 4px solid var(--theme-color); }
+        .role-alphawolf .c-stamp { border-style: solid; }
+
+        /* === JESTER — Toxic Green / Trickster === */
+        .role-jester .c-footer { border-left: 3px dotted var(--theme-color); }
+
+        /* === CUPID — Toxic Green / Cursed Archer === */
+        .role-cupid .c-footer { border-left: 3px dashed var(--theme-color); }
+
+        /* === HUNTER — Cold Steel / Last Shot === */
+        .role-hunter .c-footer { border-left: 4px solid var(--theme-color); }
+
+        /* === GUARDIAN — Cold Steel / Iron Shield === */
+        .role-guardian .c-footer { border-left: 3px solid var(--theme-color); border-top: 1px solid var(--theme-color); }
+
+        /* === WITCH — Cold Steel / Pale Alchemist === */
+        .role-witch .c-footer { border-left: 2px solid var(--theme-color); border-bottom: 1px dashed var(--theme-color); }
+
+        /* === WEREWOLF — Crimson / Night Predator === */
+        .role-werewolf .c-footer { border-left: 4px solid var(--theme-color); border-top: 1px solid rgba(139,0,0,0.2); }
+        .role-werewolf .c-stamp { border-style: solid; border-width: 2px; }
+
+        /* === WIZARD — Cold Steel / Fate Swapper === */
+        .role-wizard .c-footer { border-left: 3px dotted var(--theme-color); }
+
+        /* === VETERAN — Cold Steel / Scarred Survivor === */
+        .role-veteran .c-footer { border-left: 3px solid var(--theme-color); border-right: 1px solid rgba(17,50,71,0.15); }
+
+        /* === BODYGUARD — Cold Steel / Living Bastion === */
+        .role-bodyguard .c-footer { border-left: 5px solid var(--theme-color); }
+
+        /* === PRIEST — Cold Steel / Fallen Saint === */
+        .role-priest .c-footer { border-left: 2px solid var(--theme-color); border-top: 1px solid var(--theme-color); border-right: 1px solid var(--theme-color); }
+
+        /* === MAYOR — Cold Steel / Iron Gavel === */
+        .role-mayor .c-footer { border-left: 4px double var(--theme-color); }
+
+        /* === SHERIFF — Cold Steel / Double Verdict === */
+        .role-sheriff .c-footer { border-left: 3px dashed var(--theme-color); }
+
+        /* === VILLAGER — Cold Steel / The Innocent === */
+        .role-villager .c-footer { border-left: 2px solid var(--theme-color); opacity: 0.9; }
+
+        /* === LONE WOLF — Crimson / The Outcast === */
+        .role-lonewolf .c-footer { border-left: 3px dashed var(--theme-color); }
+
+        /* === DOPPELGANGER — Toxic Green / Mirror Soul === */
+        .role-doppelganger .c-footer { border-left: 3px dotted var(--theme-color); border-right: 1px dotted var(--theme-color); }
+
+        /* === SERIAL KILLER — Toxic Green / Indiscriminate === */
+        .role-serialkiller .c-footer { border-left: 4px solid var(--theme-color); border-bottom: 1px solid var(--theme-color); }
+        .role-serialkiller .c-stamp { border-style: double; border-width: 2px; }
+
+        /* === IDIOT — Cold Steel / Fool's Pardon === */
+        .role-idiot .c-footer { border-left: 2px dotted var(--theme-color); }
+
+        /* === PRINCE — Cold Steel / Untouchable === */
+        .role-prince .c-footer { border-left: 3px double var(--theme-color); border-top: 1px solid var(--theme-color); }
+
+        /* === LITTLE GIRL — Cold Steel / Silent Witness === */
+        .role-littlegirl .c-footer { border-left: 2px dashed var(--theme-color); }
+
+        /* ===== END ROLE ACCENT SYSTEM ===== */
+
+        /* --- KARTU BELAKANG --- */
+        .card-back { 
+            background: var(--ink-black); 
+            border: 2mm solid #111; 
+            padding: 1mm; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+            box-sizing: border-box;
+            border-radius: 4mm;
+        }
+        .back-inner { 
+            border: 1px solid var(--gold-dark); 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 2mm; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+        }
+        .back-corner { position: absolute; width: 8mm; height: 8mm; border: 1.5px solid var(--gold-light); }
+        .bc-tl { top: 2mm; left: 2mm; border-right: none; border-bottom: none; }
+        .bc-tr { top: 2mm; right: 2mm; border-left: none; border-bottom: none; }
+        .bc-bl { bottom: 2mm; left: 2mm; border-right: none; border-top: none; }
+        .bc-br { bottom: 2mm; right: 2mm; border-left: none; border-top: none; }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-title screen-only">
+        <h1>NIGHTMARE ASYLUM</h1>
+        <p>THE DOSSIER DECK // 54.5 x 85.5 mm</p>
+    </div>
+
+    <!-- CONTROL PANEL FOR PRINT/DOWNLOAD -->
+    <div class="control-panel screen-only">
+        <div style="width: 100%; text-align: center; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+            <p style="margin: 0; font-size: 13px; color: #fff; font-weight: 500;">
+                <span style="color: #d4af37; font-weight: 700;">PANDUAN CETAK:</span> Tekan <kbd>Ctrl+P</kbd> dan pastikan:
+                <strong>1.</strong> Format: <strong style="color:#e53935">A4</strong> &nbsp;&nbsp;
+                <strong>2.</strong> Scale: <strong style="color:#e53935">100% (Custom)</strong> &nbsp;&nbsp;
+                <strong>3.</strong> Margins: <strong style="color:#e53935">None</strong> &nbsp;&nbsp;
+                <strong>4.</strong> Centang <strong style="color:#e53935">Background graphics</strong>.
+            </p>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; width: 100%;">
+            <div class="control-group">
+                <label for="paper-size">Kertas:</label>
+                <select id="paper-size" onchange="changePaperSize()">
+                    <option value="a4">A4 (9 Kartu)</option>
+                    <option value="f4">F4 / Folio (9 Kartu)</option>
+                    <option value="a3">A3 (20 Kartu)</option>
+                    <option value="a3plus">A3+ (25 Kartu)</option>
+                    <option value="single">Single (Per Kartu)</option>
+                </select>
+            </div>
+            
+            <div style="width: 2px; background: #333; margin: 0 5px; border-radius: 2px;"></div>
+            
+            <div class="control-group">
+                <label for="export-format">Ekspor Zip:</label>
+                <select id="export-format">
+                    <option value="png">PNG (Berkualitas)</option>
+                    <option value="jpg">JPG (Lebih Kecil)</option>
+                </select>
+            </div>
+            <button id="btn-download-all" class="control-btn btn-gold" onclick="downloadAllCardsDomToImage('WhiteAsylum', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})">
+                ⬇ Download Semua Kartu (.ZIP)
+            </button>
+        </div>
+    </div>
+
+    <!-- DYNAMIC TAINER -->
+    <div id="pages-container"></div>
+    
+    <!-- SCRIPTS -->
+    <script src="white_asylum_data.js"></script>
+    <script src="svg_whiteasylum.js"></script>
+    
+    <script>
+        function getGrimeByFaction(facText) {
+            if (facText.includes('SUPREME')) return waGrimes["SUP-00"] || waGrimes["ALL"];
+            if (facText.includes('SHADOW')) return waGrimes["SHD"] || waGrimes["ALL"];
+            if (facText.includes('CHAOS')) return waGrimes["CHS"] || waGrimes["ALL"];
+            return waGrimes["ALL"];
+        }
+
+        // Generate front card HTML
+        function generateWhiteAsylumCard(card) {
+            const rot = Math.random() * 8 - 4; // random stamp tilt between -4 and 4 degrees
+            const isShadow = card.faction.includes("SHADOW");
+            const titleColor = isShadow ? "var(--fac-shd)" : "var(--ink-black)";
+            const roleClass = card.accentKey ? `role-${card.accentKey}` : '';
+            
+            return `
+            <div class="card">
+                <div class="card-front ${roleClass}" style="--theme-color: ${card.colorVar};">
+                    ${getGrimeByFaction(card.faction)}
+                    <div class="c-code c-id">${card.code}</div>
+                    
+                    <div class="c-stamp" style="transform: rotate(${rot.toFixed(1)}deg);">
+                        <div class="c-stamp-text">${card.faction}</div>
+                    </div>
+                    
+                    <div class="c-title-box">
+                        <div class="c-title-id" style="color: ${titleColor};">${card.titleEn}</div>
+                        <div class="c-title-en">${card.titleId}</div>
+                        ${card.subtitle ? `<div class="c-subtitle">${card.subtitle}</div>` : ''}
+                    </div>
+
+                    <div class="c-art">
+                        ${waArt[card.id] || ''}
+                    </div>
+
+                    <div class="c-footer">
+                        <div class="c-quote">${card.quote}</div>
+                        <div class="c-ability">${card.ability}</div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        const backContent = `
+        <div class="card card-back">
+            <div class="back-inner">
+                <div class="back-corner bc-tl"></div>
+                <div class="back-corner bc-tr"></div>
+                <div class="back-corner bc-bl"></div>
+                <div class="back-corner bc-br"></div>
+                
+                <svg viewBox="0 0 100 100" width="95%" height="95%" style="overflow: visible;">
+                    <defs>
+                        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#d4af37" />
+                            <stop offset="40%" stop-color="#fff" />
+                            <stop offset="60%" stop-color="#d4af37" />
+                            <stop offset="100%" stop-color="#8c6a21" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="url(#goldGrad)" stroke-width="0.8" />
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#8c6a21" stroke-width="0.5" stroke-dasharray="2 4" />
+                    <circle cx="50" cy="50" r="39" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" />
+                    
+                    <polygon points="50,11 84,69 16,69" fill="none" stroke="url(#goldGrad)" stroke-width="0.6" />
+                    <polygon points="50,89 16,31 84,31" fill="none" stroke="url(#goldGrad)" stroke-width="0.6" />
+                    
+                    <circle cx="50" cy="5" r="3" fill="#fff" filter="drop-shadow(0 0 2px #fff)"/>
+                    <circle cx="50" cy="95" r="3" fill="none" stroke="#fff" stroke-width="1" />
+                    
+                    <circle cx="50" cy="50" r="24" fill="#080808" stroke="url(#goldGrad)" stroke-width="1.5" />
+                    <!-- Tulang Pipi / Rahang Atas -->
+                    <polygon points="50,68 36,46 44,34 50,42 56,34 64,46" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" stroke-linejoin="round" />
+                    <polygon points="38,46 32,36 42,40" fill="url(#goldGrad)" />
+                    <polygon points="62,46 68,36 58,40" fill="url(#goldGrad)" />
+                    <polygon points="50,22 54,28 50,34 46,28" fill="#fff" filter="drop-shadow(0 0 3px #d4af37)"/>
+                    <polygon points="46,50 48,46 47,52" fill="#fff" />
+                    <polygon points="54,50 52,46 53,52" fill="#fff" />
+                    <polygon points="50,56 48,64 52,64" fill="url(#goldGrad)" />
+                    <polygon points="50,68 54,80 50,86 46,80" fill="url(#goldGrad)" />
+                </svg>
+
+                <div style="position: absolute; bottom: 3mm; font-family: 'Courier Prime'; font-size: 3.5pt; color: #777; text-align: center; width: 100%; font-weight: bold; letter-spacing: 1px;">
+                    NIGHTMARE ASYLUM ED. <br> TRUST NO ONE // BCK-00
+                </div>
+            </div>
+        </div>`;
+
+        function changePaperSize() {
+            const paperId = document.getElementById('paper-size').value;
+            const container = document.getElementById("pages-container");
+            container.innerHTML = ""; // Clear existing
+
+            let cols = 3, rows = 3;
+            let wMM = 210, hMM = 297, cssPadding = "15mm 15mm", cssGap = "5.5mm";
+            
+            if (paperId === 'a4') {
+                cols = 3; rows = 3; wMM = 210; hMM = 297;
+                cssPadding = "15mm 15mm"; cssGap = "5.5mm";
+            } else if (paperId === 'f4') {
+                cols = 3; rows = 3; wMM = 215; hMM = 330;
+                cssPadding = "25mm 15.5mm"; cssGap = "6mm";
+            } else if (paperId === 'a3') {
+                cols = 5; rows = 4; wMM = 297; hMM = 420;
+                cssPadding = "28mm 1.1mm"; cssGap = "1.5mm";
+            } else if (paperId === 'a3plus') {
+                cols = 5; rows = 5; wMM = 329; hMM = 483;
+                cssPadding = "8.5mm 11.5mm"; cssGap = "4.5mm";
+            } else if (paperId === 'single') {
+                cols = 1; rows = 1; wMM = 54.5; hMM = 85.5;
+                cssPadding = "0"; cssGap = "0mm";
+            }
+            
+            const cssWidth = wMM + "mm";
+            const cssHeight = hMM + "mm";
+            const localCardsPerPage = cols * rows;
+
+            // Render Dynamic CSS
+            let styleEl = document.getElementById('dynamic-paper-style');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'dynamic-paper-style';
+                document.head.appendChild(styleEl);
+            }
+            
+            styleEl.innerHTML = `
+                @page { size: ${cssWidth} ${cssHeight}; margin: 0; }
+                @media print {
+                    .page { 
+                        width: ${cssWidth}; height: ${cssHeight}; 
+                        padding: ${cssPadding} !important; gap: ${cssGap} !important; 
+                        margin: 0; page-break-after: always; page-break-inside: avoid; overflow: hidden; 
+                    }
+                }
+                .page {
+                    width: ${cssWidth};
+                    min-height: ${cssHeight};
+                    padding: ${cssPadding};
+                    gap: ${cssGap};
+                }
+            `;
+
+            let htmlContent = '';
+            // Loop and render front pages
+            for (let i = 0; i < asylumDeckData.length; i += localCardsPerPage) {
+                const pageCards = asylumDeckData.slice(i, i + localCardsPerPage);
+                htmlContent += `<div class="page">`;
+                pageCards.forEach(card => {
+                    htmlContent += generateWhiteAsylumCard(card);
+                });
+                htmlContent += `</div>`;
+            }
+
+            // Loop and render back pages matching front layout
+            const numbPages = Math.ceil(asylumDeckData.length / localCardsPerPage);
+            for(let p = 0; p < numbPages; p++) {
+                htmlContent += `<div class="page">`;
+                const countOnThisPage = (p === numbPages - 1 && asylumDeckData.length % localCardsPerPage !== 0) 
+                     ? asylumDeckData.length % localCardsPerPage 
+                     : localCardsPerPage;
+                for(let c = 0; c < countOnThisPage; c++) {
+                    htmlContent += backContent;
+                }
+                htmlContent += `</div>`;
+            }
+            container.innerHTML = htmlContent;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            changePaperSize();
+        });
+
+        document.addEventListener('dblclick', function(e) {
+            const card = e.target.closest('.card');
+            if (!card) return;
+            downloadCard(card);
+        });
+        
+        let lastTap = 0;
+        document.addEventListener('touchend', function(e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 500 && tapLength > 0) {
+                const card = e.target.closest('.card');
+                if (card) {
+                    downloadCard(card);
+                    e.preventDefault();
+                }
+            }
+            lastTap = currentTime;
+        });
+        
+        function downloadCard(card) {
+            const format = (document.getElementById('export-format').value || 'png').trim().toLowerCase();
+            const idElement = card.querySelector('.c-id, .c-code');
+            let cardId = idElement ? idElement.innerText : 'card-back';
+            cardId = cardId.replace(/[:\\s]/g, '-').replace(/--/g, '-');
+            const bgColor = format === 'jpg' ? '#ffffff' : null;
+            if(typeof downloadCardDomToImage !== "undefined") {
+                downloadCardDomToImage(card, `WhiteAsylum-${cardId}`, { format, bgColor });
+            }
+        }
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+    <script src="download_helper.js?v=2"></script>
+</body>
+</html>
