@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Werewolf Premium - Slashed Edition</title>
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Creepster&family=Special+Elite&family=Russo+One&display=swap" rel="stylesheet" />
+    
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu */
+            --w: 54.5mm;
+            --h: 85.5mm;
+            
+            /* Warna Faksi */
+            --mod-color: #6A1B9A; /* Supreme Purple */
+            --mod-dark: #38006b;
+            
+            --vil-color: #0D47A1; /* Alliance Navy */
+            --vil-dark: #002171;
+            
+            --hnt-accent: #E65100; /* Hunter Flare Amber */
+            --see-accent: #0097A7; /* Seer Mystic Cyan */
+            
+            --ww-color: #B71C1C; /* Blood Crimson */
+            --ww-dark: #4A0404;
+            
+            --jes-color: #00695C; /* Emerald */
+            --jes-dark: #AD1457; /* Magenta */
+            
+            --back-gold: #D4AF37;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #151515;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 4px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+        .header span {
+            color: #B71C1C;
+        }
+
+        .deck-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* Base Card Styling */
+        .card {
+            width: var(--w);
+            height: var(--h);
+            background-color: #ffffff;
+            border-radius: 4mm;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: #111;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.15);
+            z-index: 10;
+        }
+
+        /* Common Elements for Front Cards */
+        .header-slash {
+            position: absolute; 
+            top: 3mm; 
+            z-index: 3;
+            text-transform: uppercase;
+        }
+        .illustration {
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 60%; 
+            z-index: 1;
+        }
+        .text-content {
+            position: absolute; 
+            bottom: 0; left: 0; 
+            width: 100%; height: 50%;
+            background: #fff;
+            padding: 5mm 3mm 3mm;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .quote {
+            font-size: 5.5pt;
+            font-style: italic;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 2mm;
+            line-height: 1.3;
+        }
+        .desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5pt;
+            line-height: 1.35;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* =========================================
+           1. MODERATOR (Divine Rift / Slashed Space)
+           ========================================= */
+        .card-mod {
+            background: radial-gradient(circle at top right, #f3e5f5 0%, #fff 70%);
+        }
+        .card-mod .header-slash {
+            right: 3mm; text-align: right;
+        }
+        .card-mod .faction { font-family: 'Cinzel', serif; font-size: 7pt; color: var(--mod-dark); font-weight: 900; letter-spacing: 1px;}
+        .card-mod .serial { font-family: 'Special Elite', monospace; font-size: 5pt; color: var(--mod-color); }
+        .card-mod .text-content {
+            clip-path: polygon(0 0, 100% 18%, 100% 100%, 0 100%);
+            border-top: 3px solid var(--mod-color);
+        }
+        .card-mod .role-en { font-family: 'Cinzel', serif; font-size: 14pt; font-weight: 900; color: var(--mod-color); margin-bottom: -1px; letter-spacing: -0.5px;}
+        .card-mod .role-id { font-family: 'Montserrat', sans-serif; font-size: 5.5pt; color: var(--mod-dark); font-weight: 800; margin-bottom: 3mm; letter-spacing: 2px;}
+
+        /* =========================================
+           2. VILLAGER (Defensive Strike / Counter Slash)
+           ========================================= */
+        .card-vil {
+            background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 60%);
+        }
+        .card-vil .header-slash {
+            left: 3mm; text-align: left;
+        }
+        .card-vil .faction { font-family: 'Russo One', sans-serif; font-size: 7pt; color: var(--vil-dark); letter-spacing: 1px;}
+        .card-vil .serial { font-family: 'Special Elite', monospace; font-size: 5pt; color: var(--vil-color); }
+        .card-vil .text-content {
+            /* Opposite angle to WW */
+            clip-path: polygon(0 18%, 100% 0, 100% 100%, 0 100%);
+            border-top: 3px solid var(--vil-color);
+            padding-top: 6mm;
+        }
+        .card-vil .role-en { font-family: 'Russo One', sans-serif; font-size: 15pt; color: var(--vil-color); margin-bottom: -2px;}
+        .card-vil .role-id { font-family: 'Montserrat', sans-serif; font-size: 5.5pt; color: var(--vil-dark); font-weight: 800; margin-bottom: 3mm; letter-spacing: 1px;}
+
+        /* =========================================
+           3. HUNTER (Piercing Shot / Sniper Slash)
+           ========================================= */
+        .card-hnt {
+            background: linear-gradient(135deg, #eceff1 0%, #ffffff 60%);
+        }
+        .card-hnt .header-slash {
+            right: 3mm; text-align: right;
+        }
+        .card-hnt .faction { font-family: 'Russo One', sans-serif; font-size: 7pt; color: var(--vil-dark); letter-spacing: 1px;}
+        .card-hnt .serial { font-family: 'Special Elite', monospace; font-size: 5pt; color: var(--hnt-accent); }
+        .card-hnt .text-content {
+            /* Steep Piercing Cut */
+            clip-path: polygon(0 25%, 100% 0, 100% 100%, 0 100%);
+            border-top: 4px solid var(--vil-dark);
+            padding-top: 6mm;
+        }
+        .card-hnt .role-en { font-family: 'Russo One', sans-serif; font-size: 15pt; color: var(--vil-dark); margin-bottom: -2px;}
+        .card-hnt .role-id { font-family: 'Montserrat', sans-serif; font-size: 5.5pt; color: var(--hnt-accent); font-weight: 800; margin-bottom: 3mm; letter-spacing: 1px;}
+
+        /* =========================================
+           4. SEER (Vision Slash / Mystic Cut)
+           ========================================= */
+        .card-see {
+            background: linear-gradient(135deg, #e0f2f1 0%, #ffffff 60%);
+        }
+        .card-see .header-slash {
+            left: 3mm; text-align: left;
+        }
+        .card-see .faction { font-family: 'Russo One', sans-serif; font-size: 7pt; color: var(--vil-dark); letter-spacing: 1px;}
+        .card-see .serial { font-family: 'Special Elite', monospace; font-size: 5pt; color: var(--see-accent); }
+        .card-see .text-content {
+            /* Vision Cut - left high, right low */
+            clip-path: polygon(0 0, 100% 20%, 100% 100%, 0 100%);
+            border-top: 4px solid var(--see-accent);
+            padding-top: 6mm;
+        }
+        .card-see .role-en { font-family: 'Russo One', sans-serif; font-size: 15pt; color: var(--vil-dark); margin-bottom: -2px;}
+        .card-see .role-id { font-family: 'Montserrat', sans-serif; font-size: 5.5pt; color: var(--see-accent); font-weight: 800; margin-bottom: 3mm; letter-spacing: 1px;}
+
+        /* =========================================
+           5. WEREWOLF (Brutal Claw / The Original Slash)
+           ========================================= */
+        .card-ww {
+            background: radial-gradient(circle at center, #ffebeb 0%, #ffffff 80%);
+        }
+        .card-ww .header-slash {
+            right: 3mm; text-align: right;
+        }
+        .card-ww .faction { font-family: 'Creepster', cursive; font-size: 9pt; color: #000; letter-spacing: 2px; }
+        .card-ww .serial { font-family: 'Special Elite', monospace; font-size: 5pt; color: var(--ww-color); }
+        .card-ww .text-content {
+            clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+            border-top: 4px solid var(--ww-color);
+        }
+        .card-ww .role-en { font-family: 'Creepster', cursive; font-size: 17pt; color: var(--ww-dark); margin-bottom: -2px; letter-spacing: 1px;}
+        .card-ww .role-id { font-family: 'Special Elite', monospace; font-size: 5.5pt; color: var(--ww-color); font-weight: bold; margin-bottom: 3mm;}
+
+        /* =========================================
+           6. JESTER (Shattered Glitch / Chaotic Slice)
+           ========================================= */
+        .card-jes {
+            background: repeating-linear-gradient(45deg, #fff, #fff 4px, #f1f8e9 4px, #f1f8e9 8px);
+        }
+        .card-jes .header-slash {
+            left: 3mm; text-align: left;
+        }
+        .card-jes .faction { font-family: 'Playfair Display', serif; font-size: 7.5pt; font-weight: 900; font-style: italic; color: var(--jes-color); }
+        .card-jes .serial { font-family: 'Special Elite', monospace; font-size: 5pt; color: var(--jes-dark); }
+        .card-jes .text-content {
+            /* Zig-zag glitch cut */
+            clip-path: polygon(0 15%, 50% 0, 100% 15%, 100% 100%, 0 100%);
+            border-top: 3px solid var(--jes-dark);
+        }
+        .card-jes .text-content::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 50%; height: 100%;
+            border-top: 4px solid var(--jes-color); transform-origin: top left; transform: skewY(-16.5deg);
+        }
+        .card-jes .role-en { font-family: 'Playfair Display', serif; font-size: 15pt; font-weight: 900; color: var(--jes-dark); margin-bottom: -2px; letter-spacing: -0.5px;}
+        .card-jes .role-id { font-family: 'Montserrat', sans-serif; font-size: 5.5pt; color: var(--jes-color); font-weight: 800; margin-bottom: 3mm; letter-spacing: 1px;}
+
+        /* =========================================
+           7. CARD BACK (Dark Symmetrical Slashes)
+           ========================================= */
+        .card-back {
+            background-color: #070707;
+            color: #fff;
+            border: 2px solid #1a1a1a;
+        }
+        .card-back .slashes {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+        }
+        .card-back .center-emblem {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 40mm; height: 50mm;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>THE <span>SLASHED</span> DECK</h1>
+        <p style="font-size: 12px; color: #aaa; margin-top: 5px;">Unified Chaotic Layout - 54.5 x 85.5 mm</p>
+    </div>
+
+    <div class="deck-container">
+
+        <!-- 1. MODERATOR CARD -->
+        <div class="card card-mod">
+            <div class="header-slash">
+                <div class="faction">FAKSI PENGUASA</div>
+                <div class="serial">SERI: SUP-001</div>
+            </div>
+
+            <div class="illustration">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <polygon points="30,0 70,100 65,100 25,0" fill="rgba(106, 27, 154, 0.1)"/>
+                    <line x1="30" y1="0" x2="70" y2="100" stroke="#6A1B9A" stroke-width="1.5"/>
+                    <line x1="25" y1="0" x2="65" y2="100" stroke="#D4AF37" stroke-width="0.5"/>
+                    
+                    <g transform="translate(45, 40) rotate(22)">
+                        <path d="M-15,0 Q0,-15 15,0 Q0,15 -15,0 Z" fill="#fff" stroke="#6A1B9A" stroke-width="1.5"/>
+                        <circle cx="0" cy="0" r="5" fill="#D4AF37"/>
+                        <circle cx="0" cy="0" r="2" fill="#6A1B9A"/>
+                        <line x1="0" y1="-8" x2="0" y2="-18" stroke="#D4AF37" stroke-width="1"/>
+                        <line x1="0" y1="8" x2="0" y2="18" stroke="#D4AF37" stroke-width="1"/>
+                    </g>
+                    <polygon points="10,20 15,30 5,25" fill="#D4AF37" opacity="0.6"/>
+                    <polygon points="80,70 85,60 90,75" fill="#6A1B9A" opacity="0.4"/>
+                    <polygon points="75,20 85,15 80,25" fill="#D4AF37" opacity="0.5"/>
+                </svg>
+            </div>
+
+            <div class="text-content">
+                <div class="role-en">MODERATOR</div>
+                <div class="role-id">SANG PENGATUR TAKDIR</div>
+                <div class="quote" style="border-left: 2px solid var(--mod-gold); padding-left: 2mm;">
+                    "Realitas hanyalah sebuah kanvas, dan otoritas ini adalah pisau bedahnya."
+                </div>
+                <div class="desc">
+                    Penguasa absolut arena. Memandu siklus mematikan antara siang dan malam. Hanya kamu yang dapat melihat menembus sayatan kebohongan setiap pemain.
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. VILLAGER CARD -->
+        <div class="card card-vil">
+            <div class="header-slash">
+                <div class="faction">ALIANSI WARGA</div>
+                <div class="serial">ALL-001</div>
+            </div>
+            
+            <div class="illustration">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <path d="M80,10 L30,80" stroke="#000" stroke-width="3" opacity="0.1" stroke-linecap="round"/>
+                    
+                    <polygon points="10,60 90,30 92,34 12,64" fill="#0D47A1"/>
+                    <polygon points="10,60 90,30 91,32 11,62" fill="#78909C"/>
+                    
+                    <circle cx="50" cy="45" r="8" fill="#fff"/>
+                    <path d="M50,45 L40,25 L53,42 Z" fill="#D4AF37"/>
+                    <path d="M50,45 L70,55 L52,48 Z" fill="#D4AF37"/>
+                    <path d="M50,45 L45,65 L50,50 Z" fill="#D4AF37"/>
+                    
+                    <line x1="20" y1="20" x2="35" y2="40" stroke="#0D47A1" stroke-width="1" stroke-dasharray="2 2"/>
+                    <line x1="70" y1="80" x2="60" y2="60" stroke="#0D47A1" stroke-width="1" stroke-dasharray="2 2"/>
+                </svg>
+            </div>
+
+            <div class="text-content">
+                <div class="role-en">VILLAGER</div>
+                <div class="role-id">WARGA DESA</div>
+                <div class="quote" style="border-left: 2px solid var(--vil-color); padding-left: 2mm;">
+                    "Luka sayatan ini membuktikan aku masih manusia. Apa yang bisa kau buktikan?"
+                </div>
+                <div class="desc">
+                    Bertahan di tengah teror tanpa kekuatan khusus. Senjata utamamu adalah hak suara. Identifikasi siapa dalang di balik pertumpahan darah ini, dan gantung mereka.
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. HUNTER CARD -->
+        <div class="card card-hnt">
+            <div class="header-slash">
+                <div class="faction">ALIANSI WARGA</div>
+                <div class="serial">ALL-002</div>
+            </div>
+            
+            <div class="illustration">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <circle cx="50" cy="45" r="25" fill="none" stroke="#0D47A1" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.5"/>
+                    <line x1="50" y1="10" x2="50" y2="35" stroke="#0D47A1" stroke-width="1.5"/>
+                    <line x1="50" y1="55" x2="50" y2="80" stroke="#0D47A1" stroke-width="1.5"/>
+                    <line x1="15" y1="45" x2="40" y2="45" stroke="#0D47A1" stroke-width="1.5"/>
+                    <line x1="60" y1="45" x2="85" y2="45" stroke="#0D47A1" stroke-width="1.5"/>
+                    <circle cx="50" cy="45" r="2.5" fill="#E65100"/>
+                    
+                    <polygon points="10,85 45,50 50,45 42,48 5,88" fill="#E65100" opacity="0.9"/>
+                    <line x1="10" y1="85" x2="50" y2="45" stroke="#FFB300" stroke-width="2"/>
+                    <line x1="5" y1="88" x2="42" y2="48" stroke="#E65100" stroke-width="1"/>
+                    
+                    <polygon points="50,45 55,25 65,35" fill="rgba(13, 71, 161, 0.15)" stroke="#0D47A1" stroke-width="0.5"/>
+                    <polygon points="50,45 70,40 75,55" fill="rgba(230, 81, 0, 0.2)" stroke="#E65100" stroke-width="0.5"/>
+                    <polygon points="50,45 60,65 45,70" fill="rgba(13, 71, 161, 0.15)" stroke="#0D47A1" stroke-width="0.5"/>
+                    <polygon points="50,45 35,30 25,40" fill="none" stroke="#E65100" stroke-width="0.5" stroke-dasharray="2 2"/>
+                    
+                    <path d="M 30,65 Q 50,45 70,25" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="1 3"/>
+                </svg>
+            </div>
+
+            <div class="text-content">
+                <div class="role-en">HUNTER</div>
+                <div class="role-id">SANG PEMBURU</div>
+                <div class="quote" style="border-left: 2px solid var(--hnt-accent); padding-left: 2mm;">
+                    "Mati satu, akan kubawa satu bersamaku ke neraka."
+                </div>
+                <div class="desc">
+                    Jika kamu terbunuh oleh serigala atau dieksekusi warga, kamu memiliki satu kesempatan terakhir untuk menembak mati satu pemain pilihanmu sebelum menghembuskan napas terakhir.
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SEER CARD (NEW) -->
+        <div class="card card-see">
+            <div class="header-slash">
+                <div class="faction">ALIANSI WARGA</div>
+                <div class="serial">ALL-003</div>
+            </div>
+            
+            <div class="illustration">
+                <!-- SVG: Mystical Eye piercing through a dimensional slash -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <!-- Mystic aura / ripples -->
+                    <circle cx="50" cy="50" r="30" fill="none" stroke="#0097A7" stroke-width="1" stroke-dasharray="2 4" opacity="0.3"/>
+                    <circle cx="50" cy="50" r="20" fill="none" stroke="#0097A7" stroke-width="1" stroke-dasharray="4 2" opacity="0.5"/>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#0D47A1" stroke-width="0.5" opacity="0.2"/>
+
+                    <!-- Eye of Truth -->
+                    <path d="M15,50 Q50,25 85,50 Q50,75 15,50 Z" fill="#fff" stroke="#0D47A1" stroke-width="2"/>
+                    
+                    <!-- Iris -->
+                    <circle cx="50" cy="50" r="12" fill="#0097A7"/>
+                    
+                    <!-- Glowing Pupil -->
+                    <circle cx="50" cy="50" r="4" fill="#002171"/>
+                    <circle cx="52" cy="48" r="1.5" fill="#fff"/> <!-- Sparkle -->
+
+                    <!-- The Reveal Slash (Slicing the illusion) -->
+                    <polygon points="10,20 45,55 40,60 5,25" fill="#0097A7" opacity="0.15"/>
+                    <line x1="5" y1="20" x2="95" y2="80" stroke="#0097A7" stroke-width="1.5" stroke-dasharray="6 2"/>
+                    <line x1="8" y1="18" x2="98" y2="78" stroke="#0D47A1" stroke-width="0.5"/>
+                    
+                    <!-- Magical Shards -->
+                    <polygon points="20,70 25,65 30,72" fill="#0097A7" opacity="0.6"/>
+                    <polygon points="75,30 80,25 85,35" fill="#0D47A1" opacity="0.4"/>
+                </svg>
+            </div>
+
+            <div class="text-content">
+                <div class="role-en">SEER</div>
+                <div class="role-id">SANG PENERAWANG</div>
+                <div class="quote" style="border-left: 2px solid var(--see-accent); padding-left: 2mm;">
+                    "Mata ini melihat warna darah dari setiap dusta yang terucap."
+                </div>
+                <div class="desc">
+                    Pemegang kunci kebenaran. Setiap malam, pilih satu pemain untuk mengungkap identitas aslinya. Bimbing warga di siang hari, tapi jangan sampai kawanan serigala mencium auramu.
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. WEREWOLF CARD -->
+        <div class="card card-ww">
+            <div class="header-slash">
+                <div class="faction">THE SHADOWS</div>
+                <div class="serial">SHD-001</div>
+            </div>
+
+            <div class="illustration">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <path d="M35,45 Q50,35 65,45 Q50,55 35,45 Z" fill="#B71C1C" opacity="0.8"/>
+                    <circle cx="50" cy="45" r="2.5" fill="#fff"/>
+                    <circle cx="50" cy="45" r="1" fill="#000"/>
+                    
+                    <path d="M15,5 Q35,45 25,90 Q18,45 8,5 Z" fill="#111"/>
+                    <path d="M45,-5 Q65,45 55,100 Q43,45 33,-5 Z" fill="#B71C1C"/>
+                    <path d="M47,-3 Q65,45 55,97 Q45,45 35,-3 Z" fill="#4A0404"/>
+                    <path d="M75,10 Q95,50 85,85 Q78,50 68,10 Z" fill="#111"/>
+                    
+                    <circle cx="55" cy="85" r="1.5" fill="#B71C1C"/>
+                    <circle cx="60" cy="75" r="1" fill="#B71C1C"/>
+                    <path d="M55,85 L55,95" stroke="#B71C1C" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <div class="text-content">
+                <div class="role-en">WEREWOLF</div>
+                <div class="role-id">SANG PEMANGSA</div>
+                <div class="quote" style="border-left: 2px solid var(--ww-color); padding-left: 2mm;">
+                    "Jangan pernah mempercayai bayanganmu sendiri saat bulan purnama menyingsing."
+                </div>
+                <div class="desc">
+                    Berburu dalam kegelapan. Setiap malam, bersekutulah untuk merobek leher satu warga desa. Di siang hari, kenakan topeng kepolosanmu dan manipulasilah mereka.
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. JESTER CARD -->
+        <div class="card card-jes">
+            <div class="header-slash">
+                <div class="faction">FAKSI INDEPENDEN</div>
+                <div class="serial">NEU-001</div>
+            </div>
+
+            <div class="illustration">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <polygon points="10,10 30,50 5,60" fill="rgba(0,105,92,0.1)"/>
+                    <polygon points="90,20 70,70 95,80" fill="rgba(173,20,87,0.1)"/>
+                    
+                    <g transform="translate(-5, 0)">
+                        <path d="M30,30 Q50,10 70,30 L65,40 L35,40 Z" fill="#00695C"/>
+                        <circle cx="35" cy="20" r="4" fill="#AD1457"/>
+                        <circle cx="65" cy="20" r="4" fill="#AD1457"/>
+                    </g>
+                    <g transform="translate(10, 0)">
+                        <path d="M30,42 L70,42 L65,60 L35,60 Z" fill="#AD1457"/>
+                        <line x1="40" y1="48" x2="48" y2="48" stroke="#fff" stroke-width="2"/>
+                        <line x1="60" y1="48" x2="52" y2="48" stroke="#fff" stroke-width="2"/>
+                    </g>
+                    <g transform="translate(-10, 0)">
+                        <path d="M38,62 L62,62 Q50,85 38,62 Z" fill="#111"/>
+                        <path d="M42,65 Q50,75 58,65" fill="none" stroke="#fff" stroke-width="2"/>
+                    </g>
+
+                    <line x1="0" y1="41" x2="100" y2="41" stroke="#111" stroke-width="1.5" stroke-dasharray="4 2"/>
+                    <line x1="0" y1="61" x2="100" y2="61" stroke="#111" stroke-width="1.5" stroke-dasharray="4 2"/>
+                </svg>
+            </div>
+
+            <div class="text-content">
+                <div class="role-en">JESTER</div>
+                <div class="role-id">SI BADUT GILA</div>
+                <div class="quote" style="border-left: 2px solid var(--jes-color); padding-left: 2mm;">
+                    "Kewarasan adalah lelucon yang tak kumengerti. Mari tertawa bersama di tiang gantungan!"
+                </div>
+                <div class="desc">
+                    Kematian bukanlah akhir, melainkan tujuanmu. Bertingkahlah gila dan mencurigakan di siang hari. Jika warga desa mengeksekusimu, kau menang mutlak sendirian!
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. CARD BACK -->
+        <div class="card card-back">
+            <div class="slashes">
+                <svg viewBox="0 0 100 157" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <path d="M-10,20 L110,80" stroke="#C5A059" stroke-width="1.5" opacity="0.6"/>
+                    <path d="M-10,137 L110,77" stroke="#C5A059" stroke-width="1.5" opacity="0.6"/>
+                    
+                    <path d="M-10,10 L110,140" stroke="#333" stroke-width="3" opacity="0.5"/>
+                    <path d="M110,10 L-10,140" stroke="#333" stroke-width="3" opacity="0.5"/>
+                    
+                    <line x1="5" y1="5" x2="30" y2="5" stroke="#C5A059" stroke-width="2"/>
+                    <line x1="95" y1="5" x2="70" y2="5" stroke="#C5A059" stroke-width="2"/>
+                    <line x1="5" y1="152" x2="30" y2="152" stroke="#C5A059" stroke-width="2"/>
+                    <line x1="95" y1="152" x2="70" y2="152" stroke="#C5A059" stroke-width="2"/>
+                </svg>
+            </div>
+            
+            <div class="center-emblem">
+                <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#C5A059"/>
+                            <stop offset="50%" stop-color="#fdf6d8"/>
+                            <stop offset="100%" stop-color="#8a6d3b"/>
+                        </linearGradient>
+                    </defs>
+
+                    <polygon points="50,5 90,30 90,90 50,115 10,90 10,30" fill="#070707" stroke="url(#goldGrad)" stroke-width="1.5"/>
+                    <polygon points="50,12 83,34 83,86 50,108 17,86 17,34" fill="none" stroke="#C5A059" stroke-width="0.5" stroke-dasharray="2 2"/>
+
+                    <g transform="translate(50, 60)">
+                        <polygon points="0,-35 20,-45 10,-15" fill="url(#goldGrad)"/>
+                        <polygon points="0,-35 -20,-45 -10,-15" fill="url(#goldGrad)"/>
+                        
+                        <polygon points="12,-12 25,0 10,10" fill="#222" stroke="url(#goldGrad)" stroke-width="1"/>
+                        <polygon points="-12,-12 -25,0 -10,10" fill="#222" stroke="url(#goldGrad)" stroke-width="1"/>
+                        <polygon points="5,-15 15,-10 8,-5" fill="url(#goldGrad)"/>
+                        <polygon points="-5,-15 -15,-10 -8,-5" fill="url(#goldGrad)"/>
+                        
+                        <polygon points="0,-10 10,15 0,35 -10,15" fill="#111" stroke="url(#goldGrad)" stroke-width="1.5"/>
+                        <polygon points="0,25 5,15 -5,15" fill="url(#goldGrad)"/>
+                        
+                        <polygon points="10,20 25,45 0,40" fill="url(#goldGrad)"/>
+                        <polygon points="-10,20 -25,45 0,40" fill="url(#goldGrad)"/>
+                    </g>
+                </svg>
+            </div>
+            
+            <div style="position: absolute; bottom: 6mm; width: 100%; text-align: center; font-family: 'Cinzel', serif; font-size: 5.5pt; color: var(--back-gold); letter-spacing: 3px; font-weight: bold;">
+                THE SLASHED DECK
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
