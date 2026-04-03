@@ -234,21 +234,65 @@
                 </div>
                 <div class="tw-art">
                     <svg viewBox="0 0 100 100" width="100%" height="100%">
-                        <!-- Panopticon / Mata Omniscient -->
-                        <circle cx="50" cy="50" r="40" fill="none" stroke="#111" stroke-width="1.5" />
-                        <circle cx="50" cy="50" r="33" fill="none" stroke="#3b0059" stroke-width="1.5"
-                            stroke-dasharray="4,3" />
-                        <path d="M 20 50 Q 50 20 80 50 Q 50 80 20 50 Z" fill="#fff" stroke="#111" stroke-width="2.5" />
-                        <circle cx="50" cy="50" r="14" fill="#3b0059" />
-                        <circle cx="50" cy="50" r="4" fill="#111" />
-                        <circle cx="46" cy="46" r="2.5" fill="#fff" />
-                        <!-- Tali Boneka & Genangan Darah -->
-                        <line x1="35" y1="62" x2="35" y2="95" stroke="#111" stroke-width="2" />
-                        <line x1="65" y1="62" x2="65" y2="95" stroke="#111" stroke-width="2" />
-                        <line x1="50" y1="65" x2="50" y2="100" stroke="#111" stroke-width="2" />
-                        <path d="M 31 95 C 31 88 39 88 39 95 Z" fill="#111" />
-                        <path d="M 61 95 C 61 88 69 88 69 95 Z" fill="#111" />
-                        <path d="M 45 100 C 45 92 55 92 55 100 Z" fill="#3b0059" />
+                        <!-- Tirai Panggung Abstrak di Latar Belakang -->
+                        <path d="M 0 0 Q 20 20 5 100 L 0 100 Z" fill="rgba(59,0,89,0.1)" />
+                        <path d="M 100 0 Q 80 20 95 100 L 100 100 Z" fill="rgba(59,0,89,0.1)" />
+                        <path d="M 5 0 Q 30 15 15 100 L 0 100 Z" fill="rgba(17,17,17,0.05)" />
+                        <path d="M 95 0 Q 70 15 85 100 L 100 100 Z" fill="rgba(17,17,17,0.05)" />
+
+                        <!-- Tangan Dalang Raksasa Hitam (Siluet Tangan dari Atas) -->
+                        <path d="M 30 -5 Q 40 10 45 15 Q 48 18 50 15 Q 52 18 55 15 Q 60 10 70 -5 Z" fill="#111"
+                            opacity="0.8" />
+
+                        <!-- Salib Marionette (Alat kontrol boneka) -->
+                        <line x1="50" y1="12" x2="50" y2="35" stroke="#3b0059" stroke-width="3"
+                            stroke-linecap="round" />
+                        <line x1="25" y1="20" x2="75" y2="20" stroke="#3b0059" stroke-width="3"
+                            stroke-linecap="round" />
+
+                        <!-- Cincin kontrol di ujung kayu -->
+                        <circle cx="25" cy="20" r="3" fill="#fff" stroke="#111" stroke-width="1.5" />
+                        <circle cx="75" cy="20" r="3" fill="#fff" stroke="#111" stroke-width="1.5" />
+                        <circle cx="50" cy="12" r="3" fill="#fff" stroke="#111" stroke-width="1.5" />
+                        <circle cx="50" cy="35" r="3" fill="#fff" stroke="#111" stroke-width="1.5" />
+
+                        <!-- Tali pengendali boneka -->
+                        <!-- Tali kiri -->
+                        <line x1="25" y1="23" x2="33" y2="52" stroke="#111" stroke-width="1.5" stroke-dasharray="3,2" />
+                        <!-- Tali kanan -->
+                        <line x1="75" y1="23" x2="67" y2="52" stroke="#111" stroke-width="1.5" stroke-dasharray="3,2" />
+                        <!-- Tali tengah atas ke kepala -->
+                        <line x1="50" y1="38" x2="50" y2="48" stroke="#111" stroke-width="1.5" stroke-dasharray="3,2" />
+
+                        <!-- Bidak Catur (Pawn) terikat benang -->
+                        <!-- Kepala bidak -->
+                        <circle cx="50" cy="53" r="7" fill="#111" />
+                        <circle cx="52.5" cy="50.5" r="2" fill="#fff" opacity="0.4" /> <!-- Kilap kepala -->
+                        <!-- Leher bidak & kerah -->
+                        <path d="M 44 63 L 56 63 L 53 66 L 47 66 Z" fill="#3b0059" />
+                        <!-- Badan bidak (kurva halus bidak pion) -->
+                        <path d="M 47 66 C 44 76 35 84 30 88 L 70 88 C 65 84 56 76 53 66 Z" fill="#111" />
+                        <!-- Alas bidak bertingkat -->
+                        <rect x="28" y="88" width="44" height="4" rx="1.5" fill="#3b0059" />
+                        <rect x="24" y="92" width="52" height="4" rx="2" fill="#111" />
+
+                        <!-- Pin pengait di tubuh bidak (tempat tali menempel) -->
+                        <circle cx="50" cy="46" r="1.5" fill="#fff" />
+                        <circle cx="33" cy="52" r="1.5" fill="#fff" />
+                        <circle cx="67" cy="52" r="1.5" fill="#fff" />
+
+                        <!-- Bayangan retakan di badan bidak (menyimbolkan kefanaan/bidak rapuh) -->
+                        <path d="M 50 66 L 47 72 L 52 78 L 46 84" stroke="#fff" stroke-width="1.5" fill="none"
+                            opacity="0.8" />
+                        <path d="M 52 78 L 56 80" stroke="#fff" stroke-width="1" fill="none" opacity="0.8" />
+
+                        <!-- Genangan merah darah/ungu di bawah -->
+                        <ellipse cx="50" cy="98" rx="38" ry="4" fill="#3b0059" opacity="0.7" />
+                        <ellipse cx="50" cy="98" rx="25" ry="2" fill="#111" opacity="0.5" />
+                        <!-- Cipratan darah/genangan -->
+                        <circle cx="85" cy="95" r="2.5" fill="#3b0059" />
+                        <circle cx="92" cy="97" r="1.5" fill="#3b0059" opacity="0.6" />
+                        <circle cx="15" cy="95" r="3" fill="#3b0059" />
                     </svg>
                 </div>
                 <div class="tw-text-box">
@@ -273,33 +317,55 @@
                 </div>
                 <div class="tw-art">
                     <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Cahaya Aura Ramalan Latar -->
+                        <circle cx="50" cy="48" r="38" fill="rgba(74,0,128,0.04)" />
                         <!-- Kristal Bola Ramalan -->
                         <circle cx="50" cy="48" r="28" fill="none" stroke="#4a0080" stroke-width="2" />
                         <circle cx="50" cy="48" r="26" fill="rgba(74,0,128,0.06)" />
-                        <!-- Cahaya Mistis dalam Bola -->
-                        <ellipse cx="42" cy="35" rx="12" ry="8" fill="rgba(200,150,255,0.3)" opacity="0.7" />
-                        <path d="M 35 50 Q 50 30 65 50 Q 50 70 35 50 Z" fill="rgba(150,80,220,0.25)" />
-                        <!-- Mata di Dalam Bola -->
-                        <path d="M 32 48 Q 50 33 68 48 Q 50 63 32 48 Z" fill="none" stroke="#4a0080" stroke-width="2" />
-                        <circle cx="50" cy="48" r="9" fill="#4a0080" />
-                        <circle cx="50" cy="48" r="5" fill="#1a0033" />
-                        <circle cx="47" cy="45" r="2" fill="#fff" opacity="0.8" />
-                        <circle cx="55" cy="50" r="1" fill="#fff" opacity="0.5" />
-                        <!-- Sudut Rune / Stream data mystis -->
-                        <path d="M 22 20 L 30 28 M 26 20 L 26 28 M 22 24 L 30 24" stroke="#4a0080" stroke-width="1.5"
-                            fill="none" opacity="0.6" />
-                        <path d="M 70 20 L 78 28 M 74 20 L 74 28 M 70 24 L 78 24" stroke="#4a0080" stroke-width="1.5"
-                            fill="none" opacity="0.6" />
-                        <!-- Alas Bola: Dudukan Mahkota -->
-                        <path d="M 32 76 Q 50 82 68 76 L 64 68 Q 57 72 50 73 Q 43 72 36 68 Z" fill="#4a0080" />
-                        <rect x="34" y="76" width="32" height="5" rx="2" fill="#3a0060" />
-                        <!-- Bintang-bintang Berpijar -->
-                        <circle cx="20" cy="30" r="1.5" fill="#b060ff" />
-                        <circle cx="80" cy="25" r="1" fill="#b060ff" />
-                        <circle cx="15" cy="60" r="1" fill="#b060ff" />
-                        <circle cx="85" cy="68" r="1.5" fill="#b060ff" />
-                        <circle cx="25" cy="85" r="1" fill="#b060ff" />
-                        <circle cx="78" cy="85" r="1" fill="#b060ff" />
+                        
+                        <!-- Asap/Kabut di Dalam Bola -->
+                        <path d="M 25 48 C 30 35 40 45 45 35 C 50 25 65 35 70 45 C 75 55 60 70 50 70 C 40 70 20 60 25 48 Z" fill="rgba(200,150,255,0.25)" />
+                        <path d="M 30 55 C 35 45 45 55 55 45 C 65 35 75 55 60 65 C 50 75 25 65 30 55 Z" fill="rgba(150,80,220,0.2)" />
+
+                        <!-- Rahasia terungkap: Siluet Serigala melolong di dalam bola -->
+                        <path d="M 38 65 Q 42 50 48 44 Q 52 40 55 34 L 58 38 L 56 42 Q 62 48 58 65 Z" fill="#1a0033" opacity="0.85" />
+                        <polygon points="56,42 66,35 60,48" fill="#1a0033" opacity="0.85" />
+                        <polygon points="48,44 52,32 55,41" fill="#1a0033" opacity="0.85" />
+                        
+                        <!-- Kilap Bola Kristal (Refleksi Cahaya) -->
+                        <path d="M 26 40 A 24 24 0 0 1 50 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.6" />
+                        <path d="M 30 32 A 24 24 0 0 1 42 26" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity="0.4" />
+                        <ellipse cx="68" cy="62" rx="4" ry="2" fill="#fff" opacity="0.5" transform="rotate(-30 68 62)" />
+
+                        <!-- Tangan Peramal menyangga bola -->
+                        <!-- Tangan kiri -->
+                        <path d="M 15 85 Q 25 70 34 68 Q 38 67 40 70 Q 35 75 30 95 Z" fill="#4a0080" />
+                        <path d="M 34 68 Q 38 62 42 66 Q 40 70 38 68" fill="#3a0060" /> 
+                        <!-- Tangan kanan -->
+                        <path d="M 85 85 Q 75 70 66 68 Q 62 67 60 70 Q 65 75 70 95 Z" fill="#4a0080" />
+                        <path d="M 66 68 Q 62 62 58 66 Q 60 70 62 68" fill="#3a0060" /> 
+
+                        <!-- Alas Bola / Tatakan Kayu Mistis -->
+                        <path d="M 42 75 L 58 75 L 62 82 L 38 82 Z" fill="#1a0033" />
+                        <rect x="36" y="82" width="28" height="4" rx="1" fill="#4a0080" />
+                        <circle cx="50" cy="78" r="2" fill="#b060ff" />
+
+                        <!-- Kartu Tarot Melayang Bebas -->
+                        <rect x="15" y="32" width="10" height="15" fill="#faf5ff" stroke="#4a0080" stroke-width="1" transform="rotate(-15 20 42)" />
+                        <rect x="16" y="33" width="8" height="13" fill="none" stroke="#6a0090" stroke-width="0.5" stroke-dasharray="1,1" transform="rotate(-15 20 42)" />
+                        <circle cx="20" cy="39.5" r="1.5" fill="#4a0080" transform="rotate(-15 20 42)" />
+
+                        <rect x="75" y="45" width="10" height="15" fill="#faf5ff" stroke="#4a0080" stroke-width="1" transform="rotate(20 80 52)" />
+                        <rect x="76" y="46" width="8" height="13" fill="none" stroke="#6a0090" stroke-width="0.5" stroke-dasharray="1,1" transform="rotate(20 80 52)" />
+                        <polygon points="80,49 82,54 78,54" fill="#4a0080" transform="rotate(20 80 52)" />
+
+                        <!-- Percikan Energi Bintang -->
+                        <polygon points="20,15 22,23 30,25 22,27 20,35 18,27 10,25 18,23" fill="#b060ff" opacity="0.6" />
+                        <polygon points="80,18 81,22 85,23 81,24 80,28 79,24 75,23 79,22" fill="#b060ff" opacity="0.6" />
+                        <circle cx="32" cy="18" r="1.5" fill="#b060ff" opacity="0.8" />
+                        <circle cx="72" cy="15" r="1" fill="#b060ff" opacity="0.8" />
+                        <circle cx="35" cy="88" r="1" fill="#b060ff" opacity="0.5" />
+                        <circle cx="65" cy="88" r="1.5" fill="#b060ff" opacity="0.5" />
                     </svg>
                 </div>
                 <div class="tw-text-box">
@@ -327,27 +393,30 @@
                         <!-- Bulan darah di belakang -->
                         <circle cx="50" cy="38" r="28" fill="none" stroke="#6b0000" stroke-width="1.5" opacity="0.4" />
                         <circle cx="50" cy="38" r="24" fill="rgba(107,0,0,0.08)" />
-                        <!-- Siluet kepala serigala Alpha — besar & dominan -->
+                        <!-- Siluet kepala serigala Alpha — besar & dominan (warna di-lighten untuk cetak) -->
                         <!-- Telinga lancip kiri -->
-                        <polygon points="24,18 18,3 35,16" fill="#1a0000" />
+                        <polygon points="24,18 18,3 35,16" fill="rgba(170, 0, 0, 0.1)" stroke="#8b0000"
+                            stroke-width="2" />
                         <!-- Telinga lancip kanan -->
-                        <polygon points="76,18 82,3 65,16" fill="#1a0000" />
+                        <polygon points="76,18 82,3 65,16" fill="rgba(170, 0, 0, 0.1)" stroke="#8b0000"
+                            stroke-width="2" />
                         <!-- Kepala -->
                         <path
                             d="M 22 20 Q 15 45 22 60 L 35 68 Q 50 75 65 68 L 78 60 Q 85 45 78 20 Q 65 10 50 10 Q 35 10 22 20 Z"
-                            fill="#1a0000" />
+                            fill="rgba(170, 0, 0, 0.05)" stroke="#8b0000" stroke-width="2.5" />
                         <!-- Moncong -->
-                        <path d="M 38 52 Q 50 68 62 52 Q 55 60 50 62 Q 45 60 38 52 Z" fill="#6b0000" />
+                        <path d="M 38 52 Q 50 68 62 52 Q 55 60 50 62 Q 45 60 38 52 Z" fill="rgba(200, 0, 0, 0.15)"
+                            stroke="#a81010" stroke-width="2" />
                         <!-- Hidung -->
-                        <ellipse cx="50" cy="50" rx="7" ry="5" fill="#0d0000" />
-                        <ellipse cx="48" cy="49" rx="2" ry="1.5" fill="#4a0000" opacity="0.6" />
-                        <!-- Mata serigala Alpha — merah membara -->
-                        <ellipse cx="36" cy="38" rx="7" ry="5" fill="#6b0000" />
-                        <ellipse cx="64" cy="38" rx="7" ry="5" fill="#6b0000" />
-                        <circle cx="36" cy="38" r="3" fill="#cc0000" />
-                        <circle cx="64" cy="38" r="3" fill="#cc0000" />
-                        <circle cx="34" cy="36" r="1.2" fill="#fff" opacity="0.7" />
-                        <circle cx="62" cy="36" r="1.2" fill="#fff" opacity="0.7" />
+                        <ellipse cx="50" cy="50" rx="7" ry="5" fill="#6b0000" />
+                        <ellipse cx="48" cy="49" rx="2" ry="1.5" fill="#ff4d4d" opacity="0.8" />
+                        <!-- Mata serigala Alpha — merah membara (terang) -->
+                        <ellipse cx="36" cy="38" rx="6" ry="4" fill="#6b0000" />
+                        <ellipse cx="64" cy="38" rx="6" ry="4" fill="#6b0000" />
+                        <circle cx="36" cy="38" r="2.5" fill="#ff1a1a" />
+                        <circle cx="64" cy="38" r="2.5" fill="#ff1a1a" />
+                        <circle cx="34" cy="36" r="1" fill="#fff" opacity="0.9" />
+                        <circle cx="62" cy="36" r="1" fill="#fff" opacity="0.9" />
                         <!-- Cakar/luka merah di dagu -->
                         <path d="M 42 70 L 44 82 M 50 72 L 50 85 M 58 70 L 56 82" stroke="#6b0000" stroke-width="2"
                             fill="none" stroke-linecap="round" />
@@ -1382,7 +1451,8 @@
                 <div class="tw-text-box">
                     <div class="tw-quote">"Eh, kalian mau gantung aku? <span>Silakan saja.</span> Aku masih di sini
                         setelahnya — senyum-senyum."</div>
-                    <div class="tw-ability">KEMAMPUAN:<br>Jika divoting pada siang hari, buka identitasmu dan kamu BATAL MATI, tapi kehilangan hak suara selamanya.</div>
+                    <div class="tw-ability">KEMAMPUAN:<br>Jika divoting pada siang hari, buka identitasmu dan kamu BATAL
+                        MATI, tapi kehilangan hak suara selamanya.</div>
                 </div>
             </div>
         </div>
@@ -1547,7 +1617,8 @@
         </div>
 
         <!-- KARTU: VILLAGER #2 (FAKSI: ALLIANCE) — Sabit Hitam & Cipratan Darah -->
-        <div class="card theme-twisted" style="--f-color: #2b4a1b; --bg-color: #f7f9f5; --box-bg: #dde8d5; --text-color: #0e1a06; --code-color: #3b6028; --border-color: #1a300e; --sidebar-text: #fff;">
+        <div class="card theme-twisted"
+            style="--f-color: #2b4a1b; --bg-color: #f7f9f5; --box-bg: #dde8d5; --text-color: #0e1a06; --code-color: #3b6028; --border-color: #1a300e; --sidebar-text: #fff;">
             <div class="tw-sidebar">
                 <div class="tw-title-en">VILLAGER</div>
             </div>
@@ -1559,43 +1630,48 @@
                 <div class="tw-art">
                     <svg viewBox="0 0 100 100" width="100%" height="100%">
                         <!-- Cahaya lentera redup di tengah -->
-                        <circle cx="50" cy="50" r="35" fill="rgba(255,200,100,0.1)"/>
-                        <circle cx="50" cy="50" r="20" fill="rgba(255,200,100,0.15)"/>
-                        
+                        <circle cx="50" cy="50" r="35" fill="rgba(255,200,100,0.1)" />
+                        <circle cx="50" cy="50" r="20" fill="rgba(255,200,100,0.15)" />
+
                         <!-- Bilah Sabit Besar (Sickle) -->
-                        <path d="M 30 20 Q 80 5 90 40 Q 95 60 75 70 Q 85 50 75 35 Q 65 20 40 30 Z" fill="#1a300e" stroke="#2b4a1b" stroke-width="1.5"/>
-                        
+                        <path d="M 30 20 Q 80 5 90 40 Q 95 60 75 70 Q 85 50 75 35 Q 65 20 40 30 Z" fill="#1a300e"
+                            stroke="#2b4a1b" stroke-width="1.5" />
+
                         <!-- Gagang Kayu Sabit -->
-                        <rect x="25" y="18" width="8" height="40" rx="3" fill="#2a1608" transform="rotate(-20 29 38)"/>
-                        
+                        <rect x="25" y="18" width="8" height="40" rx="3" fill="#2a1608" transform="rotate(-20 29 38)" />
+
                         <!-- Tetesan Darah di Sabit -->
-                        <path d="M 88 45 Q 88 52 86 55 Q 89 50 88 45 Z" fill="#8b0000"/>
-                        <circle cx="86" cy="58" r="1.5" fill="#8b0000"/>
-                        <circle cx="84" cy="62" r="1" fill="#8a0000"/>
-                        
+                        <path d="M 88 45 Q 88 52 86 55 Q 89 50 88 45 Z" fill="#8b0000" />
+                        <circle cx="86" cy="58" r="1.5" fill="#8b0000" />
+                        <circle cx="84" cy="62" r="1" fill="#8a0000" />
+
                         <!-- Lentera Besi Tua Kecil -->
-                        <rect x="42" y="60" width="16" height="20" rx="2" fill="none" stroke="#2b4a1b" stroke-width="2.5"/>
-                        <polygon points="40,60 50,52 60,60" fill="#2b4a1b"/>
-                        <rect x="46" y="62" width="8" height="14" rx="1" fill="rgba(255,200,100,0.4)"/>
+                        <rect x="42" y="60" width="16" height="20" rx="2" fill="none" stroke="#2b4a1b"
+                            stroke-width="2.5" />
+                        <polygon points="40,60 50,52 60,60" fill="#2b4a1b" />
+                        <rect x="46" y="62" width="8" height="14" rx="1" fill="rgba(255,200,100,0.4)" />
                         <!-- Nyala Api Kecil -->
-                        <path d="M 50 64 Q 48 70 50 74 Q 52 70 50 64 Z" fill="#ffaa00"/>
+                        <path d="M 50 64 Q 48 70 50 74 Q 52 70 50 64 Z" fill="#ffaa00" />
                         <!-- Handle Lentera -->
-                        <path d="M 45 52 Q 50 45 55 52" fill="none" stroke="#1a300e" stroke-width="1.5"/>
+                        <path d="M 45 52 Q 50 45 55 52" fill="none" stroke="#1a300e" stroke-width="1.5" />
                         <!-- Tali gantungan samar di latar belakang -->
-                        <line x1="20" y1="0" x2="20" y2="40" stroke="#111" stroke-width="2" opacity="0.4"/>
-                        <circle cx="20" cy="45" r="5" fill="none" stroke="#111" stroke-width="2" opacity="0.4"/>
+                        <line x1="20" y1="0" x2="20" y2="40" stroke="#111" stroke-width="2" opacity="0.4" />
+                        <circle cx="20" cy="45" r="5" fill="none" stroke="#111" stroke-width="2" opacity="0.4" />
                     </svg>
                 </div>
                 <div class="tw-text-box">
-                    <div class="tw-quote">"Aku hanya petani miskin. Tapi jika makhluk itu berani menginjak ladangku, <span>sabit panen ini pun akan kumuatkan sebagai senjataku.</span>"</div>
-                    <div class="tw-ability">KEMAMPUAN:<br>Tidak memiliki kekuatan gaib. Mengandalkan insting dalam diskusi siang untuk memvonis mati serigala.</div>
+                    <div class="tw-quote">"Aku hanya petani miskin. Tapi jika makhluk itu berani menginjak ladangku,
+                        <span>sabit panen ini pun akan kumuatkan sebagai senjataku.</span>"</div>
+                    <div class="tw-ability">KEMAMPUAN:<br>Tidak memiliki kekuatan gaib. Mengandalkan insting dalam
+                        diskusi siang untuk memvonis mati serigala.</div>
                 </div>
             </div>
         </div>
 
 
         <!-- KARTU: VILLAGER #3 (FAKSI: ALLIANCE) — Masa Marah (Obor & Garpu Rumput) -->
-        <div class="card theme-twisted" style="--f-color: #a83200; --bg-color: #fffaf5; --box-bg: #ffe8d6; --text-color: #1a0800; --code-color: #e64500; --border-color: #4a1500; --sidebar-text: #fff;">
+        <div class="card theme-twisted"
+            style="--f-color: #a83200; --bg-color: #fffaf5; --box-bg: #ffe8d6; --text-color: #1a0800; --code-color: #e64500; --border-color: #4a1500; --sidebar-text: #fff;">
             <div class="tw-sidebar">
                 <div class="tw-title-en">VILLAGER</div>
             </div>
@@ -1607,47 +1683,52 @@
                 <div class="tw-art">
                     <svg viewBox="0 0 100 100" width="100%" height="100%">
                         <!-- Siluet massa marah di latar (banyak tombak/obor angkat) -->
-                        <path d="M 10 90 L 15 65 L 18 90 Z" fill="#4a1500" opacity="0.3"/>
-                        <circle cx="15" cy="62" r="3" fill="#e64500" opacity="0.4"/>
-                        <path d="M 85 90 L 90 70 L 92 90 Z" fill="#4a1500" opacity="0.3"/>
-                        <circle cx="90" cy="67" r="2.5" fill="#e64500" opacity="0.4"/>
-                        <path d="M 25 90 L 30 75 L 35 90 Z" fill="#4a1500" opacity="0.2"/>
-                        <path d="M 75 90 L 70 80 L 65 90 Z" fill="#4a1500" opacity="0.2"/>
+                        <path d="M 10 90 L 15 65 L 18 90 Z" fill="#4a1500" opacity="0.3" />
+                        <circle cx="15" cy="62" r="3" fill="#e64500" opacity="0.4" />
+                        <path d="M 85 90 L 90 70 L 92 90 Z" fill="#4a1500" opacity="0.3" />
+                        <circle cx="90" cy="67" r="2.5" fill="#e64500" opacity="0.4" />
+                        <path d="M 25 90 L 30 75 L 35 90 Z" fill="#4a1500" opacity="0.2" />
+                        <path d="M 75 90 L 70 80 L 65 90 Z" fill="#4a1500" opacity="0.2" />
 
                         <!-- Gagang Garpu Rumput (kiri bawah ke kanan atas) -->
-                        <line x1="20" y1="85" x2="70" y2="30" stroke="#3a1a05" stroke-width="6" stroke-linecap="round"/>
+                        <line x1="20" y1="85" x2="70" y2="30" stroke="#3a1a05" stroke-width="6"
+                            stroke-linecap="round" />
                         <!-- Ujung Garpu Rumput -->
-                        <path d="M 68 32 L 80 18 M 65 28 L 74 15 M 72 35 L 85 24 M 64 34 L 88 16" fill="none" stroke="#2a1000" stroke-width="2.5" stroke-linecap="round"/>
-                        <path d="M 62 38 Q 70 30 78 36" fill="none" stroke="#2a1000" stroke-width="4"/>
+                        <path d="M 68 32 L 80 18 M 65 28 L 74 15 M 72 35 L 85 24 M 64 34 L 88 16" fill="none"
+                            stroke="#2a1000" stroke-width="2.5" stroke-linecap="round" />
+                        <path d="M 62 38 Q 70 30 78 36" fill="none" stroke="#2a1000" stroke-width="4" />
 
                         <!-- Gagang Obor Api (kanan bawah ke kiri atas) -->
-                        <line x1="80" y1="85" x2="30" y2="30" stroke="#4a1500" stroke-width="7" stroke-linecap="round"/>
+                        <line x1="80" y1="85" x2="30" y2="30" stroke="#4a1500" stroke-width="7"
+                            stroke-linecap="round" />
                         <!-- Kain/lilitan obor -->
-                        <path d="M 28 26 L 36 34 L 32 38 L 24 30 Z" fill="#2a1000"/>
-                        <line x1="26" y1="28" x2="34" y2="36" stroke="#fffaf5" stroke-width="0.8" opacity="0.5"/>
-                        <line x1="29" y1="31" x2="33" y2="39" stroke="#fffaf5" stroke-width="0.8" opacity="0.5"/>
+                        <path d="M 28 26 L 36 34 L 32 38 L 24 30 Z" fill="#2a1000" />
+                        <line x1="26" y1="28" x2="34" y2="36" stroke="#fffaf5" stroke-width="0.8" opacity="0.5" />
+                        <line x1="29" y1="31" x2="33" y2="39" stroke="#fffaf5" stroke-width="0.8" opacity="0.5" />
 
                         <!-- Nyala Api Besar -->
-                        <path d="M 30 28 C 15 15 25 -5 40 5 C 35 15 45 10 30 28 Z" fill="#e64500"/>
-                        <path d="M 32 30 C 22 20 30 10 38 18 C 36 22 40 20 32 30 Z" fill="#ffaa00"/>
-                        <path d="M 30 26 C 25 20 28 15 32 20 C 31 22 34 21 30 26 Z" fill="#fff"/>
+                        <path d="M 30 28 C 15 15 25 -5 40 5 C 35 15 45 10 30 28 Z" fill="#e64500" />
+                        <path d="M 32 30 C 22 20 30 10 38 18 C 36 22 40 20 32 30 Z" fill="#ffaa00" />
+                        <path d="M 30 26 C 25 20 28 15 32 20 C 31 22 34 21 30 26 Z" fill="#fff" />
 
                         <!-- Percikan Bunga Api (Sparks) -->
-                        <circle cx="20" cy="15" r="1.5" fill="#ffaa00"/>
-                        <circle cx="45" cy="8" r="1.2" fill="#e64500"/>
-                        <circle cx="35" cy="-2" r="1.5" fill="#ffaa00"/>
-                        <circle cx="15" cy="25" r="1" fill="#e64500"/>
-                        <circle cx="50" cy="22" r="1" fill="#e64500"/>
-                        
+                        <circle cx="20" cy="15" r="1.5" fill="#ffaa00" />
+                        <circle cx="45" cy="8" r="1.2" fill="#e64500" />
+                        <circle cx="35" cy="-2" r="1.5" fill="#ffaa00" />
+                        <circle cx="15" cy="25" r="1" fill="#e64500" />
+                        <circle cx="50" cy="22" r="1" fill="#e64500" />
+
                         <!-- Bayangan api bersinar -->
-                        <circle cx="35" cy="20" r="25" fill="rgba(230,69,0,0.15)"/>
+                        <circle cx="35" cy="20" r="25" fill="rgba(230,69,0,0.15)" />
                         <!-- Asap tipis -->
-                        <path d="M 40 5 Q 45 -5 35 -10" fill="none" stroke="#1a0800" stroke-width="3" opacity="0.1"/>
+                        <path d="M 40 5 Q 45 -5 35 -10" fill="none" stroke="#1a0800" stroke-width="3" opacity="0.1" />
                     </svg>
                 </div>
                 <div class="tw-text-box">
-                    <div class="tw-quote">"Tidak ada sidang, tidak ada pengampunan. <span>Malam ini kami yang jadi hakim</span> dan apilah yang jadi algojonya."</div>
-                    <div class="tw-ability">KEMAMPUAN:<br>Tidak memiliki kekuatan gaib. Mengandalkan insting dalam diskusi siang untuk memvonis mati serigala.</div>
+                    <div class="tw-quote">"Tidak ada sidang, tidak ada pengampunan. <span>Malam ini kami yang jadi
+                            hakim</span> dan apilah yang jadi algojonya."</div>
+                    <div class="tw-ability">KEMAMPUAN:<br>Tidak memiliki kekuatan gaib. Mengandalkan insting dalam
+                        diskusi siang untuk memvonis mati serigala.</div>
                 </div>
             </div>
         </div>
@@ -1668,7 +1749,7 @@
             </div>
             <div class="tw-main">
                 <div class="tw-header">
-                    <div class="tw-code">EDITION: 1.0 // NO ESCAPE</div>
+                    <div class="tw-code">EDITION: 1.0//MRSETIAWAN</div>
                     <div class="tw-title-id">NIGHTMARE DECK</div>
                 </div>
                 <div class="tw-art">
@@ -1683,13 +1764,17 @@
                         <polygon points="50,15 80,65 20,65" fill="none" stroke="#d4af37" stroke-width="1" />
                         <polygon points="50,85 20,35 80,35" fill="none" stroke="#d4af37" stroke-width="1" />
 
-                        <!-- Mata & Serigala Tengah -->
-                        <path d="M 25 50 Q 50 30 75 50 Q 50 70 25 50 Z" fill="#1a1a1a" stroke="#d4af37"
-                            stroke-width="2" />
-                        <circle cx="50" cy="50" r="10" fill="none" stroke="#d4af37" stroke-width="1.5" />
-
-                        <!-- Tengkorak / Serigala Geometris Kecil di dalam -->
-                        <path d="M 46 54 L 46 44 L 50 40 L 54 44 L 54 54 L 50 58 Z" fill="#d4af37" />
+                        <!-- Prisma Hexagonal & Portal Misterius Tengah -->
+                        <polygon points="50,28 69,39 69,61 50,72 31,61 31,39" fill="#1a1a1a" stroke="#d4af37" stroke-width="2" />
+                        <polygon points="50,33 64,41 64,59 50,67 36,59 36,41" fill="none" stroke="#8c6a21" stroke-width="1" />
+                        
+                        <!-- Geometri Serigala (Wolf Geometric Icon) di pusat -->
+                        <path d="M 50 38 L 56 46 L 56 56 L 50 62 L 44 56 L 44 46 Z" fill="none" stroke="#d4af37" stroke-width="1.5" />
+                        <polygon points="44,46 50,56 56,46" fill="#d4af37" />
+                        <polygon points="47,56 50,62 53,56" fill="#d4af37" />
+                        <!-- Telinga Geometris Kiri & Kanan -->
+                        <polygon points="41,39 44,46 47,42" fill="#d4af37" />
+                        <polygon points="59,39 56,46 53,42" fill="#d4af37" />
 
                         <!-- Aksen Bulan Sabit -->
                         <path d="M 45 10 A 40 40 0 0 0 55 10 A 35 35 0 0 1 45 10 Z" fill="#d4af37" />
