@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Halo Geometry Edition - Unified Layout</title>
+    <!-- Font Mewah dan Modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Montserrat:ital,wght@0,400;0,600;0,700;1,500&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu */
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+            
+            /* Warna Dasar & Tekstur */
+            --base-white: #FCFCFC;
+            --paper-texture: #F4F4F4;
+            --text-dark: #1A1A1A;
+            --text-muted: #333333;
+            
+            /* Palet Faksi (Moderator / Supreme) */
+            --mod-main: #6A1B9A; /* Deep Purple */
+            --mod-accent: #F3E5F5;
+            --mod-gold: #D4AF37;
+            
+            /* Palet Faksi (Warga / Alliance) */
+            --vil-main: #0D47A1; /* Royal Blue */
+            --vil-accent: #E3F2FD;
+            --vil-silver: #78909C;
+            
+            /* Palet Faksi (Werewolf / Shadows) */
+            --ww-main: #B71C1C; /* Blood Red */
+            --ww-accent: #FFEBEE;
+            --ww-copper: #D84315;
+            
+            /* Palet Kartu Belakang */
+            --back-bg: #0A0A0A;
+            --back-gold: #E5C158;
+            --back-gold-dark: #8A6D1C;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #2C2C2C;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .deck-title {
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        /* Container Kartu Universal (Adaptasi Layout Jester) */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background: var(--base-white);
+            border-radius: 4mm;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            background-image: radial-gradient(circle at 50% 50%, #ffffff 0%, var(--paper-texture) 100%);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* Gaya Khusus Layout "Jester" Universal */
+        .card-front {
+            border: 3px dashed var(--theme-main); 
+            outline: 3.5px solid var(--base-white); 
+            outline-offset: -1.5mm;
+        }
+
+        .serial-code { 
+            font-family: 'Courier New', monospace; 
+            font-size: 4.5pt; 
+            font-weight: bold; 
+            letter-spacing: 1.5px; 
+            position: absolute; 
+            top: 50%; 
+            left: 1.5mm; 
+            color: var(--theme-main); 
+            transform: translateY(-50%) rotate(-90deg); 
+            z-index: 10;
+        }
+        
+        .faction-name { 
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5pt; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            position: absolute; 
+            top: 50%; 
+            right: 1.5mm; 
+            color: var(--theme-main); 
+            transform: translateY(-50%) rotate(90deg); 
+            z-index: 10;
+        }
+
+        .svg-container {
+            position: absolute; 
+            top: 6mm; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 44mm; 
+            height: 44mm;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .text-box {
+            position: absolute; 
+            bottom: 4mm; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 86%; 
+            text-align: center;
+        }
+
+        /* Tipografi Deskripsi */
+        .en-title { 
+            font-family: 'Cinzel', serif; 
+            font-weight: 900; 
+            text-transform: uppercase;
+            color: var(--theme-main); 
+            font-size: 11pt; 
+            letter-spacing: 3px; 
+            display: inline-block; 
+            border: 1.5px solid var(--theme-main); 
+            padding: 1.5mm 4mm; 
+            border-radius: 6mm; 
+            margin-bottom: 1mm;
+            background: var(--base-white);
+        }
+        
+        .id-title { 
+            font-family: 'Playfair Display', serif; 
+            font-style: italic;
+            color: var(--theme-dark); 
+            font-size: 8pt; 
+            font-weight: 700;
+            margin-bottom: 2mm; 
+        }
+        
+        .quote { 
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-dark); 
+            margin-bottom: 2.5mm; 
+            background: var(--theme-accent); 
+            padding: 2mm 1.5mm; 
+            border-radius: 1.5mm; 
+            font-size: 5.5pt;
+            font-style: italic;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        .desc { 
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6pt; /* Diperbesar agar jelas terbaca */
+            text-align: center; 
+            line-height: 1.4; 
+            color: var(--text-dark); 
+            font-weight: 500;
+        }
+
+        /* Variabel per Kartu */
+        .card-mod { 
+            --theme-main: var(--mod-main); 
+            --theme-accent: var(--mod-accent);
+            --theme-dark: var(--mod-gold);
+        }
+        .card-vil { 
+            --theme-main: var(--vil-main); 
+            --theme-accent: var(--vil-accent);
+            --theme-dark: var(--vil-silver);
+        }
+        .card-ww { 
+            --theme-main: var(--ww-main); 
+            --theme-accent: var(--ww-accent);
+            --theme-dark: var(--ww-copper);
+        }
+
+        /* =========================================
+           KARTU 4: KARTU BELAKANG (Back Card)
+           Tetap menggunakan layout Jester tapi hitam
+           ========================================= */
+        .card-back {
+            background: var(--back-bg);
+            border: 3px dashed var(--back-gold-dark);
+            outline: 3.5px solid var(--back-bg); 
+            outline-offset: -1.5mm;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%);
+        }
+        
+        .card-back .serial-code { color: var(--back-gold); letter-spacing: 4px; font-size: 6pt; font-family: 'Cinzel', serif;}
+        .card-back .faction-name { color: var(--back-gold); letter-spacing: 4px; font-size: 6pt; font-family: 'Cinzel', serif;}
+        
+        .card-back .svg-container {
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 50mm; height: 50mm;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="deck-title">HALO GEOMETRY: JESTER LAYOUT EDITION</div>
+
+    <!-- KARTU 1: MODERATOR -->
+    <div class="card card-front card-mod">
+        <div class="serial-code">HGE-00-SUP</div>
+        <div class="faction-name">SUPREME</div>
+        
+        <div class="svg-container">
+            <!-- Ilustrasi: Timbangan Geometris dan Mata Ilahi (Eye of Truth) -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="modGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#6A1B9A" />
+                        <stop offset="100%" stop-color="#D4AF37" />
+                    </linearGradient>
+                </defs>
+                <!-- Halo Rings Dasar -->
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#E1BEE7" stroke-width="1" />
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#6A1B9A" stroke-width="1.5" stroke-dasharray="8,4" />
+                
+                <!-- Eye of Truth di puncak -->
+                <path d="M 35,25 Q 50,15 65,25 Q 50,35 35,25 Z" fill="none" stroke="#D4AF37" stroke-width="2" />
+                <circle cx="50" cy="25" r="5" fill="#6A1B9A" />
+                <circle cx="50" cy="25" r="2" fill="#FFF" />
+                
+                <!-- Tiang Timbangan Keseimbangan -->
+                <line x1="50" y1="35" x2="50" y2="85" stroke="#6A1B9A" stroke-width="2" />
+                <polygon points="45,85 55,85 50,80" fill="#D4AF37" />
+                
+                <!-- Lengan Timbangan -->
+                <line x1="20" y1="45" x2="80" y2="45" stroke="#D4AF37" stroke-width="2" />
+                <circle cx="50" cy="45" r="3" fill="#6A1B9A" />
+                
+                <!-- Piringan Kiri (Siang/Matahari Geometris) -->
+                <polygon points="20,45 10,65 30,65" fill="none" stroke="#6A1B9A" stroke-width="1" stroke-dasharray="2,2"/>
+                <circle cx="20" cy="65" r="8" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
+                <circle cx="20" cy="65" r="3" fill="#D4AF37"/>
+                
+                <!-- Piringan Kanan (Malam/Bulan Geometris) -->
+                <polygon points="80,45 70,65 90,65" fill="none" stroke="#6A1B9A" stroke-width="1" stroke-dasharray="2,2"/>
+                <circle cx="80" cy="65" r="8" fill="none" stroke="#6A1B9A" stroke-width="1.5"/>
+                <path d="M 78,60 A 5,5 0 1,1 75,68 A 7,7 0 0,0 78,60 Z" fill="#6A1B9A"/>
+            </svg>
+        </div>
+
+        <div class="text-box">
+            <div class="en-title">MODERATOR</div>
+            <div class="id-title">Sang Penjaga Timbangan</div>
+            <div class="quote">"Dalam diamku, roda takdir permainan kalian berputar dengan absolut."</div>
+            <div class="desc">Mengendalikan penuh jalannya permainan. Mengetahui seluruh identitas rahasia, memandu fase siang dan malam, dan memastikan keseimbangan tanpa memihak siapapun.</div>
+        </div>
+    </div>
+
+    <!-- KARTU 2: WARGA -->
+    <div class="card card-front card-vil">
+        <div class="serial-code">HGE-01-ALL</div>
+        <div class="faction-name">ALLIANCE</div>
+        
+        <div class="svg-container">
+            <!-- Ilustrasi: Perisai Absolut dan Cahaya yang menembus -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <!-- Halo Rings Dasar -->
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#BBDEFB" stroke-width="1" />
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#0D47A1" stroke-width="1.5" stroke-dasharray="10,5" />
+                
+                <!-- Cahaya Geometris (Sunburst) memancar dari belakang perisai -->
+                <line x1="50" y1="50" x2="15" y2="15" stroke="#78909C" stroke-width="1" />
+                <line x1="50" y1="50" x2="85" y2="15" stroke="#78909C" stroke-width="1" />
+                <line x1="50" y1="50" x2="10" y2="50" stroke="#78909C" stroke-width="1" />
+                <line x1="50" y1="50" x2="90" y2="50" stroke="#78909C" stroke-width="1" />
+                <line x1="50" y1="50" x2="25" y2="85" stroke="#78909C" stroke-width="1" />
+                <line x1="50" y1="50" x2="75" y2="85" stroke="#78909C" stroke-width="1" />
+
+                <!-- Perisai Utama -->
+                <path d="M 50,20 L 75,30 L 75,60 Q 75,85 50,95 Q 25,85 25,60 L 25,30 Z" fill="rgba(13, 71, 161, 0.05)" stroke="#0D47A1" stroke-width="2.5" />
+                
+                <!-- Detail Dalam Perisai (Simbol Persatuan/Pedang) -->
+                <path d="M 50,20 L 50,95" stroke="#0D47A1" stroke-width="1.5" />
+                <polygon points="50,40 60,50 50,60 40,50" fill="#0D47A1" />
+                <circle cx="50" cy="50" r="4" fill="#FCFCFC" />
+                <polygon points="50,65 55,75 50,85 45,75" fill="#78909C" />
+            </svg>
+        </div>
+
+        <div class="text-box">
+            <div class="en-title">VILLAGER</div>
+            <div class="id-title">Bilah Cahaya Pengadilan</div>
+            <div class="quote">"Cahaya kebenaran akan selalu menembus bayangan yang paling pekat sekalipun."</div>
+            <div class="desc">Memiliki hak suara mutlak pada fase pengadilan siang. Gunakan logika, observasi, dan diskusi sesama warga untuk menemukan serta mengeksekusi ancaman yang bersembunyi.</div>
+        </div>
+    </div>
+
+    <!-- KARTU 3: WEREWOLF -->
+    <div class="card card-front card-ww">
+        <div class="serial-code">HGE-66-SHD</div>
+        <div class="faction-name">SHADOWS</div>
+        
+        <div class="svg-container">
+            <!-- Ilustrasi: Cakaran/Taring Merobek Bulan Merah -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <!-- Halo Rings Hancur -->
+                <path d="M 15,50 A 35,35 0 1,1 85,50" fill="none" stroke="#FFCDD2" stroke-width="1.5" stroke-dasharray="5,3" />
+                <path d="M 15,50 A 35,35 0 0,0 45,84" fill="none" stroke="#B71C1C" stroke-width="2" />
+                <path d="M 60,83 A 35,35 0 0,0 85,50" fill="none" stroke="#B71C1C" stroke-width="2" />
+                
+                <!-- Bulan Geometris Terbelah -->
+                <circle cx="50" cy="45" r="22" fill="none" stroke="#B71C1C" stroke-width="1" />
+                
+                <!-- Tiga Cakaran Geometris Vertikal (Slash) -->
+                <polygon points="35,20 40,80 30,70" fill="#D84315" />
+                <polygon points="50,15 55,85 45,75" fill="#B71C1C" />
+                <polygon points="65,25 70,75 60,65" fill="#D84315" />
+                
+                <!-- Mata Serigala Mengintip dari Celah -->
+                <polygon points="40,40 45,43 42,48" fill="#FFF" stroke="#B71C1C" stroke-width="1" />
+                <polygon points="60,40 55,43 58,48" fill="#FFF" stroke="#B71C1C" stroke-width="1" />
+                
+                <!-- Tetesan Darah/Pecahan Geometris -->
+                <polygon points="50,90 53,95 47,95" fill="#B71C1C" />
+                <polygon points="30,85 32,88 28,88" fill="#D84315" />
+                <polygon points="70,80 73,85 67,85" fill="#B71C1C" />
+            </svg>
+        </div>
+
+        <div class="text-box">
+            <div class="en-title">WEREWOLF</div>
+            <div class="id-title">Sang Pemangsa Malam</div>
+            <div class="quote">"Lolongan kami adalah melodi keputusasaan bagi mereka yang terlelap."</div>
+            <div class="desc">Bangkit bersama kawanannya pada setiap fase malam untuk mengeliminasi satu target tanpa jejak. Menyamarlah dengan sempurna menjadi warga biasa saat fajar menyingsing.</div>
+        </div>
+    </div>
+
+    <!-- KARTU 4: KARTU BELAKANG (Back Card) -->
+    <div class="card card-back">
+        <div class="serial-code">DEDUCTION</div>
+        <div class="faction-name">ROLEPLAYING</div>
+        
+        <div class="svg-container">
+            <!-- Ilustrasi: Astrolabe, Mandala Emas, dan Siluet Serigala Ekstrem Geometris -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#E5C158" />
+                        <stop offset="50%" stop-color="#FFF3C4" />
+                        <stop offset="100%" stop-color="#8A6D1C" />
+                    </linearGradient>
+                </defs>
+                
+                <!-- Cincin Luar (Meniru layout Jester tapi penuh) -->
+                <circle cx="50" cy="50" r="48" fill="none" stroke="url(#goldGrad)" stroke-width="1" />
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#E5C158" stroke-width="1.5" stroke-dasharray="4,4" />
+                <circle cx="50" cy="50" r="35" fill="none" stroke="url(#goldGrad)" stroke-width="0.5" />
+                
+                <!-- Bintang Segi Delapan Geometris (Octagram) -->
+                <polygon points="50,15 50,85 M15,50 L85,50" stroke="rgba(229, 193, 88, 0.4)" stroke-width="1" />
+                <polygon points="25,25 75,75 M25,75 L75,25" stroke="rgba(229, 193, 88, 0.4)" stroke-width="1" />
+                
+                <!-- Inti Kubus / Bintang Geometris -->
+                <rect x="30" y="30" width="40" height="40" fill="none" stroke="#E5C158" stroke-width="1" transform="rotate(45 50 50)" />
+                <rect x="30" y="30" width="40" height="40" fill="none" stroke="#E5C158" stroke-width="1" />
+                
+                <!-- Inner Core Background Gelap -->
+                <circle cx="50" cy="50" r="18" fill="#0A0A0A" stroke="url(#goldGrad)" stroke-width="2" />
+                
+                <!-- Ikon Siluet Serigala Melolong -->
+                <path d="M 42,60 L 46,48 Q 54,40 62,36 Q 56,44 54,52 L 58,60 Z" fill="url(#goldGrad)" />
+                <circle cx="46" cy="42" r="5" fill="none" stroke="#E5C158" stroke-width="1" /> <!-- Bulan -->
+            </svg>
+        </div>
+        
+        <!-- Tulisan Bawah Tengah untuk Kartu Belakang -->
+        <div style="position: absolute; bottom: 8mm; width: 100%; text-align: center; color: var(--back-gold); font-family: 'Cinzel', serif; font-size: 8pt; letter-spacing: 4px;">
+            HALO GEOMETRY
+        </div>
+    </div>
+
+</body>
+</html>
