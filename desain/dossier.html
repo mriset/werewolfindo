@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf Cards - Classified Dossier Edition</title>
+    
+    <!-- Google Fonts: Mesin Tik, Stempel, dan Sans-Serif -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Oswald:wght@500;700;900&family=Montserrat:ital,wght@0,700;0,900;1,700&family=Special+Elite&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Ukuran Presisi Kartu */
+            --w: 54.5mm;
+            --h: 85.5mm;
+            
+            /* Palet Dossier */
+            --paper-bg: #F0EFEB; /* Putih kusam kertas arsip */
+            --paper-dot: #d5d5d5;
+            --ink-black: #111111;
+            --ink-fade: #444444;
+            --stamp-red: #A00000;
+            --stamp-green: #006400;
+            --stamp-purple: #4B0082;
+            --stamp-gold: #996515;
+            --stamp-pink: #B03060; /* Ditambahkan untuk stempel Cupid */
+            --stamp-blue: #003366; /* Ditambahkan untuk stempel Seer */
+            --stamp-orange: #CC4400; /* Ditambahkan untuk stempel Hunter */
+            --stamp-brass: #8B6508; /* Ditambahkan untuk stempel Sheriff */
+            --bg-web: #1a1a1a;
+        }
+
+        body {
+            background-color: var(--bg-web);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            padding: 40px;
+            margin: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* BASE CARD STYLE (Gaya Dokumen Arsip) */
+        .card {
+            width: var(--w);
+            height: var(--h);
+            background-color: var(--paper-bg);
+            background-image: radial-gradient(var(--paper-dot) 1px, transparent 1px);
+            background-size: 3px 3px;
+            border-radius: 3mm;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 4mm;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Courier Prime', monospace;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+
+        .card::before {
+            content: ''; position: absolute; inset: 0;
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.2); pointer-events: none;
+            z-index: 10;
+        }
+
+        /* HEADER DOKUMEN */
+        .doc-header {
+            display: flex; justify-content: space-between;
+            font-size: 5pt; font-weight: 700; color: var(--ink-black); 
+            border-bottom: 1.5px dashed var(--ink-fade);
+            padding-bottom: 2mm; margin-bottom: 3mm;
+            text-transform: uppercase;
+        }
+
+        /* FOTO POLAROID / BUKTI */
+        .photo-container {
+            width: 100%; height: 36mm; background: #fff; border: 1px solid #aaa;
+            padding: 2mm 2mm 5mm 2mm; box-sizing: border-box; position: relative;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.15);
+            z-index: 2;
+        }
+        
+        /* SELOTIP */
+        .tape {
+            position: absolute; top: -3mm; left: 50%; 
+            width: 18mm; height: 6mm; background: rgba(255,255,255,0.6); 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);
+            backdrop-filter: blur(1px);
+        }
+
+        /* STEMPEL */
+        .stamp {
+            position: absolute; bottom: 1mm; right: -3mm; 
+            font-family: 'Oswald', sans-serif; font-size: 10pt; font-weight: 900; 
+            border: 2px solid; padding: 0 3px; border-radius: 2px;
+            letter-spacing: 1px; opacity: 0.85; z-index: 5;
+            mix-blend-mode: multiply;
+        }
+
+        /* JUDUL KARAKTER */
+        .title-block { margin-top: 4mm; color: var(--ink-black); }
+        .title-block h1 { 
+            font-family: 'Montserrat', sans-serif; font-size: 15pt; 
+            margin: 0; font-weight: 900; letter-spacing: -0.5px; line-height: 1;
+            text-transform: uppercase;
+        }
+        .title-block h2 { 
+            font-size: 7.5pt; margin: 0; color: var(--ink-fade); font-weight: 700;
+        }
+
+        /* DESKRIPSI (Gaya Mesin Tik) */
+        .desc-block {
+            font-size: 6.5pt; margin-top: auto; color: var(--ink-black); line-height: 1.3;
+            background: rgba(255,255,255,0.7); padding: 2mm; 
+            border-left: 2px solid var(--ink-black); font-weight: 700;
+            position: relative; z-index: 1;
+        }
+
+        /* EFEK REDACTED (Coretan Hitam) */
+        .redacted {
+            background-color: var(--ink-black);
+            color: var(--ink-black); /* Hide text */
+            padding: 0 1px;
+            display: inline-block;
+        }
+
+        /* KLIP KERTAS (Paperclip untuk variasi) */
+        .paperclip {
+            position: absolute; top: 1mm; right: 8mm; width: 6mm; height: 18mm;
+            border: 1.5px solid #888; border-radius: 5mm; z-index: 6;
+            clip-path: polygon(0 0, 100% 0, 100% 80%, 0 80%);
+        }
+
+        /* =========================================
+           KARTU BELAKANG (BLACK DOSSIER)
+           ========================================= */
+        .card-back {
+            background-color: #111;
+            background-image: radial-gradient(#222 1px, transparent 1px);
+            background-size: 3px 3px;
+            color: #fff;
+            padding: 0;
+            justify-content: center; align-items: center;
+        }
+        .back-border {
+            position: absolute; inset: 4mm; border: 2px solid #333;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .back-tape {
+            position: absolute; width: 120%; height: 8mm; 
+            background: repeating-linear-gradient(45deg, #111, #111 5px, #A00000 5px, #A00000 10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.8); z-index: 10;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- KARTU 1: MODERATOR (TOP SECRET) -->
+    <div class="card">
+        <div class="doc-header">
+            <span>FILE: MOD-001</span>
+            <span>CLEARANCE: OMNI</span>
+        </div>
+        
+        <div class="photo-container" style="transform: rotate(1.5deg);">
+            <div class="tape" style="transform: translateX(-50%) rotate(-3deg);"></div>
+            <!-- Surveillance Eye SVG -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style="background:#e0e0e0;">
+                <rect width="100" height="100" fill="#e0e0e0"/>
+                <!-- Crosshairs -->
+                <line x1="50" y1="0" x2="50" y2="100" stroke="#000" stroke-width="0.5" opacity="0.3" stroke-dasharray="2,2"/>
+                <line x1="0" y1="50" x2="100" y2="50" stroke="#000" stroke-width="0.5" opacity="0.3" stroke-dasharray="2,2"/>
+                <!-- Eye Outline -->
+                <path d="M10,50 Q50,20 90,50 Q50,80 10,50 Z" fill="none" stroke="#111" stroke-width="2.5"/>
+                <!-- Camera Lens / Iris -->
+                <circle cx="50" cy="50" r="15" fill="none" stroke="#111" stroke-width="2"/>
+                <circle cx="50" cy="50" r="8" fill="#111"/>
+                <circle cx="53" cy="47" r="2" fill="#fff"/>
+                <!-- Occult Geometry -->
+                <polygon points="50,15 80,65 20,65" fill="none" stroke="#111" stroke-width="1" opacity="0.7"/>
+                <polygon points="50,85 80,35 20,35" fill="none" stroke="#111" stroke-width="1" opacity="0.7"/>
+                <!-- Camera data overlay -->
+                <text x="5" y="10" font-family="monospace" font-size="5" fill="#111">REC 00:00:00</text>
+                <text x="75" y="95" font-family="monospace" font-size="5" fill="#111">CAM_01</text>
+            </svg>
+            <div class="stamp" style="color: var(--stamp-gold); border-color: var(--stamp-gold); transform: rotate(-8deg);">TOP SECRET</div>
+        </div>
+        
+        <div class="title-block">
+            <h1>MODERATOR</h1>
+            <h2>DIRECTOR / OMNISCIENT</h2>
+        </div>
+        
+        <div class="desc-block">
+            Mengatur jalannya eksperimen. Keputusanmu mutlak. Kematian subjek hanyalah <span class="redacted">protokol</span> yang diperlukan. Awasi mereka, jangan berkedip.
+        </div>
+    </div>
+
+
+    <!-- KARTU 2: WARGA (CLASSIFIED) - Mengikuti referensi asli namun lebih rapi -->
+    <div class="card">
+        <div class="doc-header">
+            <span>FILE: VIL-042</span>
+            <span>STATUS: EXPENDABLE</span>
+        </div>
+        
+        <div class="photo-container" style="transform: rotate(-1.5deg);">
+            <div class="tape" style="transform: translateX(-50%) rotate(4deg);"></div>
+            <div class="paperclip" style="transform: rotate(-10deg);"></div>
+            
+            <!-- Crime Scene Silhouette SVG -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style="background:#e8e8e8;">
+                <path d="M0,0 L100,100 M100,0 L0,100" stroke="#000" stroke-width="0.2" opacity="0.3"/>
+                <!-- Chalk Outline / Silhouette -->
+                <path d="M35,100 L45,60 L50,55 L55,65 L65,100" stroke="#1a1a1a" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
+                <circle cx="50" cy="40" r="8" fill="#1a1a1a" opacity="0.8"/>
+                <!-- Vignette -->
+                <radialGradient id="vig" cx="50%" cy="50%" r="50%">
+                    <stop offset="50%" stop-color="transparent"/>
+                    <stop offset="100%" stop-color="#000" stop-opacity="0.9"/>
+                </radialGradient>
+                <rect width="100" height="100" fill="url(#vig)"/>
+                <!-- Blood splatter / Evidence -->
+                <circle cx="25" cy="25" r="9" fill="#8A0303" opacity="0.85"/>
+                <circle cx="32" cy="18" r="3" fill="#8A0303" opacity="0.85"/>
+                <circle cx="18" cy="32" r="4" fill="#8A0303" opacity="0.85"/>
+                <path d="M25,25 Q35,60 30,85" stroke="#8A0303" stroke-width="2.5" fill="none" opacity="0.7"/>
+                <text x="80" y="20" font-family="monospace" font-size="6" fill="#fff" opacity="0.6">#42</text>
+            </svg>
+            <div class="stamp" style="color: var(--stamp-red); border-color: var(--stamp-red); transform: rotate(-12deg);">CLASSIFIED</div>
+        </div>
+        
+        <div class="title-block">
+            <h1>WARGA</h1>
+            <h2>VILLAGER / THE INNOCENT</h2>
+        </div>
+        
+        <div class="desc-block">
+            Bertahan hidup adalah tujuan utama. Percayalah pada instingmu, temukan sang <span class="redacted">pemangsa</span>, atau mati menjadi korban berikutnya.
+        </div>
+    </div>
+
+
+    <!-- KARTU 3: WEREWOLF (LETHAL) -->
+    <div class="card">
+        <div class="doc-header">
+            <span>FILE: WWF-666</span>
+            <span>THREAT: APEX PREDATOR</span>
+        </div>
+        
+        <div class="photo-container" style="transform: rotate(2deg); padding:0; border: 2px solid #111;">
+            <!-- Selotip sobek atas bawah -->
+            <div class="tape" style="top: -2mm; left: 10%; transform: rotate(-15deg); width: 10mm;"></div>
+            <div class="tape" style="top: -2mm; left: 80%; transform: rotate(10deg); width: 12mm;"></div>
+            
+            <!-- Monster Evidence SVG -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style="background:#111;">
+                <!-- Film Grain / Noise pattern -->
+                <rect width="100" height="100" fill="#111"/>
+                <circle cx="50" cy="50" r="40" fill="#222" filter="blur(5px)"/>
+                
+                <!-- Glowing Eye in the dark -->
+                <circle cx="40" cy="45" r="3" fill="#ff0000" filter="blur(1px)"/>
+                <circle cx="40" cy="45" r="1.5" fill="#fff"/>
+                
+                <!-- Massive Blood Slashes across the photo -->
+                <path d="M80,10 Q60,50 30,90" stroke="#A00000" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <path d="M65,5 Q45,50 15,85" stroke="#A00000" stroke-width="7" fill="none" stroke-linecap="round"/>
+                <path d="M95,20 Q75,60 45,95" stroke="#A00000" stroke-width="5" fill="none" stroke-linecap="round"/>
+                
+                <!-- Splatter from slash -->
+                <circle cx="25" cy="80" r="4" fill="#A00000"/>
+                <circle cx="40" cy="88" r="2.5" fill="#A00000"/>
+                <circle cx="15" cy="70" r="3" fill="#A00000"/>
+                
+                <!-- Glitch/Timestamp overlay -->
+                <text x="5" y="95" font-family="monospace" font-size="5" fill="#fff" opacity="0.5">23:59:59 ERRR</text>
+            </svg>
+            <div class="stamp" style="color: var(--stamp-red); border-color: var(--stamp-red); transform: rotate(15deg); top: 10mm; right: 5mm; font-size: 14pt;">LETHAL</div>
+        </div>
+        
+        <div class="title-block">
+            <h1>SERIGALA</h1>
+            <h2>WEREWOLF / THE APEX</h2>
+        </div>
+        
+        <div class="desc-block">
+            Rasa lapar yang tak terpuaskan. Robek daging mereka. Jangan tinggalkan <span class="redacted">saksi mata</span>. Lenyapkan bukti keberadaanmu.
+        </div>
+    </div>
+
+
+    <!-- KARTU 4: JESTER (QUARANTINE) -->
+    <div class="card">
+        <div class="doc-header">
+            <span>FILE: JST-000</span>
+            <span>STATUS: UNSTABLE</span>
+        </div>
+        
+        <div class="photo-container" style="transform: rotate(-3deg);">
+            <div class="tape" style="transform: translateX(-50%) translateY(30mm) rotate(85deg); width: 25mm;"></div>
+            
+            <!-- Asylum Rorschach Inkblot SVG -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style="background:#e4e3df;">
+                <!-- Paper texture lines -->
+                <line x1="0" y1="20" x2="100" y2="20" stroke="#b0b0b0" stroke-width="0.5"/>
+                <line x1="0" y1="40" x2="100" y2="40" stroke="#b0b0b0" stroke-width="0.5"/>
+                <line x1="0" y1="60" x2="100" y2="60" stroke="#b0b0b0" stroke-width="0.5"/>
+                <line x1="0" y1="80" x2="100" y2="80" stroke="#b0b0b0" stroke-width="0.5"/>
+                
+                <!-- Inkblot / Joker Smile -->
+                <g fill="#1a1a1a">
+                    <!-- Symmetrical blot left -->
+                    <path d="M50,20 C30,10 20,30 30,45 C20,50 15,65 30,75 C40,85 45,70 50,60 Z" />
+                    <!-- Symmetrical blot right -->
+                    <path d="M50,20 C70,10 80,30 70,45 C80,50 85,65 70,75 C60,85 55,70 50,60 Z" />
+                    <!-- Creepy Smile in Negative Space (Subtle) -->
+                    <path d="M35,65 Q50,80 65,65" fill="none" stroke="#e4e3df" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="40" cy="40" r="3" fill="#e4e3df"/>
+                    <circle cx="60" cy="40" r="3" fill="#e4e3df"/>
+                </g>
+                
+                <!-- Additional Ink Splatters -->
+                <circle cx="20" cy="20" r="2" fill="#1a1a1a"/>
+                <circle cx="85" cy="80" r="4" fill="#1a1a1a"/>
+                <circle cx="15" cy="60" r="1.5" fill="#1a1a1a"/>
+            </svg>
+            <div class="stamp" style="color: var(--stamp-purple); border-color: var(--stamp-purple); transform: rotate(5deg); bottom: 15mm; right: 2mm;">QUARANTINE</div>
+        </div>
+        
+        <div class="title-block">
+            <h1>SI BADUT</h1>
+            <h2>JESTER / THE CHAOS</h2>
+        </div>
+        
+        <div class="desc-block">
+            Kematianmu adalah lelucon terbaik. Buat mereka memvotingmu mati, dan <span class="redacted">tertawalah</span> keras dari balik jeruji neraka.
+        </div>
+    </div>
+
+
+    <!-- KARTU 5: CUPID (FATAL LINK) -->
+    <div class="card">
+        <div class="doc-header">
+            <span>FILE: CPD-014</span>
+            <span>STATUS: SYMBIOTIC</span>
+        </div>
+        
+        <div class="photo-container" style="transform: rotate(1deg);">
+            <div class="tape" style="transform: translateX(-50%) rotate(2deg);"></div>
+            <div class="paperclip" style="transform: rotate(5deg); top: 1mm; right: 2mm;"></div>
+            
+            <!-- Red Thread / Evidence Board SVG -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style="background:#e8e8e8;">
+                <path d="M0,0 L100,100 M100,0 L0,100" stroke="#000" stroke-width="0.2" opacity="0.3"/>
+                
+                <!-- Background grid lines for conspiracy board feel -->
+                <line x1="0" y1="50" x2="100" y2="50" stroke="#b0b0b0" stroke-width="0.5" stroke-dasharray="2,2"/>
+                <line x1="50" y1="0" x2="50" y2="100" stroke="#b0b0b0" stroke-width="0.5" stroke-dasharray="2,2"/>
+
+                <!-- Subjects Silhouettes -->
+                <!-- Subject A -->
+                <path d="M15,90 L25,60 L35,90 Z" fill="#1a1a1a" opacity="0.6"/>
+                <circle cx="25" cy="50" r="7" fill="#1a1a1a" opacity="0.6"/>
+                
+                <!-- Subject B -->
+                <path d="M85,90 L75,60 L65,90 Z" fill="#1a1a1a" opacity="0.6"/>
+                <circle cx="75" cy="50" r="7" fill="#1a1a1a" opacity="0.6"/>
+                
+                <!-- Messy string connecting them -->
+                <path d="M25,50 L40,60 L50,40 L60,60 L75,50" stroke="#111" stroke-width="0.5" fill="none" opacity="0.4" stroke-dasharray="1,1"/>
+                
+                <!-- RED THREAD OF FATE (Heart Shape) -->
+                <path d="M25,50 Q40,10 50,30 Q60,10 75,50 Q60,85 50,95 Q40,85 25,50" fill="none" stroke="#B03060" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M25,50 Q40,20 50,35 Q60,20 75,50 Q60,75 50,85 Q40,75 25,50" fill="none" stroke="#B03060" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+                
+                <!-- Evidence Pushpins -->
+                <circle cx="25" cy="50" r="2.5" fill="#A00000"/>
+                <circle cx="25" cy="50" r="1" fill="#fff" opacity="0.6"/>
+                
+                <circle cx="75" cy="50" r="2.5" fill="#A00000"/>
+                <circle cx="75" cy="50" r="1" fill="#fff" opacity="0.6"/>
+
+                <circle cx="50" cy="30" r="2.5" fill="#111"/>
+                
+                <!-- Vignette -->
+                <radialGradient id="vig-cupid" cx="50%" cy="50%" r="50%">
+                    <stop offset="50%" stop-color="transparent"/>
+                    <stop offset="100%" stop-color="#000" stop-opacity="0.75"/>
+                </radialGradient>
+                <rect width="100" height="100" fill="url(#vig-cupid)"/>
+                
+                <!-- Small ID text -->
+                <text x="5" y="10" font-family="monospace" font-size="5" fill="#111" opacity="0.6">EVID-14</text>
+            </svg>
+            
+            <div class="stamp" style="color: var(--stamp-pink); border-color: var(--stamp-pink); transform: rotate(-8deg); bottom: 10mm; left: 2mm;">BONDED</div>
+        </div>
+        
+        <div class="title-block">
+            <h1>CUPID</h1>
+            <h2>THE MATCHMAKER / FATAL LINK</h2>
+        </div>
+        
+        <div class="desc-block">
+            Pilih dua subjek uji untuk disuntikkan <span class="redacted">ikatan fatal</span>. Jika salah satu dari mereka mati, subjek yang lain akan menyusul. Cinta adalah anomali yang mematikan.
+        </div>
+    </div>
+
+
+    <!-- KARTU 6: SEER (CLAIRVOYANT) -->
+    <div class="card">
+        <div class="doc-header">
+            <span>FILE: SER-333</span>
+            <span>STATUS: CLAIRVOYANT</span>
+        </div>
+        
+        <div class="photo-container" style="transform: rotate(2.5deg);">
+            <div class="tape" style="transform: translateX(-50%) rotate(-4deg); width: 22mm;"></div>
+            
+            <!-- Interrogation Subject / Third Eye SVG -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style="background:#d9d9d9;">
+                <path d="M0,0 L100,100 M100,0 L0,100" stroke="#000" stroke-width="0.2" opacity="0.3"/>
+                
+                <!-- Scan Lines overlay -->
+                <line x1="0" y1="25" x2="100" y2="25" stroke="#111" stroke-width="0.5" stroke-dasharray="1,2" opacity="0.4"/>
+                <line x1="0" y1="50" x2="100" y2="50" stroke="#111" stroke-width="0.5" stroke-dasharray="1,2" opacity="0.4"/>
+                <line x1="0" y1="75" x2="100" y2="75" stroke="#111" stroke-width="0.5" stroke-dasharray="1,2" opacity="0.4"/>
+
+                <!-- Suspect Silhouette -->
+                <path d="M 25,100 C 25,60 35,20 50,20 C 65,20 75,60 75,100 Z" fill="#1a1a1a" opacity="0.85"/>
+                
+                <!-- Censored Eyes Bar -->
+                <rect x="30" y="42" width="40" height="12" fill="#000"/>
+                <text x="50" y="50" font-family="'Courier Prime', monospace" font-size="5" fill="#fff" font-weight="bold" text-anchor="middle" letter-spacing="1">REDACTED</text>
+
+                <!-- Scribbled Red Third Eye -->
+                <path d="M 42,32 Q 50,24 58,32 Q 50,40 42,32 Z" fill="none" stroke="#A00000" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="50" cy="32" r="2.5" fill="#A00000"/>
+                <!-- Scribble tear drops -->
+                <path d="M 50,38 L 50,42" stroke="#A00000" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M 45,36 L 43,40" stroke="#A00000" stroke-width="1.5" stroke-linecap="round"/>
+
+                <!-- Vignette -->
+                <radialGradient id="vig-seer" cx="50%" cy="50%" r="50%">
+                    <stop offset="60%" stop-color="transparent"/>
+                    <stop offset="100%" stop-color="#000" stop-opacity="0.8"/>
+                </radialGradient>
+                <rect width="100" height="100" fill="url(#vig-seer)"/>
+                
+                <!-- Timestamp/Data -->
+                <text x="5" y="95" font-family="monospace" font-size="5" fill="#fff" opacity="0.7">CAM-INT:07</text>
+            </svg>
+            
+            <div class="stamp" style="color: var(--stamp-blue); border-color: var(--stamp-blue); transform: rotate(12deg); bottom: 5mm; right: 2mm;">VERIFIED</div>
+        </div>
+        
+        <div class="title-block">
+            <h1>PENERAWANG</h1>
+            <h2>SEER / THE ORACLE</h2>
+        </div>
+        
+        <div class="desc-block">
+            Setiap malam, kau diizinkan melihat identitas asli satu subjek uji. Kebenaran ini akan menggilakanmu. Temukan <span class="redacted">serigala</span> sebelum mereka mencungkil matamu.
+        </div>
+    </div>
+
+
+    <!-- KARTU 7: HUNTER (VIGILANTE) -->
+    <div class="card">
+        <div class="doc-header">
+            <span>FILE: HNT-007</span>
+            <span>STATUS: RETALIATION</span>
+        </div>
+        
+        <div class="photo-container" style="transform: rotate(-1.5deg);">
+            <div class="tape" style="transform: translateX(-50%) rotate(5deg); width: 20mm;"></div>
+            
+            <!-- Sniper Scope / Target SVG -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style="background:#d0d0c8;">
+                <!-- Texture -->
+                <path d="M0,0 L100,100 M100,0 L0,100" stroke="#000" stroke-width="0.1" opacity="0.4"/>
+                
+                <!-- Target Silhouette -->
+                <path d="M 40,90 C 40,60 45,40 50,40 C 55,40 60,60 60,90 Z" fill="#1a1a1a" opacity="0.6" filter="blur(1px)"/>
+                
+                <!-- Scope Overlay -->
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#111" stroke-width="2"/>
+                <circle cx="50" cy="50" r="44" fill="none" stroke="#A00000" stroke-width="0.5" opacity="0.8"/>
+                
+                <!-- Crosshairs -->
+                <line x1="5" y1="50" x2="40" y2="50" stroke="#111" stroke-width="1.5"/>
+                <line x1="60" y1="50" x2="95" y2="50" stroke="#111" stroke-width="1.5"/>
+                <line x1="50" y1="5" x2="50" y2="40" stroke="#111" stroke-width="1.5"/>
+                <line x1="50" y1="60" x2="50" y2="95" stroke="#111" stroke-width="1.5"/>
+                
+                <!-- Center dot and measurement marks -->
+                <circle cx="50" cy="50" r="1.5" fill="#A00000"/>
+                <line x1="45" y1="50" x2="55" y2="50" stroke="#A00000" stroke-width="0.5"/>
+                <line x1="50" y1="45" x2="50" y2="55" stroke="#A00000" stroke-width="0.5"/>
+                
+                <!-- Scope Mil-dots -->
+                <circle cx="25" cy="50" r="1" fill="#111"/>
+                <circle cx="75" cy="50" r="1" fill="#111"/>
+                <circle cx="50" cy="25" r="1" fill="#111"/>
+                <circle cx="50" cy="75" r="1" fill="#111"/>
+
+                <!-- Vignette Heavy Scope Shadow -->
+                <radialGradient id="vig-scope" cx="50%" cy="50%" r="50%">
+                    <stop offset="70%" stop-color="transparent"/>
+                    <stop offset="95%" stop-color="#000" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#000" stop-opacity="1"/>
+                </radialGradient>
+                <rect width="100" height="100" fill="url(#vig-scope)"/>
+                
+                <!-- Timestamp/Data -->
+                <text x="15" y="15" font-family="monospace" font-size="4" fill="#A00000" opacity="0.8">TGT_LCK</text>
+                <text x="65" y="90" font-family="monospace" font-size="4" fill="#fff" opacity="0.6">DIST: 400M</text>
+            </svg>
+            
+            <div class="stamp" style="color: var(--stamp-orange); border-color: var(--stamp-orange); transform: rotate(-10deg); bottom: 10mm; left: 5mm;">ARMED</div>
+        </div>
+        
+        <div class="title-block">
+            <h1>PEMBURU</h1>
+            <h2>HUNTER / THE VIGILANTE</h2>
+        </div>
+        
+        <div class="desc-block">
+            Saat napas terakhirmu ditarik, kau bisa menyeret satu subjek lain bersamamu ke neraka. Tarik <span class="redacted">pelatuknya</span> sebelum kesadaranmu hilang sepenuhnya.
+        </div>
+    </div>
+
+
+    <!-- KARTU 8: SHERIFF (THE LAW) -->
+    <div class="card">
+        <div class="doc-header">
+            <span>FILE: SHF-911</span>
+            <span>STATUS: ENFORCER</span>
+        </div>
+        
+        <div class="photo-container" style="transform: rotate(1deg);">
+            <div class="tape" style="transform: translateX(-50%) rotate(-2deg); width: 18mm;"></div>
+            
+            <!-- Sheriff Badge Evidence SVG -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style="background:#b3b3a9;">
+                <!-- Desk texture / Scratches -->
+                <path d="M0,0 L100,100 M100,0 L0,100" stroke="#000" stroke-width="0.1" opacity="0.3"/>
+                <line x1="0" y1="30" x2="100" y2="30" stroke="#000" stroke-width="0.2" opacity="0.3" stroke-dasharray="2,4"/>
+                <line x1="0" y1="70" x2="100" y2="70" stroke="#000" stroke-width="0.2" opacity="0.3" stroke-dasharray="2,4"/>
+
+                <!-- Blood splatter under badge -->
+                <circle cx="60" cy="65" r="9" fill="#8A0303" opacity="0.8"/>
+                <path d="M60,65 Q80,85 70,100" stroke="#8A0303" stroke-width="3.5" fill="none" opacity="0.7"/>
+                <circle cx="75" cy="80" r="3" fill="#8A0303" opacity="0.8"/>
+
+                <!-- Sheriff Badge -->
+                <g transform="rotate(-8 50 50)">
+                    <!-- 6-Pointed Star -->
+                    <polygon points="50,15 59,38 84,38 64,53 71,78 50,63 29,78 36,53 16,38 41,38" fill="#c5a059" stroke="#111" stroke-width="1.5" stroke-linejoin="round"/>
+                    
+                    <!-- Inner details -->
+                    <circle cx="50" cy="50" r="16" fill="none" stroke="#111" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="13" fill="none" stroke="#111" stroke-width="0.5" stroke-dasharray="1,1"/>
+                    
+                    <!-- Etched Text -->
+                    <text x="50" y="53" font-family="'Oswald', sans-serif" font-size="7" fill="#111" font-weight="bold" text-anchor="middle" letter-spacing="0.5">SHERIFF</text>
+                    
+                    <!-- Badge Rivets -->
+                    <circle cx="50" cy="22" r="1.5" fill="#111"/>
+                    <circle cx="50" cy="74" r="1.5" fill="#111"/>
+                    
+                    <!-- Bullet Hole through badge -->
+                    <circle cx="38" cy="46" r="3.5" fill="#000"/>
+                    <circle cx="38" cy="46" r="4.5" fill="none" stroke="#111" stroke-width="0.5"/>
+                    <path d="M38,46 L30,40 M38,46 L35,53 M38,46 L45,43" stroke="#111" stroke-width="1"/>
+                </g>
+
+                <!-- Vignette / Shadow -->
+                <radialGradient id="vig-sheriff" cx="50%" cy="50%" r="50%">
+                    <stop offset="60%" stop-color="transparent"/>
+                    <stop offset="100%" stop-color="#000" stop-opacity="0.8"/>
+                </radialGradient>
+                <rect width="100" height="100" fill="url(#vig-sheriff)"/>
+                
+                <!-- Timestamp/Data -->
+                <text x="5" y="10" font-family="monospace" font-size="4" fill="#111" opacity="0.8">EV-BDG:01</text>
+            </svg>
+            
+            <div class="stamp" style="color: var(--stamp-brass); border-color: var(--stamp-brass); transform: rotate(15deg); bottom: 12mm; right: 2mm;">EXECUTE</div>
+        </div>
+        
+        <div class="title-block">
+            <h1>SHERIFF</h1>
+            <h2>SHERIFF / THE LAW</h2>
+        </div>
+        
+        <div class="desc-block">
+            Suaramu adalah hukum. Kau memiliki wewenang untuk mengeksekusi satu subjek di siang hari. Jangan sampai <span class="redacted">pistolmu</span> membunuh orang yang tidak bersalah.
+        </div>
+    </div>
+
+
+    <!-- KARTU 9: KARTU BELAKANG (BLACK DOSSIER FOLDER) -->
+    <div class="card card-back">
+        <!-- Police/Evidence Tape across the whole card -->
+        <div class="back-tape" style="top: 15mm; transform: rotate(-25deg);"></div>
+        <div class="back-tape" style="bottom: 15mm; transform: rotate(25deg);"></div>
+        
+        <div class="back-border">
+            <svg viewBox="0 0 100 100" width="40mm" height="40mm" style="z-index: 20;">
+                <!-- Circular Dossier Seal -->
+                <circle cx="50" cy="50" r="48" fill="#111" stroke="#fff" stroke-width="2"/>
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="3,3"/>
+                
+                <!-- Crosshairs -->
+                <line x1="50" y1="2" x2="50" y2="98" stroke="#A00000" stroke-width="1.5"/>
+                <line x1="2" y1="50" x2="98" y2="50" stroke="#A00000" stroke-width="1.5"/>
+                
+                <!-- Center Shield / Wolf Skull Silhouette -->
+                <path d="M30,35 L50,20 L70,35 L65,65 L50,80 L35,65 Z" fill="none" stroke="#fff" stroke-width="2"/>
+                <polygon points="40,45 48,45 44,55" fill="#fff"/>
+                <polygon points="60,45 52,45 56,55" fill="#fff"/>
+                <polygon points="50,60 52,65 48,65" fill="#A00000"/>
+                
+                <!-- Curved Text Path (Top) -->
+                <path id="curve-top" d="M 20,50 A 30,30 0 0,1 80,50" fill="none"/>
+                <text font-family="'Courier Prime', monospace" font-size="8" fill="#fff" font-weight="bold" letter-spacing="1">
+                    <textPath href="#curve-top" startOffset="50%" text-anchor="middle">CONFIDENTIAL</textPath>
+                </text>
+                
+                <!-- Curved Text Path (Bottom) -->
+                <path id="curve-bot" d="M 80,50 A 30,30 0 0,1 20,50" fill="none"/>
+                <text font-family="'Courier Prime', monospace" font-size="8" fill="#fff" font-weight="bold" letter-spacing="1">
+                    <textPath href="#curve-bot" startOffset="50%" text-anchor="middle">PROJECT WW</textPath>
+                </text>
+            </svg>
+            
+            <div style="margin-top: 10mm; text-align: center; font-family: 'Oswald', sans-serif; z-index: 20; background: #111; padding: 2px 5px;">
+                <h1 style="margin: 0; font-size: 14pt; letter-spacing: 2px; color: #fff;">DO NOT OPEN</h1>
+                <p style="margin: 0; font-family: 'Courier Prime', monospace; font-size: 6pt; color: #888;">EVIDENCE DEPT. #666</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
