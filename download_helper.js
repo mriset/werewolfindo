@@ -463,6 +463,7 @@ async function downloadAllCardsDomToImage(prefix = 'Werewolf', options = {}) {
                     transformOrigin: 'top left',
                     width:  card.offsetWidth  + 'px',
                     height: card.offsetHeight + 'px',
+                    boxShadow: 'none',
                 },
                 bgcolor: bgColor || undefined,
                 quality: 1,
