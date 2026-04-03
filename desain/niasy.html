@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nightmare Asylum - Twisted Layout Deck</title>
+    <!-- Mengimpor Font Premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Cinzel:wght@700;900&family=Courier+Prime:wght@400;700&family=Oswald:wght@500;700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Rasio kartu 54.5mm x 85.5mm di-scale up ke Pixel agar tajam di layar */
+            --card-w: 300px;
+            --card-h: 470px;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: 'Oswald', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .header-title h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            color: #d4af37;
+            margin: 0 0 10px 0;
+            letter-spacing: 5px;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .header-title p {
+            font-family: 'Courier Prime', monospace;
+            color: #aaa;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .deck-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+        }
+        .card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 0 2px rgba(255,255,255,0.3);
+            z-index: 10;
+        }
+
+        /* =========================================
+           UNIVERSAL ASYMMETRIC THEME (JESTER STYLE)
+           ========================================= */
+        .theme-twisted {
+            display: flex;
+            background-color: var(--bg-color, #ffffff);
+        }
+
+        /* Pola titik-titik radial di background (menyesuaikan warna faksi) */
+        .theme-twisted::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 10px 10px, var(--f-color) 2px, transparent 2.5px);
+            background-size: 20px 20px;
+            opacity: var(--bg-opacity, 0.08);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Sidebar Vertikal */
+        .tw-sidebar {
+            width: 55px;
+            background: var(--f-color);
+            color: var(--sidebar-text, #fff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            border-right: 5px solid var(--border-color, #111);
+            z-index: 2;
+        }
+        .tw-title-en {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+        }
+
+        /* Ruang Konten Utama */
+        .tw-main {
+            flex-grow: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header Kode & Nama Indo */
+        .tw-header {
+            text-align: right;
+            border-bottom: 2px dashed var(--f-color);
+            padding-bottom: 8px;
+            margin-bottom: 5px;
+        }
+        .tw-code {
+            font-family: 'Courier Prime', monospace;
+            font-size: 10px;
+            font-weight: bold;
+            color: var(--code-color, #555);
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+        .tw-title-id {
+            font-family: 'Oswald', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--f-color);
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        /* Wadah Ilustrasi SVG */
+        .tw-art {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: rotate(4deg); /* Efek miring khas */
+            position: relative;
+        }
+        .tw-art svg {
+            filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.15));
+            width: 90%; /* Mengecilkan gambar sangat sedikit */
+            height: 90%;
+            margin-top: -15px; /* Menggeser gambar sedikit ke atas mendekati garis */
+        }
+
+        /* Kotak Teks Asimetris di Bawah */
+        .tw-text-box {
+            background: var(--box-bg, #fff);
+            border: 3px solid var(--f-color);
+            border-radius: 12px 0 12px 0;
+            padding: 12px;
+            box-shadow: 4px 4px 0 var(--f-color);
+            transform: rotate(-2deg); /* Miring berlawanan dengan gambar */
+            margin-bottom: 5px;
+            color: var(--text-color, #111);
+            position: relative;
+        }
+        .tw-quote {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-style: italic;
+            font-size: 14px;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+        .tw-quote span {
+            color: var(--f-color);
+            font-size: 16px;
+            font-weight: 900;
+        }
+        .tw-ability {
+            font-family: 'Courier Prime', monospace;
+            font-size: 10.5px;
+            font-weight: bold;
+            line-height: 1.3;
+            border-top: 1px dotted var(--f-color);
+            padding-top: 6px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-title">
+        <h1>NIGHTMARE ASYLUM</h1>
+        <p>TWISTED ASYMMETRIC LAYOUT // 5 TEMA FAKSI</p>
+    </div>
+
+    <div class="deck-container">
+
+        <!-- KARTU 1: MODERATOR (FAKSI: SUPREME) -->
+        <div class="card theme-twisted" style="--f-color: #3b0059;">
+            <div class="tw-sidebar">
+                <div class="tw-title-en">MODERATOR</div>
+            </div>
+            <div class="tw-main">
+                <div class="tw-header">
+                    <div class="tw-code">DOC: SUP-00 // SUPREME</div>
+                    <div class="tw-title-id">SANG NARATOR</div>
+                </div>
+                <div class="tw-art">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Panopticon / Mata Omniscient -->
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#111" stroke-width="1.5"/>
+                        <circle cx="50" cy="50" r="33" fill="none" stroke="#3b0059" stroke-width="1.5" stroke-dasharray="4,3"/>
+                        <path d="M 20 50 Q 50 20 80 50 Q 50 80 20 50 Z" fill="#fff" stroke="#111" stroke-width="2.5"/>
+                        <circle cx="50" cy="50" r="14" fill="#3b0059"/>
+                        <circle cx="50" cy="50" r="4" fill="#111"/>
+                        <circle cx="46" cy="46" r="2.5" fill="#fff"/>
+                        <!-- Tali Boneka & Genangan Darah -->
+                        <line x1="35" y1="62" x2="35" y2="95" stroke="#111" stroke-width="2"/>
+                        <line x1="65" y1="62" x2="65" y2="95" stroke="#111" stroke-width="2"/>
+                        <line x1="50" y1="65" x2="50" y2="100" stroke="#111" stroke-width="2"/>
+                        <path d="M 31 95 C 31 88 39 88 39 95 Z" fill="#111"/>
+                        <path d="M 61 95 C 61 88 69 88 69 95 Z" fill="#111"/>
+                        <path d="M 45 100 C 45 92 55 92 55 100 Z" fill="#3b0059"/>
+                    </svg>
+                </div>
+                <div class="tw-text-box">
+                    <div class="tw-quote">"Kalian hanyalah bidak rapuh yang menari <span>di atas genangan darah</span> hingga aku menutup panggung cerita ini."</div>
+                    <div class="tw-ability">KEMAMPUAN:<br>Bertindak sebagai arsitek mutlak. Mengontrol seluruh narasi dan interaksi di setiap fase siang dan malam.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 2: WARGA (FAKSI: ALLIANCE) -->
+        <div class="card theme-twisted" style="--f-color: #113247;">
+            <div class="tw-sidebar">
+                <div class="tw-title-en">VILLAGER</div>
+            </div>
+            <div class="tw-main">
+                <div class="tw-header">
+                    <div class="tw-code">DOC: ALL-14 // ALLIANCE</div>
+                    <div class="tw-title-id">WARGA DESA</div>
+                </div>
+                <div class="tw-art">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Papan Kayu Berlindung -->
+                        <rect x="10" y="15" width="80" height="20" fill="#fff" stroke="#113247" stroke-width="3"/>
+                        <rect x="10" y="40" width="80" height="20" fill="#fff" stroke="#113247" stroke-width="3"/>
+                        <rect x="10" y="65" width="80" height="20" fill="#fff" stroke="#113247" stroke-width="3"/>
+                        <!-- Paku -->
+                        <circle cx="15" cy="25" r="2" fill="#111"/><circle cx="85" cy="25" r="2" fill="#111"/>
+                        <circle cx="15" cy="50" r="2" fill="#111"/><circle cx="85" cy="50" r="2" fill="#111"/>
+                        <circle cx="15" cy="75" r="2" fill="#111"/><circle cx="85" cy="75" r="2" fill="#111"/>
+                        <!-- Mata Mengintip Ketakutan -->
+                        <path d="M 35 37 Q 50 22 65 37 Q 50 50 35 37 Z" fill="#fff" stroke="#111" stroke-width="2.5"/>
+                        <circle cx="50" cy="36" r="6" fill="#113247"/> 
+                        <circle cx="48" cy="34" r="1.5" fill="#fff"/>
+                        <line x1="50" y1="42" x2="50" y2="48" stroke="#111" stroke-width="2"/> <!-- Air mata -->
+                        <!-- Garpu Rumput di background menyilang -->
+                        <path d="M 75 95 L 75 55 M 68 62 L 68 50 L 82 50 L 82 62 M 75 55 L 75 45" stroke="#111" stroke-width="2.5" fill="none" opacity="0.8"/>
+                    </svg>
+                </div>
+                <div class="tw-text-box">
+                    <div class="tw-quote">"Kami mungkin tak bertaring tajam, namun <span>tali gantungan warga</span> yang akan memutus leher monstermu."</div>
+                    <div class="tw-ability">KEMAMPUAN:<br>Tidak memiliki kekuatan gaib. Mengandalkan insting dalam diskusi siang untuk memvonis mati serigala.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 3: WEREWOLF (FAKSI: SHADOW) -->
+        <div class="card theme-twisted" style="--f-color: #8b0000;">
+            <div class="tw-sidebar">
+                <div class="tw-title-en">WEREWOLF</div>
+            </div>
+            <div class="tw-main">
+                <div class="tw-header">
+                    <div class="tw-code">DOC: SHD-01 // SHADOW</div>
+                    <div class="tw-title-id">SERIGALA</div>
+                </div>
+                <div class="tw-art">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Siluet Rahang Raksasa & Darah -->
+                        <path d="M 5 45 Q 50 -5 95 45" fill="none" stroke="#111" stroke-width="6"/>
+                        <path d="M 5 55 Q 50 105 95 55" fill="none" stroke="#111" stroke-width="6"/>
+                        <!-- Taring Atas -->
+                        <polygon points="15,40 20,60 25,38" fill="#111"/>
+                        <polygon points="30,30 35,55 40,28" fill="#111"/>
+                        <polygon points="45,20 50,55 55,20" fill="#8b0000"/> <!-- Taring Utama Merah -->
+                        <polygon points="60,28 65,55 70,30" fill="#111"/>
+                        <polygon points="75,38 80,60 85,40" fill="#111"/>
+                        <!-- Taring Bawah -->
+                        <polygon points="20,60 25,38 30,62" fill="#111"/>
+                        <polygon points="40,70 45,40 50,72" fill="#8b0000"/> <!-- Taring Utama Merah -->
+                        <polygon points="60,72 65,40 70,70" fill="#111"/>
+                        <!-- Tetesan Darah -->
+                        <circle cx="50" cy="85" r="4" fill="#8b0000"/>
+                        <path d="M 50 85 L 52 100 A 2 2 0 0 1 48 100 Z" fill="#8b0000"/>
+                    </svg>
+                </div>
+                <div class="tw-text-box">
+                    <div class="tw-quote">"Cahaya purnama tak menuntut damai. <span>Lehermu murni harus terburai</span> diterkam maut oleh rahang kami."</div>
+                    <div class="tw-ability">KEMAMPUAN:<br>Bangun di malam hari. Kawanan serigala berdiskusi diam-diam untuk memilih 1 mangsa untuk dibunuh.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 4: JESTER (FAKSI: CHAOS) -->
+        <div class="card theme-twisted" style="--f-color: #0a421b;">
+            <div class="tw-sidebar">
+                <div class="tw-title-en">JESTER</div>
+            </div>
+            <div class="tw-main">
+                <div class="tw-header">
+                    <div class="tw-code">DOC: CHS-01 // CHAOS</div>
+                    <div class="tw-title-id">SANG BADUT</div>
+                </div>
+                <div class="tw-art">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Topeng Terbelah (Sedih & Gila) -->
+                        <path d="M 50 10 C 10 10 10 80 50 95 C 90 80 90 10 50 10 Z" fill="none" stroke="#0a421b" stroke-width="4"/>
+                        <line x1="50" y1="10" x2="50" y2="95" stroke="#0a421b" stroke-width="2.5" stroke-dasharray="6,4"/>
+                        <!-- Kiri: Sedih -->
+                        <circle cx="33" cy="45" r="7" fill="none" stroke="#111" stroke-width="3"/>
+                        <line x1="20" y1="35" x2="45" y2="40" stroke="#111" stroke-width="3"/>
+                        <path d="M 25 75 Q 35 60 45 70" fill="none" stroke="#111" stroke-width="3"/>
+                        <circle cx="35" cy="58" r="2" fill="#111"/> <!-- Air mata -->
+                        <!-- Kanan: Psikopat -->
+                        <circle cx="67" cy="40" r="7" fill="#0a421b"/>
+                        <circle cx="67" cy="40" r="2" fill="#fff"/>
+                        <line x1="55" y1="40" x2="80" y2="25" stroke="#0a421b" stroke-width="4"/>
+                        <path d="M 55 65 Q 75 95 85 60" fill="none" stroke="#0a421b" stroke-width="5"/>
+                        <path d="M 55 65 L 85 60" stroke="#111" stroke-width="1.5"/> <!-- Gigi tajam abstrak -->
+                        <!-- Topi Badut -->
+                        <path d="M 75 20 Q 100 -5 95 40 Q 85 25 75 20" fill="none" stroke="#111" stroke-width="3"/>
+                        <circle cx="95" cy="40" r="4" fill="#0a421b"/>
+                        <path d="M 25 25 Q 0 -5 5 40 Q 15 30 25 25" fill="none" stroke="#111" stroke-width="3"/>
+                        <circle cx="5" cy="40" r="4" fill="#0a421b"/>
+                    </svg>
+                </div>
+                <div class="tw-text-box">
+                    <div class="tw-quote">"Seret tubuh gilaku ke tiang gantungan. <span>Di ujung tali itulah</span> letak kejayaan mutlak kemenanganku!"</div>
+                    <div class="tw-ability">KEMAMPUAN:<br>Faksi Independen. Kamu MENANG MUTLAK jika berhasil memanipulasi warga agar memvonis gantung dirimu.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 5: KARTU BELAKANG (TEMA GELAP / THE VOID) -->
+        <div class="card theme-twisted" style="
+            --bg-color: #0f1115; 
+            --f-color: #d4af37; 
+            --border-color: #333;
+            --sidebar-text: #0f1115;
+            --code-color: #888;
+            --box-bg: #0f1115;
+            --text-color: #fff;
+            --bg-opacity: 0.05;">
+            
+            <div class="tw-sidebar">
+                <div class="tw-title-en">ASYLUM</div>
+            </div>
+            <div class="tw-main">
+                <div class="tw-header">
+                    <div class="tw-code">EDITION: 1.0 // NO ESCAPE</div>
+                    <div class="tw-title-id">NIGHTMARE DECK</div>
+                </div>
+                <div class="tw-art">
+                    <!-- Mandala Emas Gelap -->
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#8c6a21" stroke-width="1.5" stroke-dasharray="2,3"/>
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="#d4af37" stroke-width="1"/>
+                        
+                        <!-- Geometri Bintang -->
+                        <polygon points="50,15 80,65 20,65" fill="none" stroke="#d4af37" stroke-width="1"/>
+                        <polygon points="50,85 20,35 80,35" fill="none" stroke="#d4af37" stroke-width="1"/>
+                        
+                        <!-- Mata & Serigala Tengah -->
+                        <path d="M 25 50 Q 50 30 75 50 Q 50 70 25 50 Z" fill="#1a1a1a" stroke="#d4af37" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="10" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+                        
+                        <!-- Tengkorak / Serigala Geometris Kecil di dalam -->
+                        <path d="M 46 54 L 46 44 L 50 40 L 54 44 L 54 54 L 50 58 Z" fill="#d4af37"/>
+                        
+                        <!-- Aksen Bulan Sabit -->
+                        <path d="M 45 10 A 40 40 0 0 0 55 10 A 35 35 0 0 1 45 10 Z" fill="#d4af37"/>
+                        <path d="M 45 90 A 40 40 0 0 1 55 90 A 35 35 0 0 0 45 90 Z" fill="#d4af37"/>
+                    </svg>
+                </div>
+                <div class="tw-text-box" style="box-shadow: 4px 4px 0 rgba(212, 175, 55, 0.4);">
+                    <div class="tw-quote" style="text-align: center; font-size: 16px;">
+                        "Memasuki dimensi gelap <span>NIGHTMARE ASYLUM</span>. Jangan pernah mempercayai siapapun..."
+                    </div>
+                    <div class="tw-ability" style="text-align: center; border-top: none; color: #d4af37; font-size: 12px; letter-spacing: 2px;">
+                        TRUST NO ONE.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
