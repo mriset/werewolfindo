@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursed Ink Edition - Symmetrical Set</title>
+    <!-- Font Import -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Montserrat:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu */
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+            
+            /* Warna Tinta Terkutuk & Faksi */
+            --ink-black: #111111;
+            
+            --mod-color: #6a1b9a; /* Supreme / Ungu */
+            --vil-color: #0d47a1; /* Alliance / Biru */
+            --ww-color: #8b0000;  /* Shadows / Merah Darah */
+            --jst-color: #1b5e20; /* Chaos / Hijau Racun */
+            --gold-ink: #d4af37;  /* Aksen Emas Belakang */
+            
+            /* Backgrounds */
+            --paper-white: #fdfcfb;
+            --paper-dirty: #f4f3f0;
+            --void-black: #0a0a0a;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--ink-black);
+        }
+
+        /* Container Dasar Kartu */
+        .card-container {
+            width: var(--card-w);
+            height: var(--card-h);
+            background: var(--paper-white);
+            border-radius: 4mm;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            background-image: radial-gradient(circle at 50% 100%, #ffffff 0%, #f0efe9 100%);
+        }
+
+        /* Teks Global - Semua di-set Simetris (Tengah) */
+        .desc-text {
+            font-size: 6.2pt;
+            line-height: 1.4;
+            font-weight: 500;
+            z-index: 10;
+            position: relative;
+            text-align: justify;
+            text-align-last: center; /* Membuat baris terakhir tetap di tengah */
+        }
+        
+        .quote-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 7.5pt;
+            font-style: italic;
+            font-weight: 700;
+            text-align: center;
+            margin: 1.5mm 0;
+        }
+
+        .faction-tag {
+            font-family: 'Cinzel', serif;
+            font-size: 5pt;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .role-id {
+            position: absolute;
+            font-size: 4pt;
+            font-family: monospace;
+            font-weight: 800;
+            letter-spacing: 1px;
+            transform-origin: 0 0;
+            z-index: 20;
+            /* Default posisi ID, diadaptasi dari Moderator */
+            top: 2mm; right: -12mm; 
+            transform: rotate(90deg);
+        }
+
+        .card-title { font-family: 'Cinzel', serif; font-size: 13pt; margin: 0; color: var(--ink-black); line-height: 1; font-weight: 900; text-align: center;}
+        .card-sub { font-size: 5.5pt; letter-spacing: 2px; margin-bottom: 2mm; font-weight: 700; text-align: center;}
+
+        /* Area Struktur Layout (Base Symmetrical) */
+        .art-area {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 43mm;
+            background: var(--paper-dirty);
+            overflow: hidden;
+        }
+        .text-area {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 42.5mm;
+            padding: 3mm;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .desc-box {
+            width: 100%;
+            padding: 2mm 0;
+            margin-top: 1mm;
+        }
+
+        /* =================================================================
+           1. KARTU MODERATOR (Tema: Otoritas / Garis Solid)
+           ================================================================= */
+        .card-mod .art-area { border-bottom: 1.5px solid var(--mod-color); background: linear-gradient(to bottom, #f4f3f0, rgba(106, 27, 154, 0.05)); }
+        .card-mod .role-id { color: var(--mod-color); }
+        .card-mod .card-sub { color: var(--mod-color); }
+        .card-mod .desc-box { border-top: 1px solid rgba(106, 27, 154, 0.4); border-bottom: 1px solid rgba(106, 27, 154, 0.4); }
+
+        /* =================================================================
+           2. KARTU WARGA (Tema: Pertahanan / Garis Putus-putus)
+           ================================================================= */
+        .card-vil .art-area { border-bottom: 2px dashed var(--vil-color); background: linear-gradient(to bottom, #f4f3f0, rgba(13, 71, 161, 0.05)); }
+        .card-vil .role-id { color: var(--vil-color); }
+        .card-vil .card-sub { color: var(--vil-color); }
+        .card-vil .desc-box { border-top: 1px dashed rgba(13, 71, 161, 0.4); border-bottom: 1px dashed rgba(13, 71, 161, 0.4); }
+
+        /* =================================================================
+           3. KARTU WEREWOLF (Tema: Agresif / Garis Ganda)
+           ================================================================= */
+        .card-ww .art-area { border-bottom: 3px double var(--ww-color); background: linear-gradient(to bottom, #f4f3f0, rgba(139, 0, 0, 0.05)); }
+        .card-ww .role-id { color: var(--ww-color); }
+        .card-ww .card-sub { color: var(--ww-color); }
+        .card-ww .desc-box { border-top: 3px double rgba(139, 0, 0, 0.4); border-bottom: 3px double rgba(139, 0, 0, 0.4); }
+
+        /* =================================================================
+           4. KARTU JESTER (Tema: Chaos / Garis Titik-titik Tebal)
+           ================================================================= */
+        .card-jst .art-area { border-bottom: 2.5px dotted var(--jst-color); background: linear-gradient(to bottom, #f4f3f0, rgba(27, 94, 32, 0.05)); }
+        .card-jst .role-id { color: var(--jst-color); }
+        .card-jst .card-sub { color: var(--jst-color); }
+        .card-jst .desc-box { border-top: 2.5px dotted rgba(27, 94, 32, 0.4); border-bottom: 2.5px dotted rgba(27, 94, 32, 0.4); }
+
+        /* =================================================================
+           5. KARTU BELAKANG (Tema: Void Mandala Simetris)
+           ================================================================= */
+        .card-back {
+            background: var(--void-black);
+            border: 2px solid var(--gold-ink);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #050505 100%);
+        }
+        .back-art { width: 50mm; height: 80mm; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. KARTU MODERATOR -->
+    <div class="card-container card-mod">
+        <div class="role-id">ID: MOD-00-OMNI</div>
+        
+        <div class="art-area">
+            <svg viewBox="0 0 100 80" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+                <!-- Symmetrical background lines -->
+                <path d="M 50 0 L 50 80 M 0 40 L 100 40" stroke="rgba(106, 27, 154, 0.1)" stroke-width="0.5"/>
+                <circle cx="50" cy="35" r="25" fill="none" stroke="rgba(106, 27, 154, 0.2)" stroke-width="1" stroke-dasharray="2,2"/>
+                
+                <!-- The All-Seeing Eye -->
+                <path d="M 20 35 Q 50 10 80 35 Q 50 60 20 35 Z" fill="none" stroke="var(--ink-black)" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="50" cy="35" r="10" fill="none" stroke="var(--ink-black)" stroke-width="1.5" />
+                <circle cx="50" cy="35" r="4" fill="var(--mod-color)" />
+                <circle cx="51" cy="34" r="1.5" fill="#fff" />
+                
+                <!-- Symmetrical Ink Drips -->
+                <path d="M 50 60 L 50 75 M 35 48 L 35 60 M 65 48 L 65 60" stroke="var(--ink-black)" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="50" cy="78" r="1.5" fill="var(--mod-color)" />
+                <circle cx="35" cy="63" r="1" fill="var(--ink-black)" />
+                <circle cx="65" cy="63" r="1" fill="var(--ink-black)" />
+            </svg>
+        </div>
+
+        <div class="text-area">
+            <div class="faction-tag" style="color: var(--mod-color);">FAKSI: SUPREME</div>
+            <h2 class="card-title">MODERATOR</h2>
+            <div class="card-sub">THE SEER OF ALL</div>
+            
+            <div class="quote-text" style="color: #444;">
+                "Kebenaran tidak memihak,<br>ia hanya mengungkap yang tersembunyi."
+            </div>
+            
+            <div class="desc-box desc-text">
+                <b>Kemampuan:</b> Penguasa malam. Membangunkan setiap peran secara berurutan, memastikan keseimbangan, dan memandu alur permainan tanpa intervensi.
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. KARTU WARGA -->
+    <div class="card-container card-vil">
+        <div class="role-id">ID: VIL-01-HOPE</div>
+        
+        <div class="art-area">
+            <svg viewBox="0 0 100 80" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+                <!-- Symmetrical Shield & Lantern (Village Defenses) -->
+                <polygon points="50,10 80,25 80,55 50,75 20,55 20,25" fill="none" stroke="rgba(13, 71, 161, 0.15)" stroke-width="2"/>
+                <polygon points="50,15 75,28 75,53 50,70 25,53 25,28" fill="none" stroke="var(--ink-black)" stroke-width="1" stroke-dasharray="2,2"/>
+                
+                <!-- Central Symmetrical Lantern -->
+                <path d="M 40 25 L 60 25 L 55 55 L 45 55 Z" fill="none" stroke="var(--ink-black)" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M 35 25 L 65 25 M 42 55 L 58 55 L 50 65 Z" fill="none" stroke="var(--ink-black)" stroke-width="2" stroke-linecap="round"/>
+                
+                <!-- Glowing Light inside lantern -->
+                <circle cx="50" cy="40" r="8" fill="var(--vil-color)" opacity="0.8"/>
+                <circle cx="50" cy="40" r="4" fill="#fff" />
+                <path d="M 50 25 L 50 55 M 40 40 L 60 40" stroke="var(--ink-black)" stroke-width="1.5" opacity="0.8"/>
+
+                <!-- Symmetrical Mob Pitchforks -->
+                <path d="M 15 65 L 35 35 M 30 30 L 35 35 M 40 35 L 35 35" stroke="var(--ink-black)" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M 85 65 L 65 35 M 70 30 L 65 35 M 60 35 L 65 35" stroke="var(--ink-black)" stroke-width="1.5" stroke-linecap="round"/>
+                
+                <!-- Symmetrical Ink Splatters -->
+                <circle cx="25" cy="45" r="1.5" fill="var(--vil-color)" />
+                <circle cx="75" cy="45" r="1.5" fill="var(--vil-color)" />
+            </svg>
+        </div>
+
+        <div class="text-area">
+            <div class="faction-tag" style="color: var(--vil-color);">FAKSI: ALLIANCE</div>
+            <h2 class="card-title">WARGA</h2>
+            <div class="card-sub">THE VILLAGER</div>
+            
+            <div class="quote-text" style="color: #444;">
+                "Dalam ketidaktahuan kami bersatu.<br>Dalam ketakutan kami bertahan."
+            </div>
+            
+            <div class="desc-box desc-text">
+                <b>Kemampuan:</b> Tidak memiliki kekuatan khusus di malam hari. Gunakan suara, deduksi, dan instingmu di siang hari untuk mengeksekusi pengkhianat.
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. KARTU WEREWOLF -->
+    <div class="card-container card-ww">
+        <div class="role-id">ID: WW-09-FANG</div>
+        
+        <div class="art-area">
+            <svg viewBox="0 0 100 80" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+                <!-- Symmetrical Blood Moon Background -->
+                <circle cx="50" cy="40" r="28" fill="none" stroke="rgba(139, 0, 0, 0.15)" stroke-width="2"/>
+                <circle cx="50" cy="40" r="24" fill="var(--ink-black)" opacity="0.05"/>
+
+                <!-- Front-facing Symmetrical Wolf Skull/Demon -->
+                <path d="M 30 20 Q 50 10 70 20 Q 85 45 70 65 L 60 75 L 50 70 L 40 75 L 30 65 Q 15 45 30 20 Z" fill="none" stroke="var(--ink-black)" stroke-width="2.5" stroke-linejoin="round"/>
+                
+                <!-- Glowing Red Eyes -->
+                <path d="M 35 40 Q 42 35 45 42 L 35 45 Z" fill="var(--ww-color)" />
+                <path d="M 65 40 Q 58 35 55 42 L 65 45 Z" fill="var(--ww-color)" />
+
+                <!-- Snout and Fangs (Symmetrical) -->
+                <path d="M 50 50 L 45 60 L 55 60 Z" fill="var(--ink-black)"/>
+                <polygon points="40,65 42,75 45,67" fill="var(--ink-black)" />
+                <polygon points="60,65 58,75 55,67" fill="var(--ink-black)" />
+
+                <!-- Symmetrical Claw Marks crossing behind -->
+                <path d="M 10 10 L 30 35 M 15 5 L 35 30 M 5 15 L 25 40" stroke="rgba(139, 0, 0, 0.4)" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M 90 10 L 70 35 M 85 5 L 65 30 M 95 15 L 75 40" stroke="rgba(139, 0, 0, 0.4)" stroke-width="1.5" stroke-linecap="round"/>
+
+                <!-- Blood Drips -->
+                <circle cx="50" cy="76" r="1.5" fill="var(--ww-color)" />
+                <path d="M 42 75 L 42 78 M 58 75 L 58 78" stroke="var(--ww-color)" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <div class="text-area">
+            <div class="faction-tag" style="color: var(--ww-color);">FAKSI: SHADOWS</div>
+            <h2 class="card-title">WEREWOLF</h2>
+            <div class="card-sub">THE PREDATOR</div>
+            
+            <div class="quote-text" style="color: var(--ww-color);">
+                "Bulan memanggil, darah menjawab.<br>Tak ada yang selamat malam ini."
+            </div>
+            
+            <div class="desc-box desc-text">
+                <b>Kemampuan:</b> Bangun di malam hari bersama kawanan serigala untuk memangsa satu korban. Berbaur dan tebarkan dusta di siang hari.
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. KARTU JESTER -->
+    <div class="card-container card-jst">
+        <div class="role-id">ID: JST-99-FOOL</div>
+        
+        <div class="art-area">
+            <svg viewBox="0 0 100 80" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+                <!-- Symmetrical Chaos Geometry (Target/Hypnosis) -->
+                <circle cx="50" cy="40" r="30" fill="none" stroke="rgba(27, 94, 32, 0.15)" stroke-width="2" stroke-dasharray="4,4"/>
+                <circle cx="50" cy="40" r="20" fill="none" stroke="rgba(27, 94, 32, 0.3)" stroke-width="1" stroke-dasharray="2,2"/>
+
+                <!-- Symmetrical Twisted Theater Mask -->
+                <path d="M 25 30 Q 50 5 75 30 Q 85 55 50 75 Q 15 55 25 30 Z" fill="none" stroke="var(--ink-black)" stroke-width="2.5" stroke-linejoin="round"/>
+                
+                <!-- Jester Hat Horns -->
+                <path d="M 35 15 Q 20 -5 10 15 Q 15 25 25 30" fill="none" stroke="var(--ink-black)" stroke-width="2"/>
+                <circle cx="10" cy="15" r="3" fill="var(--jst-color)"/>
+                
+                <path d="M 65 15 Q 80 -5 90 15 Q 85 25 75 30" fill="none" stroke="var(--ink-black)" stroke-width="2"/>
+                <circle cx="90" cy="15" r="3" fill="var(--jst-color)"/>
+
+                <!-- Hypnotic Symmetrical Eyes -->
+                <circle cx="38" cy="38" r="4" fill="none" stroke="var(--ink-black)" stroke-width="1.5"/>
+                <circle cx="38" cy="38" r="1.5" fill="var(--jst-color)"/>
+                
+                <circle cx="62" cy="38" r="4" fill="none" stroke="var(--ink-black)" stroke-width="1.5"/>
+                <circle cx="62" cy="38" r="1.5" fill="var(--jst-color)"/>
+
+                <!-- Symmetrical Wide Grin -->
+                <path d="M 30 55 Q 50 70 70 55 Q 50 65 30 55 Z" fill="var(--ink-black)"/>
+                <path d="M 30 55 L 25 50 M 70 55 L 75 50" stroke="var(--ink-black)" stroke-width="1.5" stroke-linecap="round"/>
+                
+                <!-- Symmetrical Tears/Drips -->
+                <path d="M 38 42 L 38 50 M 62 42 L 62 50" stroke="var(--jst-color)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <div class="text-area">
+            <div class="faction-tag" style="color: var(--jst-color);">FAKSI: CHAOS</div>
+            <h2 class="card-title">SANG BADUT</h2>
+            <div class="card-sub">THE JESTER</div>
+            
+            <div class="quote-text" style="color: #444;">
+                "Kematianku adalah panggung utamaku.<br>Tertawalah selagi bisa!"
+            </div>
+            
+            <div class="desc-box desc-text">
+                <b>Kemampuan:</b> Menang secara mutlak jika kau dieksekusi oleh warga di siang hari. Manipulasi mereka, pancing amarah, dan jadilah korban!
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. KARTU BELAKANG -->
+    <div class="card-container card-back">
+        <div class="back-art">
+            <svg viewBox="0 0 100 160" width="100%" height="100%">
+                <!-- Outer Ornate Frame -->
+                <rect x="2" y="2" width="96" height="156" fill="none" stroke="var(--gold-ink)" stroke-width="0.5" stroke-dasharray="2,2"/>
+                <rect x="6" y="6" width="88" height="148" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="1"/>
+                
+                <!-- Cursed Corner Details -->
+                <path d="M 6 16 L 16 6 M 94 16 L 84 6 M 6 144 L 16 154 M 94 144 L 84 154" stroke="var(--gold-ink)" stroke-width="1"/>
+
+                <!-- Top & Bottom Ornaments (Perfectly Symmetrical) -->
+                <path d="M 50 15 L 60 25 L 50 22 L 40 25 Z" fill="var(--gold-ink)" />
+                <path d="M 50 145 L 60 135 L 50 138 L 40 135 Z" fill="var(--gold-ink)" />
+                
+                <path d="M 20 25 L 80 25 M 20 135 L 80 135" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+
+                <!-- The Central Cursed Mandala -->
+                <g transform="translate(50, 80)">
+                    <!-- Outer Runes Ring (Abstract geometric paths) -->
+                    <circle cx="0" cy="0" r="32" fill="none" stroke="var(--gold-ink)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="28" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5" stroke-dasharray="1,2"/>
+                    
+                    <path d="M 0 -32 L 5 -38 L 10 -32 M 0 32 L -5 38 L -10 32 M 32 0 L 38 5 L 32 10 M -32 0 L -38 -5 L -32 -10" fill="none" stroke="var(--gold-ink)" stroke-width="1"/>
+
+                    <!-- Star/Octagram -->
+                    <polygon points="0,-22 15,-15 22,0 15,15 0,22 -15,15 -22,0 -15,-15" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="0.5" />
+                    <polygon points="0,-22 22,0 0,22 -22,0" fill="none" stroke="var(--gold-ink)" stroke-width="1" />
+                    <polygon points="15,-15 15,15 -15,15 -15,-15" fill="none" stroke="var(--gold-ink)" stroke-width="1" />
+
+                    <!-- The Core Cursed Ink Emblem -->
+                    <circle cx="0" cy="0" r="10" fill="rgba(255,255,255,0.9)" />
+                    <!-- Symmetrical Dagger/Quill -->
+                    <path d="M 0 -7 L 3 0 L 0 8 L -3 0 Z" fill="var(--void-black)" />
+                    <path d="M 0 -7 L 0 8" stroke="#fff" stroke-width="0.5" />
+                    
+                    <!-- Top and Bottom Gold Drops -->
+                    <circle cx="0" cy="12" r="1.5" fill="var(--gold-ink)" />
+                    <circle cx="0" cy="-12" r="1.5" fill="var(--gold-ink)" />
+                    
+                    <!-- Symmetrical Gold Splatters inside Mandala -->
+                    <circle cx="15" cy="-15" r="1" fill="var(--gold-ink)" opacity="0.8"/>
+                    <circle cx="-15" cy="-15" r="1" fill="var(--gold-ink)" opacity="0.8"/>
+                    <circle cx="-12" cy="18" r="1.5" fill="var(--gold-ink)" />
+                    <circle cx="12" cy="18" r="1.5" fill="var(--gold-ink)" />
+                </g>
+                
+                <!-- Esoteric Text/Runes -->
+                <text x="50" y="42" font-family="'Cinzel', serif" font-size="5pt" fill="var(--gold-ink)" text-anchor="middle" letter-spacing="4px">CURSED INK</text>
+                <text x="50" y="122" font-family="'Cinzel', serif" font-size="5pt" fill="var(--gold-ink)" text-anchor="middle" letter-spacing="4px">EDITION</text>
+            </svg>
+        </div>
+    </div>
+
+</body>
+</html>
