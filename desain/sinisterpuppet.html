@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sinister Puppet Edition - Uniform Layout</title>
+    <!-- Font Premium: Playfair untuk Judul, Cinzel untuk Header/Faksi, Montserrat untuk Deskripsi -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,600;1,800&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu */
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+            
+            /* Warna Dasar */
+            --paper-white: #FCFDFD;
+            --text-dark: #1A1A1A;
+            --bone-white: #F4F1EA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            background-image: radial-gradient(circle at 50% 50%, #2a2a2a 0%, #111 100%);
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            padding: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .deck-title {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: 'Cinzel', serif;
+        }
+        .deck-title h1 {
+            font-size: 2.5rem;
+            color: #D4AF37;
+            letter-spacing: 4px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .deck-title p {
+            color: #ccc;
+            font-style: italic;
+            margin-top: 5px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* =========================================
+           BASE CARD STRUCTURE (Adopted from Warga)
+           ========================================= */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background-color: var(--c-bg, var(--paper-white));
+            border-radius: 4mm;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.5);
+            position: relative;
+            overflow: hidden;
+            color: var(--text-dark);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.8), 0 0 20px var(--c-glow, rgba(255,255,255,0.2));
+            z-index: 10;
+        }
+
+        /* Uniform Side Bars */
+        .side-bars {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 4mm;
+            background-color: var(--c-bar-bg);
+            z-index: 1;
+        }
+        .side-bars.left { left: 0; border-right: var(--c-bar-border, none); }
+        .side-bars.right { right: 0; border-left: var(--c-bar-border, none); }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            position: absolute;
+            top: 0; bottom: 0; left: 4mm; right: 4mm;
+            padding: 4mm 3mm;
+            display: flex;
+            flex-direction: column;
+            z-index: 2;
+        }
+
+        /* Uniform Faction Badge */
+        .faction-badge {
+            background: var(--c-badge-bg);
+            color: var(--c-badge-text);
+            font-family: 'Cinzel', serif;
+            font-size: 4.5pt;
+            font-weight: 800;
+            text-align: center;
+            padding: 1.5mm 0;
+            margin: 0 0 3mm 0;
+            letter-spacing: 2px;
+            border-radius: 1mm;
+            border: var(--c-badge-border, none);
+            text-transform: uppercase;
+        }
+
+        /* Uniform Art Circle */
+        .art-circle {
+            width: 38mm;
+            height: 38mm;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+            background: var(--c-art-bg);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: var(--c-art-border);
+        }
+        svg { width: 100%; height: 100%; }
+
+        /* Uniform Text Block */
+        .text-block {
+            margin-top: 4mm;
+            display: flex;
+            flex-direction: column;
+        }
+        .name-id {
+            font-family: 'Playfair Display', serif;
+            font-size: 13.5pt;
+            font-weight: 900;
+            color: var(--c-name);
+            text-align: left;
+            line-height: 1;
+        }
+        .name-en {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5pt;
+            font-weight: 700;
+            color: var(--c-name-sub);
+            text-align: left;
+            margin-top: 1mm;
+            margin-bottom: 2.5mm;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .role-quote {
+            text-align: left;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 6pt;
+            line-height: 1.3;
+            color: var(--c-quote-text);
+            border-left: 2px solid var(--c-quote-border);
+            padding-left: 2mm;
+            margin-bottom: 2mm;
+        }
+        .role-desc {
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5pt;
+            line-height: 1.4;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        /* Uniform Serial Code */
+        .serial-code {
+            position: absolute;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4pt;
+            font-weight: 700;
+            letter-spacing: 1px;
+            bottom: 2mm; right: 6mm;
+            color: var(--c-serial);
+            text-align: right;
+            z-index: 5;
+        }
+
+        /* =========================================
+           1. MODERATOR - THE PUPPETEER
+           ========================================= */
+        .card.moderator {
+            --c-bar-bg: #5C1682;
+            --c-bar-border: 1px solid #D4AF37;
+            --c-badge-bg: #5C1682;
+            --c-badge-text: #D4AF37;
+            --c-badge-border: 1px solid #D4AF37;
+            --c-art-bg: #F9F6FC;
+            --c-art-border: 2px solid #D4AF37;
+            --c-name: #5C1682;
+            --c-name-sub: #D4AF37;
+            --c-quote-border: #D4AF37;
+            --c-quote-text: #5C1682;
+            --c-serial: #D4AF37;
+            --c-glow: rgba(212, 175, 55, 0.3);
+        }
+        /* Uniqueness: Inner glow in art circle */
+        .card.moderator .art-circle { box-shadow: inset 0 0 15px rgba(92, 22, 130, 0.2); }
+
+        /* =========================================
+           2. WARGA - THE WOODEN PAWN
+           ========================================= */
+        .card.villager {
+            --c-bar-bg: #1D4E89;
+            --c-bar-border: none;
+            --c-badge-bg: #1D4E89;
+            --c-badge-text: #FFFFFF;
+            --c-badge-border: none;
+            --c-art-bg: #F4F1EA;
+            --c-art-border: 1.5px solid #1D4E89;
+            --c-name: var(--text-dark);
+            --c-name-sub: #8C9EAB;
+            --c-quote-border: #8C9EAB;
+            --c-quote-text: #1D4E89;
+            --c-serial: #8C9EAB;
+            --c-glow: rgba(29, 78, 137, 0.3);
+        }
+
+        /* =========================================
+           3. WEREWOLF - THE TORN MARIONETTE
+           ========================================= */
+        .card.werewolf {
+            --c-bar-bg: #8B0000;
+            --c-bar-border: 1px solid #2B0000;
+            --c-badge-bg: #2B0000;
+            --c-badge-text: #FFCCCC;
+            --c-badge-border: none;
+            --c-art-bg: #FFF5F5;
+            --c-art-border: 2px dashed #8B0000;
+            --c-name: #8B0000;
+            --c-name-sub: #2B0000;
+            --c-quote-border: #8B0000;
+            --c-quote-text: #590000;
+            --c-serial: #8B0000;
+            --c-glow: rgba(139, 0, 0, 0.4);
+        }
+        /* Uniqueness: Scratch marks overlapping layout */
+        .card.werewolf::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, transparent 48%, rgba(139,0,0,0.1) 50%, transparent 52%);
+            pointer-events: none; z-index: 10;
+        }
+
+        /* =========================================
+           4. JESTER - THE CRACKED DOLL
+           ========================================= */
+        .card.jester {
+            --c-bar-bg: #006A4E; /* Green side */
+            --c-bar-border: none;
+            --c-badge-bg: transparent;
+            --c-badge-text: #1A1A1A;
+            --c-badge-border: 1px solid #006A4E;
+            --c-art-bg: #F4FAF8;
+            --c-art-border: 2px dotted #C2185B;
+            --c-name: #C2185B;
+            --c-name-sub: #006A4E;
+            --c-quote-border: #C2185B;
+            --c-quote-text: #006A4E;
+            --c-serial: #006A4E;
+            --c-glow: rgba(0, 106, 78, 0.3);
+        }
+        /* Uniqueness: Mismatched side bars and tilted badge */
+        .card.jester .side-bars.right { background-color: #C2185B; }
+        .card.jester .faction-badge { transform: rotate(-2deg); background-color: rgba(0, 106, 78, 0.05); }
+
+        /* =========================================
+           5. CARD BACK - THE STAGE
+           ========================================= */
+        .card.back {
+            --c-bg: #0F0F0F;
+            --c-bar-bg: transparent;
+            --c-bar-border: 1px solid #C5A059;
+            --c-glow: rgba(197, 160, 89, 0.5);
+        }
+        /* Uniqueness: Thin gold borders instead of solid bars, centered mandala */
+        .card.back .side-bars { width: 3mm; border: 1px solid #C5A059; border-top:none; border-bottom:none; background: transparent;}
+        .card.back .side-bars.left { left: 2mm; }
+        .card.back .side-bars.right { right: 2mm; }
+        
+        .card.back .center-stage {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 42mm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 5;
+        }
+        .card.back .title-top {
+            font-family: 'Cinzel', serif; font-size: 6.5pt; color: #C5A059; letter-spacing: 4px; margin-bottom: 2mm; text-align: center;
+        }
+        .card.back .title-bot {
+            font-family: 'Playfair Display', serif; font-size: 10pt; font-weight: 900; color: #C5A059; letter-spacing: 5px; margin-top: 2mm; text-align: center; text-transform: uppercase;
+        }
+        .card.back .mandala-circle {
+            width: 38mm; height: 38mm; border-radius: 50%; border: 1px solid rgba(197, 160, 89, 0.5); display: flex; justify-content: center; align-items: center; background: #0a0a0a;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="deck-title">
+        <h1>SINISTER PUPPET EDITION</h1>
+        <p>Unified "Warga" Layout - Distinct Role Identities</p>
+    </div>
+
+    <!-- 1. KARTU MODERATOR -->
+    <div class="card moderator">
+        <div class="side-bars left"></div>
+        <div class="side-bars right"></div>
+        <div class="serial-code">SP-MOD-001</div>
+
+        <div class="content-wrapper">
+            <div class="faction-badge">SUPREME FACTION</div>
+            
+            <div class="art-circle">
+                <!-- SVG: The Puppeteer's Crossbar -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="50" fill="#F9F6FC" />
+                    <!-- Magic Aura -->
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(212,175,55,0.2)" stroke-width="10"/>
+                    <!-- Crossbar & Strings -->
+                    <line x1="25" y1="35" x2="25" y2="100" stroke="#D4AF37" stroke-width="1" stroke-dasharray="3,3" />
+                    <line x1="75" y1="35" x2="75" y2="100" stroke="#D4AF37" stroke-width="1" stroke-dasharray="3,3" />
+                    <line x1="50" y1="50" x2="50" y2="100" stroke="#5C1682" stroke-width="1.5" stroke-dasharray="2,2" />
+                    
+                    <rect x="20" y="32" width="60" height="6" fill="#3A1C52" rx="2" />
+                    <rect x="47" y="15" width="6" height="40" fill="#3A1C52" rx="2" />
+                    
+                    <!-- String Knots -->
+                    <circle cx="25" cy="35" r="3" fill="#D4AF37" />
+                    <circle cx="75" cy="35" r="3" fill="#D4AF37" />
+                    <circle cx="50" cy="18" r="3" fill="#D4AF37" />
+                    
+                    <!-- God Hand Silhouette -->
+                    <path d="M 40,-10 C 40,10 35,15 35,20 C 35,28 65,28 65,20 C 65,15 60,10 60,-10 Z" fill="#1A1A1A" />
+                </svg>
+            </div>
+
+            <div class="text-block">
+                <div class="name-id">MODERATOR</div>
+                <div class="name-en">THE MASTERMIND</div>
+                <div class="role-quote">"Aku yang menarik benangnya, kalian hanya menari di atas panggungku."</div>
+                <div class="role-desc">
+                    Pemandu jalannya takdir. Memanggil setiap peran pada malam hari secara berurutan dan membacakan hasil penghakiman di siang hari. Tidak memihak siapapun.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. KARTU WARGA -->
+    <div class="card villager">
+        <div class="side-bars left"></div>
+        <div class="side-bars right"></div>
+        <div class="serial-code">SP-VIL-042</div>
+
+        <div class="content-wrapper">
+            <div class="faction-badge">ALLIANCE FACTION</div>
+            
+            <div class="art-circle">
+                <!-- SVG: The Blank Wooden Pawn -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="50" fill="#F4F1EA" />
+                    <!-- Strings -->
+                    <line x1="50" y1="0" x2="50" y2="40" stroke="#8C9EAB" stroke-width="1.5" />
+                    <line x1="30" y1="0" x2="35" y2="60" stroke="#8C9EAB" stroke-width="1" />
+                    <line x1="70" y1="0" x2="65" y2="60" stroke="#8C9EAB" stroke-width="1" />
+                    
+                    <!-- Pawn Body -->
+                    <path d="M 40,60 C 40,50 60,50 60,60 L 65,95 C 65,100 35,100 35,95 Z" fill="#1D4E89" />
+                    <path d="M 45,60 Q 48,75 42,95 M 55,60 Q 52,75 58,95" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                    
+                    <!-- Blank Head -->
+                    <circle cx="50" cy="40" r="16" fill="#F4F1EA" stroke="#1A1A1A" stroke-width="2.5"/>
+                    <circle cx="50" cy="40" r="13" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
+                    
+                    <!-- Bound Hands -->
+                    <circle cx="35" cy="60" r="5" fill="#F4F1EA" stroke="#1A1A1A" stroke-width="2"/>
+                    <circle cx="65" cy="60" r="5" fill="#F4F1EA" stroke="#1A1A1A" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <div class="text-block">
+                <div class="name-id">WARGA</div>
+                <div class="name-en">THE WOODEN PAWN</div>
+                <div class="role-quote">"Kami bergerak tanpa tahu siapa yang memegang kendali di atas sana."</div>
+                <div class="role-desc">
+                    Tidak memiliki kemampuan khusus di malam hari. Gunakan insting, diskusi, dan analisismu di siang hari untuk mencari serta menyingkirkan serigala yang bersembunyi di antaramu.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. KARTU WEREWOLF -->
+    <div class="card werewolf">
+        <div class="side-bars left"></div>
+        <div class="side-bars right"></div>
+        <div class="serial-code">SP-WWF-666</div>
+
+        <div class="content-wrapper">
+            <div class="faction-badge">SHADOWS FACTION</div>
+            
+            <div class="art-circle">
+                <!-- SVG: The Torn Marionette Head -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="50" fill="#FFF5F5" />
+                    <!-- Snapped Red Strings -->
+                    <path d="M 35,0 Q 40,25 25,35 M 65,0 Q 60,20 75,30 M 50,0 L 50,15" fill="none" stroke="#8B0000" stroke-width="2" stroke-dasharray="4,2"/>
+                    
+                    <!-- Blood splatters inside circle -->
+                    <circle cx="20" cy="70" r="3" fill="rgba(139,0,0,0.4)" />
+                    <circle cx="80" cy="65" r="4" fill="rgba(139,0,0,0.4)" />
+                    <circle cx="75" cy="80" r="2" fill="rgba(139,0,0,0.3)" />
+
+                    <!-- Wooden Wolf Puppet Head -->
+                    <path d="M 20,65 L 35,25 L 50,35 L 65,25 L 80,65 L 60,95 L 40,95 Z" fill="#1A1A1A" />
+                    <path d="M 28,60 L 38,32 L 50,42 L 62,32 L 72,60 L 58,88 L 42,88 Z" fill="#2B0000" />
+                    
+                    <!-- Glowing Red Eyes -->
+                    <polygon points="38,50 48,55 38,58" fill="#FF0000" />
+                    <polygon points="62,50 52,55 62,58" fill="#FF0000" />
+
+                    <!-- Jagged Teeth -->
+                    <polygon points="40,95 45,75 50,85 55,75 60,95 55,100 50,92 45,100" fill="#F4F1EA" stroke="#1A1A1A" stroke-width="1.5"/>
+                    
+                    <!-- Fluff / Stuffing leaking out -->
+                    <path d="M 20,65 C 5,70 10,50 25,45 Z" fill="#FFF" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="1,2"/>
+                    <path d="M 80,65 C 95,70 90,50 75,45 Z" fill="#FFF" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="1,2"/>
+                </svg>
+            </div>
+
+            <div class="text-block">
+                <div class="name-id">WEREWOLF</div>
+                <div class="name-en">THE TORN MARIONETTE</div>
+                <div class="role-quote">"Benang ini takkan bisa menahan rasa laparku. Panggung ini akan bersimbah darah."</div>
+                <div class="role-desc">
+                    Bangun setiap malam bersama kawananmu untuk memangsa satu pemain secara diam-diam. Di siang hari, jadilah boneka penurut dan menyamarlah sebagai warga biasa.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. KARTU JESTER -->
+    <div class="card jester">
+        <div class="side-bars left"></div>
+        <div class="side-bars right"></div>
+        <div class="serial-code">SP-JST-099</div>
+
+        <div class="content-wrapper">
+            <div class="faction-badge">CHAOS FACTION</div>
+            
+            <div class="art-circle">
+                <!-- SVG: The Cracked Doll Mask -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="50" fill="#F4FAF8" />
+                    
+                    <!-- Single hanging string -->
+                    <line x1="50" y1="0" x2="50" y2="15" stroke="#1A1A1A" stroke-width="1.5" />
+                    <circle cx="50" cy="18" r="4" fill="#C2185B" />
+                    
+                    <!-- Creepy Jester Hat -->
+                    <path d="M 50,22 Q 15,10 10,45 Q 30,35 50,28 Z" fill="#006A4E" stroke="#1A1A1A" stroke-width="2"/>
+                    <path d="M 50,22 Q 85,10 90,45 Q 70,35 50,28 Z" fill="#C2185B" stroke="#1A1A1A" stroke-width="2"/>
+                    <circle cx="10" cy="45" r="5" fill="#C2185B" stroke="#1A1A1A" stroke-width="1"/>
+                    <circle cx="90" cy="45" r="5" fill="#006A4E" stroke="#1A1A1A" stroke-width="1"/>
+
+                    <!-- Porcelain Face -->
+                    <path d="M 25,35 C 10,70 30,100 50,100 C 70,100 90,70 75,35 Z" fill="#F4F1EA" stroke="#1A1A1A" stroke-width="2"/>
+                    
+                    <!-- Cracks -->
+                    <path d="M 75,35 L 60,55 L 65,65 L 55,80" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+                    <path d="M 50,100 L 45,85 L 35,80" fill="none" stroke="#1A1A1A" stroke-width="1"/>
+
+                    <!-- Hollow Eyes -->
+                    <ellipse cx="38" cy="55" rx="8" ry="10" fill="#1A1A1A" />
+                    <ellipse cx="62" cy="55" rx="8" ry="10" fill="#1A1A1A" />
+                    <circle cx="65" cy="55" r="2" fill="#C2185B" /> <!-- Crazy dot -->
+
+                    <!-- Sinister Grin -->
+                    <path d="M 30,75 Q 50,95 70,75 Q 50,85 30,75 Z" fill="#1A1A1A" />
+                    <!-- Stitches -->
+                    <line x1="35" y1="75" x2="35" y2="82" stroke="#F4F1EA" stroke-width="1"/>
+                    <line x1="45" y1="78" x2="45" y2="86" stroke="#F4F1EA" stroke-width="1"/>
+                    <line x1="55" y1="78" x2="55" y2="86" stroke="#F4F1EA" stroke-width="1"/>
+                    <line x1="65" y1="75" x2="65" y2="82" stroke="#F4F1EA" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <div class="text-block">
+                <div class="name-id">JESTER</div>
+                <div class="name-en">THE CRACKED DOLL</div>
+                <div class="role-quote">"Tawa yang paling nyaring akan terdengar justru di saat aku hancur berkeping-keping!"</div>
+                <div class="role-desc">
+                    Tujuanmu hanya satu: Kematian. Berpura-puralah menjadi ancaman dan manipulasi warga desa agar menggantung/mem-voting dirimu. Jika kamu dieksekusi, kamu menang sendirian.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. KARTU BELAKANG (THE STAGE) -->
+    <div class="card back">
+        <div class="side-bars left"></div>
+        <div class="side-bars right"></div>
+
+        <div class="center-stage">
+            <div class="title-top">PUPPET EDITION</div>
+            
+            <div class="mandala-circle">
+                <!-- SVG: Dark Mandala / Eye of the Puppeteer -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Geometric Strings -->
+                    <polygon points="50,10 65,40 90,50 65,60 50,90 35,60 10,50 35,40" fill="none" stroke="#C5A059" stroke-width="1.5" stroke-dasharray="2,2"/>
+                    <polygon points="50,20 60,42 80,50 60,58 50,80 40,58 20,50 40,42" fill="rgba(197, 160, 89, 0.1)" stroke="#C5A059" stroke-width="1"/>
+                    
+                    <!-- Inner Core / The Stage -->
+                    <circle cx="50" cy="50" r="20" fill="#0F0F0F" stroke="#C5A059" stroke-width="2"/>
+                    
+                    <!-- The All Seeing Eye -->
+                    <path d="M 35,50 Q 50,35 65,50 Q 50,65 35,50 Z" fill="#0F0F0F" stroke="#C5A059" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="6" fill="#C5A059" />
+                    <circle cx="50" cy="50" r="2" fill="#0F0F0F" />
+                    
+                    <!-- Dropping strings -->
+                    <line x1="45" y1="70" x2="45" y2="95" stroke="#C5A059" stroke-width="1"/>
+                    <line x1="55" y1="70" x2="55" y2="95" stroke="#C5A059" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <div class="title-bot">WEREWOLF</div>
+        </div>
+    </div>
+
+</body>
+</html>
