@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Werewolf - Pop-Art Chaos Edition</title>
+    
+    <!-- Import Font Punchy & Comic-Style -->
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet" />
+    
+    <style>
+        :root {
+            /* Dimensi Kartu Presisi Cetak */
+            --w: 54.5mm;
+            --h: 85.5mm;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #111;
+            background-image: repeating-linear-gradient(45deg, #1a1a1a 0, #1a1a1a 2px, #111 2px, #111 8px);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 50px 20px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .showcase-header {
+            width: 100%; text-align: center; color: #fff; margin-bottom: 20px;
+        }
+        .showcase-header h1 { 
+            font-family: 'Righteous', cursive; font-size: 32px; letter-spacing: 2px; color: #fff; 
+            text-shadow: 3px 3px 0px #D500F9, -3px -3px 0px #00E5FF;
+        }
+        .showcase-header p { font-size: 12px; color: #ccc; margin-top: 10px; font-weight: 700; text-transform: uppercase;}
+
+        /* =========================================================
+           BASE POP-ART CARD LAYOUT (Berdasarkan Layout Badut)
+        ========================================================= */
+        .card {
+            width: var(--w);
+            height: var(--h);
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+            border-radius: 3mm;
+            border: 1.5mm solid #111;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .card:hover {
+            transform: translateY(-15px) scale(1.08) rotate(2deg);
+            z-index: 10;
+        }
+
+        /* Latar Belakang Pattern */
+        .bg-pattern { position: absolute; inset: 0; opacity: 0.15; z-index: 1; }
+
+        .content { position: relative; z-index: 2; height: 100%; padding: 3mm; display: flex; flex-direction: column; }
+
+        /* Komponen Atas (Header Miring) */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3mm;}
+        .badge {
+            font-family: 'Righteous', cursive; font-size: 6pt; color: #111;
+            padding: 1mm 2mm; border: 1.5px solid #111; box-shadow: 2px 2px 0 #111;
+        }
+
+        /* Komponen Judul (Dual Text-Shadow) */
+        .title-box { text-align: center; margin-bottom: 1mm; }
+        .title-id { font-family: 'Righteous', cursive; font-size: 15pt; line-height: 1; color: #111; text-transform: uppercase; }
+        .title-en { font-family: 'Montserrat', sans-serif; font-size: 5.5pt; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Komponen Ilustrasi SVG (Hard Drop Shadow) */
+        .art-box { width: 34mm; height: 34mm; margin: 0 auto; filter: drop-shadow(4px 4px 0px #111); }
+
+        /* Komponen Teks Bawah (Kotak Miring dengan Shadow Warna) */
+        .text-wrapper {
+            position: absolute; bottom: 3mm; left: 3mm; right: 3mm;
+            background: #fff; border: 2px solid #111; padding: 2.5mm;
+        }
+        .ability { font-family: 'Righteous', cursive; font-size: 6.5pt; text-align: center; margin-bottom: 1mm; text-shadow: 1px 1px 0 #111; letter-spacing: 0.5px;}
+        .quote { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 5pt; color: #111; text-align: center; line-height: 1.2; margin-bottom: 1.5mm; padding-bottom: 1mm; }
+        .desc { font-family: 'Montserrat', sans-serif; font-size: 4.5pt; font-weight: 700; color: #222; text-align: center; line-height: 1.3; }
+
+        /* =========================================================
+           1. SEER (PENERAWANG) - Tema Cyan & Yellow
+        ========================================================= */
+        .t-seer .bg-pattern { background-image: radial-gradient(#FFEA00 1.5px, transparent 1.5px); background-size: 6px 6px; }
+        .t-seer .header { transform: rotate(4deg); }
+        .t-seer .code-badge { background: #00E5FF; color: #111; }
+        .t-seer .fac-badge { background: #FFEA00; color: #111; }
+        .t-seer .title-box { transform: rotate(-3deg); }
+        .t-seer .title-id { text-shadow: -2px 2px 0 #00E5FF, 2px -2px 0 #FFEA00; }
+        .t-seer .title-en { color: #00E5FF; text-shadow: 1px 1px 0 #111;}
+        .t-seer .art-box { transform: rotate(5deg); }
+        .t-seer .text-wrapper { transform: rotate(2deg); box-shadow: 3px 3px 0 #00E5FF; }
+        .t-seer .ability { color: #FFEA00; }
+        .t-seer .quote { border-bottom: 2px dotted #00E5FF; }
+
+        /* =========================================================
+           2. HUNTER (PEMBURU) - Tema Deep Blue & Hot Orange
+        ========================================================= */
+        .t-hunter .bg-pattern { background: repeating-linear-gradient(45deg, #FF3D00 0, #FF3D00 1px, transparent 1px, transparent 5px); }
+        .t-hunter .header { transform: rotate(-5deg); }
+        .t-hunter .code-badge { background: #FF3D00; color: #fff; }
+        .t-hunter .fac-badge { background: #2962FF; color: #fff; }
+        .t-hunter .title-box { transform: rotate(4deg); }
+        .t-hunter .title-id { text-shadow: -2px -2px 0 #FF3D00, 2px 2px 0 #2962FF; color: #fff;}
+        .t-hunter .title-en { color: #FF3D00; text-shadow: 1px 1px 0 #111;}
+        .t-hunter .art-box { transform: rotate(-6deg); }
+        .t-hunter .text-wrapper { transform: rotate(-3deg); box-shadow: -3px 3px 0 #FF3D00; }
+        .t-hunter .ability { color: #2962FF; }
+        .t-hunter .quote { border-bottom: 2px dotted #FF3D00; }
+
+        /* =========================================================
+           3. WEREWOLF (SERIGALA) - Tema Crimson Red & Dark Grey
+        ========================================================= */
+        .t-wolf .bg-pattern { background-image: repeating-radial-gradient(circle at 0 0, transparent 0, #fff 4px, #D50000 4px, #D50000 5px); }
+        .t-wolf .header { transform: rotate(3deg); }
+        .t-wolf .code-badge { background: #D50000; color: #fff; }
+        .t-wolf .fac-badge { background: #424242; color: #fff; }
+        .t-wolf .title-box { transform: rotate(-5deg); }
+        .t-wolf .title-id { text-shadow: 2px 2px 0 #D50000, -2px -2px 0 #424242; }
+        .t-wolf .title-en { color: #D50000; text-shadow: 1px 1px 0 #111;}
+        .t-wolf .art-box { transform: rotate(8deg); }
+        .t-wolf .text-wrapper { transform: rotate(4deg); box-shadow: 3px -3px 0 #D50000; }
+        .t-wolf .ability { color: #D50000; }
+        .t-wolf .quote { border-bottom: 2px dotted #424242; }
+
+        /* =========================================================
+           4. JESTER (BADUT) - Tema Magenta & Toxic Green (Original)
+        ========================================================= */
+        .t-jester .bg-pattern { background-image: radial-gradient(#00E676 1.5px, transparent 1.5px); background-size: 6px 6px; }
+        .t-jester .header { transform: rotate(-6deg); }
+        .t-jester .code-badge { background: #D500F9; color: #fff; }
+        .t-jester .fac-badge { background: #00E676; color: #111; }
+        .t-jester .title-box { transform: rotate(5deg); }
+        .t-jester .title-id { text-shadow: -2px 2px 0 #00E676, 2px -2px 0 #D500F9; }
+        .t-jester .title-en { color: #D500F9; text-shadow: 1px 1px 0 #111;}
+        .t-jester .art-box { transform: rotate(-8deg); }
+        .t-jester .text-wrapper { transform: rotate(-2deg); box-shadow: 3px 3px 0 #D500F9; }
+        .t-jester .ability { color: #00E676; }
+        .t-jester .quote { border-bottom: 2px dotted #D500F9; }
+
+        /* =========================================================
+           5. GUARDIAN (PELINDUNG) - Tema Hot Pink & Cyan Blue
+        ========================================================= */
+        .t-guard .bg-pattern { background-image: linear-gradient(45deg, #00B0FF 25%, transparent 25%, transparent 75%, #00B0FF 75%, #00B0FF), linear-gradient(45deg, #00B0FF 25%, transparent 25%, transparent 75%, #00B0FF 75%, #00B0FF); background-size: 10px 10px; background-position: 0 0, 5px 5px; opacity: 0.1;}
+        .t-guard .header { transform: rotate(4deg); }
+        .t-guard .code-badge { background: #FF4081; color: #fff; }
+        .t-guard .fac-badge { background: #00B0FF; color: #111; }
+        .t-guard .title-box { transform: rotate(-4deg); }
+        .t-guard .title-id { text-shadow: 2px 2px 0 #FF4081, -2px -2px 0 #00B0FF; }
+        .t-guard .title-en { color: #FF4081; text-shadow: 1px 1px 0 #111;}
+        .t-guard .art-box { transform: rotate(6deg); }
+        .t-guard .text-wrapper { transform: rotate(3deg); box-shadow: -3px 3px 0 #00B0FF; }
+        .t-guard .ability { color: #FF4081; }
+        .t-guard .quote { border-bottom: 2px dotted #00B0FF; }
+
+        /* =========================================================
+           6. CARD BACK (KARTU BELAKANG) - Tema Black, Yellow, White
+        ========================================================= */
+        .t-back { background: #111; border-color: #fff; }
+        .t-back .bg-pattern { background-image: radial-gradient(#FFEA00 2px, transparent 2px); background-size: 8px 8px; opacity: 0.2;}
+        .t-back .header { justify-content: center; transform: rotate(-2deg); margin-top: 5mm;}
+        .t-back .code-badge { background: #FFEA00; color: #111; border-color: #fff; box-shadow: 2px 2px 0 #fff; font-size: 8pt; letter-spacing: 2px;}
+        
+        .t-back .art-box { width: 45mm; height: 45mm; transform: rotate(5deg); margin-top: 5mm; filter: drop-shadow(4px 4px 0px #FFEA00); }
+        
+        .t-back .title-box { position: absolute; bottom: 8mm; width: 100%; text-align: center; transform: rotate(-4deg); left:0;}
+        .t-back .title-id { color: #fff; font-size: 22pt; text-shadow: -3px 3px 0 #FFEA00, 3px -3px 0 #00E5FF; }
+
+    </style>
+</head>
+<body>
+
+    <div class="showcase-header">
+        <h1>POP-ART CHAOS DECK</h1>
+        <p>1 Unified Layout. 5 Explosive Color Palettes. 100% Attitude.</p>
+    </div>
+
+    <!-- 1. SEER (PENERAWANG) -->
+    <div class="card t-seer">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">SER-09</div>
+            </div>
+            
+            <div class="title-box">
+                <div class="title-id">PENERAWANG</div>
+                <div class="title-en">The Oracle</div>
+            </div>
+            
+            <div class="art-box">
+                <!-- SVG Pop-Art Seer: Eye in Crystal Ball -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Offset background circle -->
+                    <circle cx="55" cy="55" r="35" fill="#FFEA00" />
+                    <!-- Main Crystal Ball -->
+                    <circle cx="45" cy="45" r="35" fill="#00E5FF" stroke="#111" stroke-width="3" />
+                    <!-- Big Eye -->
+                    <path d="M 15,45 Q 45,15 75,45 Q 45,75 15,45 Z" fill="#fff" stroke="#111" stroke-width="3" />
+                    <circle cx="45" cy="45" r="12" fill="#FFEA00" stroke="#111" stroke-width="3" />
+                    <circle cx="45" cy="45" r="4" fill="#111" />
+                    <circle cx="48" cy="42" r="2" fill="#fff" />
+                    <!-- Magic Zaps -->
+                    <path d="M 10,20 L 20,25 L 15,35" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <path d="M 80,15 L 85,25 L 95,20" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Star -->
+                    <polygon points="85,85 87,75 95,73 87,71 85,61 83,71 75,73 83,75" fill="#FFEA00" stroke="#111" stroke-width="2"/>
+                </svg>
+            </div>
+            
+            <div class="text-wrapper">
+                <div class="ability">MATA BATIN FAKTA</div>
+                <div class="quote">"Mata ketigaku tidak pernah berbohong, sayang! Aku tahu rahasiamu!"</div>
+                <div class="desc">Tunjuk satu pemain di malam hari. Moderator akan membocorkan identitas aslinya: apakah ia <b>Serigala</b> atau bukan. Pandu warga dengan bukti, tapi awas jangan sampai ketahuan serigala!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. HUNTER (PEMBURU) -->
+    <div class="card t-hunter">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge code-badge">HNT-77</div>
+                <div class="badge fac-badge">VIGILANTE</div>
+            </div>
+            
+            <div class="title-box">
+                <div class="title-id">PEMBURU</div>
+                <div class="title-en">The Marksman</div>
+            </div>
+            
+            <div class="art-box">
+                <!-- SVG Pop-Art Hunter: Crosshair & Blast -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Offset Blast -->
+                    <polygon points="50,5 65,35 95,35 70,55 80,85 50,65 20,85 30,55 5,35 35,35" fill="#FF3D00" />
+                    <!-- Main Blast -->
+                    <polygon points="45,10 60,40 90,40 65,60 75,90 45,70 15,90 25,60 0,40 30,40" fill="#2962FF" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Target Scope -->
+                    <circle cx="45" cy="55" r="25" fill="#fff" stroke="#111" stroke-width="3" />
+                    <!-- Crosshairs -->
+                    <line x1="45" y1="20" x2="45" y2="90" stroke="#111" stroke-width="3" />
+                    <line x1="10" y1="55" x2="80" y2="55" stroke="#111" stroke-width="3" />
+                    <!-- Bullet Hole -->
+                    <circle cx="55" cy="45" r="6" fill="#111" />
+                    <path d="M 55,45 L 65,35 M 55,45 L 65,55 M 55,45 L 45,35" stroke="#111" stroke-width="2" />
+                </svg>
+            </div>
+            
+            <div class="text-wrapper">
+                <div class="ability">TEMBAKAN TERAKHIR</div>
+                <div class="quote">"Bawa aku ke neraka, dan akan kutarik satu monster bersamaku!"</div>
+                <div class="desc">Jika kau terbunuh oleh serigala atau dieksekusi paksa di siang hari, kau memiliki hak mutlak untuk <b>menembak mati</b> satu pemain pilihanmu secara instan sebelum kau menghembuskan napas terakhir.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. WEREWOLF (SERIGALA) -->
+    <div class="card t-wolf">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">SHADOWS</div>
+                <div class="badge code-badge">WW-00X</div>
+            </div>
+            
+            <div class="title-box">
+                <div class="title-id">SERIGALA</div>
+                <div class="title-en">The Predator</div>
+            </div>
+            
+            <div class="art-box">
+                <!-- SVG Pop-Art Werewolf: Snarling Mouth & Drool -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Offset shadow mouth -->
+                    <path d="M 5,45 Q 50,85 95,45 Q 50,15 5,45 Z" fill="#424242" />
+                    <!-- Main Snarling Mouth -->
+                    <path d="M 0,40 Q 50,80 100,40 Q 50,10 0,40 Z" fill="#D50000" stroke="#111" stroke-width="3" />
+                    <!-- Inner Mouth/Darkness -->
+                    <path d="M 10,40 Q 50,70 90,40 Q 50,20 10,40 Z" fill="#111" />
+                    <!-- Sharp Fangs -->
+                    <polygon points="20,35 25,55 30,35" fill="#fff" stroke="#111" stroke-width="2" />
+                    <polygon points="40,28 45,60 50,28" fill="#fff" stroke="#111" stroke-width="2" />
+                    <polygon points="60,28 65,60 70,28" fill="#fff" stroke="#111" stroke-width="2" />
+                    <polygon points="80,35 85,55 90,35" fill="#fff" stroke="#111" stroke-width="2" />
+                    <!-- Bottom Fangs -->
+                    <polygon points="35,55 40,40 45,58" fill="#fff" stroke="#111" stroke-width="2" />
+                    <polygon points="55,58 60,40 65,55" fill="#fff" stroke="#111" stroke-width="2" />
+                    <!-- Drool/Blood -->
+                    <path d="M 30,70 Q 30,90 35,90 Q 40,90 40,75" fill="#D50000" stroke="#111" stroke-width="2" />
+                    <path d="M 60,75 Q 60,95 65,95 Q 70,95 70,65" fill="#D50000" stroke="#111" stroke-width="2" />
+                </svg>
+            </div>
+            
+            <div class="text-wrapper">
+                <div class="ability">INSTING MEMBUNUH</div>
+                <div class="quote">"Senyum paling manis di siang hari, taring paling tajam di malam hari! GRRRR!"</div>
+                <div class="desc">Bangun di malam hari. Berkomunikasi dengan serigala lain untuk <b>mencabik satu korban</b> tanpa ampun. Menyamarlah jadi warga di siang hari. Kau menang jika jumlah serigala sama dengan sisa warga!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. JESTER (BADUT) -->
+    <div class="card t-jester">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge code-badge">ERR-404</div>
+                <div class="badge fac-badge">CHAOS</div>
+            </div>
+            
+            <div class="title-box">
+                <div class="title-id">SI BADUT</div>
+                <div class="title-en">The Trickster</div>
+            </div>
+            
+            <div class="art-box">
+                <!-- SVG Pop-Art Jester: Crazy Face (Original masterpiece adapted) -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Offset Shadow -->
+                    <circle cx="55" cy="55" r="35" fill="#00E676" />
+                    <!-- Main Face Split -->
+                    <path d="M 50,15 A 35,35 0 0,0 50,85 Z" fill="#D500F9" stroke="#111" stroke-width="3" />
+                    <path d="M 50,15 A 35,35 0 0,1 50,85 Z" fill="#fff" stroke="#111" stroke-width="3" />
+                    <!-- Crazy Eyes -->
+                    <circle cx="35" cy="40" r="8" fill="#fff" stroke="#111" stroke-width="3" />
+                    <circle cx="35" cy="40" r="3" fill="#111" />
+                    <rect x="60" y="35" width="12" height="12" fill="#00E676" stroke="#111" stroke-width="3" transform="rotate(25 66 41)" />
+                    <circle cx="66" cy="41" r="3" fill="#111" />
+                    <!-- Stitched Smile -->
+                    <path d="M 25,65 Q 50,90 75,65" fill="none" stroke="#111" stroke-width="4" />
+                    <line x1="35" y1="63" x2="35" y2="75" stroke="#111" stroke-width="3" />
+                    <line x1="45" y1="68" x2="45" y2="80" stroke="#111" stroke-width="3" />
+                    <line x1="55" y1="68" x2="55" y2="80" stroke="#111" stroke-width="3" />
+                    <line x1="65" y1="63" x2="65" y2="75" stroke="#111" stroke-width="3" />
+                </svg>
+            </div>
+            
+            <div class="text-wrapper">
+                <div class="ability">TAWA KEMATIAN</div>
+                <div class="quote">"Ayo, gantung aku! Bikin aku terbang tinggi dan kita lihat siapa yang tertawa!"</div>
+                <div class="desc">Kematianmu adalah kemenanganmu! Bertingkahlah gila, manipulasi warga agar mereka menuduh lalu <b>mengeksekusimu</b> di pengadilan siang hari. Jika digantung, kau memenangkan permainan seorang diri!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. GUARDIAN (PELINDUNG) -->
+    <div class="card t-guard">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">GRD-01</div>
+            </div>
+            
+            <div class="title-box">
+                <div class="title-id">PELINDUNG</div>
+                <div class="title-en">The Aegis</div>
+            </div>
+            
+            <div class="art-box">
+                <!-- SVG Pop-Art Guardian: Padlock, Shield & Wings -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Wings Offset -->
+                    <path d="M 50,55 Q 10,20 0,60 Q 30,80 50,55 Z" fill="#00B0FF" />
+                    <path d="M 50,55 Q 90,20 100,60 Q 70,80 50,55 Z" fill="#00B0FF" />
+                    <!-- Wings Main -->
+                    <path d="M 50,50 Q 15,15 5,55 Q 30,75 50,50 Z" fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <path d="M 50,50 Q 85,15 95,55 Q 70,75 50,50 Z" fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Shield / Padlock Offset -->
+                    <path d="M 35,25 A 15,15 0 0,1 65,25 L 65,40 L 35,40 Z" fill="#FF4081" />
+                    <rect x="25" y="45" width="50" height="45" rx="5" fill="#FF4081" />
+                    <!-- Shield / Padlock Main -->
+                    <path d="M 30,20 A 20,20 0 0,1 70,20 L 70,35 L 30,35 Z" fill="none" stroke="#111" stroke-width="4" />
+                    <rect x="20" y="35" width="60" height="55" rx="8" fill="#00B0FF" stroke="#111" stroke-width="3" />
+                    <!-- Keyhole -->
+                    <circle cx="50" cy="55" r="8" fill="#111" />
+                    <polygon points="45,60 55,60 60,80 40,80" fill="#111" />
+                </svg>
+            </div>
+            
+            <div class="text-wrapper">
+                <div class="ability">PERISAI ILAHI</div>
+                <div class="quote">"Malam ini tidak ada darah yang tumpah di bawah pengawasanku! MINGGIR!"</div>
+                <div class="desc">Pilih satu pemain setiap malam untuk kau jaga. Jika ia diserang serigala, <b>ia akan selamat</b>. Kau boleh menjaga dirimu sendiri, tapi tidak boleh menjaga orang yang sama dua malam berturut-turut!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. CARD BACK (KARTU BELAKANG) -->
+    <div class="card t-back">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge code-badge">POP-ART EDITION</div>
+            </div>
+            
+            <div class="art-box">
+                <!-- SVG Pop-Art Card Back: Graphic Wolf Silhouette overlapping shapes -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Giant Exclamation / Action shape offset -->
+                    <polygon points="50,0 65,35 100,35 75,55 85,90 50,70 15,90 25,55 0,35 35,35" fill="#00E5FF" />
+                    <!-- Main Shape -->
+                    <polygon points="45,5 60,40 95,40 70,60 80,95 45,75 10,95 20,60 -5,40 30,40" fill="#FFEA00" stroke="#fff" stroke-width="3" stroke-linejoin="round" />
+                    
+                    <!-- Wolf Head Silhouette -->
+                    <polygon points="45,25 65,45 60,75 40,65 20,75 35,45" fill="#111" />
+                    <!-- Wolf Ears -->
+                    <polygon points="20,20 35,45 40,35" fill="#111" />
+                    <polygon points="70,20 55,45 50,35" fill="#111" />
+                    <!-- Glowing Wolf Eyes -->
+                    <path d="M 35,50 Q 40,45 45,50 Z" fill="#D500F9" />
+                    <path d="M 55,50 Q 50,45 45,50 Z" fill="#D500F9" transform="translate(10, 0)" />
+                </svg>
+            </div>
+            
+            <div class="title-box">
+                <div class="title-id">WEREWOLF</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
