@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Werewolf: Unified Torn Paper Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,500&family=Special+Elite&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Dimensi Presisi Cetak */
+            --w: 54.5mm;
+            --h: 85.5mm;
+            
+            /* Warna Dasar Kertas */
+            --paper-white: #FDFDFD;
+            --paper-shadow: rgba(0, 0, 0, 0.4);
+            --paper-texture: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.03"/></svg>');
+
+            /* Variabel Warna Per Faksi / Role */
+            --theme-seer: #0D47A1;
+            --theme-seer-light: rgba(13, 71, 161, 0.08);
+            
+            --theme-hunt: #E65100;
+            --theme-hunt-light: rgba(230, 81, 0, 0.08);
+            
+            --theme-ww: #B71C1C;
+            --theme-ww-light: rgba(183, 28, 28, 0.08);
+            
+            --theme-jes: #9C27B0;
+            --theme-jes-light: rgba(156, 39, 176, 0.08);
+            
+            --theme-grd: #D4AF37;
+            --theme-grd-light: rgba(212, 175, 55, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            background-image: radial-gradient(circle at 50% 50%, #2a2a2a 0%, #111 100%);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            padding: 50px 20px;
+            min-height: 100vh;
+        }
+
+        .showcase-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .showcase-header h1 {
+            font-family: 'Cinzel', serif;
+            color: #fff;
+            font-size: 28px;
+            letter-spacing: 5px;
+            text-shadow: 0 4px 10px rgba(255,255,255,0.2);
+        }
+
+        .showcase-header p {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* -------------------------------------
+           STRUKTUR UTAMA KARTU (UNIFIED)
+        ------------------------------------- */
+        .card {
+            width: var(--w);
+            height: var(--h);
+            background: var(--paper-white);
+            border-radius: 2mm;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            cursor: pointer;
+            flex-shrink: 0;
+            background-image: var(--paper-texture);
+        }
+
+        .card:hover {
+            transform: translateY(-12px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.2) inset;
+            z-index: 10;
+        }
+
+        /* Layer Latar Belakang & SVG Sobekan */
+        .bg-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        svg.torn-paper {
+            filter: drop-shadow(0px -3px 4px var(--paper-shadow));
+        }
+        
+        .paper-fill {
+            fill: var(--paper-white);
+        }
+
+        /* Layer Konten Teks */
+        .content-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10;
+            padding: 3.5mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Memaksa seluruh elemen (header + teks) merapat ke bawah */
+            pointer-events: none;
+        }
+
+        /* Tipografi Standar Deck */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px solid #e0e0e0;
+            padding-bottom: 1mm;
+            margin-bottom: 1.5mm;
+        }
+
+        .serial { font-family: 'Special Elite', monospace; font-size: 5pt; font-weight: bold; letter-spacing: 1px; }
+        .faction { font-family: 'Cinzel', serif; font-size: 4.5pt; font-weight: 900; letter-spacing: 2px; color: #888; }
+        
+        .text-wrap { 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        .title-en { font-family: 'Montserrat', sans-serif; font-size: 5pt; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5mm; }
+        .title-id { color: #111; font-family: 'Cinzel', serif; font-size: 15pt; font-weight: 900; line-height: 0.9; margin-bottom: 1.5mm; } /* Sedikit dirapatkan */
+        
+        /* QUOTE DAN ABILITY DIBESARKAN */
+        .quote { 
+            color: #111; 
+            padding: 1.5mm 2.5mm; 
+            border-radius: 1mm; 
+            text-align: center; 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 6pt; /* Jauh lebih besar */
+            font-weight: 700; 
+            font-style: italic; 
+            margin-bottom: 1.5mm; /* Sedikit dirapatkan */
+            line-height: 1.35;
+        }
+        
+        .ability { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 6.5pt; /* Jauh lebih besar */
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 1mm; 
+        }
+        
+        .desc { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 5.5pt; /* Sedikit disesuaikan */
+            line-height: 1.4; 
+            text-align: justify; 
+            font-weight: 500; 
+            color: #333; 
+        }
+
+        /* -------------------------------------
+           WARNA & TEMA KHUSUS TIAP KARTU
+        ------------------------------------- */
+        
+        /* 1. SEER */
+        .c-seer .bg-layer { background: linear-gradient(180deg, #051024, #0D47A1, #1565C0); }
+        .c-seer .serial, .c-seer .title-en, .c-seer .ability, .c-seer .desc b { color: var(--theme-seer); }
+        .c-seer .quote { background: var(--theme-seer-light); border-left: 2px solid var(--theme-seer); }
+
+        /* 2. HUNTER */
+        .c-hunt .bg-layer { background: linear-gradient(180deg, #3E2723, #5D4037, #8D6E63); }
+        .c-hunt .serial, .c-hunt .title-en, .c-hunt .ability, .c-hunt .desc b { color: var(--theme-hunt); }
+        .c-hunt .quote { background: var(--theme-hunt-light); border-left: 2px solid var(--theme-hunt); }
+
+        /* 3. WEREWOLF */
+        .c-ww .bg-layer { background: radial-gradient(circle at 50% 0%, #3b0000, #111); }
+        .c-ww .serial, .c-ww .title-en, .c-ww .ability, .c-ww .desc b { color: var(--theme-ww); }
+        .c-ww .quote { background: var(--theme-ww-light); border-left: 2px solid var(--theme-ww); }
+
+        /* 4. JESTER */
+        .c-jes .bg-layer { background: repeating-linear-gradient(45deg, #2d0b36, #2d0b36 4mm, #082b18 4mm, #082b18 8mm); }
+        .c-jes .serial, .c-jes .title-en, .c-jes .ability, .c-jes .desc b { color: var(--theme-jes); }
+        .c-jes .quote { background: var(--theme-jes-light); border-left: 2px solid var(--theme-jes); }
+
+        /* 5. GUARDIAN */
+        .c-grd .bg-layer { background: radial-gradient(circle at 50% 10%, var(--theme-grd), #4a3600); }
+        .c-grd .serial, .c-grd .title-en, .c-grd .ability, .c-grd .desc b { color: var(--theme-grd); }
+        .c-grd .quote { background: var(--theme-grd-light); border-left: 2px solid var(--theme-grd); }
+
+        /* 6. CARD BACK (Belakang) */
+        .c-back .bg-layer { background: linear-gradient(180deg, #111, #222, #000); }
+        .c-back .content-layer { justify-content: flex-end; align-items: center; padding-bottom: 8mm; }
+        .c-back .logo-title { font-family: 'Cinzel', serif; font-size: 16pt; font-weight: 900; color: #111; letter-spacing: 1px; text-align: center; }
+        .c-back .logo-subtitle { font-family: 'Montserrat', sans-serif; font-size: 4.5pt; font-weight: 800; letter-spacing: 3px; color: #777; text-align: center; margin-top: 1.5mm; }
+        .c-back .logo-icon { font-size: 10pt; color: #ccc; margin-top: 3mm; }
+        
+    </style>
+</head>
+<body>
+
+    <div class="showcase-header">
+        <h1>UNIFIED TORN PAPER DECK</h1>
+        <p>Teks Lebih Besar & Lebih Tinggi. Bentuk Sobekan Unik Per Peran.</p>
+    </div>
+
+    <!-- 1. KARTU SEER -->
+    <div class="card c-seer">
+        <div class="bg-layer">
+            <svg viewBox="0 0 100 157" width="100%" height="100%" class="torn-paper">
+                <!-- Ilustrasi Seer -->
+                <g transform="translate(50, 28)">
+                    <path d="M -20 0 Q 0 -15 20 0 Q 0 15 -20 0 Z" fill="rgba(255,255,255,0.05)" stroke="#FFF" stroke-width="1.5"/>
+                    <circle cx="0" cy="0" r="6" fill="#64B5F6"/>
+                    <circle cx="0" cy="0" r="2.5" fill="#0D47A1"/>
+                    <path d="M 0 -12 L 0 -18 M 0 12 L 0 18 M -12 -8 L -16 -12 M 12 -8 L 16 -12" stroke="#FFF" stroke-width="1" stroke-linecap="round"/>
+                    <circle cx="-12" cy="8" r="1" fill="#FFF"/>
+                    <circle cx="15" cy="5" r="1.5" fill="#FFF"/>
+                </g>
+                <!-- Sobekan Kertas: SEER (Lengkungan Gelombang Mistis) -->
+                <path class="paper-fill" d="
+                    M 0 157 L 100 157 L 100 50 
+                    C 80 65, 60 35, 50 50 
+                    C 30 65, 10 45, 0 60 Z
+                "/>
+                <path d="M 100 50 C 80 65, 60 35, 50 50 C 30 65, 10 45, 0 60" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+            </svg>
+        </div>
+        
+        <div class="content-layer">
+            <div class="header">
+                <div class="serial">SR·01</div>
+                <div class="faction">ALLIANCE</div>
+            </div>
+            <div class="text-wrap">
+                <div class="title-en">The Seer</div>
+                <div class="title-id">Penerawang</div>
+                <div class="quote">"Kebohongan mereka tersembunyi rapi di balik senyum, namun tak ada yang luput dari rasi bintang."</div>
+                <div class="ability">Mata Batin (Malam)</div>
+                <div class="desc">Buka matamu tiap malam dan <b>pilih 1 pemain</b>. Alam semesta akan mengungkap identitas aslinya (Serigala / Bukan). Bimbing warga menuju kemenangan.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. KARTU HUNTER -->
+    <div class="card c-hunt">
+        <div class="bg-layer">
+            <svg viewBox="0 0 100 157" width="100%" height="100%" class="torn-paper">
+                <!-- Ilustrasi Hunter -->
+                <g transform="translate(50, 30)">
+                    <path d="M -22 5 Q 0 -8 22 5" fill="none" stroke="#FFB300" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="0" y1="-12" x2="0" y2="18" stroke="#FFB300" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="0" y1="12" x2="0" y2="-18" stroke="#E65100" stroke-width="1.5"/>
+                    <polygon points="0,-22 -4,-12 4,-12" fill="#E65100"/>
+                    <line x1="0" y1="-12" x2="-22" y2="5" stroke="#FFF" stroke-width="0.5" stroke-dasharray="1 1"/>
+                    <line x1="0" y1="-12" x2="22" y2="5" stroke="#FFF" stroke-width="0.5" stroke-dasharray="1 1"/>
+                </g>
+                <!-- Sobekan Kertas: HUNTER (Bergerigi Tajam & Kasar) -->
+                <path class="paper-fill" d="
+                    M 0 157 L 100 157 L 100 50 
+                    L 92 60 L 80 47 L 68 61 L 55 50 
+                    L 40 63 L 25 51 L 12 60 L 0 53 Z
+                "/>
+                <path d="M 100 50 L 92 60 L 80 47 L 68 61 L 55 50 L 40 63 L 25 51 L 12 60 L 0 53" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        
+        <div class="content-layer">
+            <div class="header">
+                <div class="serial">HN·99</div>
+                <div class="faction">ALLIANCE</div>
+            </div>
+            <div class="text-wrap">
+                <div class="title-en">The Hunter</div>
+                <div class="title-id">Pemburu</div>
+                <div class="quote">"Kematianku bukanlah akhir, melainkan pelatuk yang akan menarikmu bersamaku menuju neraka."</div>
+                <div class="ability">Tembakan Terakhir (Pasif)</div>
+                <div class="desc">Jika terbunuh oleh Serigala atau dieksekusi warga, kamu memiliki 1 detik terakhir untuk <b>menembak mati 1 pemain lain</b> agar ikut mati bersamamu.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. KARTU WEREWOLF -->
+    <div class="card c-ww">
+        <div class="bg-layer">
+            <svg viewBox="0 0 100 157" width="100%" height="100%" class="torn-paper">
+                <!-- Ilustrasi Werewolf -->
+                <g transform="translate(50, 28)">
+                    <!-- Cakaran Darah di Belakang -->
+                    <path d="M -18 -15 L -8 15 M 0 -15 L 10 15 M 18 -15 L 28 15" stroke="rgba(183, 28, 28, 0.4)" stroke-width="4" stroke-linecap="round"/>
+                    <!-- Mata Serigala -->
+                    <path d="M -15 -2 Q -8 -8 -2 0 Q -8 2 -15 -2 Z" fill="#FF0000"/>
+                    <path d="M 15 -2 Q 8 -8 2 0 Q 8 2 15 -2 Z" fill="#FF0000"/>
+                    <circle cx="-6" cy="-2" r="1.5" fill="#FFF"/>
+                    <circle cx="6" cy="-2" r="1.5" fill="#FFF"/>
+                </g>
+                <!-- Sobekan Kertas: WEREWOLF (3 Bekas Cakaran Ke Bawah Kertas) -->
+                <path class="paper-fill" d="
+                    M 0 157 L 100 157 L 100 45 
+                    L 85 45 L 80 63 L 75 45 
+                    L 55 45 L 50 63 L 45 45 
+                    L 25 45 L 20 63 L 15 45 L 0 45 Z
+                "/>
+                <path d="M 100 45 L 85 45 L 80 63 L 75 45 L 55 45 L 50 63 L 45 45 L 25 45 L 20 63 L 15 45 L 0 45" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        
+        <div class="content-layer">
+            <div class="header">
+                <div class="serial">WW·06</div>
+                <div class="faction">SHADOWS</div>
+            </div>
+            <div class="text-wrap">
+                <div class="title-en">Werewolf</div>
+                <div class="title-id">Serigala</div>
+                <div class="quote">"Kalian pikir fajar membawa keselamatan? Bau anyir ketakutan kalian baru saja membangkitkan selera kami."</div>
+                <div class="ability">Mangsa Malam (Malam)</div>
+                <div class="desc">Bangun setiap malam bersama klan serigala. Sepakati dan <b>pilih 1 korban</b> untuk dicabik-cabik. Berbaurlah di siang hari, kalian menang jika sisa serigala menyamai warga.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. KARTU JESTER -->
+    <div class="card c-jes">
+        <div class="bg-layer">
+            <svg viewBox="0 0 100 157" width="100%" height="100%" class="torn-paper">
+                <!-- Ilustrasi Jester -->
+                <g transform="translate(50, 30) rotate(10)">
+                    <path d="M 0 -15 C -15 -15 -15 0 -15 10 L -5 20 L 0 15 Z" fill="#111"/>
+                    <path d="M 0 -15 C 15 -15 15 0 15 10 L 5 20 L 0 15 Z" fill="#FFF"/>
+                    <circle cx="-6" cy="-2" r="3.5" fill="#00E676"/>
+                    <path d="M 3 -5 L 9 1 L 3 1 Z" fill="#9C27B0"/>
+                    <path d="M -10 10 Q 0 18 10 10" fill="none" stroke="#9C27B0" stroke-width="2" stroke-linecap="round"/>
+                </g>
+                <!-- Sobekan Kertas: JESTER (Asimetris, Miring, Chaos) -->
+                <path class="paper-fill" d="
+                    M 0 157 L 100 157 L 100 63 
+                    L 75 40 L 60 60 L 35 35 
+                    L 20 63 L 0 45 Z
+                "/>
+                <path d="M 100 63 L 75 40 L 60 60 L 35 35 L 20 63 L 0 45" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-linejoin="bevel"/>
+            </svg>
+        </div>
+        
+        <div class="content-layer">
+            <div class="header">
+                <div class="serial">JS·??</div>
+                <div class="faction">NEUTRAL</div>
+            </div>
+            <div class="text-wrap">
+                <div class="title-en">The Jester</div>
+                <div class="title-id">Badut Gila</div>
+                <div class="quote">"Eksekusi aku! Kumohon! Tali gantungan itu terlihat seperti ayunan yang sangat menyenangkan untuk leherku!"</div>
+                <div class="ability">Target Mati (Siang)</div>
+                <div class="desc">Kamu tidak memihak siapapun. Bertingkahlah mencurigakan. Kamu akan <b>menang mutlak sendirian</b> jika berhasil memprovokasi warga untuk memvoting mati dirimu di siang hari.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. KARTU GUARDIAN -->
+    <div class="card c-grd">
+        <div class="bg-layer">
+            <svg viewBox="0 0 100 157" width="100%" height="100%" class="torn-paper">
+                <!-- Ilustrasi Guardian -->
+                <g transform="translate(50, 30)">
+                    <path d="M 0 -15 L 15 -5 L 15 8 C 15 18 0 26 0 26 C 0 26 -15 18 -15 8 L -15 -5 Z" fill="#D4AF37" stroke="#FFF" stroke-width="1.5" stroke-linejoin="round"/>
+                    <line x1="0" y1="-8" x2="0" y2="16" stroke="#FFF" stroke-width="1.5"/>
+                    <line x1="-8" y1="4" x2="8" y2="4" stroke="#FFF" stroke-width="1.5"/>
+                </g>
+                <!-- Sobekan Kertas: GUARDIAN (Simetris Benteng/Perisai) -->
+                <path class="paper-fill" d="
+                    M 0 157 L 100 157 L 100 55 
+                    L 75 55 L 65 43 L 35 43 L 25 55 L 0 55 Z
+                "/>
+                <path d="M 100 55 L 75 55 L 65 43 L 35 43 L 25 55 L 0 55" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-linejoin="miter"/>
+            </svg>
+        </div>
+        
+        <div class="content-layer">
+            <div class="header">
+                <div class="serial">GD·77</div>
+                <div class="faction">ALLIANCE</div>
+            </div>
+            <div class="text-wrap">
+                <div class="title-en">The Guardian</div>
+                <div class="title-id">Pelindung</div>
+                <div class="quote">"Berlindunglah di balik punggungku. Selama aku masih bernapas, taring mereka takkan bisa menyentuhmu."</div>
+                <div class="ability">Aegis Suci (Malam)</div>
+                <div class="desc">Bangun tiap malam dan <b>pilih 1 pemain</b> untuk dilindungi. Jika serigala menyerangnya, ia takkan mati. <i>Kamu tidak bisa melindungi orang yang sama 2 malam berturut-turut.</i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. KARTU BELAKANG (CARD BACK) -->
+    <div class="card c-back">
+        <div class="bg-layer">
+            <svg viewBox="0 0 100 157" width="100%" height="100%" class="torn-paper">
+                <!-- Ilustrasi Bulan & Serigala Melolong -->
+                <g transform="translate(50, 32)">
+                    <circle cx="0" cy="5" r="16" fill="#E0E0E0"/>
+                    <path d="M 12 25 L 8 10 L 10 0 L 2 -12 L -5 -8 L -2 -2 L -15 -5 L -10 5 L -5 12 L -8 25 Z" fill="#111"/>
+                </g>
+                <!-- Sobekan Kertas: CARD BACK (Melengkung Rapi & Rapuh) -->
+                <path class="paper-fill" d="
+                    M 0 157 L 100 157 L 100 60 
+                    Q 50 40 0 60 Z
+                "/>
+                <path d="M 100 60 Q 50 40 0 60" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+            </svg>
+        </div>
+        
+        <div class="content-layer">
+            <div class="text-wrap" style="margin-bottom: 0;">
+                <div class="logo-title">WEREWOLF</div>
+                <div class="logo-subtitle">TORN PAPER DECK</div>
+                <div class="logo-icon">✦ ✦ ✦</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
