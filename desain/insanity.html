@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nightmare Asylum - Insanity Deck (Jester Layout Base)</title>
+    
+    <!-- Kombinasi Font Karakter untuk Setiap Role -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Creepster&family=Special+Elite&family=Cinzel:wght@800&family=Courier+Prime:wght@400;700&family=Oswald:wght@900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Dimensi Kartu Fisik Presisi (Eropa Standard) */
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #fff;
+            font-family: 'Courier Prime', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-family: 'Oswald', sans-serif;
+            color: #00ff66;
+            font-size: 2.5rem;
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 0 #ff00ff;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .card-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 35px;
+            justify-content: center;
+            max-width: 1400px;
+        }
+
+        /* --- BASE CARD SETUP (JESTER LAYOUT) --- */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            border-radius: 4mm;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.15);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            user-select: none;
+            overflow: hidden;
+            flex-shrink: 0;
+            cursor: pointer;
+            padding: 2.5mm;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-15px) scale(1.05) rotate(2deg);
+            z-index: 10;
+        }
+
+        /* Latar Belakang & Efek Animasi Dasar */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            z-index: 0;
+        }
+        
+        .card > * { position: relative; z-index: 2; }
+
+        /* Komponen Struktur (Jester Style) */
+        .sticker {
+            padding: 0.8mm 1.5mm;
+            display: inline-block;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 900;
+            font-size: 5.5pt;
+            align-self: flex-start;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+            border: 1px solid #000;
+        }
+
+        .titles {
+            text-align: right;
+            margin-top: 0.5mm;
+            line-height: 0.9;
+        }
+
+        .title-en {
+            font-size: 16pt;
+            letter-spacing: 1px;
+            margin-bottom: -1mm;
+        }
+
+        .title-id {
+            font-family: 'Courier Prime', monospace;
+            font-size: 5.5pt;
+            font-weight: 700;
+        }
+
+        .art {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 0;
+            margin: 1mm 0;
+        }
+
+        .art svg {
+            width: 100%; height: 100%;
+            max-height: 100%;
+        }
+
+        .mad-box {
+            padding: 1.5mm;
+            border-radius: 2mm;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+            backdrop-filter: blur(3px);
+            margin-top: auto;
+            width: 96%;
+            align-self: center;
+        }
+
+        .quote {
+            font-family: 'Caveat', cursive;
+            font-size: 8.5pt;
+            line-height: 1.1;
+            margin-bottom: 1mm;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.8);
+        }
+
+        .ability {
+            font-size: 4.8pt;
+            font-weight: bold;
+            line-height: 1.15;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.8);
+        }
+
+
+        /* =========================================================
+           1. JESTER (CHAOS) - TOXIC PSYCHEDELIC
+           ========================================================= */
+        .c-jester { background: radial-gradient(circle at 50% 50%, #3a0066 0%, #1a0033 100%); }
+        .c-jester::before {
+            background: repeating-conic-gradient(from 0deg, transparent 0deg 15deg, rgba(0, 255, 100, 0.08) 15deg 30deg);
+            animation: spin 30s linear infinite;
+        }
+        .c-jester:hover { box-shadow: 0 25px 50px rgba(0,255,102,0.3), 0 0 0 2px #00ff66; }
+        
+        .c-jester .sticker { background: #00ff66; color: #1a0033; transform: rotate(-8deg); box-shadow: 1px 1px 0 #ff00ff; }
+        .c-jester .titles { transform: rotate(4deg); }
+        .c-jester .title-en { font-family: 'Caveat', cursive; color: #ff00ff; text-shadow: 2px 2px 0 #00ff66; font-size: 20pt; }
+        .c-jester .title-id { color: #fff; }
+        .c-jester .art svg { filter: drop-shadow(0 0 6px #00ff66); }
+        .c-jester .mad-box { background: rgba(255,0,255,0.15); border: 1px solid #00ff66; transform: rotate(-3deg); }
+        .c-jester .quote { color: #00ff66; }
+        .c-jester .ability { color: #fff; }
+
+        /* =========================================================
+           2. SEER (ALLIANCE) - NEON MYSTIC
+           ========================================================= */
+        .c-seer { background: radial-gradient(circle at 50% 50%, #001f3f 0%, #000814 100%); }
+        .c-seer::before {
+            background: repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent 4mm, rgba(0, 255, 255, 0.1) 4.5mm, transparent 5mm);
+            animation: pulse-ring 8s ease-in-out infinite alternate;
+        }
+        .c-seer:hover { box-shadow: 0 25px 50px rgba(0,255,255,0.3), 0 0 0 2px #00ffff; }
+
+        .c-seer .sticker { background: #00ffff; color: #000814; transform: rotate(5deg); box-shadow: 1px 1px 0 #ffd700; }
+        .c-seer .titles { transform: rotate(-3deg); }
+        .c-seer .title-en { font-family: 'Cinzel', serif; color: #ffd700; text-shadow: 2px 2px 0 #00ffff; font-size: 16pt; }
+        .c-seer .title-id { color: #fff; }
+        .c-seer .art svg { filter: drop-shadow(0 0 6px #00ffff); }
+        .c-seer .mad-box { background: rgba(0,255,255,0.1); border: 1px solid #ffd700; transform: rotate(2deg); }
+        .c-seer .quote { color: #ffd700; }
+        .c-seer .ability { color: #fff; }
+
+        /* =========================================================
+           3. HUNTER (ALLIANCE) - BIOHAZARD GRUNGE
+           ========================================================= */
+        .c-hunter { background: radial-gradient(circle at 50% 50%, #2b331f 0%, #0d120a 100%); }
+        .c-hunter::before {
+            background: repeating-linear-gradient(45deg, transparent, transparent 2mm, rgba(255, 85, 0, 0.08) 2mm, rgba(255, 85, 0, 0.08) 4mm);
+            animation: slide-bg 20s linear infinite;
+        }
+        .c-hunter:hover { box-shadow: 0 25px 50px rgba(255,85,0,0.3), 0 0 0 2px #ff5500; }
+
+        .c-hunter .sticker { background: #ff5500; color: #0d120a; transform: rotate(-4deg); box-shadow: 1px 1px 0 #ccff00; }
+        .c-hunter .titles { transform: rotate(5deg); }
+        .c-hunter .title-en { font-family: 'Special Elite', monospace; color: #ccff00; text-shadow: 2px 2px 0 #ff5500; font-size: 16pt; }
+        .c-hunter .title-id { color: #fff; }
+        .c-hunter .art svg { filter: drop-shadow(0 0 6px #ff5500); }
+        .c-hunter .mad-box { background: rgba(204,255,0,0.08); border: 1px dashed #ff5500; transform: rotate(-4deg); }
+        .c-hunter .quote { color: #ccff00; }
+        .c-hunter .ability { color: #fff; }
+
+        /* =========================================================
+           4. WEREWOLF (SHADOW) - CARNAGE RED
+           ========================================================= */
+        .c-werewolf { background: radial-gradient(circle at 50% 50%, #330000 0%, #0a0000 100%); }
+        .c-werewolf::before {
+            background: repeating-linear-gradient(-45deg, transparent, transparent 10mm, rgba(255, 0, 0, 0.06) 10.5mm, transparent 11mm);
+            animation: slash-shake 0.2s linear infinite alternate;
+        }
+        .c-werewolf:hover { box-shadow: 0 25px 50px rgba(255,0,0,0.4), 0 0 0 2px #ff0000; }
+
+        .c-werewolf .sticker { background: #ff0000; color: #fff; transform: rotate(6deg); box-shadow: 2px 2px 0 #660000; border: 1px solid #fff; }
+        .c-werewolf .titles { transform: rotate(-6deg); }
+        .c-werewolf .title-en { font-family: 'Creepster', cursive; color: #fff; text-shadow: 3px 3px 0 #ff0000; font-size: 20pt; }
+        .c-werewolf .title-id { color: #ff9999; }
+        .c-werewolf .art svg { filter: drop-shadow(0 0 5px #ff0000); transform: scale(1.15); }
+        .c-werewolf .mad-box { background: rgba(255,0,0,0.15); border-left: 3px solid #ff0000; border-right: 3px solid #ff0000; transform: rotate(3deg); }
+        .c-werewolf .quote { color: #ff9999; }
+        .c-werewolf .ability { color: #fff; }
+
+        /* =========================================================
+           5. CARD BACK (ASYLUM) - OBSIDIAN GLITCH
+           ========================================================= */
+        .c-back { background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%); }
+        .c-back::before {
+            background: repeating-conic-gradient(from 45deg, transparent 0deg 90deg, rgba(255, 255, 255, 0.03) 90deg 180deg);
+            animation: spin 60s linear infinite reverse;
+        }
+        .c-back:hover { box-shadow: 0 25px 50px rgba(255,255,255,0.2), 0 0 0 2px #fff; }
+
+        .c-back .sticker { background: #fff; color: #000; transform: rotate(-2deg); box-shadow: 1px 1px 0 #555; }
+        .c-back .titles { transform: rotate(2deg); margin-top: 10mm; }
+        .c-back .title-en { font-family: 'Oswald', sans-serif; color: #222; text-shadow: 1px 1px 0 #fff; font-size: 18pt; }
+        .c-back .title-id { color: #aaa; }
+        .c-back .art svg { filter: drop-shadow(0 0 5px #fff); }
+        .c-back .mad-box { background: rgba(255,255,255,0.05); border: 1px solid #555; transform: rotate(-1deg); text-align: center; }
+        .c-back .quote { color: #fff; font-size: 9pt; letter-spacing: 2px; font-family: 'Oswald', sans-serif;}
+
+        /* ANIMATIONS */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
+        @keyframes slide-bg { 100% { transform: translateY(50px) translateX(50px); } }
+        @keyframes slash-shake { 0% { transform: translateX(-1px) translateY(1px); } 100% { transform: translateX(1px) translateY(-1px); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>INSANITY DECK</h1>
+        <p>JESTER LAYOUT EDITION - 5 UNIQUE ROLES</p>
+    </div>
+
+    <div class="card-showcase">
+
+        <!-- 1. JESTER (CHAOS) -->
+        <div class="card c-jester">
+            <div class="sticker">DOC: CHS-01</div>
+            <div class="titles">
+                <div class="title-en">JESTER</div>
+                <div class="title-id">SANG BADUT</div>
+            </div>
+            <div class="art">
+                <svg viewBox="0 0 100 100">
+                    <!-- Spiral background -->
+                    <path d="M 50 50 Q 80 10 90 50 T 50 90 T 10 50 T 50 10" fill="none" stroke="#ff00ff" stroke-width="2" opacity="0.6"/>
+                    <path d="M 50 50 Q 70 20 80 50 T 50 80 T 20 50 T 50 20" fill="none" stroke="#00ff66" stroke-width="2" opacity="0.6"/>
+                    <!-- Topeng Meleleh / Miring -->
+                    <path d="M 25 30 C 10 80 40 90 50 95 C 70 90 90 70 80 25 C 70 10 30 10 25 30 Z" fill="#1a0033" stroke="#00ff66" stroke-width="3"/>
+                    <!-- Mata Kiri (Bintang Gila) -->
+                    <polygon points="40,35 43,42 50,45 43,48 40,55 37,48 30,45 37,42" fill="#ff00ff"/>
+                    <!-- Mata Kanan (Spiral) -->
+                    <circle cx="70" cy="40" r="10" fill="none" stroke="#00ff66" stroke-width="2.5"/>
+                    <circle cx="70" cy="40" r="2.5" fill="#ff00ff"/>
+                    <!-- Senyum dijahit vertikal memanjang -->
+                    <path d="M 20 70 Q 50 105 85 60" fill="none" stroke="#00ff66" stroke-width="3"/>
+                    <line x1="30" y1="65" x2="35" y2="82" stroke="#ff00ff" stroke-width="2.5"/>
+                    <line x1="50" y1="78" x2="52" y2="95" stroke="#ff00ff" stroke-width="2.5"/>
+                    <line x1="70" y1="65" x2="68" y2="82" stroke="#ff00ff" stroke-width="2.5"/>
+                    <!-- Air mata / Tetesan neon -->
+                    <circle cx="35" cy="60" r="2" fill="#00ff66"/>
+                    <path d="M 35 60 L 37 68 A 2 2 0 0 1 33 68 Z" fill="#00ff66"/>
+                </svg>
+            </div>
+            <div class="mad-box">
+                <div class="quote">"Gantung aku! HAHAHA! Panggung ini akan runtuh bersamaku!"</div>
+                <div class="ability">KEMAMPUAN: MENANG MUTLAK sendiri JIKA kamu berhasil dipidana gantung oleh massa di pengadilan siang hari.</div>
+            </div>
+        </div>
+
+        <!-- 2. SEER (ALLIANCE) -->
+        <div class="card c-seer">
+            <div class="sticker">DOC: ALL-02</div>
+            <div class="titles">
+                <div class="title-en">SEER</div>
+                <div class="title-id">SANG PERAMAL</div>
+            </div>
+            <div class="art">
+                <svg viewBox="0 0 100 100">
+                    <!-- Geometri Kosmik / Third Eye Berantakan -->
+                    <polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="#00ffff" stroke-width="1.5" stroke-dasharray="4,4"/>
+                    <polygon points="50,20 80,50 50,80 20,50" fill="rgba(0,255,255,0.05)" stroke="#ffd700" stroke-width="2"/>
+                    <!-- Tangan Rangka Mistis memegang bola mata -->
+                    <path d="M 35 95 L 45 65 L 40 60" fill="none" stroke="#00ffff" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M 65 95 L 55 65 L 60 60" fill="none" stroke="#00ffff" stroke-width="2" stroke-linecap="round"/>
+                    <!-- Mata Ketiga yang pecah -->
+                    <path d="M 25 50 Q 50 30 75 50 Q 50 70 25 50 Z" fill="#000814" stroke="#ffd700" stroke-width="3"/>
+                    <circle cx="50" cy="50" r="12" fill="none" stroke="#00ffff" stroke-width="2"/>
+                    <circle cx="50" cy="50" r="5" fill="#ffd700"/>
+                    <path d="M 50 50 L 55 30" stroke="#00ffff" stroke-width="1.5"/> <!-- Retakan -->
+                    <path d="M 50 50 L 70 60" stroke="#00ffff" stroke-width="1.5"/>
+                    <path d="M 50 50 L 35 65" stroke="#00ffff" stroke-width="1.5"/>
+                    <!-- Bintang/Konstelasi -->
+                    <circle cx="20" cy="20" r="1.5" fill="#ffd700"/>
+                    <circle cx="80" cy="25" r="2" fill="#00ffff"/>
+                    <circle cx="75" cy="80" r="1.5" fill="#ffd700"/>
+                    <line x1="20" y1="20" x2="50" y2="50" stroke="#00ffff" stroke-width="0.5" opacity="0.5"/>
+                </svg>
+            </div>
+            <div class="mad-box">
+                <div class="quote">"Aku melihat masa lalumu yang membusuk... Tak ada rahasia di rumah gila ini!"</div>
+                <div class="ability">KEMAMPUAN: Setiap malam, tatap jiwa 1 pasien. Kebenaran faksi mereka (Serigala/Bukan) akan terungkap padamu.</div>
+            </div>
+        </div>
+
+        <!-- 3. HUNTER (ALLIANCE) -->
+        <div class="card c-hunter">
+            <div class="sticker">DOC: ALL-05</div>
+            <div class="titles">
+                <div class="title-en">HUNTER</div>
+                <div class="title-id">SANG PEMBURU</div>
+            </div>
+            <div class="art">
+                <svg viewBox="0 0 100 100">
+                    <!-- Target Radar Gila -->
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#ccff00" stroke-width="1" stroke-dasharray="10,5" opacity="0.5"/>
+                    <circle cx="50" cy="50" r="30" fill="none" stroke="#ff5500" stroke-width="2"/>
+                    <!-- Perangkap Beruang Mekanis / Rahang -->
+                    <path d="M 20 50 L 30 25 L 40 50 L 50 20 L 60 50 L 70 25 L 80 50" fill="none" stroke="#ccff00" stroke-width="3" stroke-linejoin="round"/>
+                    <path d="M 20 50 L 30 75 L 40 50 L 50 80 L 60 50 L 70 75 L 80 50" fill="none" stroke="#ccff00" stroke-width="3" stroke-linejoin="round"/>
+                    <ellipse cx="50" cy="50" rx="35" ry="5" fill="#0d120a" stroke="#ff5500" stroke-width="2"/>
+                    <!-- Anak Panah Neon Menembus Tengah -->
+                    <line x1="10" y1="80" x2="90" y2="20" stroke="#ff5500" stroke-width="4" stroke-linecap="round"/>
+                    <polygon points="95,15 85,15 90,25" fill="#ccff00"/>
+                    <!-- Darah/Cairan Toxic -->
+                    <path d="M 80 30 L 82 40 A 2 2 0 0 1 78 40 Z" fill="#ccff00"/>
+                    <path d="M 45 55 L 48 70 A 3 3 0 0 1 42 70 Z" fill="#ff5500"/>
+                </svg>
+            </div>
+            <div class="mad-box">
+                <div class="quote">"Tertawalah, monster... Karena jika nafasku terhenti, kau akan ikut terseret ke liang lahat!"</div>
+                <div class="ability">KEMAMPUAN: Jika terbunuh (dimangsa/divoting), seret mati 1 pemain manapun bersamamu sebelum ajal menjemput.</div>
+            </div>
+        </div>
+
+        <!-- 4. WEREWOLF (SHADOW) -->
+        <div class="card c-werewolf">
+            <div class="sticker">DOC: SHD-01</div>
+            <div class="titles">
+                <div class="title-en">WEREWOLF</div>
+                <div class="title-id">SANG SERIGALA</div>
+            </div>
+            <div class="art">
+                <svg viewBox="0 0 100 100">
+                    <!-- Siluet Wajah Serigala Abstrak Ganas -->
+                    <polygon points="10,20 30,35 40,10" fill="none" stroke="#ff0000" stroke-width="2"/> <!-- Telinga Kiri -->
+                    <polygon points="90,20 70,35 60,10" fill="none" stroke="#ff0000" stroke-width="2"/> <!-- Telinga Kanan -->
+                    
+                    <!-- Rahang / Mulut Menganga -->
+                    <path d="M 20 50 Q 50 30 80 50 Q 90 90 50 80 Q 10 90 20 50 Z" fill="#0a0000" stroke="#ff0000" stroke-width="3"/>
+                    
+                    <!-- Gigi Tajam Zig-Zag -->
+                    <path d="M 25 55 L 35 70 L 45 55 L 55 75 L 65 55 L 75 70 L 80 55" fill="none" stroke="#ff9999" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M 30 80 L 40 65 L 50 80 L 60 65 L 70 80" fill="none" stroke="#ff9999" stroke-width="2" stroke-linejoin="round"/>
+                    
+                    <!-- Mata Merah Menyala -->
+                    <path d="M 30 40 L 45 45 L 35 48 Z" fill="#ff0000"/>
+                    <path d="M 70 40 L 55 45 L 65 48 Z" fill="#ff0000"/>
+                    <circle cx="40" cy="44" r="1.5" fill="#fff"/>
+                    <circle cx="60" cy="44" r="1.5" fill="#fff"/>
+
+                    <!-- Cakaran / Luka Robek di latar -->
+                    <path d="M 0 10 Q 50 50 100 90" fill="none" stroke="#ff0000" stroke-width="1.5" stroke-dasharray="10,10" opacity="0.5"/>
+                    <path d="M 10 0 Q 50 50 90 100" fill="none" stroke="#ff0000" stroke-width="1.5" stroke-dasharray="10,10" opacity="0.5"/>
+                </svg>
+            </div>
+            <div class="mad-box">
+                <div class="quote">"Dinding tebal ini tak bisa menahan lapar kami. Teriaklah, itu hanya bumbu penyedap dagingmu!"</div>
+                <div class="ability">KEMAMPUAN: Bangun bersama klan Serigala. Sepakati 1 daging segar untuk dicabik mati tiap malamnya.</div>
+            </div>
+        </div>
+
+        <!-- 5. CARD BACK (ASYLUM) -->
+        <div class="card c-back">
+            <div class="sticker">DOC: ZERO</div>
+            <div class="titles">
+                <div class="title-en">ASYLUM</div>
+                <div class="title-id">TRUST NO ONE</div>
+            </div>
+            <div class="art">
+                <svg viewBox="0 0 100 100">
+                    <!-- Labyrinth Mata Misterius (Hitam & Putih) -->
+                    <!-- Garis batas luar -->
+                    <rect x="10" y="10" width="80" height="80" fill="none" stroke="#fff" stroke-width="1"/>
+                    <rect x="15" y="15" width="70" height="70" fill="none" stroke="#555" stroke-width="2" stroke-dasharray="5,5"/>
+                    
+                    <!-- Logo Fraktal RSJ / Jaring Laba-laba Asimetris -->
+                    <path d="M 50 15 L 85 50 L 50 85 L 15 50 Z" fill="none" stroke="#fff" stroke-width="2"/>
+                    <path d="M 50 25 L 75 50 L 50 75 L 25 50 Z" fill="none" stroke="#aaa" stroke-width="1.5"/>
+                    <path d="M 50 35 L 65 50 L 50 65 L 35 50 Z" fill="#fff"/>
+                    
+                    <!-- Mata Hitam Inti -->
+                    <ellipse cx="50" cy="50" rx="10" ry="5" fill="#000"/>
+                    <circle cx="50" cy="50" r="2.5" fill="#fff"/>
+                    
+                    <!-- Coretan "Gila" di dinding -->
+                    <path d="M 20 20 Q 30 10 40 25 T 30 40" fill="none" stroke="#555" stroke-width="1"/>
+                    <path d="M 80 80 Q 70 90 60 75 T 70 60" fill="none" stroke="#555" stroke-width="1"/>
+                    
+                    <!-- Titik Obat / Pil abstrak -->
+                    <circle cx="25" cy="25" r="2" fill="#fff"/>
+                    <circle cx="75" cy="75" r="2" fill="#fff"/>
+                    <circle cx="25" cy="75" r="2" fill="#fff"/>
+                    <circle cx="75" cy="25" r="2" fill="#fff"/>
+                </svg>
+            </div>
+            <div class="mad-box">
+                <div class="quote">NIGHTMARE ASYLUM DECK</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
