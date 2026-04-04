@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Psycho Asylum - Werewolf Deck</title>
+    <!-- Font Kombinasi: Mewah, Ketikan Lama, dan Gila -->
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Montserrat:ital,wght@0,500;0,700;0,800;0,900;1,700&family=Playfair+Display:ital,wght@0,900;1,900&family=Special+Elite&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Dimensi Kartu Cetak */
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+            
+            /* Warna Tema Psikopat tiap Faksi */
+            --c-mod: #2962FF;      /* Biru Royal (Sutradara/Puppet Master) */
+            --c-seer: #00B4D8;     /* Cyan Neon (Penerawang Maniak) */
+            --c-hunter: #FF6D00;   /* Oranye Terbakar (Pemburu Gila) */
+            --c-wolf: #D50000;     /* Merah Darah (Binatang Buas) */
+            --c-jest: #AA00FF;     /* Ungu Toksik (Si Badut Asli) */
+            --c-guard: #00C853;    /* Hijau Neon (Pelindung Posesif) */
+            --c-back: #FBC02D;     /* Emas Gelap (Belakang) */
+            
+            --dark-ink: #111111;
+            --paper: #FAFAFA;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #1a1a1a;
+            background-image: repeating-linear-gradient(45deg, #222 0, #222 2px, #1a1a1a 2px, #1a1a1a 8px);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .deck-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .deck-title h1 {
+            font-family: 'Creepster', cursive;
+            font-size: 38px;
+            color: #fff;
+            letter-spacing: 5px;
+            text-shadow: 3px 3px 0 var(--c-jest);
+            transform: rotate(-2deg);
+        }
+        .deck-title p {
+            font-family: 'Special Elite', monospace;
+            color: #ccc;
+            font-size: 13px;
+            margin-top: 10px;
+            background: #000;
+            display: inline-block;
+            padding: 5px 15px;
+            border: 1px dashed #fff;
+            transform: rotate(1deg);
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            max-width: 1400px;
+        }
+
+        /* ------------------------------------------------
+           KARTU DASAR (Efek Kertas Ditempel/Kolase)
+        ------------------------------------------------ */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background: var(--paper);
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 0 2px var(--dark-ink);
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-15px) scale(1.08) rotate(2deg);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.1);
+            z-index: 10;
+        }
+
+        /* Tipografi Umum */
+        .role-en { font-family: 'Playfair Display', serif; font-size: 16pt; font-weight: 900; line-height: 0.9; text-shadow: 2px 2px 0 var(--dark-ink); }
+        .role-id { font-family: 'Montserrat', sans-serif; font-size: 6.5pt; font-weight: 900; color: var(--dark-ink); background: #fff; padding: 0.5mm 1.5mm; border: 1.5px solid var(--dark-ink); display: inline-block;}
+        .quote { font-family: 'Special Elite', monospace; font-size: 6pt; color: var(--dark-ink); font-weight: bold; line-height: 1.2; background: rgba(255,255,255,0.9); padding: 1.5mm; border: 1.5px solid var(--dark-ink); box-shadow: 2px 2px 0 var(--theme-color);}
+        .desc { font-family: 'Montserrat', sans-serif; font-size: 5.5pt; color: var(--dark-ink); line-height: 1.35; font-weight: 700; background: #fff; padding: 2mm; box-shadow: -2px 3px 0 var(--theme-color); border: 1px solid var(--dark-ink);}
+
+        /* =========================================================
+           0. MODERATOR (Puppet Master)
+           Layout: Cenderung Tengah, Pola Jaring Pagar
+           ========================================================= */
+        .c-mod { --theme-color: var(--c-mod); background-color: var(--paper); border: 1.5mm solid var(--dark-ink); box-shadow: inset 0 0 0 1.5mm var(--c-mod);}
+        .c-mod::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(41, 98, 255, 0.15) 4px, rgba(41, 98, 255, 0.15) 5px), repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(41, 98, 255, 0.15) 4px, rgba(41, 98, 255, 0.15) 5px); z-index: 0; pointer-events: none;}
+        
+        .c-mod .serial { position: absolute; top: 2mm; left: 2mm; font-family: 'Special Elite', monospace; font-size: 6px; background: var(--c-mod); color: #fff; padding: 1mm 2mm; transform: rotate(-4deg); border: 1px solid var(--dark-ink); z-index: 5;}
+        .c-mod .faction { position: absolute; top: 12mm; right: -5mm; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 5.5px; color: var(--dark-ink); background: #fff; padding: 1.5mm 3mm; transform: rotate(90deg); border: 1.5px dashed var(--c-mod); z-index: 5; letter-spacing: 1px;}
+        
+        .c-mod .art { position: absolute; top: 5mm; left: 50%; transform: translateX(-50%) rotate(2deg); width: 33mm; height: 33mm; filter: drop-shadow(-3px 5px 0px rgba(41, 98, 255, 0.4)); z-index: 2;}
+        
+        .c-mod .text-container { position: absolute; bottom: 3mm; left: 3mm; right: 5mm; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; text-align: left;}
+        .c-mod .role-en { color: #fff; text-shadow: 2px 2px 0 var(--c-mod), -1px -1px 0 var(--dark-ink); margin-bottom: 1.5mm; transform: rotate(-1deg) scale(1.05); transform-origin: left;}
+        .c-mod .role-id { transform: rotate(1deg); margin-bottom: 2mm; box-shadow: 2px 2px 0 var(--c-mod);}
+        .c-mod .quote { transform: rotate(-1deg); margin-bottom: 1.5mm; width: 95%; background: #fff;}
+        .c-mod .desc { transform: rotate(0.5deg); border-top: 3px solid var(--c-mod); box-shadow: 3px 3px 0 rgba(0,0,0,0.1);}
+
+        /* =========================================================
+           1. SEER (Penerawang Maniak)
+           Layout: Cenderung ke Kiri, Pola Polkadot
+           ========================================================= */
+        .c-seer { --theme-color: var(--c-seer); background-image: radial-gradient(var(--c-seer) 1.5px, transparent 1.5px); background-size: 8px 8px; border: 2px dashed var(--c-seer); box-shadow: inset 0 0 15px rgba(0,180,216,0.3);}
+        
+        .c-seer .serial { position: absolute; top: 50%; right: -6mm; transform: translateY(-50%) rotate(90deg); font-family: 'Special Elite', monospace; font-size: 6px; background: var(--dark-ink); color: #fff; padding: 1mm 2mm; letter-spacing: 2px; z-index: 5;}
+        .c-seer .faction { position: absolute; top: 4mm; left: -2mm; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 5.5px; color: var(--dark-ink); background: var(--c-seer); padding: 1mm 3mm; transform: rotate(-12deg); border: 1px solid var(--dark-ink); box-shadow: 2px 2px 0 #fff; z-index: 5;}
+        
+        .c-seer .art { position: absolute; top: 2mm; right: 4mm; width: 32mm; height: 32mm; transform: rotate(10deg); filter: drop-shadow(3px 3px 0px rgba(0, 180, 216, 0.4)); z-index: 2;}
+        
+        .c-seer .text-container { position: absolute; bottom: 3mm; left: 3mm; right: 8mm; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; text-align: left;}
+        .c-seer .role-en { color: var(--c-seer); margin-bottom: 1.5mm; transform: rotate(-3deg);}
+        .c-seer .role-id { transform: rotate(2deg); margin-bottom: 2mm; margin-left: 2mm; box-shadow: 2px 2px 0 var(--c-seer);}
+        .c-seer .quote { transform: rotate(1.5deg); margin-bottom: 1.5mm;}
+        .c-seer .desc { transform: rotate(-1deg);}
+
+        /* =========================================================
+           2. HUNTER (Pemburu Gila / Trigger-Happy)
+           Layout: Cenderung Atas-Bawah, Pola Garis Target
+           ========================================================= */
+        .c-hunter { --theme-color: var(--c-hunter); background-image: repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent 4px, rgba(255, 109, 0, 0.1) 4px, rgba(255, 109, 0, 0.1) 8px); border: 3px double var(--dark-ink);}
+        
+        .c-hunter .serial { position: absolute; top: -1mm; left: 50%; transform: translateX(-50%) rotate(180deg); font-family: 'Special Elite', monospace; font-size: 6px; background: var(--c-hunter); color: var(--dark-ink); padding: 1mm 4mm; font-weight: bold; border: 1px dashed var(--dark-ink); z-index: 5;}
+        .c-hunter .faction { position: absolute; bottom: 5mm; left: -3mm; font-family: 'Creepster', cursive; font-size: 8px; color: #fff; background: var(--dark-ink); padding: 1mm 3mm; transform: rotate(25deg); box-shadow: -2px 2px 0 var(--c-hunter); z-index: 5; letter-spacing: 2px;}
+        
+        .c-hunter .art { position: absolute; top: 3mm; left: 50%; transform: translateX(-50%) rotate(-15deg); width: 30mm; height: 30mm; filter: drop-shadow(0px 5px 0px rgba(17, 17, 17, 0.3)); z-index: 2;}
+        
+        .c-hunter .text-container { position: absolute; bottom: 3mm; left: 4mm; right: 4mm; z-index: 3; display: flex; flex-direction: column; align-items: center; text-align: center;}
+        .c-hunter .role-en { color: #fff; text-shadow: 2px 2px 0 var(--c-hunter), -1px -1px 0 var(--dark-ink); margin-bottom: 1mm; transform: rotate(2deg) scale(1.1);}
+        .c-hunter .role-id { transform: rotate(-2deg); margin-bottom: 2mm; box-shadow: -2px -2px 0 var(--c-hunter);}
+        .c-hunter .quote { transform: rotate(-1deg); margin-bottom: 1.5mm; width: 95%;}
+        .c-hunter .desc { transform: rotate(1deg); width: 100%; box-shadow: 3px 3px 0 var(--c-hunter);}
+
+        /* =========================================================
+           3. WEREWOLF (Binatang Buas yang Koyak)
+           Layout: Miring Diagonal, Pola Cakaran
+           ========================================================= */
+        .c-wolf { --theme-color: var(--c-wolf); background-color: var(--paper); border-left: 3mm solid var(--c-wolf); border-right: 1mm solid var(--dark-ink);}
+        .c-wolf::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 40%, rgba(213, 0, 0, 0.2) 45%, rgba(213, 0, 0, 0.4) 50%, transparent 55%), linear-gradient(135deg, transparent 50%, rgba(17, 17, 17, 0.2) 55%, rgba(17, 17, 17, 0.3) 60%, transparent 65%); z-index: 0; pointer-events: none;}
+        
+        .c-wolf .serial { position: absolute; top: 3mm; left: 2mm; font-family: 'Special Elite', monospace; font-size: 6.5px; color: var(--c-wolf); background: #fff; border: 1px solid var(--c-wolf); padding: 0.5mm 1mm; transform: rotate(-8deg); z-index: 5;}
+        .c-wolf .faction { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-family: 'Playfair Display', serif; font-weight: 900; font-size: 20px; color: rgba(213, 0, 0, 0.1); white-space: nowrap; z-index: 1; text-transform: uppercase;}
+        
+        .c-wolf .art { position: absolute; top: 1mm; right: 2mm; width: 34mm; height: 34mm; transform: rotate(12deg); filter: drop-shadow(-3px 3px 0px rgba(17, 17, 17, 0.4)); z-index: 2;}
+        
+        .c-wolf .text-container { position: absolute; bottom: 3mm; left: 3mm; right: 3mm; z-index: 3; display: flex; flex-direction: column; align-items: flex-end; text-align: right;}
+        .c-wolf .role-en { color: var(--c-wolf); margin-bottom: 0.5mm; transform: skewX(-15deg);}
+        .c-wolf .role-id { transform: skewX(10deg); margin-bottom: 2mm; box-shadow: -2px 2px 0 var(--c-wolf);}
+        .c-wolf .quote { transform: rotate(2deg); margin-bottom: 1.5mm; text-align: right;}
+        .c-wolf .desc { transform: rotate(-1.5deg); text-align: justify; text-align-last: right;}
+
+        /* =========================================================
+           4. JESTER (Si Badut Gila Asli - Referensi dari Prompt)
+           Layout: Kanan-Bawah, Pola Garis
+           ========================================================= */
+        .c-jest { --theme-color: var(--c-jest); background: repeating-linear-gradient(45deg, #fff, #fff 4px, #f2f2f2 4px, #f2f2f2 8px); border: 1.5mm dashed var(--c-jest); box-shadow: inset 0 0 20px rgba(170, 0, 255, 0.2);}
+        
+        .c-jest .serial { position: absolute; bottom: 4mm; left: -4mm; font-family: 'Special Elite', monospace; font-size: 6px; color: #fff; background: var(--dark-ink); padding: 1mm 2.5mm; transform: rotate(-90deg); transform-origin: top left; z-index: 5;}
+        .c-jest .faction { position: absolute; top: 3mm; right: -2mm; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 5.5px; color: #fff; background: var(--c-jest); padding: 1.5mm 3mm; transform: rotate(18deg); box-shadow: -2px 2px 0 var(--dark-ink); z-index: 5;}
+        
+        .c-jest .art { position: absolute; top: 2mm; left: 5mm; width: 32mm; height: 32mm; transform: rotate(-10deg); filter: drop-shadow(4px 4px 0px rgba(170, 0, 255, 0.4)); z-index: 2;}
+        
+        .c-jest .text-container { position: absolute; bottom: 3mm; right: 3mm; left: 8mm; z-index: 3; display: flex; flex-direction: column; align-items: flex-end; text-align: right;}
+        .c-jest .role-en { font-style: italic; color: var(--c-jest); margin-bottom: 1.5mm; transform: rotate(-4deg);}
+        .c-jest .role-id { transform: rotate(3deg); margin-bottom: 2mm; box-shadow: 2px 2px 0 var(--dark-ink);}
+        .c-jest .quote { transform: rotate(-2deg); margin-bottom: 1.5mm;}
+        .c-jest .desc { transform: rotate(1.5deg); text-align: justify; text-align-last: right; box-shadow: -2px -2px 0 var(--c-jest);}
+
+        /* =========================================================
+           5. GUARDIAN (Pelindung Posesif)
+           Layout: Menggantung, Pola Distorsi Hexagon
+           ========================================================= */
+        .c-guard { --theme-color: var(--c-guard); background-color: var(--paper); border: 2px solid var(--dark-ink); outline: 1.5mm solid var(--c-guard); outline-offset: -3.5mm;}
+        .c-guard::after { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(60deg, rgba(0, 200, 83, 0.1) 0, rgba(0, 200, 83, 0.1) 1px, transparent 1px, transparent 6px), repeating-linear-gradient(-60deg, rgba(0, 200, 83, 0.1) 0, rgba(0, 200, 83, 0.1) 1px, transparent 1px, transparent 6px); z-index: 0; pointer-events: none;}
+        
+        .c-guard .serial { position: absolute; top: -1mm; right: 8mm; font-family: 'Special Elite', monospace; font-size: 5px; color: var(--dark-ink); background: var(--c-guard); padding: 3mm 1.5mm 1.5mm; transform: rotate(0deg); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 5;}
+        .c-guard .faction { position: absolute; bottom: 3mm; right: 3mm; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 5px; color: var(--c-guard); border: 1.5px solid var(--c-guard); background: #fff; padding: 1mm 2mm; transform: rotate(-5deg); z-index: 5;}
+        
+        .c-guard .art { position: absolute; top: 2mm; left: 50%; transform: translateX(-50%) rotate(5deg); width: 30mm; height: 30mm; filter: drop-shadow(0px 0px 5px rgba(0, 200, 83, 0.6)); z-index: 2;}
+        
+        .c-guard .text-container { position: absolute; bottom: 3mm; left: 3mm; right: 3mm; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; text-align: left;}
+        .c-guard .role-en { color: var(--dark-ink); text-shadow: -2px 2px 0 var(--c-guard); margin-bottom: 0.5mm; transform: skewY(-5deg);}
+        .c-guard .role-id { transform: skewY(-5deg); margin-bottom: 2mm; box-shadow: 2px 2px 0 var(--c-guard);}
+        .c-guard .quote { transform: rotate(1deg); margin-bottom: 1.5mm; width: 95%;}
+        .c-guard .desc { transform: rotate(-0.5deg); text-align: justify; border-left: 3px solid var(--c-guard); box-shadow: 2px 2px 0 rgba(0,0,0,0.1);}
+
+        /* =========================================================
+           6. KARTU BELAKANG (Gerbang Asylum)
+           Layout: Dark Mode, Chaotically Symmetrical
+           ========================================================= */
+        .c-back { background: var(--dark-ink); border: 2px solid var(--c-back); box-shadow: inset 0 0 20px rgba(251, 192, 45, 0.2);}
+        .c-back::before { content: ''; position: absolute; inset: -10mm; background-image: repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent 4px, rgba(251, 192, 45, 0.05) 4.5px, rgba(251, 192, 45, 0.05) 5px); z-index: 0; transform: rotate(15deg);}
+        
+        .c-back .inner-frame { position: absolute; inset: 3mm; border: 1.5px dashed var(--c-back); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; transform: rotate(-1deg);}
+        
+        .c-back .art { width: 45mm; height: 45mm; filter: drop-shadow(0 0 8px rgba(251, 192, 45, 0.5)); transform: rotate(2deg); margin: 0 0 2mm 0;}
+        
+        .c-back .title-main { font-family: 'Creepster', cursive; font-size: 26px; color: #fff; text-shadow: 2px 2px 0 var(--c-back); text-align: center; line-height: 0.9; transform: rotate(-3deg);}
+        .c-back .title-sub { font-family: 'Special Elite', monospace; font-size: 6px; color: var(--c-back); background: var(--dark-ink); padding: 1mm 3mm; border: 1px solid var(--c-back); margin-top: 2mm; transform: rotate(2deg); letter-spacing: 2px;}
+
+    </style>
+</head>
+<body>
+
+    <div class="deck-title">
+        <h1>THE PSYCHO ASYLUM</h1>
+        <p>A SYMPHONY OF MADNESS & PORCELAIN (54.5 x 85.5 mm)</p>
+    </div>
+
+    <div class="cards-container">
+
+        <!-- 0. MODERATOR (Puppet Master) -->
+        <div class="card c-mod">
+            <div class="serial">DIR: 00-OMNI</div>
+            <div class="faction">THE DIRECTOR</div>
+            
+            <div class="art">
+                <!-- SVG Moderator: Salib Marionette dan Tengkorak Rusak (Bukan Mata) -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Tali Putus di Latar -->
+                    <path d="M 10,10 Q 30,50 10,90 M 90,10 Q 70,50 90,90" fill="none" stroke="rgba(41, 98, 255, 0.3)" stroke-width="1.5" stroke-dasharray="4,4"/>
+                    
+                    <!-- Salib Pengendali Kayu -->
+                    <line x1="15" y1="25" x2="85" y2="45" stroke="#2962FF" stroke-width="4.5" stroke-linecap="round"/>
+                    <line x1="45" y1="10" x2="60" y2="60" stroke="#2962FF" stroke-width="4.5" stroke-linecap="round"/>
+                    <circle cx="53" cy="35" r="3" fill="#111"/> <!-- Paku Tengah -->
+                    
+                    <!-- Tali Kendali -->
+                    <path d="M 15,25 Q 20,55 35,75" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="2,2"/>
+                    <path d="M 85,45 Q 80,65 65,85" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="2,2"/>
+                    <path d="M 45,10 Q 35,40 45,65" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="2,2"/>
+                    <path d="M 60,60 Q 55,75 50,90" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="2,2"/>
+
+                    <!-- Boneka Tengkorak Gila -->
+                    <path d="M 35,75 C 35,60 65,60 65,85 C 65,95 35,95 35,75 Z" fill="#fff" stroke="#111" stroke-width="2"/>
+                    
+                    <!-- Mata X Mati -->
+                    <line x1="42" y1="72" x2="48" y2="78" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="48" y1="72" x2="42" y2="78" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="55" y1="75" x2="61" y2="81" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="61" y1="75" x2="55" y2="81" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                    
+                    <!-- Senyum Jahitan -->
+                    <path d="M 40,88 Q 50,92 60,88" fill="none" stroke="#111" stroke-width="2"/>
+                    <line x1="43" y1="87" x2="43" y2="90" stroke="#111" stroke-width="1.5"/>
+                    <line x1="48" y1="89" x2="48" y2="92" stroke="#111" stroke-width="1.5"/>
+                    <line x1="53" y1="89" x2="53" y2="92" stroke="#111" stroke-width="1.5"/>
+                    <line x1="58" y1="87" x2="58" y2="90" stroke="#111" stroke-width="1.5"/>
+                    
+                    <!-- Tetesan Cat Biru / Darah Biru -->
+                    <circle cx="28" cy="80" r="2.5" fill="#2962FF"/>
+                    <path d="M 28,75 Q 30,80 28,82 Q 26,80 28,75 Z" fill="#2962FF"/>
+                </svg>
+            </div>
+
+            <div class="text-container">
+                <div class="role-en">THE DIRECTOR</div>
+                <div class="role-id">Sang Sutradara</div>
+                <div class="quote">"Menarilah, boneka-bonekaku! Panggung ini butuh lebih banyak tragedi!"</div>
+                <div class="desc">Penguasa mutlak. Kamu tidak bermain, melainkan memegang naskah. Arahkan fase malam dan siang, serta catut nyawa mereka tanpa ampun sesuai skenario kegilaan ini.</div>
+            </div>
+        </div>
+
+        <!-- 1. SEER (Penerawang Maniak) -->
+        <div class="card c-seer">
+            <div class="serial">DOC: EYE-01</div>
+            <div class="faction">THE AWAKENED</div>
+            
+            <div class="art">
+                <!-- SVG Seer: Multiple manic eyes overlapping with scribbles -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Frantic scribbles background -->
+                    <path d="M10,50 Q30,10 50,50 T90,50 Q70,90 50,50 T10,50" fill="none" stroke="#00B4D8" stroke-width="1.5" opacity="0.5"/>
+                    <path d="M20,20 Q80,20 50,80 Q20,80 80,20" fill="none" stroke="#111" stroke-width="1" stroke-dasharray="2,2"/>
+                    
+                    <!-- Main Crazed Eye -->
+                    <path d="M 15,50 C 35,20 65,20 85,50 C 65,80 35,80 15,50 Z" fill="#fff" stroke="#111" stroke-width="2.5"/>
+                    <circle cx="50" cy="50" r="14" fill="#00B4D8" stroke="#111" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="4" fill="#111"/>
+                    
+                    <!-- Smaller erratic eyes -->
+                    <path d="M 5,25 C 15,15 25,15 35,25 C 25,35 15,35 5,25 Z" fill="#fff" stroke="#111" stroke-width="1.5" transform="rotate(-20 20 25)"/>
+                    <circle cx="20" cy="25" r="3" fill="#00B4D8"/>
+                    <circle cx="20" cy="25" r="1" fill="#111"/>
+                    
+                    <path d="M 65,85 C 75,75 85,75 95,85 C 85,95 75,95 65,85 Z" fill="#fff" stroke="#111" stroke-width="1.5" transform="rotate(15 80 85)"/>
+                    <circle cx="80" cy="85" r="4" fill="#111"/>
+                    
+                    <!-- Dripping tears/blood -->
+                    <path d="M 50,65 Q 52,75 50,85 Q 48,75 50,65 Z" fill="#111"/>
+                    <circle cx="50" cy="88" r="1.5" fill="#111"/>
+                    <path d="M 40,60 Q 41,68 40,75 Q 39,68 40,60 Z" fill="#00B4D8"/>
+                </svg>
+            </div>
+
+            <div class="text-container">
+                <div class="role-en">THE SEER</div>
+                <div class="role-id">Sang Penerawang</div>
+                <div class="quote">"Mata ini menolak terpejam! Mereka terus berteriak tentang masa depan!"</div>
+                <div class="desc">Buka matamu di malam hari, tunjuk satu jiwa yang kau curigai. Sang Narator akan mengungkap kebenaran: apakah dia seekor <strong>Serigala</strong>? Gunakan rahasia gila ini di siang hari.</div>
+            </div>
+        </div>
+
+        <!-- 2. HUNTER (Pemburu Gila) -->
+        <div class="card c-hunter">
+            <div class="serial">AMMO: 001/000</div>
+            <div class="faction">TRIGGER HAPPY</div>
+            
+            <div class="art">
+                <!-- SVG Hunter: Revolver cylinder mixed with crosshairs and bullet holes -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Target rings -->
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#FF6D00" stroke-width="2" stroke-dasharray="5,5"/>
+                    <circle cx="50" cy="50" r="30" fill="none" stroke="#111" stroke-width="1.5"/>
+                    <line x1="5" y1="50" x2="95" y2="50" stroke="#FF6D00" stroke-width="1.5"/>
+                    <line x1="50" y1="5" x2="50" y2="95" stroke="#FF6D00" stroke-width="1.5"/>
+                    
+                    <!-- Gun Cylinder -->
+                    <circle cx="50" cy="50" r="20" fill="#111"/>
+                    <circle cx="50" cy="35" r="4" fill="#fff"/>
+                    <circle cx="65" cy="50" r="4" fill="#fff"/>
+                    <circle cx="50" cy="65" r="4" fill="#fff"/>
+                    <circle cx="35" cy="50" r="4" fill="#fff"/>
+                    
+                    <!-- Center bullet / eye -->
+                    <circle cx="50" cy="50" r="6" fill="#FF6D00"/>
+                    <circle cx="50" cy="50" r="2" fill="#fff"/>
+                    
+                    <!-- Random bullet holes in paper -->
+                    <path d="M 20,20 C 18,22 22,25 25,22 C 27,18 22,18 20,20 Z" fill="#111"/>
+                    <path d="M 18,18 L 22,22 M 25,18 L 18,25" stroke="#FF6D00" stroke-width="0.5"/>
+                    
+                    <path d="M 80,75 C 75,77 78,82 82,80 C 85,75 82,72 80,75 Z" fill="#111"/>
+                    <path d="M 78,72 L 85,82 M 85,72 L 75,82" stroke="#FF6D00" stroke-width="0.5"/>
+                </svg>
+            </div>
+
+            <div class="text-container">
+                <div class="role-en">THE HUNTER</div>
+                <div class="role-id">Sang Pemburu</div>
+                <div class="quote">"Satu peluru tersisa menari di tanganku... menunggu teman untuk ke neraka!"</div>
+                <div class="desc">Kematianmu tidak akan sepi. Jika kamu <strong>terbunuh</strong> oleh serigala atau dieksekusi warga, pelatukmu akan otomatis menarik nyawa <strong>satu pemain lain</strong> untuk ikut mati bersamamu.</div>
+            </div>
+        </div>
+
+        <!-- 3. WEREWOLF (Binatang Buas) -->
+        <div class="card c-wolf">
+            <div class="serial">SBJ: BEAST-9</div>
+            <div class="faction">CARNIVORE</div>
+            
+            <div class="art">
+                <!-- SVG Werewolf: Gaping jagged maw, drooling blood -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Chaotic background scratches -->
+                    <path d="M 10,10 L 90,90 M 20,5 L 95,80 M 5,20 L 80,95" stroke="rgba(213,0,0,0.3)" stroke-width="4" stroke-linecap="round"/>
+                    
+                    <!-- Feral Maw -->
+                    <path d="M 15,40 Q 50,10 85,40 Q 95,60 85,80 Q 50,95 15,80 Q 5,60 15,40 Z" fill="#111" stroke="#D50000" stroke-width="2.5"/>
+                    
+                    <!-- Jagged Teeth Top -->
+                    <polygon points="20,42 30,65 35,40" fill="#fff"/>
+                    <polygon points="40,35 48,60 55,38" fill="#fff"/>
+                    <polygon points="60,35 68,55 75,40" fill="#fff"/>
+                    
+                    <!-- Jagged Teeth Bottom -->
+                    <polygon points="25,78 35,60 40,82" fill="#fff"/>
+                    <polygon points="45,85 52,65 60,85" fill="#fff"/>
+                    <polygon points="65,82 72,60 78,75" fill="#fff"/>
+                    
+                    <!-- Dripping Blood -->
+                    <path d="M 50,60 Q 55,80 50,100 Q 45,80 50,60 Z" fill="#D50000"/>
+                    <path d="M 30,60 Q 32,75 30,85 Q 28,75 30,60 Z" fill="#D50000"/>
+                    <circle cx="50" cy="102" r="2" fill="#D50000"/>
+                </svg>
+            </div>
+
+            <div class="text-container">
+                <div class="role-en">WEREWOLF</div>
+                <div class="role-id">Sang Serigala</div>
+                <div class="quote">"Daging... darah... tulang... simfoni malam yang sungguh memekakkan telinga!"</div>
+                <div class="desc">Lepaskan insting buasmu. Setiap malam, berundinglah bersama kawanannya untuk <strong>mencabik satu korban</strong>. Di siang hari, kenakan topeng kewarasan dan manipulasi musyawarah.</div>
+            </div>
+        </div>
+
+        <!-- 4. JESTER (Si Badut Gila Asli) -->
+        <div class="card c-jest">
+            <div class="serial">PATIENT: 000</div>
+            <div class="faction">THE MAD</div>
+            
+            <div class="art">
+                <!-- SVG Jester: Balloon with noose and creepy smile -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Noose String -->
+                    <path d="M 50,95 L 50,65 C 60,65 60,85 50,85 C 40,85 40,65 50,65 L 50,55" fill="none" stroke="#111" stroke-width="2"/>
+                    <line x1="45" y1="65" x2="55" y2="65" stroke="#111" stroke-width="2"/>
+                    <line x1="45" y1="68" x2="55" y2="68" stroke="#111" stroke-width="2"/>
+                    
+                    <!-- Balloon / Head -->
+                    <path d="M 50,10 C 20,10 20,50 50,55 C 80,50 80,10 50,10 Z" fill="#AA00FF" stroke="#111" stroke-width="2"/>
+                    <polygon points="50,55 45,60 55,60" fill="#AA00FF" stroke="#111" stroke-width="1.5"/>
+                    
+                    <!-- Psycho Eyes -->
+                    <line x1="35" y1="30" x2="45" y2="40" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="45" y1="30" x2="35" y2="40" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="65" cy="35" r="4" fill="#00FF00" stroke="#111" stroke-width="1.5"/>
+                    <circle cx="65" cy="35" r="1.5" fill="#111"/>
+                    
+                    <!-- Sewn Smile -->
+                    <path d="M 30,45 Q 50,65 70,45" fill="none" stroke="#fff" stroke-width="2.5"/>
+                    <line x1="35" y1="42" x2="35" y2="52" stroke="#111" stroke-width="1.5"/>
+                    <line x1="45" y1="46" x2="45" y2="56" stroke="#111" stroke-width="1.5"/>
+                    <line x1="55" y1="46" x2="55" y2="56" stroke="#111" stroke-width="1.5"/>
+                    <line x1="65" y1="42" x2="65" y2="52" stroke="#111" stroke-width="1.5"/>
+                </svg>
+            </div>
+
+            <div class="text-container">
+                <div class="role-en">THE JESTER</div>
+                <div class="role-id">Si Badut Gila</div>
+                <div class="quote">"Gantung aku! Buat leherku menari indah di ujung tali itu! Hahaha!"</div>
+                <div class="desc">Kematian adalah kemenanganmu. Bertingkahlah sangat mencurigakan. Jika kamu berhasil meyakinkan warga untuk <strong>memvoting dan menggantungmu</strong> di siang hari, kamu menang mutlak sendirian!</div>
+            </div>
+        </div>
+
+        <!-- 5. GUARDIAN (Pelindung Posesif) -->
+        <div class="card c-guard">
+            <div class="serial">LOCK_KEY: ∞</div>
+            <div class="faction">OBSESSIVE</div>
+            
+            <div class="art">
+                <!-- SVG Guardian: Heavily chained/locked heart or shield -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Base Shield -->
+                    <path d="M 20,20 L 80,20 L 80,50 C 80,75 50,90 50,90 C 50,90 20,75 20,50 Z" fill="#111" stroke="#00C853" stroke-width="2.5"/>
+                    
+                    <!-- Straitjacket Belts / Chains crossing the shield -->
+                    <path d="M 15,35 L 85,45" fill="none" stroke="#fff" stroke-width="4"/>
+                    <path d="M 15,60 L 85,50" fill="none" stroke="#fff" stroke-width="4"/>
+                    <line x1="50" y1="15" x2="50" y2="95" stroke="#fff" stroke-width="4"/>
+                    
+                    <!-- Padlock with a creepy eye in the center -->
+                    <rect x="38" y="45" width="24" height="20" rx="3" fill="#00C853" stroke="#111" stroke-width="1.5"/>
+                    <path d="M 42,45 L 42,35 A 8,8 0 0,1 58,35 L 58,45" fill="none" stroke="#111" stroke-width="3"/>
+                    
+                    <!-- Eye inside lock -->
+                    <path d="M 42,55 Q 50,48 58,55 Q 50,62 42,55 Z" fill="#fff" stroke="#111" stroke-width="1"/>
+                    <circle cx="50" cy="55" r="2.5" fill="#111"/>
+                    
+                    <!-- Spikes on the shield border -->
+                    <polygon points="20,30 15,32 20,34" fill="#00C853"/>
+                    <polygon points="20,50 15,52 20,54" fill="#00C853"/>
+                    <polygon points="80,30 85,32 80,34" fill="#00C853"/>
+                    <polygon points="80,50 85,52 80,54" fill="#00C853"/>
+                </svg>
+            </div>
+
+            <div class="text-container">
+                <div class="role-en">GUARDIAN</div>
+                <div class="role-id">Sang Pelindung</div>
+                <div class="quote">"Tak ada yang boleh mengoyak tubuhmu selain aku! Aku tameng abadimu!"</div>
+                <div class="desc">Pilih obsesimu. Setiap malam, kamu dapat memilih satu pemain (termasuk dirimu sendiri) untuk <strong>dilindungi mutlak</strong>. Jika serigala menyerang target tersebut, ia akan selamat tanpa goresan.</div>
+            </div>
+        </div>
+
+        <!-- 6. KARTU BELAKANG (Gerbang Asylum) -->
+        <div class="card c-back">
+            <div class="inner-frame">
+                <div class="art">
+                    <!-- SVG Back: Warped Astrolabe / Straightjacket moon -->
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Swirling chaos -->
+                        <path d="M 50,10 C 80,10 90,40 50,90 C 10,40 20,10 50,10 Z" fill="none" stroke="#FBC02D" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <path d="M 10,50 C 10,20 40,10 90,50 C 40,90 10,80 10,50 Z" fill="none" stroke="#FBC02D" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        
+                        <!-- Center Core / Keyhole -->
+                        <circle cx="50" cy="45" r="15" fill="#111" stroke="#FBC02D" stroke-width="2"/>
+                        <circle cx="50" cy="45" r="5" fill="#FBC02D"/>
+                        <polygon points="45,50 55,50 58,65 42,65" fill="#FBC02D"/>
+                        
+                        <!-- Distorted Geometry -->
+                        <rect x="35" y="30" width="30" height="30" fill="none" stroke="#FBC02D" stroke-width="0.5" transform="rotate(25 50 45)"/>
+                        <rect x="35" y="30" width="30" height="30" fill="none" stroke="#FBC02D" stroke-width="0.5" transform="rotate(-25 50 45)"/>
+                    </svg>
+                </div>
+                
+                <div class="title-main">PSYCHO<br>ASYLUM</div>
+                <div class="title-sub">WEREWOLF EDITION</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
