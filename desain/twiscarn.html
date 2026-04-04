@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nightmare Asylum - Twisted Carnival Edition</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Montserrat:wght@400;700;900&family=Rye&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Dimensi Kartu Fisik Presisi */
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-family: 'Rye', serif;
+            color: #ff007f;
+            font-size: 3rem;
+            letter-spacing: 2px;
+            margin: 0 0 10px 0;
+            text-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* BINGKAI UTAMA KARTU */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            border-radius: 4mm;
+            position: relative;
+            box-sizing: border-box;
+            overflow: hidden;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            cursor: pointer;
+            flex-shrink: 0;
+            background: var(--c-dark);
+            border: 1.5mm solid var(--c-neon);
+        }
+
+        .card:hover {
+            transform: translateY(-15px) scale(1.05) rotate(2deg);
+            box-shadow: 0 0 25px var(--c-neon) inset, 0 25px 50px rgba(0, 0, 0, 0.9);
+            z-index: 10;
+        }
+
+        /* POLA LATAR BELAKANG DINAMIS */
+        .madness-bg {
+            position: absolute;
+            top: -20%; left: -20%;
+            width: 140%; height: 140%;
+            opacity: 0.25;
+            z-index: 0;
+        }
+
+        /* ELEMEN DESAIN KARNAVAL MIRING */
+        .madness-faction {
+            position: absolute;
+            top: 2.5mm; left: 1.5mm;
+            font-family: 'Montserrat', sans-serif; font-size: 5pt; font-weight: 900;
+            background: var(--c-neon); color: var(--c-dark);
+            padding: 0.5mm 2mm;
+            transform: rotate(-6deg);
+            z-index: 3;
+            box-shadow: 2px 2px 0 #000;
+            text-transform: uppercase;
+        }
+
+        .madness-code {
+            position: absolute;
+            bottom: 2mm; right: 2mm;
+            font-family: monospace; font-size: 5pt;
+            color: var(--c-neon); font-weight: bold;
+            transform: rotate(-90deg); transform-origin: right bottom;
+            z-index: 3;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .madness-title-box {
+            position: absolute;
+            top: 9mm; right: -2.5mm;
+            background: var(--c-alt);
+            padding: 1.5mm 4mm 1.5mm 6mm;
+            transform: rotate(7deg);
+            border: 1px solid #fff;
+            box-shadow: -2px 3px 0 var(--c-neon);
+            z-index: 4;
+        }
+
+        .madness-title-en {
+            font-family: 'Montserrat', sans-serif; font-size: 4.5pt; font-weight: 900;
+            color: var(--c-neon); letter-spacing: 2px; text-align: right;
+            margin-bottom: 0.5mm; text-transform: uppercase;
+        }
+
+        .madness-title {
+            font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 11pt;
+            color: #fff; line-height: 1; text-transform: uppercase;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        /* CONTAINER ILUSTRASI SVG */
+        .madness-art {
+            position: absolute;
+            top: 20mm; left: 0;
+            width: 100%; height: 42mm;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2;
+        }
+
+        .madness-art svg {
+            width: 85%; height: 85%;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8));
+        }
+
+        /* KOTAK DESKRIPSI (BAWAH) */
+        .madness-desc-box {
+            position: absolute;
+            bottom: 2.5mm; left: 2.5mm; width: 44mm;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1.2px dashed var(--c-neon);
+            padding: 2.5mm;
+            transform: rotate(-3deg);
+            z-index: 5;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.8);
+            display: flex; flex-direction: column; gap: 1.5mm;
+        }
+
+        .madness-quote {
+            font-family: 'IM Fell English', serif; font-size: 6pt; font-style: italic;
+            color: var(--c-alt); text-align: center; font-weight: bold; line-height: 1.2;
+        }
+
+        .madness-ability {
+            font-family: 'Montserrat', sans-serif; font-size: 4.5pt; font-weight: 800;
+            color: #fff; line-height: 1.3; text-align: left;
+            border-top: 1px dotted var(--c-neon); padding-top: 1mm;
+        }
+        
+        .madness-ability span {
+            color: var(--c-neon);
+        }
+
+        /* =======================================================
+           TEMA SPESIFIK TIAP KARTU (WARNA & BACKGROUND PATTERN)
+           ======================================================= */
+
+        /* 1. JESTER (Sang Badut) */
+        .role-jester {
+            --c-dark: #1a052b; /* Deep Purple */
+            --c-neon: #39ff14; /* Toxic Green */
+            --c-alt: #b00b69;  /* Psycho Magenta */
+        }
+        .role-jester .madness-bg {
+            background-image: conic-gradient(var(--c-dark) 90deg, transparent 90deg, transparent 180deg, var(--c-dark) 180deg, var(--c-dark) 270deg, transparent 270deg);
+            background-size: 15mm 15mm;
+            background-color: #2d0a4e;
+            transform: rotate(15deg);
+        }
+
+        /* 2. SEER (Sang Peramal) */
+        .role-seer {
+            --c-dark: #001220; /* Abyss Blue */
+            --c-neon: #00f0ff; /* Neon Cyan */
+            --c-alt: #ff007f;  /* Hot Pink */
+        }
+        .role-seer .madness-bg {
+            background-image: radial-gradient(circle, transparent 20%, #00334d 20%, #00334d 40%, transparent 40%, transparent 60%, #00334d 60%, #00334d 80%, transparent 80%);
+            background-size: 20mm 20mm;
+            background-position: center;
+            background-color: var(--c-dark);
+            transform: rotate(-10deg);
+            opacity: 0.35;
+        }
+
+        /* 3. HUNTER (Sang Pemburu) */
+        .role-hunter {
+            --c-dark: #2b0a00; /* Blood Rust */
+            --c-neon: #ff5e00; /* Neon Orange */
+            --c-alt: #ffd700;  /* Bright Gold */
+        }
+        .role-hunter .madness-bg {
+            background-image: repeating-conic-gradient(var(--c-dark) 0 15deg, #4a1500 15deg 30deg);
+            background-color: var(--c-dark);
+            transform: rotate(5deg);
+            opacity: 0.4;
+        }
+
+        /* 4. WEREWOLF (Serigala) */
+        .role-werewolf {
+            --c-dark: #0a0a0a; /* Pitch Black */
+            --c-neon: #ff003c; /* Slaughter Red */
+            --c-alt: #ccff00;  /* Acid Yellow */
+        }
+        .role-werewolf .madness-bg {
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 3mm, #33000a 3mm, #33000a 6mm);
+            background-color: var(--c-dark);
+            transform: rotate(-15deg);
+            opacity: 0.5;
+        }
+
+        /* 5. GUARDIAN (Sang Pelindung) */
+        .role-guardian {
+            --c-dark: #011c18; /* Deep Teal */
+            --c-neon: #ffbb00; /* Neon Gold */
+            --c-alt: #00aeff;  /* Electric Blue */
+        }
+        .role-guardian .madness-bg {
+            background-image: 
+                linear-gradient(var(--c-dark) 2mm, transparent 2mm),
+                linear-gradient(90deg, var(--c-dark) 2mm, transparent 2mm);
+            background-size: 6mm 6mm;
+            background-color: #03362e;
+            transform: rotate(8deg);
+            opacity: 0.4;
+        }
+
+        /* 6. CARD BACK (Bagian Belakang) */
+        .role-back {
+            --c-dark: #111111; /* Void Black */
+            --c-neon: #c5a059; /* Vintage Gold */
+            --c-alt: #8b0021;  /* Circus Red */
+            border-width: 2mm;
+        }
+        .role-back .madness-bg {
+            background-image: repeating-linear-gradient(0deg, #1a1a1a, #1a1a1a 4mm, #2a080d 4mm, #2a080d 8mm);
+            transform: rotate(3deg) scale(1.2);
+            opacity: 0.5;
+        }
+        /* Custom layout for the back card to keep it symmetric but twisted */
+        .back-content {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 5; padding: 4mm; box-sizing: border-box;
+        }
+        .back-ticket {
+            background: var(--c-dark); border: 1.5px dashed var(--c-neon);
+            padding: 3mm; transform: rotate(-4deg);
+            text-align: center; width: 85%;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+        }
+        .back-title {
+            font-family: 'Rye', serif; font-size: 14pt; color: var(--c-alt);
+            text-shadow: 1px 1px 0 var(--c-neon); line-height: 1.1; margin-bottom: 2mm;
+        }
+        .back-subtitle {
+            font-family: 'Montserrat', sans-serif; font-size: 5pt; font-weight: bold;
+            color: #fff; letter-spacing: 3px; border-top: 1px solid var(--c-neon); padding-top: 1.5mm;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>TWISTED CARNIVAL</h1>
+        <p>Nightmare Asylum - Asymmetric Neon Deck (54.5 x 85.5 mm)</p>
+    </div>
+
+    <div class="card-container">
+
+        <!-- 1. JESTER (SANG BADUT) -->
+        <div class="card role-jester">
+            <div class="madness-bg"></div>
+            <div class="madness-faction">CHAOS</div>
+            <div class="madness-code">JKE-999</div>
+            
+            <div class="madness-title-box">
+                <div class="madness-title-en">THE JESTER</div>
+                <div class="madness-title">SANG BADUT</div>
+            </div>
+            
+            <div class="madness-art">
+                <svg viewBox="0 0 100 100">
+                    <!-- Swirl Background -->
+                    <path d="M 50 50 Q 80 10 90 50 T 50 90 T 10 50 T 50 10" fill="none" stroke="var(--c-alt)" stroke-width="2.5" opacity="0.6"/>
+                    
+                    <!-- Twisted Hat -->
+                    <path d="M 35 40 Q 10 10 5 35 Q 20 45 40 40 Z" fill="var(--c-neon)" stroke="#000" stroke-width="3"/>
+                    <path d="M 65 40 Q 90 10 95 35 Q 80 45 60 40 Z" fill="var(--c-alt)" stroke="#000" stroke-width="3"/>
+                    <circle cx="5" cy="35" r="5" fill="#fff" stroke="#000" stroke-width="2.5"/>
+                    <circle cx="95" cy="35" r="5" fill="#fff" stroke="#000" stroke-width="2.5"/>
+                    
+                    <!-- Split Mask -->
+                    <path d="M 50 35 C 20 35 25 80 50 90 C 75 80 80 35 50 35 Z" fill="#fff" stroke="#000" stroke-width="4"/>
+                    <line x1="50" y1="35" x2="50" y2="90" stroke="#000" stroke-width="3.5"/>
+                    
+                    <!-- Eyes -->
+                    <circle cx="36" cy="55" r="7" fill="#000"/>
+                    <circle cx="36" cy="53" r="2.5" fill="var(--c-neon)"/>
+                    <path d="M 64 50 L 71 60 L 57 60 Z" fill="#000"/> <!-- Triangle psycho eye -->
+                    <circle cx="64" cy="57" r="2" fill="var(--c-alt)"/>
+
+                    <!-- Mouths -->
+                    <path d="M 28 75 Q 38 65 47 75" fill="none" stroke="#000" stroke-width="3"/> <!-- Frown -->
+                    <path d="M 53 70 Q 66 88 77 65" fill="none" stroke="#000" stroke-width="4"/> <!-- Smile -->
+                    
+                    <circle cx="36" cy="67" r="2" fill="#000"/> <!-- Tear -->
+                </svg>
+            </div>
+
+            <div class="madness-desc-box">
+                <div class="madness-quote">"Pancung aku! Bakar aku! Hahaha... Kematianku adalah puncak komedi karnaval ini!"</div>
+                <div class="madness-ability"><span>KEMAMPUAN:</span> Faksi Independen. Kau <span>MENANG MUTLAK</span> jika berhasil memanipulasi warga agar menggantungmu di siang hari.</div>
+            </div>
+        </div>
+
+        <!-- 2. SEER (SANG PERAMAL) -->
+        <div class="card role-seer">
+            <div class="madness-bg"></div>
+            <div class="madness-faction">ALLIANCE</div>
+            <div class="madness-code">SER-333</div>
+            
+            <div class="madness-title-box">
+                <div class="madness-title-en">THE SEER</div>
+                <div class="madness-title">SANG PERAMAL</div>
+            </div>
+            
+            <div class="madness-art">
+                <svg viewBox="0 0 100 100">
+                    <!-- Tarot cards swirling -->
+                    <rect x="15" y="20" width="16" height="26" fill="var(--c-alt)" stroke="#000" stroke-width="2" transform="rotate(-25 23 33)"/>
+                    <rect x="69" y="15" width="16" height="26" fill="var(--c-neon)" stroke="#000" stroke-width="2" transform="rotate(35 77 28)"/>
+                    <rect x="75" y="60" width="16" height="26" fill="var(--c-alt)" stroke="#000" stroke-width="2" transform="rotate(-45 83 73)"/>
+                    
+                    <!-- Crystal Ball Stand -->
+                    <path d="M 35 85 L 65 85 L 60 75 L 40 75 Z" fill="var(--c-alt)" stroke="#000" stroke-width="3"/>
+                    <ellipse cx="50" cy="85" rx="18" ry="4" fill="var(--c-neon)" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Crystal Ball -->
+                    <circle cx="50" cy="50" r="28" fill="rgba(0, 240, 255, 0.2)" stroke="var(--c-neon)" stroke-width="3"/>
+                    <circle cx="50" cy="50" r="24" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="4,4" opacity="0.6"/>
+                    
+                    <!-- The Eye Inside -->
+                    <path d="M 28 50 Q 50 30 72 50 Q 50 70 28 50 Z" fill="#000" stroke="var(--c-alt)" stroke-width="3"/>
+                    <circle cx="50" cy="50" r="10" fill="var(--c-neon)"/>
+                    <circle cx="50" cy="50" r="4" fill="#000"/>
+                    <circle cx="47" cy="47" r="2" fill="#fff"/> <!-- Eye glare -->
+                </svg>
+            </div>
+
+            <div class="madness-desc-box">
+                <div class="madness-quote">"Tenda ramalanku tak memantulkan masa depan, tapi wajah monstermu yang tertutup topeng."</div>
+                <div class="madness-ability"><span>KEMAMPUAN:</span> Tunjuk 1 pemain tiap malam. Sang Narator akan mengungkap rahasia apakah ia <span>Serigala</span> atau warga biasa.</div>
+            </div>
+        </div>
+
+        <!-- 3. HUNTER (SANG PEMBURU) -->
+        <div class="card role-hunter">
+            <div class="madness-bg"></div>
+            <div class="madness-faction">ALLIANCE</div>
+            <div class="madness-code">HNT-777</div>
+            
+            <div class="madness-title-box">
+                <div class="madness-title-en">THE HUNTER</div>
+                <div class="madness-title">SANG PEMBURU</div>
+            </div>
+            
+            <div class="madness-art">
+                <svg viewBox="0 0 100 100">
+                    <!-- Shattered Bullseye Target -->
+                    <circle cx="50" cy="45" r="35" fill="none" stroke="var(--c-neon)" stroke-width="4"/>
+                    <circle cx="50" cy="45" r="22" fill="none" stroke="var(--c-alt)" stroke-width="4"/>
+                    <circle cx="50" cy="45" r="8" fill="var(--c-neon)"/>
+                    
+                    <!-- Shatter lines -->
+                    <path d="M 50 45 L 15 20 M 50 45 L 85 30 M 50 45 L 70 85 M 50 45 L 20 70" stroke="#000" stroke-width="4"/>
+                    <path d="M 50 45 L 15 20 M 50 45 L 85 30 M 50 45 L 70 85 M 50 45 L 20 70" stroke="var(--c-alt)" stroke-width="1.5"/>
+
+                    <!-- Heavy Crossbow Bolt firing up -->
+                    <rect x="46" y="20" width="8" height="65" rx="2" fill="#000" stroke="var(--c-neon)" stroke-width="2"/>
+                    
+                    <!-- Bolt Head -->
+                    <polygon points="50,5 40,25 60,25" fill="var(--c-alt)" stroke="#000" stroke-width="2"/>
+                    <line x1="50" y1="5" x2="50" y2="25" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Crossbow bow limbs (Abstract) -->
+                    <path d="M 10 60 Q 50 40 90 60" fill="none" stroke="#000" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M 10 60 Q 50 40 90 60" fill="none" stroke="var(--c-alt)" stroke-width="4" stroke-linecap="round"/>
+                    
+                    <!-- Bow string drawn back -->
+                    <path d="M 10 60 L 50 80 L 90 60" fill="none" stroke="var(--c-neon)" stroke-width="3" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <div class="madness-desc-box">
+                <div class="madness-quote">"Silakan seret aku ke liang lahat. Satu peluru perak ini sudah kupesan khusus untuk menemaniku!"</div>
+                <div class="madness-ability"><span>KEMAMPUAN:</span> Jika kau mati (dibunuh serigala atau digantung warga), kau berhak <span>menembak mati 1 pemain</span> pilihanmu seketika.</div>
+            </div>
+        </div>
+
+        <!-- 4. WEREWOLF (SERIGALA) -->
+        <div class="card role-werewolf">
+            <div class="madness-bg"></div>
+            <div class="madness-faction" style="background:var(--c-alt); color:#000;">SHADOW</div>
+            <div class="madness-code">WWF-666</div>
+            
+            <div class="madness-title-box">
+                <div class="madness-title-en">THE WEREWOLF</div>
+                <div class="madness-title">SERIGALA</div>
+            </div>
+            
+            <div class="madness-art">
+                <svg viewBox="0 0 100 100">
+                    <!-- Circus Ring of Fire Broken -->
+                    <path d="M 15 50 A 35 35 0 1 1 85 50 A 35 35 0 0 1 70 80" fill="none" stroke="var(--c-alt)" stroke-width="4" stroke-dasharray="8,4"/>
+                    
+                    <!-- Claw Slash in the background -->
+                    <path d="M 75 10 Q 50 40 30 90 M 90 20 Q 65 50 45 100 M 60 0 Q 35 30 15 80" fill="none" stroke="var(--c-neon)" stroke-width="3" opacity="0.8"/>
+                    
+                    <!-- Massive Wolf Jaws snapping -->
+                    <!-- Upper Jaw -->
+                    <path d="M 10 40 Q 50 10 90 40 L 80 50 Q 50 30 20 50 Z" fill="#000" stroke="var(--c-neon)" stroke-width="2"/>
+                    <polygon points="25,48 30,65 35,42" fill="#fff"/>
+                    <polygon points="40,38 45,70 50,34" fill="var(--c-neon)"/> <!-- Main fang bleeding -->
+                    <polygon points="55,32 60,60 65,37" fill="#fff"/>
+                    <polygon points="70,41 75,55 80,45" fill="#fff"/>
+                    
+                    <!-- Lower Jaw -->
+                    <path d="M 15 75 Q 50 95 85 75 L 75 65 Q 50 80 25 65 Z" fill="#000" stroke="var(--c-neon)" stroke-width="2"/>
+                    <polygon points="30,69 35,50 40,73" fill="#fff"/>
+                    <polygon points="45,77 50,45 55,79" fill="var(--c-alt)"/> <!-- Toxic fang -->
+                    <polygon points="60,76 65,55 70,72" fill="#fff"/>
+                    
+                    <!-- Blood Drips -->
+                    <path d="M 45 70 L 46 90 A 2 2 0 0 1 44 90 Z" fill="var(--c-neon)"/>
+                    <circle cx="50" cy="85" r="3" fill="var(--c-neon)"/>
+                    <circle cx="60" cy="80" r="2" fill="var(--c-neon)"/>
+                </svg>
+            </div>
+
+            <div class="madness-desc-box">
+                <div class="madness-quote">"Karnaval ini adalah kandang kami, dan malam ini kami memutus rantainya untuk berburu mangsa."</div>
+                <div class="madness-ability"><span>KEMAMPUAN:</span> Bangun tiap malam bersama kawanannya. Berdiskusi dan sepakat memilih <span>1 target untuk dibunuh</span> sebelum fajar tiba.</div>
+            </div>
+        </div>
+
+        <!-- 5. GUARDIAN (SANG PELINDUNG) -->
+        <div class="card role-guardian">
+            <div class="madness-bg"></div>
+            <div class="madness-faction">ALLIANCE</div>
+            <div class="madness-code">GRD-111</div>
+            
+            <div class="madness-title-box">
+                <div class="madness-title-en">THE GUARDIAN</div>
+                <div class="madness-title">SANG PELINDUNG</div>
+            </div>
+            
+            <div class="madness-art">
+                <svg viewBox="0 0 100 100">
+                    <!-- Heavy Chains -->
+                    <circle cx="15" cy="20" r="8" fill="none" stroke="#000" stroke-width="4"/>
+                    <circle cx="15" cy="20" r="8" fill="none" stroke="var(--c-alt)" stroke-width="1.5"/>
+                    <circle cx="85" cy="20" r="8" fill="none" stroke="#000" stroke-width="4"/>
+                    <circle cx="85" cy="20" r="8" fill="none" stroke="var(--c-alt)" stroke-width="1.5"/>
+                    <path d="M 15 28 L 30 45 M 85 28 L 70 45" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+                    
+                    <!-- Massive Padlock / Shield -->
+                    <rect x="25" y="40" width="50" height="45" rx="5" fill="#000" stroke="var(--c-neon)" stroke-width="3"/>
+                    <rect x="30" y="45" width="40" height="35" rx="2" fill="var(--c-dark)" stroke="var(--c-alt)" stroke-width="1"/>
+                    
+                    <!-- Lock U-Bar -->
+                    <path d="M 35 40 L 35 25 A 15 15 0 0 1 65 25 L 65 40" fill="none" stroke="#000" stroke-width="8"/>
+                    <path d="M 35 40 L 35 25 A 15 15 0 0 1 65 25 L 65 40" fill="none" stroke="var(--c-neon)" stroke-width="3"/>
+                    
+                    <!-- Glowing Keyhole -->
+                    <circle cx="50" cy="55" r="6" fill="var(--c-alt)"/>
+                    <polygon points="46,60 54,60 56,75 44,75" fill="var(--c-alt)"/>
+                    
+                    <!-- Spikes on the shield -->
+                    <polygon points="25,50 15,48 25,55" fill="var(--c-neon)"/>
+                    <polygon points="75,50 85,48 75,55" fill="var(--c-neon)"/>
+                    <polygon points="25,70 15,72 25,65" fill="var(--c-neon)"/>
+                    <polygon points="75,70 85,72 75,65" fill="var(--c-neon)"/>
+                </svg>
+            </div>
+
+            <div class="madness-desc-box">
+                <div class="madness-quote">"Terkurung bersamaku adalah satu-satunya jaminan bahwa nadimu masih berdenyut besok pagi."</div>
+                <div class="madness-ability"><span>KEMAMPUAN:</span> Pilih 1 pemain tiap malam. Pemain tersebut dilindungi secara mutlak dan <span>kebal dari serangan</span> serigala malam itu.</div>
+            </div>
+        </div>
+
+        <!-- 6. CARD BACK (BAGIAN BELAKANG KARTU) -->
+        <div class="card role-back">
+            <div class="madness-bg"></div>
+            
+            <div class="back-content">
+                <div class="back-ticket">
+                    <div class="back-title">NIGHTMARE<br>ASYLUM</div>
+                    <div class="back-subtitle">TWISTED CARNIVAL EDITION</div>
+                </div>
+
+                <!-- Twisted Circus Tent Illustration -->
+                <div style="width: 100%; height: 40mm; margin-top: 5mm; display: flex; justify-content: center; align-items: center; position: relative;">
+                    <svg viewBox="0 0 100 100" width="80%" height="80%" style="filter: drop-shadow(0 5px 10px rgba(0,0,0,0.9));">
+                        <!-- Big Top Tent -->
+                        <polygon points="50,10 10,50 90,50" fill="var(--c-dark)" stroke="var(--c-neon)" stroke-width="2"/>
+                        <polygon points="50,10 30,50 50,50" fill="var(--c-alt)"/>
+                        <polygon points="50,10 70,50 90,50" fill="var(--c-alt)"/>
+                        
+                        <!-- Flag on top -->
+                        <line x1="50" y1="10" x2="50" y2="0" stroke="var(--c-neon)" stroke-width="2"/>
+                        <polygon points="50,0 65,5 50,10" fill="var(--c-alt)"/>
+                        
+                        <!-- Tent flaps opening like a mouth/eye -->
+                        <path d="M 10 50 L 10 90 Q 50 60 90 90 L 90 50 Z" fill="var(--c-alt)" stroke="var(--c-neon)" stroke-width="2"/>
+                        <path d="M 25 50 L 25 80 Q 50 65 75 80 L 75 50 Z" fill="var(--c-dark)"/>
+                        
+                        <!-- Creepy Eye in the dark entrance -->
+                        <ellipse cx="50" cy="65" rx="12" ry="6" fill="#fff"/>
+                        <circle cx="50" cy="65" r="4" fill="var(--c-alt)"/>
+                        <circle cx="50" cy="65" r="1.5" fill="#000"/>
+                        
+                        <!-- Carnival Lights around tent -->
+                        <circle cx="20" cy="45" r="2" fill="var(--c-neon)"/>
+                        <circle cx="40" cy="25" r="2" fill="var(--c-neon)"/>
+                        <circle cx="60" cy="25" r="2" fill="var(--c-neon)"/>
+                        <circle cx="80" cy="45" r="2" fill="var(--c-neon)"/>
+                    </svg>
+                </div>
+
+                <div style="font-family: 'IM Fell English', serif; font-size: 7pt; font-style: italic; color: var(--c-neon); margin-top: auto; font-weight: bold; text-align: center;">
+                    "ADMIT ONE"<br>
+                    <span style="color: #fff; font-size: 5pt; font-family: 'Montserrat', sans-serif;">TRUST NO ONE</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
