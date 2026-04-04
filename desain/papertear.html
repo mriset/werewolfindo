@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Werewolf: Innocent Nightmares Deck</title>
+    <!-- Kombinasi Font Karakteristik -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:ital,wght@0,400;0,600;0,800;1,700&family=Creepster&family=Jolly+Lodger&family=Russo+One&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu Poker/Bridge Standar Asia */
+            --w: 54.5mm;
+            --h: 85.5mm;
+            
+            /* Warna Karakter */
+            --wolf-color: #D32F2F;    /* Red Beast */
+            --seer-color: #00BCD4;    /* Cyan Mystic */
+            --hunt-color: #FF8F00;    /* Amber Gunpowder */
+            --jest-color: #D500F9;    /* Toxic Magenta */
+            --guar-color: #FBC02D;    /* Holy Gold */
+            --back-color: #880E4F;    /* Deep Blood Moon */
+            
+            --dark-text: #1a1a1a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #121212;
+            background-image: radial-gradient(circle at 50% 50%, #2a2a2a 0%, #0a0a0a 100%);
+            font-family: 'Montserrat', sans-serif;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header-title h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        .header-title p {
+            color: #aaa; font-size: 14px; margin-top: 10px; font-style: italic;
+        }
+
+        .deck-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* ---------------------------------------------------
+           BASE CARD (DNA Kertas Sobek)
+           --------------------------------------------------- */
+        .card {
+            width: var(--w);
+            height: var(--h);
+            background-color: #FCFCFC;
+            border-radius: 4mm;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .card:hover {
+            transform: translateY(-12px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(255,255,255,0.1);
+            z-index: 10;
+        }
+
+        /* Elemen Bersama */
+        .card .header {
+            position: absolute; top: 3mm; width: 100%; text-align: center;
+        }
+        .card .role-en {
+            font-size: 8.5px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase;
+        }
+        
+        .card .rip-hole {
+            position: absolute;
+            background: radial-gradient(circle at 50% 50%, #2a2a2a 0%, #050505 100%);
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: inset 0 0 10px #000;
+        }
+        .card .art {
+            width: 100%; height: 100%;
+        }
+
+        .card .content {
+            position: absolute; bottom: 0; width: 100%; padding: 4mm;
+        }
+        .card .quote {
+            font-size: 9px; font-weight: 900; text-align: center; margin-bottom: 2.5mm;
+        }
+        .card .desc {
+            font-size: 8.5px; line-height: 1.4; font-weight: 700; text-align: center; color: #333;
+        }
+
+        /* ---------------------------------------------------
+           1. WEREWOLF (SERIGALA)
+           --------------------------------------------------- */
+        .c-wolf { --c: var(--wolf-color); --bg: rgba(211, 47, 47, 0.1); }
+        .c-wolf .role-id { font-family: 'Creepster', cursive; font-size: 28px; color: #111; letter-spacing: 2px; line-height: 1.1; }
+        .c-wolf .role-en { color: var(--c); }
+        .c-wolf .rip-hole {
+            top: 18mm; left: -2mm; width: 60mm; height: 32mm;
+            clip-path: polygon(0% 20%, 15% 10%, 25% 30%, 40% 5%, 55% 25%, 70% 0%, 85% 20%, 100% 10%, 100% 90%, 85% 75%, 70% 95%, 50% 80%, 35% 100%, 20% 85%, 0% 95%);
+        }
+        .c-wolf .content { background: linear-gradient(to top, var(--bg), transparent); border-bottom: 4px solid var(--c); }
+        .c-wolf .quote { font-family: 'Cinzel', serif; color: var(--c); }
+
+        /* ---------------------------------------------------
+           2. SEER (PENERAWANG)
+           --------------------------------------------------- */
+        .c-seer { --c: var(--seer-color); --bg: rgba(0, 188, 212, 0.1); }
+        .c-seer .role-id { font-family: 'Cinzel', serif; font-size: 21px; font-weight: 900; color: #111; letter-spacing: 1px; line-height: 1.2; }
+        .c-seer .role-en { color: var(--c); letter-spacing: 5px; }
+        .c-seer .rip-hole {
+            /* Bentuk Mata Sayu */
+            top: 20mm; left: 2mm; width: 50.5mm; height: 28mm;
+            clip-path: polygon(0% 50%, 10% 30%, 20% 40%, 35% 15%, 50% 5%, 60% 20%, 80% 15%, 90% 35%, 100% 50%, 90% 65%, 75% 85%, 60% 70%, 50% 95%, 35% 75%, 20% 90%, 10% 70%);
+        }
+        .c-seer .content { background: linear-gradient(to top, var(--bg), transparent); border-bottom: 4px solid var(--c); }
+        .c-seer .quote { font-family: 'Montserrat', sans-serif; font-style: italic; color: var(--c); }
+
+        /* ---------------------------------------------------
+           3. HUNTER (PEMBURU)
+           --------------------------------------------------- */
+        .c-hunt { --c: var(--hunt-color); --bg: rgba(255, 143, 0, 0.1); }
+        .c-hunt .role-id { font-family: 'Russo One', sans-serif; font-size: 23px; color: #111; letter-spacing: 1px; line-height: 1.2; }
+        .c-hunt .role-en { color: var(--c); letter-spacing: 3px; }
+        .c-hunt .rip-hole {
+            /* Bentuk Ledakan / Lubang Peluru */
+            top: 16mm; left: 4mm; width: 46.5mm; height: 38mm;
+            clip-path: polygon(10% 20%, 30% 5%, 50% 15%, 70% 0%, 80% 25%, 100% 30%, 85% 50%, 95% 70%, 75% 80%, 80% 100%, 50% 85%, 20% 95%, 25% 75%, 0% 65%, 15% 45%, 0% 30%);
+        }
+        .c-hunt .content { background: linear-gradient(to top, var(--bg), transparent); border-bottom: 4px solid var(--c); }
+        .c-hunt .quote { font-family: 'Courier New', monospace; color: var(--c); font-size: 8.5px; }
+
+        /* ---------------------------------------------------
+           4. JESTER (BADUT)
+           --------------------------------------------------- */
+        .c-jest { --c: var(--jest-color); --bg: rgba(213, 0, 249, 0.1); }
+        .c-jest .role-id { font-family: 'Jolly Lodger', cursive; font-size: 34px; color: #111; line-height: 0.9; letter-spacing: 2px;}
+        .c-jest .role-en { color: var(--c); letter-spacing: 4px; }
+        .c-jest .rip-hole {
+            /* Bentuk Senyum Lebar Acak */
+            top: 20mm; left: -1mm; width: 56.5mm; height: 32mm;
+            clip-path: polygon(0% 30%, 15% 15%, 30% 35%, 50% 20%, 70% 40%, 85% 10%, 100% 30%, 100% 80%, 85% 60%, 70% 90%, 50% 70%, 30% 85%, 15% 60%, 0% 75%);
+        }
+        .c-jest .content { background: linear-gradient(to top, var(--bg), transparent); border-bottom: 4px solid var(--c); }
+        .c-jest .quote { font-family: 'Jolly Lodger', cursive; color: var(--c); font-size: 13px; font-weight: normal; }
+
+        /* ---------------------------------------------------
+           5. GUARDIAN (PELINDUNG)
+           --------------------------------------------------- */
+        .c-guar { --c: var(--guar-color); --bg: rgba(251, 192, 45, 0.1); }
+        .c-guar .role-id { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 900; color: #111; letter-spacing: 0px; line-height: 1.2; }
+        .c-guar .role-en { color: var(--c); letter-spacing: 2px; }
+        .c-guar .rip-hole {
+            /* Bentuk Perisai Terkoyak Vertikal */
+            top: 15mm; left: 8mm; width: 38.5mm; height: 38mm;
+            clip-path: polygon(50% 0%, 70% 15%, 60% 30%, 85% 45%, 75% 60%, 90% 80%, 50% 100%, 10% 80%, 25% 60%, 15% 45%, 40% 30%, 30% 15%);
+        }
+        .c-guar .content { background: linear-gradient(to top, var(--bg), transparent); border-bottom: 4px solid var(--c); }
+        .c-guar .quote { font-family: 'Cinzel', serif; color: var(--c); }
+
+        /* ---------------------------------------------------
+           6. CARD BACK (BAGIAN BELAKANG KARTU)
+           --------------------------------------------------- */
+        .c-back { --c: var(--back-color); background: #1a1a1a; }
+        .c-back .outer-wrapper {
+            position: absolute; top: 2mm; left: 2mm; right: 2mm; bottom: 2mm;
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 2mm;
+            background: #FCFCFC;
+        }
+        .c-back .top-text {
+            position: absolute; top: 6mm; width: 100%; text-align: center;
+            font-family: 'Cinzel', serif; font-size: 18px; font-weight: 900; color: #111; letter-spacing: 4px;
+        }
+        .c-back .bottom-text {
+            position: absolute; bottom: 6mm; width: 100%; text-align: center;
+            font-family: 'Cinzel', serif; font-size: 14px; font-weight: 900; color: var(--c); letter-spacing: 2px;
+        }
+        .c-back .rip-hole {
+            /* Sobekan Diagonal Raksasa Membelah Kartu */
+            top: 15mm; left: 2mm; width: 50.5mm; height: 55.5mm;
+            clip-path: polygon(0% 0%, 20% 10%, 10% 30%, 40% 25%, 30% 50%, 60% 45%, 50% 70%, 80% 65%, 70% 90%, 100% 100%, 80% 90%, 90% 70%, 60% 75%, 70% 50%, 40% 55%, 50% 30%, 20% 35%, 30% 10%);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-title">
+        <h1>INNOCENT NIGHTMARES</h1>
+        <p>1 DNA Desain ("Kertas Putih Terkoyak") diadaptasi menjadi 5 Identitas Berbeda</p>
+    </div>
+
+    <div class="deck-container">
+
+        <!-- 1. KARTU WEREWOLF (REFERENSI AWAL) -->
+        <div class="card c-wolf">
+            <div class="header">
+                <div class="role-id">SERIGALA</div>
+                <div class="role-en">THE WEREWOLF</div>
+            </div>
+
+            <div class="rip-hole">
+                <div class="art">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Glowing Red Eyes in dark -->
+                        <polygon points="25,40 40,45 35,55" fill="#D32F2F"/>
+                        <polygon points="75,40 60,45 65,55" fill="#D32F2F"/>
+                        <circle cx="32" cy="46" r="2" fill="#fff"/>
+                        <circle cx="68" cy="46" r="2" fill="#fff"/>
+                        
+                        <!-- Jagged Fangs at the bottom -->
+                        <polygon points="20,100 30,70 40,100" fill="#FCFCFC"/>
+                        <polygon points="45,100 50,60 55,100" fill="#FCFCFC"/>
+                        <polygon points="60,100 70,70 80,100" fill="#FCFCFC"/>
+                        
+                        <!-- Blood dripping from top fang -->
+                        <path d="M 48 60 Q 50 80 52 60 Z" fill="#D32F2F"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="quote">"Bulu putih suci ini sempurna untuk menyembunyikan merahnya dosa."</div>
+                <div class="desc">
+                    Tebarkan teror dari balik kepolosan. Setiap malam, bangun bersama kawananmu untuk memangsa satu warga. Menyamarlah dengan sempurna di siang hari.
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. KARTU SEER -->
+        <div class="card c-seer">
+            <div class="header">
+                <div class="role-id">PENERAWANG</div>
+                <div class="role-en">THE SEER</div>
+            </div>
+
+            <div class="rip-hole">
+                <div class="art">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Glowing Third Eye -->
+                        <path d="M 15 50 Q 50 20 85 50 Q 50 80 15 50 Z" fill="none" stroke="#00BCD4" stroke-width="3"/>
+                        <circle cx="50" cy="50" r="16" fill="none" stroke="#00BCD4" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="8" fill="#00BCD4"/>
+                        <circle cx="48" cy="48" r="2" fill="#fff"/>
+                        
+                        <!-- Mystical stars/sparks -->
+                        <path d="M 50 10 L 52 25 L 65 20 L 55 30 L 60 40" fill="none" stroke="#00BCD4" stroke-width="1" opacity="0.5"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="quote">"Mata suci ini melihat noda darah di balik senyum manismu."</div>
+                <div class="desc">
+                    Setiap malam, pilih satu pemain untuk diterawang jiwanya. Moderator akan memberitahu apakah ia Serigala atau bukan.
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. KARTU HUNTER -->
+        <div class="card c-hunt">
+            <div class="header">
+                <div class="role-id">PEMBURU</div>
+                <div class="role-en">THE HUNTER</div>
+            </div>
+
+            <div class="rip-hole">
+                <div class="art">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Glowing Crosshair -->
+                        <circle cx="50" cy="50" r="28" fill="none" stroke="#FF8F00" stroke-width="2" stroke-dasharray="10 5"/>
+                        <circle cx="50" cy="50" r="12" fill="none" stroke="#FF8F00" stroke-width="2"/>
+                        
+                        <line x1="50" y1="5" x2="50" y2="30" stroke="#FF8F00" stroke-width="3"/>
+                        <line x1="50" y1="95" x2="50" y2="70" stroke="#FF8F00" stroke-width="3"/>
+                        <line x1="5" y1="50" x2="30" y2="50" stroke="#FF8F00" stroke-width="3"/>
+                        <line x1="95" y1="50" x2="70" y2="50" stroke="#FF8F00" stroke-width="3"/>
+                        
+                        <!-- Center Bullet Light -->
+                        <circle cx="50" cy="50" r="4" fill="#FF8F00"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="quote">"Kematianku bukanlah akhir, melainkan awal dendam kita."</div>
+                <div class="desc">
+                    Jika kamu dibunuh oleh serigala atau dieksekusi warga, kamu berhak menarik pelatuk dan membawa satu pemain lain mati bersamamu.
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. KARTU JESTER -->
+        <div class="card c-jest">
+            <div class="header">
+                <div class="role-id">Sang Badut</div>
+                <div class="role-en">THE JESTER</div>
+            </div>
+
+            <div class="rip-hole">
+                <div class="art">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Creepy Stitched Smile -->
+                        <path d="M 20 60 Q 50 90 80 60" fill="none" stroke="#D500F9" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="30" y1="62" x2="30" y2="72" stroke="#D500F9" stroke-width="2"/>
+                        <line x1="50" y1="70" x2="50" y2="80" stroke="#D500F9" stroke-width="2"/>
+                        <line x1="70" y1="62" x2="70" y2="72" stroke="#D500F9" stroke-width="2"/>
+                        
+                        <!-- X & Swirl Eyes -->
+                        <line x1="25" y1="35" x2="40" y2="50" stroke="#D500F9" stroke-width="3"/>
+                        <line x1="40" y1="35" x2="25" y2="50" stroke="#D500F9" stroke-width="3"/>
+                        
+                        <path d="M 70 42 C 60 42, 60 30, 70 30 C 80 30, 80 50, 65 50 C 50 50, 50 20, 75 20" fill="none" stroke="#D500F9" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="quote">"Soraki aku! Menarilah saat tali persidangan menjerat leherku!"</div>
+                <div class="desc">
+                    Bertingkahlah mencurigakan. Jika kamu berhasil memanipulasi warga untuk mengeksekusimu di persidangan, KAMU MENANG MUTLAK!
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. KARTU GUARDIAN -->
+        <div class="card c-guar">
+            <div class="header">
+                <div class="role-id">PELINDUNG</div>
+                <div class="role-en">THE GUARDIAN</div>
+            </div>
+
+            <div class="rip-hole">
+                <div class="art">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Holy Shield & Light -->
+                        <polygon points="50,20 80,35 70,75 50,95 30,75 20,35" fill="none" stroke="#FBC02D" stroke-width="3"/>
+                        <polygon points="50,30 65,40 60,65 50,80 40,65 35,40" fill="none" stroke="#FBC02D" stroke-width="1.5"/>
+                        
+                        <!-- Inner Cross -->
+                        <line x1="50" y1="40" x2="50" y2="70" stroke="#FBC02D" stroke-width="4"/>
+                        <line x1="35" y1="50" x2="65" y2="50" stroke="#FBC02D" stroke-width="4"/>
+                        
+                        <!-- Glow -->
+                        <circle cx="50" cy="50" r="5" fill="#fff"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="quote">"Bersembunyilah di balik sayap suci ini, taring monster takkan menyentuhmu."</div>
+                <div class="desc">
+                    Setiap malam, pilih satu pemain untuk dilindungi secara magis. Jika serigala menyerang pemain tersebut, ia akan selamat.
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. KARTU BELAKANG (CARD BACK) -->
+        <div class="card c-back">
+            <div class="outer-wrapper">
+                <div class="top-text">INNOCENT</div>
+                
+                <div class="rip-hole">
+                    <div class="art">
+                        <svg viewBox="0 0 100 100" width="100%" height="100%">
+                            <!-- Blood Moon Motif -->
+                            <circle cx="50" cy="50" r="35" fill="#880E4F"/>
+                            <circle cx="35" cy="40" r="6" fill="#4A148C" opacity="0.6"/>
+                            <circle cx="60" cy="65" r="9" fill="#4A148C" opacity="0.5"/>
+                            <circle cx="65" cy="35" r="4" fill="#4A148C" opacity="0.7"/>
+                            
+                            <!-- Bare branches overlapping -->
+                            <path d="M 0 80 Q 30 70 40 40 T 60 20" fill="none" stroke="#111" stroke-width="2"/>
+                            <path d="M 20 60 Q 40 50 35 20" fill="none" stroke="#111" stroke-width="1.5"/>
+                            <path d="M 100 90 Q 70 80 65 50 T 45 30" fill="none" stroke="#111" stroke-width="2"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="bottom-text">NIGHTMARES</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
