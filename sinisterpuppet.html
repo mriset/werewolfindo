@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sinister Puppet Edition - Uniform Layout</title>
+    <!-- Font Premium: Playfair untuk Judul, Cinzel untuk Header/Faksi, Montserrat untuk Deskripsi -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,600;1,800&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu */
+            --card-w: 54.5mm;
+            --card-h: 85.5mm;
+            
+            /* Warna Dasar */
+            --paper-white: #FCFDFD;
+            --text-dark: #1A1A1A;
+            --bone-white: #F4F1EA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            background-image: radial-gradient(circle at 50% 50%, #2a2a2a 0%, #111 100%);
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            padding: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .deck-title {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: 'Cinzel', serif;
+        }
+        .deck-title h1 {
+            font-size: 2.5rem;
+            color: #D4AF37;
+            letter-spacing: 4px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .deck-title p {
+            color: #ccc;
+            font-style: italic;
+            margin-top: 5px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* =========================================
+           BASE CARD STRUCTURE (Adopted from Warga)
+           ========================================= */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background-color: var(--c-bg, var(--paper-white));
+            border-radius: 4mm;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.5);
+            position: relative;
+            overflow: hidden;
+            color: var(--text-dark);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.8), 0 0 20px var(--c-glow, rgba(255,255,255,0.2));
+            z-index: 10;
+        }
+
+        /* Uniform Side Bars */
+        .side-bars {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 4mm;
+            background-color: var(--c-bar-bg);
+            z-index: 1;
+        }
+        .side-bars.left { left: 0; border-right: var(--c-bar-border, none); }
+        .side-bars.right { right: 0; border-left: var(--c-bar-border, none); }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            position: absolute;
+            top: 0; bottom: 0; left: 4mm; right: 4mm;
+            padding: 4mm 3mm;
+            display: flex;
+            flex-direction: column;
+            z-index: 2;
+        }
+
+        /* Uniform Faction Badge */
+        .faction-badge {
+            background: var(--c-badge-bg);
+            color: var(--c-badge-text);
+            font-family: 'Cinzel', serif;
+            font-size: 4.5pt;
+            font-weight: 800;
+            text-align: center;
+            padding: 1.5mm 0;
+            margin: 0 0 3mm 0;
+            letter-spacing: 2px;
+            border-radius: 1mm;
+            border: var(--c-badge-border, none);
+            text-transform: uppercase;
+        }
+
+        /* Uniform Art Circle */
+        .art-circle {
+            width: 38mm;
+            height: 38mm;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+            background: var(--c-art-bg);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: var(--c-art-border);
+        }
+        svg { width: 100%; height: 100%; }
+
+        /* Uniform Text Block */
+        .text-block {
+            margin-top: 4mm;
+            display: flex;
+            flex-direction: column;
+        }
+        .name-id {
+            font-family: 'Playfair Display', serif;
+            font-size: 13.5pt;
+            font-weight: 900;
+            color: var(--c-name);
+            text-align: left;
+            line-height: 1;
+        }
+        .name-en {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5pt;
+            font-weight: 700;
+            color: var(--c-name-sub);
+            text-align: left;
+            margin-top: 1mm;
+            margin-bottom: 2.5mm;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .role-quote {
+            text-align: left;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 6pt;
+            line-height: 1.3;
+            color: var(--c-quote-text);
+            border-left: 2px solid var(--c-quote-border);
+            padding-left: 2mm;
+            margin-bottom: 2mm;
+        }
+        .role-desc {
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5pt;
+            line-height: 1.4;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        /* Uniform Serial Code */
+        .serial-code {
+            position: absolute;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4pt;
+            font-weight: 700;
+            letter-spacing: 1px;
+            bottom: 2mm; right: 6mm;
+            color: var(--c-serial);
+            text-align: right;
+            z-index: 5;
+        }
+
+        /* =========================================
+           1. MODERATOR - THE PUPPETEER
+           ========================================= */
+        .card.moderator {
+            --c-bar-bg: #9B59B6;
+            --c-bar-border: 1px solid #D4AF37;
+            --c-badge-bg: #9B59B6;
+            --c-badge-text: #FFF8E0;
+            --c-badge-border: 1px solid #D4AF37;
+            --c-art-bg: #F9F6FC;
+            --c-art-border: 2px solid #D4AF37;
+            --c-name: #5C1682;
+            --c-name-sub: #D4AF37;
+            --c-quote-border: #D4AF37;
+            --c-quote-text: #5C1682;
+            --c-serial: #D4AF37;
+            --c-glow: rgba(212, 175, 55, 0.3);
+        }
+        /* Uniqueness: Inner glow in art circle */
+        .card.moderator .art-circle { box-shadow: inset 0 0 15px rgba(92, 22, 130, 0.2); }
+
+        /* =========================================
+           2. WARGA - THE WOODEN PAWN
+           ========================================= */
+        .card.villager {
+            --c-bar-bg: #5B8EC4;
+            --c-bar-border: none;
+            --c-badge-bg: #5B8EC4;
+            --c-badge-text: #FFFFFF;
+            --c-badge-border: none;
+            --c-art-bg: #F4F1EA;
+            --c-art-border: 1.5px solid #1D4E89;
+            --c-name: var(--text-dark);
+            --c-name-sub: #8C9EAB;
+            --c-quote-border: #8C9EAB;
+            --c-quote-text: #1D4E89;
+            --c-serial: #8C9EAB;
+            --c-glow: rgba(29, 78, 137, 0.3);
+        }
+
+        /* =========================================
+           3. WEREWOLF - THE TORN MARIONETTE
+           ========================================= */
+        .card.werewolf {
+            --c-bar-bg: #C0392B;
+            --c-bar-border: 1px solid #E88;
+            --c-badge-bg: #C0392B;
+            --c-badge-text: #FFF0F0;
+            --c-badge-border: none;
+            --c-art-bg: #FFF5F5;
+            --c-art-border: 2px dashed #C0392B;
+            --c-name: #8B0000;
+            --c-name-sub: #C0392B;
+            --c-quote-border: #C0392B;
+            --c-quote-text: #8B0000;
+            --c-serial: #C0392B;
+            --c-glow: rgba(192, 57, 43, 0.4);
+        }
+        /* Uniqueness: Scratch marks overlapping layout */
+        .card.werewolf::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, transparent 48%, rgba(139,0,0,0.1) 50%, transparent 52%);
+            pointer-events: none; z-index: 10;
+        }
+
+        /* =========================================
+           4. JESTER - THE CRACKED DOLL
+           ========================================= */
+        .card.jester {
+            --c-bar-bg: #006A4E; /* Green side */
+            --c-bar-border: none;
+            --c-badge-bg: transparent;
+            --c-badge-text: #1A1A1A;
+            --c-badge-border: 1px solid #006A4E;
+            --c-art-bg: #F4FAF8;
+            --c-art-border: 2px dotted #C2185B;
+            --c-name: #C2185B;
+            --c-name-sub: #006A4E;
+            --c-quote-border: #C2185B;
+            --c-quote-text: #006A4E;
+            --c-serial: #006A4E;
+            --c-glow: rgba(0, 106, 78, 0.3);
+        }
+        /* Uniqueness: Mismatched side bars and tilted badge */
+        .card.jester .side-bars.right { background-color: #C2185B; }
+        .card.jester .faction-badge { transform: rotate(-2deg); background-color: rgba(0, 106, 78, 0.05); }
+
+        /* =========================================
+           5. SEER - THE GLASS EYE ORACLE
+           ========================================= */
+        .card.seer {
+            --c-bar-bg: #7B68EE;
+            --c-bar-border: 1px solid #A8C4FF;
+            --c-badge-bg: #7B68EE;
+            --c-badge-text: #F0EFFF;
+            --c-badge-border: none;
+            --c-art-bg: #F0F0FF;
+            --c-art-border: 2px solid #7B68EE;
+            --c-name: #2C2C6E;
+            --c-name-sub: #7B68EE;
+            --c-quote-border: #7B68EE;
+            --c-quote-text: #2C2C6E;
+            --c-serial: #7B68EE;
+            --c-glow: rgba(123, 104, 238, 0.4);
+        }
+        /* Uniqueness: Star-dust shimmer overlay on art */
+        .card.seer .art-circle {
+            background: radial-gradient(circle at 40% 40%, #E8E4FF, #C5BCF5);
+            box-shadow: inset 0 0 18px rgba(44,44,110,0.3), 0 0 12px rgba(123,104,238,0.3);
+        }
+
+        /* =========================================
+           6. ALPHA WOLF - THE IRON THRONE PUPPET
+           ========================================= */
+        .card.alpha-wolf {
+            --c-bar-bg: #C0392B;
+            --c-bar-border: 1px solid #FFD700;
+            --c-badge-bg: #C0392B;
+            --c-badge-text: #FFD700;
+            --c-badge-border: 1px solid #FFD700;
+            --c-art-bg: #FFF0EE;
+            --c-art-border: 2.5px solid #C0392B;
+            --c-name: #7B0000;
+            --c-name-sub: #C0392B;
+            --c-quote-border: #FFD700;
+            --c-quote-text: #7B0000;
+            --c-serial: #C0392B;
+            --c-glow: rgba(192, 57, 43, 0.5);
+        }
+        /* Uniqueness: Blood-dark bar + golden badge accent, double border on art circle */
+        .card.alpha-wolf .art-circle {
+            border: none;
+            box-shadow: 0 0 0 2px #C0392B, 0 0 0 4px #FFD700, inset 0 0 15px rgba(139,0,0,0.2);
+        }
+        .card.alpha-wolf::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1mm;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+            z-index: 20;
+        }
+
+        /* =========================================
+           7. CUPID - THE ROSE THREAD WEAVER
+           ========================================= */
+        .card.cupid {
+            --c-bar-bg: #D45C8A;
+            --c-bar-border: 1px solid #F4A7C3;
+            --c-badge-bg: linear-gradient(135deg, #C85A8A, #E8709A);
+            --c-badge-text: #FFF0F8;
+            --c-badge-border: none;
+            --c-art-bg: #FFF0F5;
+            --c-art-border: 2px solid #E8709A;
+            --c-name: #8B1A4A;
+            --c-name-sub: #C85A8A;
+            --c-quote-border: #E8709A;
+            --c-quote-text: #8B1A4A;
+            --c-serial: #C85A8A;
+            --c-glow: rgba(232, 112, 154, 0.4);
+        }
+        /* Uniqueness: Gradient badge + petal-soft art bg */
+        .card.cupid .faction-badge {
+            background: linear-gradient(135deg, #C85A8A, #E8709A);
+        }
+        .card.cupid .art-circle {
+            background: radial-gradient(circle at 50% 35%, #FFE8F5, #FFC8E0);
+        }
+
+        /* =========================================
+           8. HUNTER - THE IRON CROSSBOW PUPPET
+           ========================================= */
+        .card.hunter {
+            --c-bar-bg: #5D8A3C;
+            --c-bar-border: 1px solid #A8D870;
+            --c-badge-bg: #5D8A3C;
+            --c-badge-text: #F0FFE0;
+            --c-badge-border: none;
+            --c-art-bg: #F2F7EE;
+            --c-art-border: 2px solid #3E6B2F;
+            --c-name: #1B3A1F;
+            --c-name-sub: #5D8A3C;
+            --c-quote-border: #5D8A3C;
+            --c-quote-text: #1B3A1F;
+            --c-serial: #5D8A3C;
+            --c-glow: rgba(93, 138, 60, 0.4);
+        }
+        /* Uniqueness: Crosshair ring on art circle */
+        .card.hunter .art-circle {
+            background: radial-gradient(circle at 50% 40%, #EEF5E8, #D5E8C0);
+            box-shadow: inset 0 0 0 6px rgba(30,60,20,0.06), inset 0 0 15px rgba(30,60,20,0.1);
+        }
+
+        /* =========================================
+           9. GUARDIAN - THE IRON SHIELD PUPPET
+           ========================================= */
+        .card.guardian {
+            --c-bar-bg: #4A7FA8;
+            --c-bar-border: 1px solid #A8C8E8;
+            --c-badge-bg: #4A7FA8;
+            --c-badge-text: #F0F8FF;
+            --c-badge-border: none;
+            --c-art-bg: #EEF5FC;
+            --c-art-border: 2.5px solid #4A7FA8;
+            --c-name: #1C3A5A;
+            --c-name-sub: #4A7FA8;
+            --c-quote-border: #A8C8E8;
+            --c-quote-text: #1C3A5A;
+            --c-serial: #4A7FA8;
+            --c-glow: rgba(74, 127, 168, 0.4);
+        }
+        /* Uniqueness: Metallic shimmer via linear gradient on art bg */
+        .card.guardian .art-circle {
+            background: linear-gradient(145deg, #EEF5FC 0%, #C8DDF0 50%, #E8F4FF 100%);
+            box-shadow: inset 0 0 20px rgba(28,58,90,0.12), 0 0 8px rgba(168,200,232,0.4);
+        }
+
+        /* =========================================
+           10. WITCH - THE VENOM VIAL PUPPET
+           ========================================= */
+        .card.witch {
+            --c-bar-bg: #27AE60;
+            --c-bar-border: 1px solid #7AE0A8;
+            --c-badge-bg: #27AE60;
+            --c-badge-text: #F0FFF6;
+            --c-badge-border: none;
+            --c-art-bg: #F0FAF3;
+            --c-art-border: 2px dashed #27AE60;
+            --c-name: #0D2B1A;
+            --c-name-sub: #27AE60;
+            --c-quote-border: #2ECC71;
+            --c-quote-text: #0D2B1A;
+            --c-serial: #27AE60;
+            --c-glow: rgba(46, 204, 113, 0.4);
+        }
+        /* Uniqueness: Poisonous bubbles in art background */
+        .card.witch .art-circle {
+            background: radial-gradient(circle at 30% 30%, #E8F8EE, #C0EDD0);
+            border-style: dashed;
+        }
+
+        /* =========================================
+           11. WIZARD - THE ARCANE SIGIL PUPPET
+           ========================================= */
+        .card.wizard {
+            --c-bar-bg: #8B4513; 
+            --c-bar-border: 1px solid #D2B48C;
+            --c-badge-bg: #8B4513;
+            --c-badge-text: #FAEBD7;
+            --c-badge-border: none;
+            --c-art-bg: #FAF0E6;
+            --c-art-border: 2px solid #D2B48C;
+            --c-name: #A0522D;
+            --c-name-sub: #CD853F;
+            --c-quote-border: #D2B48C;
+            --c-quote-text: #8B4513;
+            --c-serial: #CD853F;
+            --c-glow: rgba(139, 69, 19, 0.4);
+        }
+        /* Uniqueness: Magic rune circle overlaid on art */
+        .card.wizard .art-circle {
+            background: radial-gradient(circle at 50% 50%, #FFF8DC, #F5DEB3);
+        }
+
+        /* =========================================
+           12. VETERAN - THE SCARRED IRON PUPPET
+           ========================================= */
+        .card.veteran {
+            --c-bar-bg: #5D6D7E;
+            --c-bar-border: 1px solid #CACFD2;
+            --c-badge-bg: #5D6D7E;
+            --c-badge-text: #F8F9F9;
+            --c-badge-border: none;
+            --c-art-bg: #F4F6F7;
+            --c-art-border: 2px solid #7F8C8D;
+            --c-name: #2C3E50;
+            --c-name-sub: #7F8C8D;
+            --c-quote-border: #7F8C8D;
+            --c-quote-text: #34495E;
+            --c-serial: #7F8C8D;
+            --c-glow: rgba(52, 73, 94, 0.3);
+        }
+        /* Uniqueness: Slash mark overlay and metallic sheen */
+        .card.veteran .art-circle {
+            background: linear-gradient(135deg, #FDFEFE 0%, #EAEDED 100%);
+            box-shadow: inset 0 0 10px rgba(127,140,141,0.2);
+        }
+
+        /* =========================================
+           13. BODYGUARD - THE HEAVY GAUNTLET PUPPET
+           ========================================= */
+        .card.bodyguard {
+            --c-bar-bg: #873600;
+            --c-bar-border: 1px solid #DC7633;
+            --c-badge-bg: #873600;
+            --c-badge-text: #FDEBD0;
+            --c-badge-border: none;
+            --c-art-bg: #FBFCFC;
+            --c-art-border: 2.5px solid #A04000;
+            --c-name: #6E2C00;
+            --c-name-sub: #BA4A00;
+            --c-quote-border: #DC7633;
+            --c-quote-text: #873600;
+            --c-serial: #BA4A00;
+            --c-glow: rgba(135, 54, 0, 0.4);
+        }
+        /* Uniqueness: Radial glow like a forcefield */
+        .card.bodyguard .art-circle {
+            background: radial-gradient(circle at 50% 60%, #FEF5E7, #FDEBD0);
+            box-shadow: inset 0 0 15px rgba(220,118,51,0.3), 0 0 10px rgba(135,54,0,0.2);
+        }
+
+        /* =========================================
+           14. PRIEST - THE STAINED GLASS PUPPET
+           ========================================= */
+        .card.priest {
+            --c-bar-bg: #D4AF37;
+            --c-bar-border: 1px solid #F1C40F;
+            --c-badge-bg: #D4AF37;
+            --c-badge-text: #FFFFFF;
+            --c-badge-border: none;
+            --c-art-bg: #FDFEFE;
+            --c-art-border: 2px solid #D4AF37;
+            --c-name: #B7950B;
+            --c-name-sub: #D4AF37;
+            --c-quote-border: #F1C40F;
+            --c-quote-text: #B7950B;
+            --c-serial: #D4AF37;
+            --c-glow: rgba(212, 175, 55, 0.4);
+        }
+        /* Uniqueness: Heavenly glow and double halo ring */
+        .card.priest .art-circle {
+            background: radial-gradient(circle at 50% 30%, #FEF9E7, #FFF);
+            box-shadow: 0 0 0 3px #FDFEFE, 0 0 0 5px rgba(212,175,55,0.3);
+        }
+
+        /* =========================================
+           15. MAYOR - THE GILDED TOP-HAT PUPPET
+           ========================================= */
+        .card.mayor {
+            --c-bar-bg: #154360; /* Deep Royal Navy */
+            --c-bar-border: 1px solid #F1C40F;
+            --c-badge-bg: #154360;
+            --c-badge-text: #F1C40F;
+            --c-badge-border: none;
+            --c-art-bg: #EBF5FB;
+            --c-art-border: 2.5px solid #F39C12;
+            --c-name: #154360;
+            --c-name-sub: #E67E22;
+            --c-quote-border: #F39C12;
+            --c-quote-text: #2980B9;
+            --c-serial: #E67E22;
+            --c-glow: rgba(241, 196, 15, 0.4);
+        }
+        /* Uniqueness: Sunburst lines radiating in the background */
+        .card.mayor .art-circle {
+            background: repeating-conic-gradient(from 0deg, #EBF5FB 0deg 15deg, #D6EAF8 15deg 30deg);
+            box-shadow: inset 0 0 15px rgba(243,156,18,0.2), 0 0 5px rgba(241,196,15,0.4);
+        }
+
+        /* =========================================
+           16. SHERIFF - THE SILVER STAR PUPPET
+           ========================================= */
+        .card.sheriff {
+            --c-bar-bg: #935116; /* Saddle Leather Brown */
+            --c-bar-border: 1px solid #D35400;
+            --c-badge-bg: #935116;
+            --c-badge-text: #FDEBD0;
+            --c-badge-border: none;
+            --c-art-bg: #FAF3E8;
+            --c-art-border: 2px solid #5D6D7E; /* Gunmetal */
+            --c-name: #6E2C00;
+            --c-name-sub: #A04000;
+            --c-quote-border: #D5DBDB; /* Silver line */
+            --c-quote-text: #935116;
+            --c-serial: #5D6D7E;
+            --c-glow: rgba(147, 81, 22, 0.4);
+        }
+        /* Uniqueness: Desert sun background and gunsmoke shadow */
+        .card.sheriff .art-circle {
+            background: linear-gradient(180deg, #FAD7A1 0%, #F8C471 40%, #E59866 100%);
+            box-shadow: inset 0 0 10px rgba(110,44,0,0.3);
+        }
+
+        /* =========================================
+           17. VILLAGER 2 - THE TORCHBEARER PAWN
+           ========================================= */
+        .card.villager-2 {
+            --c-bar-bg: #5B8EC4;
+            --c-bar-border: none;
+            --c-badge-bg: #5B8EC4;
+            --c-badge-text: #FFFFFF;
+            --c-badge-border: none;
+            --c-art-bg: #F4F1EA;
+            --c-art-border: 1.5px solid #E67E22; /* Torchlight reflection */
+            --c-name: var(--text-dark);
+            --c-name-sub: #E67E22;
+            --c-quote-border: #E67E22;
+            --c-quote-text: #5B8EC4;
+            --c-serial: #8C9EAB;
+            --c-glow: rgba(230, 126, 34, 0.4); /* Fire glow */
+        }
+        .card.villager-2 .art-circle {
+            background: radial-gradient(circle at 70% 60%, #FEF5E7, #F4F1EA);
+        }
+
+        /* =========================================
+           18. VILLAGER 3 - THE PITCHFORK PAWN
+           ========================================= */
+        .card.villager-3 {
+            --c-bar-bg: #5B8EC4;
+            --c-bar-border: none;
+            --c-badge-bg: #5B8EC4;
+            --c-badge-text: #FFFFFF;
+            --c-badge-border: none;
+            --c-art-bg: #F4F1EA;
+            --c-art-border: 1.5px solid #F39C12; /* Golden wheat sheen */
+            --c-name: var(--text-dark);
+            --c-name-sub: #F39C12;
+            --c-quote-border: #F39C12;
+            --c-quote-text: #5B8EC4;
+            --c-serial: #8C9EAB;
+            --c-glow: rgba(243, 156, 18, 0.3); /* Wheat glow */
+        }
+        .card.villager-3 .art-circle {
+            background: linear-gradient(180deg, #FEF9E7 0%, #FCF3CF 100%);
+        }
+
+        /* =========================================
+           19. WEREWOLF 2 - THE HOWLING MARIONETTE
+           ========================================= */
+        .card.werewolf-2 {
+            --c-bar-bg: #8B0000;
+            --c-bar-border: 1px solid #E74C3C;
+            --c-badge-bg: #8B0000;
+            --c-badge-text: #FFCCCC;
+            --c-badge-border: none;
+            --c-art-bg: #FAECEC; /* faint bloody tint */
+            --c-art-border: 2px dashed #E74C3C;
+            --c-name: #8B0000;
+            --c-name-sub: #E74C3C;
+            --c-quote-border: #E74C3C;
+            --c-quote-text: #590000;
+            --c-serial: #C0392B;
+            --c-glow: rgba(139, 0, 0, 0.5);
+        }
+        /* Uniqueness: Deep moon glow originating from top */
+        .card.werewolf-2 .art-circle {
+            background: linear-gradient(180deg, #F9E79F 0%, #FAECEC 60%);
+        }
+
+        /* =========================================
+           20. LONE WOLF - THE SOLITARY BEAST
+           ========================================= */
+        .card.lonewolf {
+            --c-bar-bg: #5B2C6F; /* Deep Purple */
+            --c-bar-border: 1px solid #A569BD;
+            --c-badge-bg: #5B2C6F;
+            --c-badge-text: #F4ECF7;
+            --c-badge-border: none;
+            --c-art-bg: #EAECEE; /* Light fog grey */
+            --c-art-border: 2.5px solid #8E44AD;
+            --c-name: #4A235A;
+            --c-name-sub: #A569BD;
+            --c-quote-border: #A569BD;
+            --c-quote-text: #5B2C6F;
+            --c-serial: #8E44AD;
+            --c-glow: rgba(91, 44, 111, 0.4);
+        }
+        /* Uniqueness: Purple fog overlay */
+        .card.lonewolf .art-circle {
+            background: radial-gradient(circle at 40% 70%, #F5EEF8, #D2B4DE);
+            box-shadow: inset 0 0 10px rgba(91,44,111,0.3);
+        }
+
+        /* =========================================
+           21. DOPPELGANGER - THE FACELESS PUPPET
+           ========================================= */
+        .card.doppelganger {
+            --c-bar-bg: #0E6251; /* Deep Teal */
+            --c-bar-border: 1px solid #48C9B0;
+            --c-badge-bg: #0E6251;
+            --c-badge-text: #E8F8F5;
+            --c-badge-border: none;
+            --c-art-bg: #EAFAF1;
+            --c-art-border: 2px solid #1ABC9C;
+            --c-name: #0B5345;
+            --c-name-sub: #16A085;
+            --c-quote-border: #48C9B0;
+            --c-quote-text: #0E6251;
+            --c-serial: #48C9B0;
+            --c-glow: rgba(14, 98, 81, 0.4);
+        }
+        /* Uniqueness: Split diagonal background (mirror effect) */
+        .card.doppelganger .art-circle {
+            background: linear-gradient(135deg, #EAFAF1 50%, #D1F2EB 50%);
+            box-shadow: inset 0 0 10px rgba(14,98,81,0.2);
+        }
+
+        /* =========================================
+           22. SERIAL KILLER - THE GRINNING BUTCHER
+           ========================================= */
+        .card.serialkiller {
+            --c-bar-bg: #E74C3C; /* Stark Crimson */
+            --c-bar-border: 1px solid #7B241C;
+            --c-badge-bg: #E74C3C;
+            --c-badge-text: #FDFEFE;
+            --c-badge-border: none;
+            --c-art-bg: #F4F6F7; /* Cold Bone White */
+            --c-art-border: 2px solid #CB4335;
+            --c-name: #641E16;
+            --c-name-sub: #CB4335;
+            --c-quote-border: #7B241C;
+            --c-quote-text: #922B21;
+            --c-serial: #7B241C;
+            --c-glow: rgba(231, 76, 60, 0.4);
+        }
+        /* Uniqueness: Subtle blood spray background and erratic border */
+        .card.serialkiller .art-circle {
+            background: radial-gradient(circle at 60% 50%, #FDFEFE, #EAECEE);
+            box-shadow: inset 0 0 12px rgba(231,76,60,0.25);
+        }
+
+        /* =========================================
+           23. IDIOT - THE DUNCE PAWN
+           ========================================= */
+        .card.idiot {
+            --c-bar-bg: #D4AC0D; /* Mustard Gold */
+            --c-bar-border: 1px solid #F1C40F;
+            --c-badge-bg: #D4AC0D;
+            --c-badge-text: #FEF9E7;
+            --c-badge-border: none;
+            --c-art-bg: #EBF5FB; /* Pale Sky Blue */
+            --c-art-border: 2px solid #D4AC0D;
+            --c-name: #9A7D0A;
+            --c-name-sub: #D4AC0D;
+            --c-quote-border: #F1C40F;
+            --c-quote-text: #2874A6;
+            --c-serial: #D4AC0D;
+            --c-glow: rgba(212, 172, 13, 0.3);
+        }
+        /* Uniqueness: Tilted, erratic wavy background */
+        .card.idiot .art-circle {
+            background: repeating-radial-gradient(circle at 40% 40%, #EBF5FB 0px, #D6EAF8 10px, #EBF5FB 20px);
+            box-shadow: inset 0 0 8px rgba(41,128,185,0.2);
+        }
+
+        /* =========================================
+           24. PRINCE - THE JEWELED CROWN PUPPET
+           ========================================= */
+        .card.prince {
+            --c-bar-bg: #21618C; /* Deep Royal Sapphire */
+            --c-bar-border: 1px solid #F1C40F;
+            --c-badge-bg: #21618C;
+            --c-badge-text: #FDEBD0;
+            --c-badge-border: none;
+            --c-art-bg: #FDFEFE;
+            --c-art-border: 2px solid #F39C12;
+            --c-name: #21618C;
+            --c-name-sub: #D4AC0D;
+            --c-quote-border: #F39C12;
+            --c-quote-text: #21618C;
+            --c-serial: #F39C12;
+            --c-glow: rgba(33, 97, 140, 0.4);
+        }
+        /* Uniqueness: Subtle sunburst behind the prince */
+        .card.prince .art-circle {
+            background: radial-gradient(circle at 50% 50%, #FEF9E7 10%, #EBF5FB 70%);
+            box-shadow: inset 0 0 10px rgba(241,196,15,0.25);
+        }
+
+        /* =========================================
+           25. LITTLE GIRL - THE PEEKING DOLL
+           ========================================= */
+        .card.littlegirl {
+            --c-bar-bg: #E6B0AA; /* Muted Rose Pink */
+            --c-bar-border: 1px solid #CD6155;
+            --c-badge-bg: #E6B0AA;
+            --c-badge-text: #FDFEFE;
+            --c-badge-border: none;
+            --c-art-bg: #FDEDEC;
+            --c-art-border: 2px dashed #D98880;
+            --c-name: #922B21;
+            --c-name-sub: #CD6155;
+            --c-quote-border: #D98880;
+            --c-quote-text: #7B241C;
+            --c-serial: #D98880;
+            --c-glow: rgba(230, 176, 170, 0.4);
+        }
+        /* Uniqueness: Soft vignette */
+        .card.littlegirl .art-circle {
+            background: radial-gradient(circle at 50% 50%, #FEF9E7 10%, #FDEDEC 80%);
+            box-shadow: inset 0 0 15px rgba(205,97,85,0.2);
+        }
+
+        /* =========================================
+           26. CARD BACK - THE STAGE
+           ========================================= */
+        .card.back {
+            --c-bg: #0F0F0F;
+            --c-bar-bg: transparent;
+            --c-bar-border: 1px solid #C5A059;
+            --c-glow: rgba(197, 160, 89, 0.5);
+        }
+        /* Uniqueness: Thin gold borders instead of solid bars, centered mandala */
+        .card.back .side-bars { width: 3mm; border: 1px solid #C5A059; border-top:none; border-bottom:none; background: transparent;}
+        .card.back .side-bars.left { left: 2mm; }
+        .card.back .side-bars.right { right: 2mm; }
+        
+        .card.back .center-stage {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 42mm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 5;
+        }
+        .card.back .title-top {
+            font-family: 'Cinzel', serif; font-size: 6.5pt; color: #C5A059; letter-spacing: 4px; margin-bottom: 2mm; text-align: center;
+        }
+        .card.back .title-bot {
+            font-family: 'Playfair Display', serif; font-size: 10pt; font-weight: 900; color: #C5A059; letter-spacing: 5px; margin-top: 2mm; text-align: center; text-transform: uppercase;
+        }
+        .card.back .mandala-circle {
+            width: 38mm; height: 38mm; border-radius: 50%; border: 1px solid rgba(197, 160, 89, 0.5); display: flex; justify-content: center; align-items: center; background: #0a0a0a;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="deck-title screen-only">
+        <h1>SINISTER PUPPET EDITION</h1>
+        <p>Unified "Warga" Layout - Distinct Role Identities</p>
+    </div>
+
+    <!-- CONTROL PANEL FOR PRINT/DOWNLOAD -->
+    <div class="control-panel screen-only" style="background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 15px 25px; margin: 0 auto 30px; max-width: 900px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; position: relative; z-index: 10;">
+        <div style="width: 100%; text-align: center; margin-bottom: 12px; border-bottom: 1px solid #444; padding-bottom: 10px;">
+            <p style="margin: 0; font-size: 13px; color: #fff; font-weight: 500;">
+                <span style="color: #D4AF37; font-weight: 700;">PANDUAN CETAK:</span> Tekan <kbd style="background: #333; border-radius: 3px; border: 1px solid #555; padding: 2px 4px;">Ctrl+P</kbd> dan pastikan:
+                <strong>1.</strong> Format: <strong style="color:#D4AF37">A4</strong> &nbsp;&nbsp;
+                <strong>2.</strong> Scale: <strong style="color:#D4AF37">100% (Custom)</strong> &nbsp;&nbsp;
+                <strong>3.</strong> Margins: <strong style="color:#D4AF37">None</strong> &nbsp;&nbsp;
+                <strong>4.</strong> Centang <strong style="color:#D4AF37">Background graphics</strong>.
+            </p>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; width: 100%;">
+            <div class="control-group" style="display: flex; align-items: center; gap: 8px; background: #222; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <label for="paper-size" style="font-size: 11px; font-weight: 700; color: #ccc; text-transform: uppercase;">Kertas:</label>
+                <select id="paper-size" onchange="changePaperSize()" style="font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 4px; border: 1px solid #555; background: #333; color: #fff; cursor: pointer; outline: none;">
+                    <option value="a4">A4 (9 Kartu)</option>
+                    <option value="f4">F4 / Folio (9 Kartu)</option>
+                    <option value="a3">A3 (20 Kartu)</option>
+                    <option value="a3plus">A3+ (25 Kartu)</option>
+                    <option value="single">Single (Per Kartu)</option>
+                </select>
+            </div>
+
+            <div style="width: 2px; background: #444; margin: 0 5px; border-radius: 2px;"></div>
+
+            <div class="control-group" style="display: flex; align-items: center; gap: 8px; background: #222; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <label for="export-dpi" style="font-size: 11px; font-weight: 700; color: #ccc; text-transform: uppercase;">Detail PDF:</label>
+                <select id="export-dpi" onchange="changePaperSize()" style="font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 4px; border: 1px solid #555; background: #333; color: #fff; cursor: pointer; outline: none;">
+                    <option value="1">Standar (96 DPI)</option>
+                    <option value="2">Tajam (192 DPI)</option>
+                    <option value="4" selected>Ekstrem (384 DPI)</option>
+                </select>
+            </div>
+
+            <button class="control-btn" onclick="window.print()" title="Simpan sebagai PDF (Ctrl+P)" style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; padding: 10px 18px; border-radius: 8px; cursor: pointer; border: none; background: linear-gradient(135deg, #8B5AA8, #5C1682); box-shadow: 0 4px 12px rgba(92, 22, 130, 0.3); color: white;">
+                🖨️ Simpan PDF
+            </button>
+
+            <div style="width: 2px; background: #444; margin: 0 5px; border-radius: 2px;"></div>
+
+            <div class="control-group" style="display: flex; align-items: center; gap: 8px; background: #222; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <label for="export-format" style="font-size: 11px; font-weight: 700; color: #ccc; text-transform: uppercase;">Zip:</label>
+                <select id="export-format" style="font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 4px; border: 1px solid #555; background: #333; color: #fff; cursor: pointer; outline: none;">
+                    <option value="png">PNG</option>
+                    <option value="jpg">JPG</option>
+                </select>
+            </div>
+            <button id="btn-download-all" class="control-btn" onclick="downloadAllCardsDomToImage('SinisterPuppet', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})" style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; padding: 10px 18px; border-radius: 8px; cursor: pointer; border: none; background: linear-gradient(135deg, #C5A059, #D4AF37); box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); color: white;">
+                ⬇ Download (.ZIP)
+            </button>
+        </div>
+    </div>
+
+    <!-- DYNAMIC CONTAINER -->
+    <div id="pages-container"></div>
+
+    <!-- SCRIPTS -->
+    <script src="sinisterpuppet_data.js"></script>
+    <script src="svg_sinisterpuppet.js"></script>
+
+    <script>
+        function generateSinisterCard(card) {
+            if (card.id === 'card_back') {
+                return `
+                <div class="card back ${card.className}">
+                    <div class="side-bars left"></div>
+                    <div class="side-bars right"></div>
+                    <div class="center-stage">
+                        <div class="title-top">${card.titleTop}</div>
+                        <div class="mandala-circle">
+                            ${sinisterArt[card.id] || ''}
+                        </div>
+                        <div class="title-bot">${card.titleBot}</div>
+                    </div>
+                </div>`;
+            }
+
+            return `
+            <div class="card ${card.className} c-code-wrapper" data-id="${card.id}">
+                <div class="side-bars left"></div>
+                <div class="side-bars right"></div>
+                <div class="serial-code c-code">${card.code}</div>
+
+                <div class="content-wrapper">
+                    <div class="faction-badge">${card.faction}</div>
+                    
+                    <div class="art-circle">
+                        ${sinisterArt[card.id] || ''}
+                    </div>
+
+                    <div class="text-block">
+                        <div class="name-id">${card.titleId}</div>
+                        <div class="name-en">${card.titleEn}</div>
+                        <div class="role-quote">"${card.quote}"</div>
+                        <div class="role-desc">${card.ability}</div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function changePaperSize() {
+            const paperId = document.getElementById('paper-size').value;
+            const container = document.getElementById("pages-container");
+            const dpiScale = parseFloat(document.getElementById('export-dpi')?.value || 1);
+            container.innerHTML = "";
+
+            let cols = 3, rows = 3;
+            let wMM = 210, hMM = 297, cssPadding = "15mm 15mm", cssGap = "5.5mm";
+
+            if (paperId === 'a4') {
+                cols = 3; rows = 3; wMM = 210; hMM = 297; cssPadding = "15mm 15mm"; cssGap = "5.5mm";
+            } else if (paperId === 'f4') {
+                cols = 3; rows = 3; wMM = 215; hMM = 330; cssPadding = "25mm 15.5mm"; cssGap = "6mm";
+            } else if (paperId === 'a3') {
+                cols = 5; rows = 4; wMM = 297; hMM = 420; cssPadding = "28mm 1.1mm"; cssGap = "1.5mm";
+            } else if (paperId === 'a3plus') {
+                cols = 5; rows = 5; wMM = 329; hMM = 483; cssPadding = "8.5mm 11.5mm"; cssGap = "4.5mm";
+            } else if (paperId === 'single') {
+                cols = 1; rows = 1; wMM = 54.5; hMM = 85.5; cssPadding = "0"; cssGap = "0mm";
+            }
+
+            const cssWidth = wMM + "mm";
+            const cssHeight = hMM + "mm";
+            const printTargetWidth = parseFloat((wMM * dpiScale).toFixed(2)) + "mm";
+            const printTargetHeight = parseFloat((hMM * hMM > 0 ? hMM * dpiScale : 0).toFixed(2)) + "mm";
+            const localCardsPerPage = cols * rows;
+
+            let styleEl = document.getElementById('dynamic-paper-style');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'dynamic-paper-style';
+                document.head.appendChild(styleEl);
+            }
+
+            styleEl.innerHTML = `
+                @page { size: ${printTargetWidth} ${printTargetHeight}; margin: 0; }
+                @media print {
+                    .screen-only, .control-panel, .deck-title { display: none !important; }
+                    body { padding: 0 !important; background: none !important; }
+                    .page { 
+                        width: ${cssWidth}; height: ${cssHeight}; 
+                        padding: ${cssPadding} !important; gap: ${cssGap} !important; 
+                        margin: 0; page-break-after: always; page-break-inside: avoid; overflow: hidden; 
+                        zoom: ${dpiScale}; background: none !important; box-shadow: none !important;
+                    }
+                    .card { box-shadow: none !important; transform: none !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                }
+                .page {
+                    width: ${cssWidth};
+                    min-height: ${cssHeight};
+                    padding: ${cssPadding};
+                    gap: ${cssGap};
+                    background: #1a1a1a;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                    margin: 0 auto 40px;
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-content: flex-start;
+                    justify-content: flex-start;
+                    box-sizing: border-box;
+                }
+            `;
+
+            let htmlContent = '';
+            const frontCards = sinisterDeckData.filter(c => c.id !== 'card_back');
+            const backCardData = sinisterDeckData.find(c => c.id === 'card_back');
+
+            for (let i = 0; i < frontCards.length; i += localCardsPerPage) {
+                const pageCards = frontCards.slice(i, i + localCardsPerPage);
+                htmlContent += `<div class="page">`;
+                pageCards.forEach(card => {
+                    htmlContent += generateSinisterCard(card);
+                });
+                htmlContent += `</div>`;
+            }
+
+            if (paperId !== 'single' && backCardData) {
+                const numbPages = Math.ceil(frontCards.length / localCardsPerPage);
+                const backHTML = generateSinisterCard(backCardData);
+
+                for (let p = 0; p < numbPages; p++) {
+                    htmlContent += `<div class="page page-back">`;
+                    const countOnThisPage = (p === numbPages - 1 && frontCards.length % localCardsPerPage !== 0)
+                        ? frontCards.length % localCardsPerPage
+                        : localCardsPerPage;
+                    for (let c = 0; c < countOnThisPage; c++) {
+                        htmlContent += backHTML;
+                    }
+                    htmlContent += `</div>`;
+                }
+            } else if (paperId === 'single' && backCardData) {
+                htmlContent += `<div class="page">`;
+                htmlContent += generateSinisterCard(backCardData);
+                htmlContent += `</div>`;
+            }
+
+            container.innerHTML = htmlContent;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            changePaperSize();
+        });
+
+        document.addEventListener('dblclick', function (e) {
+            const card = e.target.closest('.card');
+            if (!card) return;
+            downloadCard(card);
+        });
+
+        let lastTap = 0;
+        document.addEventListener('touchend', function (e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 500 && tapLength > 0) {
+                const card = e.target.closest('.card');
+                if (card) {
+                    downloadCard(card);
+                    e.preventDefault();
+                }
+            }
+            lastTap = currentTime;
+        });
+
+        function downloadCard(card) {
+            const format = (document.getElementById('export-format').value || 'png').trim().toLowerCase();
+            const idElement = card.querySelector('.c-code');
+            let cardId = idElement ? idElement.innerText : 'card-back';
+            cardId = cardId.replace(/[:\s\/]/g, '-').replace(/--+/g, '-').replace(/^-|-$/g, '');
+            const bgColor = format === 'jpg' ? '#ffffff' : null;
+            if (typeof downloadCardDomToImage !== "undefined") {
+                downloadCardDomToImage(card, `SinisterPuppet-${cardId}`, { format, bgColor });
+            }
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+    <script src="download_helper.js?v=2"></script>
+</body>
+</html>
