@@ -1,0 +1,2538 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Werewolf - Pop-Art Chaos Edition</title>
+
+    <!-- Import Font Punchy & Comic-Style -->
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Montserrat:wght@500;700;900&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        :root {
+            /* Dimensi Kartu Presisi Cetak */
+            --w: 54.5mm;
+            --h: 85.5mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #111;
+            background-image: repeating-linear-gradient(45deg, #1a1a1a 0, #1a1a1a 2px, #111 2px, #111 8px);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 50px 20px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .showcase-header {
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .showcase-header h1 {
+            font-family: 'Righteous', cursive;
+            font-size: 32px;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 3px 3px 0px #D500F9, -3px -3px 0px #00E5FF;
+        }
+
+        .showcase-header p {
+            font-size: 12px;
+            color: #ccc;
+            margin-top: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* =========================================================
+           BASE POP-ART CARD LAYOUT (Berdasarkan Layout Badut)
+        ========================================================= */
+        .card {
+            width: var(--w);
+            height: var(--h);
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+            border-radius: 3mm;
+            border: 1.5mm solid #111;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .card:hover {
+            transform: translateY(-15px) scale(1.08) rotate(2deg);
+            z-index: 10;
+        }
+
+        /* Latar Belakang Pattern */
+        .bg-pattern {
+            position: absolute;
+            inset: 0;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            padding: 3mm;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Komponen Atas (Header Miring) */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 3mm;
+        }
+
+        .badge {
+            font-family: 'Righteous', cursive;
+            font-size: 6pt;
+            color: #111;
+            padding: 1mm 2mm;
+            border: 1.5px solid #111;
+            box-shadow: 2px 2px 0 #111;
+        }
+
+        /* Komponen Judul (Dual Text-Shadow) */
+        .title-box {
+            text-align: center;
+            margin-bottom: 1mm;
+        }
+
+        .title-id {
+            font-family: 'Righteous', cursive;
+            font-size: 15pt;
+            line-height: 1;
+            color: #111;
+            text-transform: uppercase;
+        }
+
+        .title-en {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5pt;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Komponen Ilustrasi SVG (Hard Drop Shadow) */
+        .art-box {
+            width: 34mm;
+            height: 34mm;
+            margin: 0 auto;
+            filter: drop-shadow(4px 4px 0px #111);
+        }
+
+        /* Komponen Teks Bawah (Kotak Miring dengan Shadow Warna) */
+        .text-wrapper {
+            position: absolute;
+            bottom: 3mm;
+            left: 3mm;
+            right: 3mm;
+            background: #fff;
+            border: 2px solid #111;
+            padding: 2.5mm;
+        }
+
+        .ability {
+            font-family: 'Righteous', cursive;
+            font-size: 6.5pt;
+            text-align: center;
+            margin-bottom: 1mm;
+            text-shadow: 1px 1px 0 #111;
+            letter-spacing: 0.5px;
+        }
+
+        .quote {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 5pt;
+            color: #111;
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 1.5mm;
+            padding-bottom: 1mm;
+        }
+
+        .desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4.5pt;
+            font-weight: 700;
+            color: #222;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* =========================================================
+           1. SEER (PENERAWANG) - Tema Cyan & Yellow
+        ========================================================= */
+        .t-seer .bg-pattern {
+            background-image: radial-gradient(#FFEA00 1.5px, transparent 1.5px);
+            background-size: 6px 6px;
+        }
+
+        .t-seer .header {
+            transform: rotate(4deg);
+        }
+
+        .t-seer .code-badge {
+            background: #00E5FF;
+            color: #111;
+        }
+
+        .t-seer .fac-badge {
+            background: #FFEA00;
+            color: #111;
+        }
+
+        .t-seer .title-box {
+            transform: rotate(-3deg);
+        }
+
+        .t-seer .title-id {
+            text-shadow: -2px 2px 0 #00E5FF, 2px -2px 0 #FFEA00;
+        }
+
+        .t-seer .title-en {
+            color: #00E5FF;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-seer .art-box {
+            transform: rotate(5deg);
+        }
+
+        .t-seer .text-wrapper {
+            transform: rotate(2deg);
+            box-shadow: 3px 3px 0 #00E5FF;
+        }
+
+        .t-seer .ability {
+            color: #FFEA00;
+        }
+
+        .t-seer .quote {
+            border-bottom: 2px dotted #00E5FF;
+        }
+
+        /* =========================================================
+           2. HUNTER (PEMBURU) - Tema Deep Blue & Hot Orange
+        ========================================================= */
+        .t-hunter .bg-pattern {
+            background: repeating-linear-gradient(45deg, #FF3D00 0, #FF3D00 1px, transparent 1px, transparent 5px);
+        }
+
+        .t-hunter .header {
+            transform: rotate(-5deg);
+        }
+
+        .t-hunter .code-badge {
+            background: #FF3D00;
+            color: #fff;
+        }
+
+        .t-hunter .fac-badge {
+            background: #2962FF;
+            color: #fff;
+        }
+
+        .t-hunter .title-box {
+            transform: rotate(4deg);
+        }
+
+        .t-hunter .title-id {
+            text-shadow: -2px -2px 0 #FF3D00, 2px 2px 0 #2962FF;
+            color: #fff;
+        }
+
+        .t-hunter .title-en {
+            color: #FF3D00;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-hunter .art-box {
+            transform: rotate(-6deg);
+        }
+
+        .t-hunter .text-wrapper {
+            transform: rotate(-3deg);
+            box-shadow: -3px 3px 0 #FF3D00;
+        }
+
+        .t-hunter .ability {
+            color: #2962FF;
+        }
+
+        .t-hunter .quote {
+            border-bottom: 2px dotted #FF3D00;
+        }
+
+        /* =========================================================
+           3. WEREWOLF (SERIGALA) - Tema Crimson Red & Dark Grey
+        ========================================================= */
+        .t-wolf .bg-pattern {
+            background-image: repeating-radial-gradient(circle at 0 0, transparent 0, #fff 4px, #D50000 4px, #D50000 5px);
+        }
+
+        .t-wolf .header {
+            transform: rotate(3deg);
+        }
+
+        .t-wolf .code-badge {
+            background: #D50000;
+            color: #fff;
+        }
+
+        .t-wolf .fac-badge {
+            background: #424242;
+            color: #fff;
+        }
+
+        .t-wolf .title-box {
+            transform: rotate(-5deg);
+        }
+
+        .t-wolf .title-id {
+            text-shadow: 2px 2px 0 #D50000, -2px -2px 0 #424242;
+        }
+
+        .t-wolf .title-en {
+            color: #D50000;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-wolf .art-box {
+            transform: rotate(8deg);
+        }
+
+        .t-wolf .text-wrapper {
+            transform: rotate(4deg);
+            box-shadow: 3px -3px 0 #D50000;
+        }
+
+        .t-wolf .ability {
+            color: #D50000;
+        }
+
+        .t-wolf .quote {
+            border-bottom: 2px dotted #424242;
+        }
+
+        /* =========================================================
+           4. JESTER (BADUT) - Tema Magenta & Toxic Green (Original)
+        ========================================================= */
+        .t-jester .bg-pattern {
+            background-image: radial-gradient(#00E676 1.5px, transparent 1.5px);
+            background-size: 6px 6px;
+        }
+
+        .t-jester .header {
+            transform: rotate(-6deg);
+        }
+
+        .t-jester .code-badge {
+            background: #D500F9;
+            color: #fff;
+        }
+
+        .t-jester .fac-badge {
+            background: #00E676;
+            color: #111;
+        }
+
+        .t-jester .title-box {
+            transform: rotate(5deg);
+        }
+
+        .t-jester .title-id {
+            text-shadow: -2px 2px 0 #00E676, 2px -2px 0 #D500F9;
+        }
+
+        .t-jester .title-en {
+            color: #D500F9;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-jester .art-box {
+            transform: rotate(-8deg);
+        }
+
+        .t-jester .text-wrapper {
+            transform: rotate(-2deg);
+            box-shadow: 3px 3px 0 #D500F9;
+        }
+
+        .t-jester .ability {
+            color: #00E676;
+        }
+
+        .t-jester .quote {
+            border-bottom: 2px dotted #D500F9;
+        }
+
+        /* =========================================================
+           5. GUARDIAN (PELINDUNG) - Tema Hot Pink & Cyan Blue
+        ========================================================= */
+        .t-guard .bg-pattern {
+            background-image: linear-gradient(45deg, #00B0FF 25%, transparent 25%, transparent 75%, #00B0FF 75%, #00B0FF), linear-gradient(45deg, #00B0FF 25%, transparent 25%, transparent 75%, #00B0FF 75%, #00B0FF);
+            background-size: 10px 10px;
+            background-position: 0 0, 5px 5px;
+            opacity: 0.1;
+        }
+
+        .t-guard .header {
+            transform: rotate(4deg);
+        }
+
+        .t-guard .code-badge {
+            background: #FF4081;
+            color: #fff;
+        }
+
+        .t-guard .fac-badge {
+            background: #00B0FF;
+            color: #111;
+        }
+
+        .t-guard .title-box {
+            transform: rotate(-4deg);
+        }
+
+        .t-guard .title-id {
+            text-shadow: 2px 2px 0 #FF4081, -2px -2px 0 #00B0FF;
+        }
+
+        .t-guard .title-en {
+            color: #FF4081;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-guard .art-box {
+            transform: rotate(6deg);
+        }
+
+        .t-guard .text-wrapper {
+            transform: rotate(3deg);
+            box-shadow: -3px 3px 0 #00B0FF;
+        }
+
+        .t-guard .ability {
+            color: #FF4081;
+        }
+
+        .t-guard .quote {
+            border-bottom: 2px dotted #00B0FF;
+        }
+
+        /* =========================================================
+           6. MODERATOR - Tema Gold & Black (GOD MODE)
+        ========================================================= */
+        .t-mod .bg-pattern {
+            background-image: repeating-linear-gradient(0deg, #FFD600 0, #FFD600 1px, transparent 1px, transparent 8px), repeating-linear-gradient(90deg, #FFD600 0, #FFD600 1px, transparent 1px, transparent 8px);
+            background-size: 8px 8px;
+            opacity: 0.12;
+        }
+
+        .t-mod .header {
+            transform: rotate(-3deg);
+        }
+
+        .t-mod .code-badge {
+            background: #FFD600;
+            color: #111;
+        }
+
+        .t-mod .fac-badge {
+            background: #111;
+            color: #FFD600;
+            border-color: #FFD600;
+            box-shadow: 2px 2px 0 #FFD600;
+        }
+
+        .t-mod .title-box {
+            transform: rotate(4deg);
+        }
+
+        .t-mod .title-id {
+            text-shadow: -3px 3px 0 #FFD600, 3px -3px 0 #888;
+            color: #111;
+        }
+
+        .t-mod .title-en {
+            color: #FFD600;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-mod .art-box {
+            transform: rotate(-5deg);
+        }
+
+        .t-mod .text-wrapper {
+            transform: rotate(-2deg);
+            box-shadow: 4px 4px 0 #FFD600;
+            border-width: 2.5px;
+        }
+
+        .t-mod .ability {
+            color: #111;
+            background: #FFD600;
+            padding: 0.5mm 2mm;
+            display: inline-block;
+            margin: 0 auto;
+        }
+
+        .t-mod .quote {
+            border-bottom: 2px dotted #FFD600;
+        }
+
+        /* =========================================================
+           8. ALPHA WOLF - Tema Deep Purple & Blood Red (APEX PREDATOR)
+        ========================================================= */
+        .t-alphawolf .bg-pattern {
+            background-image: repeating-linear-gradient(-45deg, #6A0DAD 0, #6A0DAD 1px, transparent 1px, transparent 7px);
+        }
+
+        .t-alphawolf .header {
+            transform: rotate(5deg);
+        }
+
+        .t-alphawolf .code-badge {
+            background: #B71C1C;
+            color: #fff;
+        }
+
+        .t-alphawolf .fac-badge {
+            background: #6A0DAD;
+            color: #fff;
+        }
+
+        .t-alphawolf .title-box {
+            transform: rotate(-4deg);
+        }
+
+        .t-alphawolf .title-id {
+            text-shadow: 3px 3px 0 #B71C1C, -3px -3px 0 #6A0DAD;
+        }
+
+        .t-alphawolf .title-en {
+            color: #6A0DAD;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-alphawolf .art-box {
+            transform: rotate(7deg);
+        }
+
+        .t-alphawolf .text-wrapper {
+            transform: rotate(3deg);
+            box-shadow: -4px 4px 0 #6A0DAD;
+        }
+
+        .t-alphawolf .ability {
+            color: #B71C1C;
+        }
+
+        .t-alphawolf .quote {
+            border-bottom: 2px dotted #6A0DAD;
+        }
+
+        /* =========================================================
+           9. CUPID - Tema Hot Pink & Electric Red (CHAOS LOVE)
+        ========================================================= */
+        .t-cupid .bg-pattern {
+            background-image: radial-gradient(#FF1493 1px, transparent 1px), radial-gradient(#FF1493 1px, transparent 1px);
+            background-size: 8px 8px;
+            background-position: 0 0, 4px 4px;
+        }
+
+        .t-cupid .header {
+            transform: rotate(-5deg);
+        }
+
+        .t-cupid .code-badge {
+            background: #FF1493;
+            color: #fff;
+        }
+
+        .t-cupid .fac-badge {
+            background: #FF1744;
+            color: #fff;
+        }
+
+        .t-cupid .title-box {
+            transform: rotate(5deg);
+        }
+
+        .t-cupid .title-id {
+            text-shadow: -2px 2px 0 #FF1493, 2px -2px 0 #FF1744;
+        }
+
+        .t-cupid .title-en {
+            color: #FF1493;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-cupid .art-box {
+            transform: rotate(-7deg);
+        }
+
+        .t-cupid .text-wrapper {
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 #FF1493;
+        }
+
+        .t-cupid .ability {
+            color: #FF1493;
+        }
+
+        .t-cupid .quote {
+            border-bottom: 2px dotted #FF1744;
+        }
+
+        /* =========================================================
+           10. WITCH - Tema Toxic Green & Poison Purple (BREW MASTER)
+        ========================================================= */
+        .t-witch .bg-pattern {
+            background-image: repeating-radial-gradient(circle at 50% 50%, #76FF03 0, #76FF03 1px, transparent 1px, transparent 6px);
+            background-size: 12px 12px;
+        }
+
+        .t-witch .header {
+            transform: rotate(4deg);
+        }
+
+        .t-witch .code-badge {
+            background: #AA00FF;
+            color: #fff;
+        }
+
+        .t-witch .fac-badge {
+            background: #76FF03;
+            color: #111;
+        }
+
+        .t-witch .title-box {
+            transform: rotate(-5deg);
+        }
+
+        .t-witch .title-id {
+            text-shadow: 2px 2px 0 #76FF03, -2px -2px 0 #AA00FF;
+        }
+
+        .t-witch .title-en {
+            color: #AA00FF;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-witch .art-box {
+            transform: rotate(6deg);
+        }
+
+        .t-witch .text-wrapper {
+            transform: rotate(2deg);
+            box-shadow: -3px -3px 0 #76FF03, 3px 3px 0 #AA00FF;
+        }
+
+        .t-witch .ability {
+            color: #AA00FF;
+        }
+
+        .t-witch .quote {
+            border-bottom: 2px dotted #76FF03;
+        }
+
+        /* =========================================================
+           11. WIZARD - Tema Electric Blue & Gold (ARCANE MASTER)
+        ========================================================= */
+        .t-wizard .bg-pattern {
+            background-image: repeating-linear-gradient(60deg, #00B0FF 0, #00B0FF 1px, transparent 1px, transparent 9px), repeating-linear-gradient(-60deg, #FFD700 0, #FFD700 1px, transparent 1px, transparent 9px);
+            opacity: 0.15;
+        }
+
+        .t-wizard .header {
+            transform: rotate(-4deg);
+        }
+
+        .t-wizard .code-badge {
+            background: #00B0FF;
+            color: #111;
+        }
+
+        .t-wizard .fac-badge {
+            background: #FFD700;
+            color: #111;
+        }
+
+        .t-wizard .title-box {
+            transform: rotate(3deg);
+        }
+
+        .t-wizard .title-id {
+            text-shadow: -2px 2px 0 #00B0FF, 2px -2px 0 #FFD700;
+        }
+
+        .t-wizard .title-en {
+            color: #00B0FF;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-wizard .art-box {
+            transform: rotate(-5deg);
+        }
+
+        .t-wizard .text-wrapper {
+            transform: rotate(-2deg);
+            box-shadow: 4px -4px 0 #00B0FF;
+        }
+
+        .t-wizard .ability {
+            color: #00B0FF;
+        }
+
+        .t-wizard .quote {
+            border-bottom: 2px dotted #FFD700;
+        }
+
+        /* =========================================================
+           12. VETERAN - Tema Military Green & Amber (WAR MACHINE)
+        ========================================================= */
+        .t-veteran .bg-pattern {
+            background-image: repeating-linear-gradient(90deg, #558B2F 0, #558B2F 2px, transparent 2px, transparent 10px), repeating-linear-gradient(0deg, #558B2F 0, #558B2F 2px, transparent 2px, transparent 10px);
+            opacity: 0.2;
+        }
+
+        .t-veteran .header {
+            transform: rotate(3deg);
+        }
+
+        .t-veteran .code-badge {
+            background: #FF6F00;
+            color: #fff;
+        }
+
+        .t-veteran .fac-badge {
+            background: #558B2F;
+            color: #fff;
+        }
+
+        .t-veteran .title-box {
+            transform: rotate(-4deg);
+        }
+
+        .t-veteran .title-id {
+            text-shadow: 3px 3px 0 #558B2F, -2px -2px 0 #FF6F00;
+        }
+
+        .t-veteran .title-en {
+            color: #558B2F;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-veteran .art-box {
+            transform: rotate(5deg);
+        }
+
+        .t-veteran .text-wrapper {
+            transform: rotate(2deg);
+            box-shadow: -4px 4px 0 #558B2F;
+        }
+
+        .t-veteran .ability {
+            color: #FF6F00;
+        }
+
+        .t-veteran .quote {
+            border-bottom: 2px dotted #558B2F;
+        }
+
+        /* =========================================================
+           7. CARD BACK (KARTU BELAKANG) - Tema Black, Yellow, White
+        ========================================================= */
+        .t-back {
+            background: #111;
+            border-color: #fff;
+        }
+
+        .t-back .bg-pattern {
+            background-image: radial-gradient(#FFEA00 2px, transparent 2px);
+            background-size: 8px 8px;
+            opacity: 0.2;
+        }
+
+        .t-back .header {
+            justify-content: center;
+            transform: rotate(-2deg);
+            margin-top: 5mm;
+        }
+
+        .t-back .code-badge {
+            background: #FFEA00;
+            color: #111;
+            border-color: #fff;
+            box-shadow: 2px 2px 0 #fff;
+            font-size: 8pt;
+            letter-spacing: 2px;
+        }
+
+        .t-back .art-box {
+            width: 45mm;
+            height: 45mm;
+            transform: rotate(5deg);
+            margin-top: 5mm;
+            filter: drop-shadow(4px 4px 0px #FFEA00);
+        }
+
+        .t-back .title-box {
+            position: absolute;
+            bottom: 8mm;
+            width: 100%;
+            text-align: center;
+            transform: rotate(-4deg);
+            left: 0;
+        }
+
+        .t-back .title-id {
+            color: #fff;
+            font-size: 22pt;
+            text-shadow: -3px 3px 0 #FFEA00, 3px -3px 0 #00E5FF;
+        }
+
+        /* =========================================================
+           13. BODYGUARD - Tema Steel Blue & Crimson (SACRIFICE)
+        ========================================================= */
+        .t-bodyguard .bg-pattern {
+            background-image: repeating-linear-gradient(0deg, #1565C0 0, #1565C0 1px, transparent 1px, transparent 7px);
+        }
+
+        .t-bodyguard .header {
+            transform: rotate(-3deg);
+        }
+
+        .t-bodyguard .code-badge {
+            background: #C62828;
+            color: #fff;
+        }
+
+        .t-bodyguard .fac-badge {
+            background: #1565C0;
+            color: #fff;
+        }
+
+        .t-bodyguard .title-box {
+            transform: rotate(4deg);
+        }
+
+        .t-bodyguard .title-id {
+            text-shadow: 3px 3px 0 #C62828, -2px -2px 0 #1565C0;
+        }
+
+        .t-bodyguard .title-en {
+            color: #1565C0;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-bodyguard .art-box {
+            transform: rotate(-6deg);
+        }
+
+        .t-bodyguard .text-wrapper {
+            transform: rotate(-2deg);
+            box-shadow: 5px 5px 0 #C62828;
+        }
+
+        .t-bodyguard .ability {
+            color: #C62828;
+        }
+
+        .t-bodyguard .quote {
+            border-bottom: 2px dotted #1565C0;
+        }
+
+        /* =========================================================
+           14. PRIEST - Tema Sacred Black & Holy Gold (DIVINE)
+        ========================================================= */
+        .t-priest .bg-pattern {
+            background-image: radial-gradient(ellipse at center, #FFD700 1px, transparent 1px);
+            background-size: 9px 9px;
+        }
+
+        .t-priest .header {
+            transform: rotate(4deg);
+        }
+
+        .t-priest .code-badge {
+            background: #111;
+            color: #FFD700;
+            border-color: #FFD700;
+            box-shadow: 2px 2px 0 #FFD700;
+        }
+
+        .t-priest .fac-badge {
+            background: #FFD700;
+            color: #111;
+        }
+
+        .t-priest .title-box {
+            transform: rotate(-3deg);
+        }
+
+        .t-priest .title-id {
+            text-shadow: -2px 2px 0 #FFD700, 2px -2px 0 #888;
+            color: #111;
+        }
+
+        .t-priest .title-en {
+            color: #888;
+            text-shadow: 1px 1px 0 #FFD700;
+        }
+
+        .t-priest .art-box {
+            transform: rotate(5deg);
+        }
+
+        .t-priest .text-wrapper {
+            transform: rotate(2deg);
+            box-shadow: -3px 3px 0 #FFD700;
+            background: #f9f5e7;
+        }
+
+        .t-priest .ability {
+            color: #111;
+        }
+
+        .t-priest .quote {
+            border-bottom: 2px dotted #FFD700;
+        }
+
+        /* =========================================================
+           15. MAYOR - Tema Official Red & Navy Blue (DOUBLE VOTE)
+        ========================================================= */
+        .t-mayor .bg-pattern {
+            background-image: repeating-linear-gradient(45deg, #E53935 0, #E53935 1px, transparent 1px, transparent 8px),
+                repeating-linear-gradient(-45deg, #1A237E 0, #1A237E 1px, transparent 1px, transparent 8px);
+            opacity: 0.12;
+        }
+
+        .t-mayor .header {
+            transform: rotate(-3deg);
+        }
+
+        .t-mayor .code-badge {
+            background: #E53935;
+            color: #fff;
+        }
+
+        .t-mayor .fac-badge {
+            background: #1A237E;
+            color: #fff;
+        }
+
+        .t-mayor .title-box {
+            transform: rotate(3deg);
+        }
+
+        .t-mayor .title-id {
+            text-shadow: -2px 2px 0 #E53935, 2px -2px 0 #1A237E;
+        }
+
+        .t-mayor .title-en {
+            color: #E53935;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-mayor .art-box {
+            transform: rotate(-4deg);
+        }
+
+        .t-mayor .text-wrapper {
+            transform: rotate(-2deg);
+            box-shadow: 4px 4px 0 #E53935;
+        }
+
+        .t-mayor .ability {
+            color: #1A237E;
+        }
+
+        .t-mayor .quote {
+            border-bottom: 2px dotted #E53935;
+        }
+
+        /* =========================================================
+           16. SHERIFF - Tema Justice Blue & Sheriff Gold (LAW MAKER)
+        ========================================================= */
+        .t-sheriff .bg-pattern {
+            background-image: radial-gradient(circle at 50% 50%, #FFB300 2px, transparent 2px),
+                radial-gradient(circle at 50% 50%, #1565C0 1px, transparent 1px);
+            background-size: 16px 16px;
+            background-position: 0 0, 8px 8px;
+            opacity: 0.15;
+        }
+
+        .t-sheriff .header {
+            transform: rotate(4deg);
+        }
+
+        .t-sheriff .code-badge {
+            background: #1565C0;
+            color: #fff;
+        }
+
+        .t-sheriff .fac-badge {
+            background: #FFB300;
+            color: #111;
+        }
+
+        .t-sheriff .title-box {
+            transform: rotate(-3deg);
+        }
+
+        .t-sheriff .title-id {
+            text-shadow: 2px 2px 0 #1565C0, -2px -2px 0 #FFB300;
+        }
+
+        .t-sheriff .title-en {
+            color: #1565C0;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-sheriff .art-box {
+            transform: rotate(5deg);
+        }
+
+        .t-sheriff .text-wrapper {
+            transform: rotate(3deg);
+            box-shadow: -4px 4px 0 #1565C0;
+        }
+
+        .t-sheriff .ability {
+            color: #FFB300;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-sheriff .quote {
+            border-bottom: 2px dotted #1565C0;
+        }
+
+        /* =========================================================
+           17. VILLAGER 1 - Tema Olive & Sunflower (THE FARMER)
+        ========================================================= */
+        .t-vil1 .bg-pattern { background-image: radial-gradient(#FBC02D 1.5px, transparent 1.5px); background-size: 8px 8px; }
+        .t-vil1 .header { transform: rotate(-2deg); }
+        .t-vil1 .code-badge { background: #689F38; color: #fff; }
+        .t-vil1 .fac-badge { background: #FBC02D; color: #111; }
+        .t-vil1 .title-box { transform: rotate(3deg); }
+        .t-vil1 .title-id { text-shadow: -2px 2px 0 #689F38, 2px -2px 0 #FBC02D; }
+        .t-vil1 .title-en { color: #689F38; text-shadow: 1px 1px 0 #111; }
+        .t-vil1 .art-box { transform: rotate(-4deg); }
+        .t-vil1 .text-wrapper { transform: rotate(-1deg); box-shadow: 3px 3px 0 #689F38; }
+        .t-vil1 .ability { color: #689F38; }
+        .t-vil1 .quote { border-bottom: 2px dotted #FBC02D; }
+
+        /* =========================================================
+           18. VILLAGER 2 - Tema Pink & Crust (THE BAKER)
+        ========================================================= */
+        .t-vil2 .bg-pattern { background-image: repeating-linear-gradient(45deg, #F48FB1 0, #F48FB1 1px, transparent 1px, transparent 6px); }
+        .t-vil2 .header { transform: rotate(3deg); }
+        .t-vil2 .code-badge { background: #8D6E63; color: #fff; }
+        .t-vil2 .fac-badge { background: #F48FB1; color: #111; }
+        .t-vil2 .title-box { transform: rotate(-3deg); }
+        .t-vil2 .title-id { text-shadow: 2px 2px 0 #8D6E63, -2px -2px 0 #F48FB1; }
+        .t-vil2 .title-en { color: #8D6E63; text-shadow: 1px 1px 0 #111; }
+        .t-vil2 .art-box { transform: rotate(4deg); }
+        .t-vil2 .text-wrapper { transform: rotate(2deg); box-shadow: -3px -3px 0 #8D6E63; }
+        .t-vil2 .ability { color: #8D6E63; }
+        .t-vil2 .quote { border-bottom: 2px dotted #F48FB1; }
+
+        /* =========================================================
+           19. VILLAGER 3 - Tema Steel & Fire (THE BLACKSMITH)
+        ========================================================= */
+        .t-vil3 .bg-pattern { background-image: repeating-linear-gradient(90deg, #607D8B 0, #607D8B 2px, transparent 2px, transparent 8px); opacity:0.25; }
+        .t-vil3 .header { transform: rotate(-4deg); }
+        .t-vil3 .code-badge { background: #D84315; color: #fff; }
+        .t-vil3 .fac-badge { background: #607D8B; color: #fff; }
+        .t-vil3 .title-box { transform: rotate(2deg); }
+        .t-vil3 .title-id { text-shadow: -3px 3px 0 #D84315, 3px -3px 0 #607D8B; }
+        .t-vil3 .title-en { color: #D84315; text-shadow: 1px 1px 0 #111; }
+        .t-vil3 .art-box { transform: rotate(-5deg); }
+        .t-vil3 .text-wrapper { transform: rotate(-3deg); box-shadow: 4px 4px 0 #D84315; }
+        .t-vil3 .ability { color: #D84315; }
+        .t-vil3 .quote { border-bottom: 2px dotted #607D8B; }
+
+        /* =========================================================
+           20. WEREWOLF 2 - Tema Neon Orange & Midnight Purple (THE BEAST)
+        ========================================================= */
+        .t-werewolf-2 .bg-pattern { background-image: repeating-linear-gradient(-45deg, #FF6D00 0, #FF6D00 2px, transparent 2px, transparent 10px); }
+        .t-werewolf-2 .header { transform: rotate(5deg); }
+        .t-werewolf-2 .code-badge { background: #311B92; color: #fff; }
+        .t-werewolf-2 .fac-badge { background: #FF6D00; color: #111; }
+        .t-werewolf-2 .title-box { transform: rotate(-5deg); }
+        .t-werewolf-2 .title-id { text-shadow: 3px 3px 0 #311B92, -2px -2px 0 #FF6D00; }
+        .t-werewolf-2 .title-en { color: #311B92; text-shadow: 1px 1px 0 #111; }
+        .t-werewolf-2 .art-box { transform: rotate(6deg); }
+        .t-werewolf-2 .text-wrapper { transform: rotate(-2deg); box-shadow: -5px 5px 0 #311B92; }
+        .t-werewolf-2 .ability { color: #FF6D00; }
+        .t-werewolf-2 .quote { border-bottom: 2px dotted #311B92; }
+
+        /* =========================================================
+           21. LONE WOLF - Tema Eclipse Purple & Sickly Lime (THE CURSED)
+        ========================================================= */
+        .t-lonewolf .bg-pattern { background-image: repeating-radial-gradient(circle at center, #4A148C 0, #4A148C 3px, transparent 3px, transparent 10px); }
+        .t-lonewolf .header { transform: rotate(-3deg); }
+        .t-lonewolf .code-badge { background: #C6FF00; color: #111; }
+        .t-lonewolf .fac-badge { background: #4A148C; color: #fff; }
+        .t-lonewolf .title-box { transform: rotate(2deg); }
+        .t-lonewolf .title-id { text-shadow: -2px 2px 0 #C6FF00, 2px -2px 0 #4A148C; }
+        .t-lonewolf .title-en { color: #C6FF00; text-shadow: 1px 1px 0 #111; }
+        .t-lonewolf .art-box { transform: rotate(-4deg); }
+        .t-lonewolf .text-wrapper { transform: rotate(-1deg); box-shadow: 4px -4px 0 #4A148C; }
+        .t-lonewolf .ability { color: #4A148C; }
+        .t-lonewolf .quote { border-bottom: 2px dotted #C6FF00; }
+
+        /* =========================================================
+           22. DOPPELGANGER - Tema Electric Pink & Shadow Cyan (THE MIMIC)
+        ========================================================= */
+        .t-doppelganger .bg-pattern { background-image: repeating-linear-gradient(0deg, #FF4081 0, #FF4081 2px, transparent 2px, transparent 8px), repeating-linear-gradient(90deg, #00ACC1 0, #00ACC1 2px, transparent 2px, transparent 8px); opacity: 0.15; }
+        .t-doppelganger .header { transform: rotate(3deg); }
+        .t-doppelganger .code-badge { background: #FF4081; color: #fff; }
+        .t-doppelganger .fac-badge { background: #00ACC1; color: #111; }
+        .t-doppelganger .title-box { transform: rotate(-2deg); }
+        .t-doppelganger .title-id { text-shadow: 3px 3px 0 #00ACC1, -2px -2px 0 #FF4081; }
+        .t-doppelganger .title-en { color: #00ACC1; text-shadow: 1px 1px 0 #111; }
+        .t-doppelganger .art-box { transform: rotate(4deg); }
+        .t-doppelganger .text-wrapper { transform: rotate(2deg); box-shadow: -4px -4px 0 #FF4081; }
+        .t-doppelganger .ability { color: #FF4081; text-shadow: 1px 1px 0 #111; }
+        .t-doppelganger .quote { border-bottom: 2px dotted #00ACC1; }
+
+        /* =========================================================
+           23. SERIAL KILLER - Tema Killer Red & Caution Yellow (THE MANIAC)
+        ========================================================= */
+        .t-serialkiller .bg-pattern { background-image: repeating-linear-gradient(45deg, #111 0, #111 10px, #FFEA00 10px, #FFEA00 20px); opacity: 0.2; }
+        .t-serialkiller .header { transform: rotate(-4deg); }
+        .t-serialkiller .code-badge { background: #C62828; color: #fff; }
+        .t-serialkiller .fac-badge { background: #FFEA00; color: #111; }
+        .t-serialkiller .title-box { transform: rotate(3deg); }
+        .t-serialkiller .title-id { text-shadow: -3px 3px 0 #C62828, 3px -3px 0 #FFEA00; }
+        .t-serialkiller .title-en { color: #C62828; text-shadow: 1px 1px 0 #FFEA00; }
+        .t-serialkiller .art-box { transform: rotate(-5deg); }
+        .t-serialkiller .text-wrapper { transform: rotate(-2deg); box-shadow: 5px 5px 0 #C62828; }
+        .t-serialkiller .ability { color: #C62828; }
+        .t-serialkiller .quote { border-bottom: 2px dotted #FFEA00; }
+
+        /* =========================================================
+           24. IDIOT - Tema Loud Yellow & Bright Purple (SANG PANDIR)
+        ========================================================= */
+        .t-idiot .bg-pattern { background-image: repeating-conic-gradient(#FFEA00 0% 15%, transparent 15% 30%); opacity: 0.3; }
+        .t-idiot .header { transform: rotate(5deg); }
+        .t-idiot .code-badge { background: #D500F9; color: #fff; }
+        .t-idiot .fac-badge { background: #FFEA00; color: #111; }
+        .t-idiot .title-box { transform: rotate(-4deg); }
+        .t-idiot .title-id { text-shadow: 2px 2px 0 #D500F9, -2px -2px 0 #FFEA00; }
+        .t-idiot .title-en { color: #D500F9; text-shadow: 1px 1px 0 #111; }
+        .t-idiot .art-box { transform: rotate(-8deg); }
+        .t-idiot .text-wrapper { transform: rotate(3deg); box-shadow: -4px 4px 0 #D500F9; }
+        .t-idiot .ability { color: #D500F9; text-shadow: 1px 1px 0 #111; }
+        .t-idiot .quote { border-bottom: 2px dotted #FFEA00; }
+
+        /* =========================================================
+           25. PRINCE - Tema Sapphire Blue & Crown Gold (HAK ISTIMEWA)
+        ========================================================= */
+        .t-prince .bg-pattern { background-image: repeating-linear-gradient(45deg, #2962FF 0, #2962FF 5px, transparent 5px, transparent 15px); opacity: 0.2; }
+        .t-prince .header { transform: rotate(-2deg); }
+        .t-prince .code-badge { background: #FFC107; color: #111; }
+        .t-prince .fac-badge { background: #2962FF; color: #fff; }
+        .t-prince .title-box { transform: rotate(2deg); }
+        .t-prince .title-id { text-shadow: -3px 3px 0 #FFC107, 3px -3px 0 #2962FF; }
+        .t-prince .title-en { color: #FFC107; text-shadow: 1px 1px 0 #111; }
+        .t-prince .art-box { transform: rotate(-3deg); }
+        .t-prince .text-wrapper { transform: rotate(1deg); box-shadow: 5px 5px 0 #2962FF; }
+        .t-prince .ability { color: #2962FF; }
+        .t-prince .quote { border-bottom: 2px dotted #FFC107; }
+
+        /* =========================================================
+           26. LITTLE GIRL - Tema Ghostly Mint & Nightmare Violet (THE PEEPER)
+        ========================================================= */
+        .t-littlegirl .bg-pattern { background-image: repeating-linear-gradient(135deg, #64FFDA 0, #64FFDA 4px, transparent 4px, transparent 12px); opacity: 0.15; }
+        .t-littlegirl .header { transform: rotate(4deg); }
+        .t-littlegirl .code-badge { background: #6200EA; color: #fff; }
+        .t-littlegirl .fac-badge { background: #64FFDA; color: #111; }
+        .t-littlegirl .title-box { transform: rotate(-3deg); }
+        .t-littlegirl .title-id { text-shadow: 2px 2px 0 #6200EA, -2px -2px 0 #64FFDA; }
+        .t-littlegirl .title-en { color: #6200EA; text-shadow: 1px 1px 0 #111; }
+        .t-littlegirl .art-box { transform: rotate(2deg); background: #111; }
+        .t-littlegirl .text-wrapper { transform: rotate(-2deg); box-shadow: -4px -4px 0 #6200EA; }
+        .t-littlegirl .ability { color: #6200EA; }
+        .t-littlegirl .quote { border-bottom: 2px dotted #64FFDA; }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="showcase-header">
+        <h1>POP-ART CHAOS DECK</h1>
+        <p>1 Unified Layout. 5 Explosive Color Palettes. 100% Attitude.</p>
+    </div>
+
+    <!-- 1. SEER (PENERAWANG) -->
+    <div class="card t-seer">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">SER-09</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">PENERAWANG</div>
+                <div class="title-en">The Oracle</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Seer: Eye in Crystal Ball -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Offset background circle -->
+                    <circle cx="55" cy="55" r="35" fill="#FFEA00" />
+                    <!-- Main Crystal Ball -->
+                    <circle cx="45" cy="45" r="35" fill="#00E5FF" stroke="#111" stroke-width="3" />
+                    <!-- Big Eye -->
+                    <path d="M 15,45 Q 45,15 75,45 Q 45,75 15,45 Z" fill="#fff" stroke="#111" stroke-width="3" />
+                    <circle cx="45" cy="45" r="12" fill="#FFEA00" stroke="#111" stroke-width="3" />
+                    <circle cx="45" cy="45" r="4" fill="#111" />
+                    <circle cx="48" cy="42" r="2" fill="#fff" />
+                    <!-- Magic Zaps -->
+                    <path d="M 10,20 L 20,25 L 15,35" fill="none" stroke="#111" stroke-width="3"
+                        stroke-linejoin="round" />
+                    <path d="M 80,15 L 85,25 L 95,20" fill="none" stroke="#111" stroke-width="3"
+                        stroke-linejoin="round" />
+                    <!-- Star -->
+                    <polygon points="85,85 87,75 95,73 87,71 85,61 83,71 75,73 83,75" fill="#FFEA00" stroke="#111"
+                        stroke-width="2" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">MATA BATIN FAKTA</div>
+                <div class="quote">"Mata ketigaku tidak pernah berbohong, sayang! Aku tahu rahasiamu!"</div>
+                <div class="desc">Tunjuk satu pemain di malam hari. Moderator akan membocorkan identitas aslinya: apakah
+                    ia <b>Serigala</b> atau bukan. Pandu warga dengan bukti, tapi awas jangan sampai ketahuan serigala!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. HUNTER (PEMBURU) -->
+    <div class="card t-hunter">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge code-badge">HNT-77</div>
+                <div class="badge fac-badge">VIGILANTE</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">PEMBURU</div>
+                <div class="title-en">The Marksman</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Hunter: Crosshair & Blast -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Offset Blast -->
+                    <polygon points="50,5 65,35 95,35 70,55 80,85 50,65 20,85 30,55 5,35 35,35" fill="#FF3D00" />
+                    <!-- Main Blast -->
+                    <polygon points="45,10 60,40 90,40 65,60 75,90 45,70 15,90 25,60 0,40 30,40" fill="#2962FF"
+                        stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Target Scope -->
+                    <circle cx="45" cy="55" r="25" fill="#fff" stroke="#111" stroke-width="3" />
+                    <!-- Crosshairs -->
+                    <line x1="45" y1="20" x2="45" y2="90" stroke="#111" stroke-width="3" />
+                    <line x1="10" y1="55" x2="80" y2="55" stroke="#111" stroke-width="3" />
+                    <!-- Bullet Hole -->
+                    <circle cx="55" cy="45" r="6" fill="#111" />
+                    <path d="M 55,45 L 65,35 M 55,45 L 65,55 M 55,45 L 45,35" stroke="#111" stroke-width="2" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">TEMBAKAN TERAKHIR</div>
+                <div class="quote">"Bawa aku ke neraka, dan akan kutarik satu monster bersamaku!"</div>
+                <div class="desc">Jika kau terbunuh oleh serigala atau dieksekusi paksa di siang hari, kau memiliki hak
+                    mutlak untuk <b>menembak mati</b> satu pemain pilihanmu secara instan sebelum kau menghembuskan
+                    napas terakhir.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. WEREWOLF (SERIGALA) -->
+    <div class="card t-wolf">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">SHADOWS</div>
+                <div class="badge code-badge">WW-00X</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">SERIGALA</div>
+                <div class="title-en">The Predator</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Werewolf: Snarling Mouth & Drool -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Offset shadow mouth -->
+                    <path d="M 5,45 Q 50,85 95,45 Q 50,15 5,45 Z" fill="#424242" />
+                    <!-- Main Snarling Mouth -->
+                    <path d="M 0,40 Q 50,80 100,40 Q 50,10 0,40 Z" fill="#D50000" stroke="#111" stroke-width="3" />
+                    <!-- Inner Mouth/Darkness -->
+                    <path d="M 10,40 Q 50,70 90,40 Q 50,20 10,40 Z" fill="#111" />
+                    <!-- Sharp Fangs -->
+                    <polygon points="20,35 25,55 30,35" fill="#fff" stroke="#111" stroke-width="2" />
+                    <polygon points="40,28 45,60 50,28" fill="#fff" stroke="#111" stroke-width="2" />
+                    <polygon points="60,28 65,60 70,28" fill="#fff" stroke="#111" stroke-width="2" />
+                    <polygon points="80,35 85,55 90,35" fill="#fff" stroke="#111" stroke-width="2" />
+                    <!-- Bottom Fangs -->
+                    <polygon points="35,55 40,40 45,58" fill="#fff" stroke="#111" stroke-width="2" />
+                    <polygon points="55,58 60,40 65,55" fill="#fff" stroke="#111" stroke-width="2" />
+                    <!-- Drool/Blood -->
+                    <path d="M 30,70 Q 30,90 35,90 Q 40,90 40,75" fill="#D50000" stroke="#111" stroke-width="2" />
+                    <path d="M 60,75 Q 60,95 65,95 Q 70,95 70,65" fill="#D50000" stroke="#111" stroke-width="2" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">INSTING MEMBUNUH</div>
+                <div class="quote">"Senyum paling manis di siang hari, taring paling tajam di malam hari! GRRRR!"</div>
+                <div class="desc">Bangun di malam hari. Berkomunikasi dengan serigala lain untuk <b>mencabik satu
+                        korban</b> tanpa ampun. Menyamarlah jadi warga di siang hari. Kau menang jika jumlah serigala
+                    sama dengan sisa warga!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. JESTER (BADUT) -->
+    <div class="card t-jester">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge code-badge">ERR-404</div>
+                <div class="badge fac-badge">CHAOS</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">SI BADUT</div>
+                <div class="title-en">The Trickster</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Jester: Crazy Face (Original masterpiece adapted) -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Offset Shadow -->
+                    <circle cx="55" cy="55" r="35" fill="#00E676" />
+                    <!-- Main Face Split -->
+                    <path d="M 50,15 A 35,35 0 0,0 50,85 Z" fill="#D500F9" stroke="#111" stroke-width="3" />
+                    <path d="M 50,15 A 35,35 0 0,1 50,85 Z" fill="#fff" stroke="#111" stroke-width="3" />
+                    <!-- Crazy Eyes -->
+                    <circle cx="35" cy="40" r="8" fill="#fff" stroke="#111" stroke-width="3" />
+                    <circle cx="35" cy="40" r="3" fill="#111" />
+                    <rect x="60" y="35" width="12" height="12" fill="#00E676" stroke="#111" stroke-width="3"
+                        transform="rotate(25 66 41)" />
+                    <circle cx="66" cy="41" r="3" fill="#111" />
+                    <!-- Stitched Smile -->
+                    <path d="M 25,65 Q 50,90 75,65" fill="none" stroke="#111" stroke-width="4" />
+                    <line x1="35" y1="63" x2="35" y2="75" stroke="#111" stroke-width="3" />
+                    <line x1="45" y1="68" x2="45" y2="80" stroke="#111" stroke-width="3" />
+                    <line x1="55" y1="68" x2="55" y2="80" stroke="#111" stroke-width="3" />
+                    <line x1="65" y1="63" x2="65" y2="75" stroke="#111" stroke-width="3" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">TAWA KEMATIAN</div>
+                <div class="quote">"Ayo, gantung aku! Bikin aku terbang tinggi dan kita lihat siapa yang tertawa!"</div>
+                <div class="desc">Kematianmu adalah kemenanganmu! Bertingkahlah gila, manipulasi warga agar mereka
+                    menuduh lalu <b>mengeksekusimu</b> di pengadilan siang hari. Jika digantung, kau memenangkan
+                    permainan seorang diri!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. GUARDIAN (PELINDUNG) -->
+    <div class="card t-guard">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">GRD-01</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">PELINDUNG</div>
+                <div class="title-en">The Aegis</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Guardian: Padlock, Shield & Wings -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Wings Offset -->
+                    <path d="M 50,55 Q 10,20 0,60 Q 30,80 50,55 Z" fill="#00B0FF" />
+                    <path d="M 50,55 Q 90,20 100,60 Q 70,80 50,55 Z" fill="#00B0FF" />
+                    <!-- Wings Main -->
+                    <path d="M 50,50 Q 15,15 5,55 Q 30,75 50,50 Z" fill="#fff" stroke="#111" stroke-width="3"
+                        stroke-linejoin="round" />
+                    <path d="M 50,50 Q 85,15 95,55 Q 70,75 50,50 Z" fill="#fff" stroke="#111" stroke-width="3"
+                        stroke-linejoin="round" />
+                    <!-- Shield / Padlock Offset -->
+                    <path d="M 35,25 A 15,15 0 0,1 65,25 L 65,40 L 35,40 Z" fill="#FF4081" />
+                    <rect x="25" y="45" width="50" height="45" rx="5" fill="#FF4081" />
+                    <!-- Shield / Padlock Main -->
+                    <path d="M 30,20 A 20,20 0 0,1 70,20 L 70,35 L 30,35 Z" fill="none" stroke="#111"
+                        stroke-width="4" />
+                    <rect x="20" y="35" width="60" height="55" rx="8" fill="#00B0FF" stroke="#111" stroke-width="3" />
+                    <!-- Keyhole -->
+                    <circle cx="50" cy="55" r="8" fill="#111" />
+                    <polygon points="45,60 55,60 60,80 40,80" fill="#111" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">PERISAI ILAHI</div>
+                <div class="quote">"Malam ini tidak ada darah yang tumpah di bawah pengawasanku! MINGGIR!"</div>
+                <div class="desc">Pilih satu pemain setiap malam untuk kau jaga. Jika ia diserang serigala, <b>ia akan
+                        selamat</b>. Kau boleh menjaga dirimu sendiri, tapi tidak boleh menjaga orang yang sama dua
+                    malam berturut-turut!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. MODERATOR -->
+    <div class="card t-mod">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">GOD MODE</div>
+                <div class="badge code-badge">MOD-00</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">MODERATOR</div>
+                <div class="title-en">The Almighty</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Moderator: Crown + Gavel of Authority -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Offset Crown Shadow -->
+                    <polygon points="55,10 65,35 90,25 80,50 95,55 55,55 15,55 30,50 10,25 35,35" fill="#888" />
+                    <!-- Main Crown -->
+                    <polygon points="50,5 60,30 85,20 75,45 90,50 50,50 10,50 25,45 15,20 40,30" fill="#FFD600"
+                        stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Crown Gems -->
+                    <circle cx="50" cy="28" r="5" fill="#111" stroke="#FFD600" stroke-width="1.5" />
+                    <circle cx="26" cy="38" r="4" fill="#111" stroke="#FFD600" stroke-width="1.5" />
+                    <circle cx="74" cy="38" r="4" fill="#111" stroke="#FFD600" stroke-width="1.5" />
+                    <!-- Gavel Handle -->
+                    <rect x="46" y="48" width="8" height="40" rx="3" fill="#8B4513" stroke="#111" stroke-width="2"
+                        transform="rotate(-30 50 68)" />
+                    <!-- Gavel Head Offset -->
+                    <rect x="48" y="52" width="30" height="14" rx="4" fill="#888" transform="rotate(-30 60 60)" />
+                    <!-- Gavel Head Main -->
+                    <rect x="44" y="48" width="30" height="14" rx="4" fill="#FFD600" stroke="#111" stroke-width="3"
+                        transform="rotate(-30 60 56)" />
+                    <!-- Action spark lines -->
+                    <line x1="80" y1="25" x2="90" y2="15" stroke="#111" stroke-width="3" stroke-linecap="round" />
+                    <line x1="83" y1="32" x2="96" y2="28" stroke="#111" stroke-width="2" stroke-linecap="round" />
+                    <line x1="75" y1="18" x2="80" y2="8" stroke="#111" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">KUASA MUTLAK</div>
+                <div class="quote">"Saya yang memimpin. Tidak ada diskusi. DIAM SEMUA!"</div>
+                <div class="desc">Moderator tahu <b>semua identitas</b>. Pimpin jalannya malam & siang, sampaikan hasil
+                    serangan, dan jaga agar permainan berjalan adil. Kamu bukan pemain — kamu adalah <b>Tuhan</b>-nya
+                    permainan ini.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. ALPHA WOLF -->
+    <div class="card t-alphawolf">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">SHADOWS</div>
+                <div class="badge code-badge">AW-001</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">ALPHA WOLF</div>
+                <div class="title-en">The Apex Predator</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Alpha Wolf: Howling Wolf + Full Moon + Claw Marks -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Moon Offset -->
+                    <circle cx="53" cy="38" r="28" fill="#6A0DAD" />
+                    <!-- Full Moon -->
+                    <circle cx="50" cy="35" r="28" fill="#B71C1C" stroke="#111" stroke-width="3" />
+                    <!-- Moon Craters -->
+                    <circle cx="38" cy="28" r="4" fill="none" stroke="#111" stroke-width="2" />
+                    <circle cx="60" cy="42" r="3" fill="none" stroke="#111" stroke-width="1.5" />
+                    <!-- Wolf Silhouette Head -->
+                    <polygon points="50,10 42,30 20,35 35,50 30,70 50,60 70,70 65,50 80,35 58,30" fill="#111" />
+                    <!-- Wolf Ears (pointy) -->
+                    <polygon points="30,22 22,0 40,18" fill="#111" />
+                    <polygon points="70,22 78,0 60,18" fill="#111" />
+                    <!-- Red Glowing Eyes -->
+                    <ellipse cx="41" cy="38" rx="5" ry="4" fill="#B71C1C" />
+                    <ellipse cx="59" cy="38" rx="5" ry="4" fill="#B71C1C" />
+                    <circle cx="41" cy="38" r="2" fill="#fff" />
+                    <circle cx="59" cy="38" r="2" fill="#fff" />
+                    <!-- Claw Marks -->
+                    <path d="M 5,60 Q 15,65 10,80" fill="none" stroke="#B71C1C" stroke-width="3"
+                        stroke-linecap="round" />
+                    <path d="M 12,57 Q 22,62 17,77" fill="none" stroke="#B71C1C" stroke-width="3"
+                        stroke-linecap="round" />
+                    <path d="M 19,55 Q 29,60 24,75" fill="none" stroke="#B71C1C" stroke-width="3"
+                        stroke-linecap="round" />
+                    <!-- Howl lines -->
+                    <path d="M 70,20 Q 80,15 90,20" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" />
+                    <path d="M 73,28 Q 85,23 95,30" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" />
+                    <path d="M 72,36 Q 82,33 90,40" fill="none" stroke="#111" stroke-width="1.5"
+                        stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">PERINTAH KAWANAN</div>
+                <div class="quote">"Kau bukan serigala. Kau adalah dewa malam yang sedang lapar!"</div>
+                <div class="desc">Sebagai pemimpin, setiap malam kau memimpin kawanan untuk <b>memilih korban</b>.
+                    Keputusanmu final dan mutlak. Selain itu, kau dapat <b>merekrut</b> 1 warga menjadi serigala sekali
+                    sepanjang permainan!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. CUPID -->
+    <div class="card t-cupid">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge code-badge">CPD-69</div>
+                <div class="badge fac-badge">NEUTRAL</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">CUPID</div>
+                <div class="title-en">The Love Assassin</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Cupid: Arrow through two linked hearts -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Left heart offset shadow -->
+                    <path d="M 27,38 A 14,14 0 0,1 55,38 A 14,14 0 0,1 83,38 Q 83,55 55,75 Q 27,55 27,38 Z"
+                        fill="#FF1744" transform="translate(4,4)" />
+                    <!-- Left Heart -->
+                    <path d="M 25,35 A 13,13 0 0,1 50,35 A 13,13 0 0,1 75,35 Q 75,52 50,72 Q 25,52 25,35 Z"
+                        fill="#FF1493" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Small heart (top left) -->
+                    <path d="M 5,10 A 7,7 0 0,1 18,10 A 7,7 0 0,1 31,10 Q 31,20 18,28 Q 5,20 5,10 Z" fill="#FF1744"
+                        stroke="#111" stroke-width="2" stroke-linejoin="round" />
+                    <!-- Arrow shaft -->
+                    <line x1="10" y1="90" x2="90" y2="10" stroke="#111" stroke-width="5" stroke-linecap="round" />
+                    <!-- Arrow tip (top-right) -->
+                    <polygon points="90,10 78,14 86,22" fill="#FF1493" stroke="#111" stroke-width="2"
+                        stroke-linejoin="round" />
+                    <!-- Arrow feathers (bottom-left) -->
+                    <path d="M 10,90 L 5,78 L 18,82 Z" fill="#FF1493" stroke="#111" stroke-width="2" />
+                    <path d="M 10,90 L 20,97 L 18,82 Z" fill="#FF1744" stroke="#111" stroke-width="2" />
+                    <!-- Sparkles -->
+                    <polygon points="82,55 84,50 86,55 91,57 86,59 84,64 82,59 77,57" fill="#FF1493" stroke="#111"
+                        stroke-width="1.5" />
+                    <polygon points="18,65 19,61 20,65 24,67 20,69 19,73 18,69 14,67" fill="#FF1744" stroke="#111"
+                        stroke-width="1.5" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">CINTA MEMATIKAN</div>
+                <div class="quote">"Kupertemukan dua jiwamu. Tapi kalau satunya mati... kalian berdua ikut!"</div>
+                <div class="desc">Di malam pertama, tunjuk <b>2 pemain</b> sebagai sepasang kekasih. Jika salah satu
+                    mati, yang lain ikut mati karena patah hati. Jika keduanya adalah musuh, mereka kini punya misi
+                    baru: bertahan hidup bersama!</div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 10. WITCH -->
+    <div class="card t-witch">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">WTC-13</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">PENYIHIR</div>
+                <div class="title-en">The Brew Master</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Witch: Bubbling Cauldron + Skull + Magic -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Cauldron shadow offset -->
+                    <ellipse cx="55" cy="78" rx="30" ry="10" fill="#76FF03" />
+                    <path d="M 27,55 Q 22,80 55,88 Q 78,80 73,55 Z" fill="#76FF03" />
+                    <!-- Cauldron body -->
+                    <path d="M 22,50 Q 17,78 50,86 Q 83,78 78,50 Z" fill="#333" stroke="#111" stroke-width="3" />
+                    <!-- Cauldron rim -->
+                    <ellipse cx="50" cy="50" rx="28" ry="8" fill="#555" stroke="#111" stroke-width="3" />
+                    <!-- Cauldron legs -->
+                    <rect x="28" y="82" width="8" height="10" rx="2" fill="#333" stroke="#111" stroke-width="2" />
+                    <rect x="64" y="82" width="8" height="10" rx="2" fill="#333" stroke="#111" stroke-width="2" />
+                    <!-- Toxic Brew surface -->
+                    <ellipse cx="50" cy="50" rx="24" ry="6" fill="#76FF03" />
+                    <!-- Bubbles -->
+                    <circle cx="40" cy="44" r="5" fill="#76FF03" stroke="#111" stroke-width="2" />
+                    <circle cx="58" cy="40" r="7" fill="#AA00FF" stroke="#111" stroke-width="2" />
+                    <circle cx="68" cy="46" r="4" fill="#76FF03" stroke="#111" stroke-width="2" />
+                    <!-- Skull in brew -->
+                    <circle cx="50" cy="55" r="10" fill="#fff" stroke="#111" stroke-width="2" />
+                    <rect x="44" y="60" width="12" height="6" rx="1" fill="#fff" stroke="#111" stroke-width="1.5" />
+                    <circle cx="46" cy="54" r="2.5" fill="#111" />
+                    <circle cx="54" cy="54" r="2.5" fill="#111" />
+                    <line x1="48" y1="61" x2="48" y2="65" stroke="#111" stroke-width="1.5" />
+                    <line x1="52" y1="61" x2="52" y2="65" stroke="#111" stroke-width="1.5" />
+                    <!-- Magic stars -->
+                    <polygon points="15,15 17,8 19,15 26,17 19,19 17,26 15,19 8,17" fill="#AA00FF" stroke="#111"
+                        stroke-width="1.5" />
+                    <polygon points="80,8 81,4 82,8 86,9 82,10 81,14 80,10 76,9" fill="#76FF03" stroke="#111"
+                        stroke-width="1" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">RAMUAN RAHASIA</div>
+                <div class="quote">"Kuberi warna hijau: kau selamat. Kuberi warna ungu: kau tamat!"</div>
+                <div class="desc">Punya <b>2 ramuan</b> sekali pakai: <b>Racun</b> untuk membunuh 1 target malam ini,
+                    atau <b>Antidot</b> untuk menyelamatkan korban serangan serigala malam ini. Masing-masing hanya bisa
+                    dipakai sekali!</div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 11. WIZARD -->
+    <div class="card t-wizard">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">WZD-77</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">PENYIHIR TUA</div>
+                <div class="title-en">The Arcane Master</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Wizard: Magic Wand + Lightning + Spell Tome -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Tome shadow -->
+                    <rect x="18" y="53" width="44" height="34" rx="4" fill="#FFD700" />
+                    <!-- Spell Tome -->
+                    <rect x="15" y="50" width="44" height="34" rx="4" fill="#1a237e" stroke="#111" stroke-width="3" />
+                    <!-- Tome spine -->
+                    <rect x="15" y="50" width="7" height="34" rx="3" fill="#0D47A1" stroke="#111" stroke-width="2" />
+                    <!-- Tome pages -->
+                    <line x1="27" y1="60" x2="52" y2="60" stroke="#FFD700" stroke-width="1.5" />
+                    <line x1="27" y1="66" x2="52" y2="66" stroke="#FFD700" stroke-width="1.5" />
+                    <line x1="27" y1="72" x2="45" y2="72" stroke="#FFD700" stroke-width="1.5" />
+                    <!-- Arcane star on tome -->
+                    <polygon points="37,55 39,49 41,55 47,57 41,59 39,65 37,59 31,57" fill="#00B0FF" stroke="#111"
+                        stroke-width="1.5" />
+                    <!-- Wand shadow -->
+                    <line x1="62" y1="88" x2="92" y2="18" stroke="#FFD700" stroke-width="7" stroke-linecap="round" />
+                    <!-- Wand -->
+                    <line x1="60" y1="86" x2="90" y2="16" stroke="#8B4513" stroke-width="5" stroke-linecap="round" />
+                    <!-- Wand tip glow -->
+                    <circle cx="90" cy="16" r="7" fill="#00B0FF" stroke="#111" stroke-width="3" />
+                    <circle cx="90" cy="16" r="3" fill="#fff" />
+                    <!-- Lightning bolt from wand -->
+                    <polygon points="90,16 75,40 82,40 65,68 80,42 73,42" fill="#FFD700" stroke="#111" stroke-width="2"
+                        stroke-linejoin="round" />
+                    <!-- Arcane runes -->
+                    <text x="5" y="20" font-size="12" fill="#00B0FF" font-family="serif" stroke="#111"
+                        stroke-width="0.5">✦</text>
+                    <text x="80" y="88" font-size="10" fill="#FFD700" font-family="serif" stroke="#111"
+                        stroke-width="0.5">✧</text>
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">PEREDAM MANTRA</div>
+                <div class="quote">"Diam! Malam ini kemampuanmu tidak ada artinya di hadapanku!"</div>
+                <div class="desc">Setiap malam, pilih satu pemain untuk <b>dibungkam</b>. Pemain itu tidak dapat
+                    menggunakan kemampuan spesialnya malam ini. Serigala? Tidak bisa menyerang. Guardian? Tidak bisa
+                    melindungi. Seer? Tidak bisa melihat!</div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 12. VETERAN -->
+    <div class="card t-veteran">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">VET-01</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">VETERAN</div>
+                <div class="title-en">The War Machine</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Veteran: Grenade + Medal + Bullet holes -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Medal ribbon offset -->
+                    <polygon points="50,10 60,30 50,20 40,30" fill="#FF6F00" />
+                    <!-- Medal ribbon -->
+                    <polygon points="48,8 58,28 48,18 38,28" fill="#FF6F00" stroke="#111" stroke-width="2" />
+                    <!-- Grenade shadow -->
+                    <ellipse cx="38" cy="68" rx="18" ry="20" fill="#558B2F" />
+                    <!-- Grenade body -->
+                    <ellipse cx="35" cy="65" rx="18" ry="20" fill="#33691E" stroke="#111" stroke-width="3" />
+                    <!-- Grenade texture lines -->
+                    <line x1="17" y1="62" x2="53" y2="62" stroke="#111" stroke-width="2" />
+                    <line x1="35" y1="45" x2="35" y2="85" stroke="#111" stroke-width="2" />
+                    <line x1="19" y1="72" x2="51" y2="52" stroke="#111" stroke-width="1.5" />
+                    <line x1="19" y1="52" x2="51" y2="72" stroke="#111" stroke-width="1.5" />
+                    <!-- Grenade cap -->
+                    <rect x="29" y="38" width="12" height="10" rx="3" fill="#558B2F" stroke="#111" stroke-width="2" />
+                    <!-- Pin -->
+                    <circle cx="35" cy="35" r="4" fill="none" stroke="#111" stroke-width="2.5" />
+                    <line x1="35" y1="30" x2="28" y2="25" stroke="#FF6F00" stroke-width="3" stroke-linecap="round" />
+                    <!-- Medal -->
+                    <circle cx="73" cy="55" r="16" fill="#FF6F00" stroke="#111" stroke-width="3" />
+                    <circle cx="73" cy="55" r="10" fill="#FFD700" stroke="#111" stroke-width="2" />
+                    <!-- Star on medal -->
+                    <polygon points="73,47 75,53 81,53 76,57 78,63 73,59 68,63 70,57 65,53 71,53" fill="#111" />
+                    <!-- Bullet holes -->
+                    <circle cx="82" cy="20" r="4" fill="#111" />
+                    <circle cx="90" cy="30" r="3" fill="#111" />
+                    <circle cx="85" cy="38" r="2.5" fill="#111" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">SIAGA TEMPUR</div>
+                <div class="quote">"Coba serang aku malam ini. Aku sudah menunggu sejak Vietnam!"</div>
+                <div class="desc">Pilih untuk <b>berjaga</b> di suatu malam. Jika diserang serigala saat berjaga,
+                    serigala itulah yang mati! Tapi kemampuan ini hanya bisa dipakai <b>1 kali</b> seluruh permainan.
+                    Gunakan dengan bijak!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. CARD BACK (KARTU BELAKANG) -->
+    <div class="card t-back">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge code-badge">POP-ART EDITION</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Card Back: Graphic Wolf Silhouette overlapping shapes -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Giant Exclamation / Action shape offset -->
+                    <polygon points="50,0 65,35 100,35 75,55 85,90 50,70 15,90 25,55 0,35 35,35" fill="#00E5FF" />
+                    <!-- Main Shape -->
+                    <polygon points="45,5 60,40 95,40 70,60 80,95 45,75 10,95 20,60 -5,40 30,40" fill="#FFEA00"
+                        stroke="#fff" stroke-width="3" stroke-linejoin="round" />
+
+                    <!-- Wolf Head Silhouette -->
+                    <polygon points="45,25 65,45 60,75 40,65 20,75 35,45" fill="#111" />
+                    <!-- Wolf Ears -->
+                    <polygon points="20,20 35,45 40,35" fill="#111" />
+                    <polygon points="70,20 55,45 50,35" fill="#111" />
+                    <!-- Glowing Wolf Eyes -->
+                    <path d="M 35,50 Q 40,45 45,50 Z" fill="#D500F9" />
+                    <path d="M 55,50 Q 50,45 45,50 Z" fill="#D500F9" transform="translate(10, 0)" />
+                </svg>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">WEREWOLF</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 13. BODYGUARD -->
+    <div class="card t-bodyguard">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">BDG-99</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">BODYGUARD</div>
+                <div class="title-en">The Sacrifice</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Bodyguard: Bullet-riddled Shield absorbing hits -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Shield shadow offset -->
+                    <path d="M 55,10 L 90,20 L 90,55 Q 90,85 55,95 Q 20,85 20,55 L 20,20 Z" fill="#C62828" />
+                    <!-- Shield main -->
+                    <path d="M 50,7 L 85,18 L 85,52 Q 85,82 50,92 Q 15,82 15,52 L 15,18 Z" fill="#1565C0" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Shield inner layer -->
+                    <path d="M 50,18 L 75,26 L 75,50 Q 75,72 50,80 Q 25,72 25,50 L 25,26 Z" fill="#1976D2" stroke="#111" stroke-width="2" />
+                    <!-- Shield cross emblem -->
+                    <rect x="44" y="30" width="12" height="35" rx="3" fill="#fff" />
+                    <rect x="31" y="43" width="38" height="12" rx="3" fill="#fff" />
+                    <!-- Bullet holes on shield -->
+                    <circle cx="30" cy="30" r="4" fill="#111" />
+                    <path d="M 26,26 L 34,34 M 26,34 L 34,26" stroke="#C62828" stroke-width="1.5" />
+                    <circle cx="72" cy="35" r="3" fill="#111" />
+                    <path d="M 69,32 L 75,38 M 69,38 L 75,32" stroke="#C62828" stroke-width="1.5" />
+                    <circle cx="65" cy="70" r="3.5" fill="#111" />
+                    <path d="M 62,67 L 68,73 M 62,73 L 68,67" stroke="#C62828" stroke-width="1.5" />
+                    <!-- Impact sparks -->
+                    <polygon points="82,60 85,53 88,60 95,63 88,66 85,73 82,66 75,63" fill="#C62828" stroke="#111" stroke-width="1.5" />
+                    <polygon points="10,55 12,49 14,55 20,57 14,59 12,65 10,59 4,57" fill="#FFD700" stroke="#111" stroke-width="1.5" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">TAMENG MANUSIA</div>
+                <div class="quote">"Tubuhku adalah pelurumu. Aku tidak akan membiarkanmu mati malam ini!"</div>
+                <div class="desc">Pilih 1 pemain untuk dijaga tiap malam. Jika ia diserang serigala, <b>kamu yang mati menggantikannya</b>. Berbeda dari Guardian — kamu tidak kebal, tapi mengorbankan dirimu sendiri!</div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 14. PRIEST -->
+    <div class="card t-priest">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">PRS-01</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">PASTOR</div>
+                <div class="title-en">The Divine Shepherd</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Priest: Glowing Cross + Holy Water + Light Rays -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Light rays (background) -->
+                    <line x1="50" y1="50" x2="10" y2="5" stroke="#FFD700" stroke-width="3" stroke-linecap="round" opacity="0.6" />
+                    <line x1="50" y1="50" x2="90" y2="5" stroke="#FFD700" stroke-width="3" stroke-linecap="round" opacity="0.6" />
+                    <line x1="50" y1="50" x2="5" y2="40" stroke="#FFD700" stroke-width="2" stroke-linecap="round" opacity="0.5" />
+                    <line x1="50" y1="50" x2="95" y2="40" stroke="#FFD700" stroke-width="2" stroke-linecap="round" opacity="0.5" />
+                    <line x1="50" y1="50" x2="20" y2="95" stroke="#FFD700" stroke-width="2" stroke-linecap="round" opacity="0.4" />
+                    <line x1="50" y1="50" x2="80" y2="95" stroke="#FFD700" stroke-width="2" stroke-linecap="round" opacity="0.4" />
+                    <!-- Cross shadow -->
+                    <rect x="48" y="8" width="12" height="70" rx="3" fill="#888" transform="translate(4,4)" />
+                    <rect x="20" y="28" width="68" height="12" rx="3" fill="#888" transform="translate(4,4)" />
+                    <!-- Cross main -->
+                    <rect x="44" y="5" width="12" height="70" rx="3" fill="#FFD700" stroke="#111" stroke-width="2" />
+                    <rect x="16" y="25" width="68" height="12" rx="3" fill="#FFD700" stroke="#111" stroke-width="2" />
+                    <!-- Cross glow center -->
+                    <circle cx="50" cy="31" r="7" fill="#fff" stroke="#FFD700" stroke-width="2" />
+                    <!-- Holy water drops -->
+                    <path d="M 15,72 Q 15,83 20,83 Q 25,83 25,72 Q 20,62 15,72 Z" fill="#00B0FF" stroke="#111" stroke-width="1.5" />
+                    <path d="M 75,65 Q 75,74 79,74 Q 83,74 83,65 Q 79,57 75,65 Z" fill="#00B0FF" stroke="#111" stroke-width="1.5" />
+                    <path d="M 88,80 Q 88,87 91,87 Q 94,87 94,80 Q 91,74 88,80 Z" fill="#00B0FF" stroke="#111" stroke-width="1" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">AIR SUCI</div>
+                <div class="quote">"Ku siramkan kebenaran ini ke wajahmu. Kalau kau serigala... selamat tinggal!"</div>
+                <div class="desc">Sekali per permainan, <b>siramkan air suci</b> ke satu pemain di siang hari. Jika ia <b>serigala → serigala itu mati</b>. Jika ia warga biasa → <b>kamu yang mati</b>. Gunakan dengan penuh keyakinan!</div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 15. MAYOR -->
+    <div class="card t-mayor">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">MYR-01</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">WALIKOTA</div>
+                <div class="title-en">The Double Vote</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Mayor: Megaphone + Ballot + Stars -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Megaphone shadow -->
+                    <path d="M 58,18 L 88,5 L 88,55 L 58,42 Z" fill="#E53935" transform="translate(4,4)" />
+                    <!-- Megaphone body -->
+                    <path d="M 54,16 L 84,3 L 84,52 L 54,40 Z" fill="#1A237E" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Megaphone opening (bell) -->
+                    <ellipse cx="84" cy="27" rx="10" ry="24" fill="#E53935" stroke="#111" stroke-width="3" />
+                    <!-- Megaphone handle box -->
+                    <rect x="20" y="22" width="36" height="30" rx="4" fill="#1A237E" stroke="#111" stroke-width="3" />
+                    <!-- Handle grip lines -->
+                    <line x1="20" y1="33" x2="56" y2="33" stroke="#fff" stroke-width="1.5" opacity="0.5" />
+                    <line x1="20" y1="40" x2="56" y2="40" stroke="#fff" stroke-width="1.5" opacity="0.5" />
+                    <!-- Sound waves -->
+                    <path d="M 88,12 Q 98,12 98,27" fill="none" stroke="#E53935" stroke-width="3" stroke-linecap="round" />
+                    <path d="M 88,6 Q 104,6 104,27" fill="none" stroke="#E53935" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+                    <!-- Ballot paper -->
+                    <rect x="10" y="62" width="48" height="32" rx="3" fill="#fff" stroke="#111" stroke-width="2" />
+                    <!-- Ballot lines -->
+                    <line x1="18" y1="73" x2="50" y2="73" stroke="#111" stroke-width="1.5" />
+                    <line x1="18" y1="80" x2="50" y2="80" stroke="#111" stroke-width="1.5" />
+                    <line x1="18" y1="87" x2="38" y2="87" stroke="#111" stroke-width="1.5" />
+                    <!-- Checkmark X2 stamp -->
+                    <text x="52" y="60" font-size="22" fill="#E53935" font-family="sans-serif" font-weight="900" stroke="#111" stroke-width="1">x2</text>
+                    <!-- Stars -->
+                    <polygon points="8,20 9,15 10,20 15,21 10,22 9,27 8,22 3,21" fill="#E53935" stroke="#111" stroke-width="1"/>
+                    <polygon points="78,72 79,67 80,72 85,73 80,74 79,79 78,74 73,73" fill="#1A237E" stroke="#111" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">SUARA GANDA</div>
+                <div class="quote">"Satu suaraku sama dengan dua suaramu. Itu namanya demokrasi!"</div>
+                <div class="desc">Identitasmu rahasia. Kau dapat <b>mengungkap dirimu</b> kapan saja untuk mengaktifkan <b>suara ganda</b> dalam voting eksekusi siang hari. Jika kau mati, warga mendapat satu sesi voting darurat!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 16. SHERIFF -->
+    <div class="card t-sheriff">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">SHF-44</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">SHERIFF</div>
+                <div class="title-en">The Law Maker</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Sheriff: Star Badge + Crossed Revolvers -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Background star burst -->
+                    <polygon points="50,5 60,35 95,35 70,55 80,95 50,70 20,95 30,55 5,35 40,35" fill="#FFB300" opacity="0.3" transform="scale(0.9) translate(5,5)" />
+                    <!-- Gun 1 (Left to Right) shadow -->
+                    <path d="M 12,82 L 42,52 L 28,42 Z" fill="#1565C0" opacity="0.5" transform="translate(3,3)" />
+                    <!-- Gun 1 -->
+                    <path d="M 10,80 L 45,50 M 30,40 L 45,50" stroke="#111" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+                    <!-- Gun 1 handle -->
+                    <path d="M 10,80 L 25,70" stroke="#795548" stroke-width="6" stroke-linecap="round" />
+                    <circle cx="15" cy="75" r="2" fill="#111" />
+                    <!-- Gun 2 (Right to Left) -->
+                    <path d="M 90,80 L 55,50 M 70,40 L 55,50" stroke="#111" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+                    <!-- Gun 2 handle -->
+                    <path d="M 90,80 L 75,70" stroke="#795548" stroke-width="6" stroke-linecap="round" />
+                    <circle cx="85" cy="75" r="2" fill="#111" />
+                    <!-- Bullet shots & Smoke -->
+                    <circle cx="20" cy="20" r="15" fill="#f5f5f5" stroke="#111" stroke-width="2" opacity="0.8" />
+                    <circle cx="80" cy="20" r="15" fill="#f5f5f5" stroke="#111" stroke-width="2" opacity="0.8" />
+                    <circle cx="20" cy="20" r="4" fill="#FFB300" stroke="#111" stroke-width="1.5" />
+                    <circle cx="80" cy="20" r="4" fill="#FFB300" stroke="#111" stroke-width="1.5" />
+                    <!-- Sheriff Star Badge Main -->
+                    <polygon points="50,15 60,40 85,40 65,60 75,85 50,70 25,85 35,60 15,40 40,40" fill="#FFB300" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Badge inner details -->
+                    <circle cx="50" cy="52" r="12" fill="none" stroke="#111" stroke-width="2" />
+                    <text x="50" y="56" font-family="'Righteous', cursive" font-size="10" fill="#111" text-anchor="middle">LAW</text>
+                    <!-- Sparkles on badge -->
+                    <polygon points="40,25 41,20 42,25 47,26 42,27 41,32 40,27 35,26" fill="#fff" stroke="#111" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">TEMBAK MATI</div>
+                <div class="quote">"Aku hukum dan aku eksekutornya."</div>
+                <div class="desc">Memiliki satu pistol dengan <b>1 peluru mematikan</b>. Pilih 1 target di malam hari untuk ditembak mati. Jika yang kamu tembak adalah penduduk desa biasa, kamu akan <b>mati bunuh diri</b> karena rasa bersalah!</div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 17. VILLAGER (THE FARMER) -->
+    <div class="card t-vil1">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">VIL-01</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">WARGA BIASA</div>
+                <div class="title-en">The Farmer</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Villager: Farmer -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- shadow -->
+                    <path d="M 47,22 L 47,82 M 40,25 Q 47,40 54,25" stroke="#FBC02D" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none" transform="translate(4,4)"/>
+                    <line x1="42" y1="20" x2="42" y2="35" stroke="#FBC02D" stroke-width="5" stroke-linecap="round" transform="translate(4,4)"/>
+                    <line x1="52" y1="20" x2="52" y2="35" stroke="#FBC02D" stroke-width="5" stroke-linecap="round" transform="translate(4,4)"/>
+                    <!-- pitchfork -->
+                    <path d="M 47,22 L 47,82 M 40,25 Q 47,45 54,25" stroke="#111" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <line x1="42" y1="20" x2="42" y2="35" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="52" y1="20" x2="52" y2="35" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+                    <!-- wheat -->
+                    <path d="M 60,80 Q 70,60 80,40" stroke="#FBC02D" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    <ellipse cx="73" cy="53" rx="3" ry="8" fill="#FBC02D" stroke="#111" stroke-width="1.5" transform="rotate(30 73 53)"/>
+                    <ellipse cx="68" cy="62" rx="3" ry="8" fill="#FBC02D" stroke="#111" stroke-width="1.5" transform="rotate(40 68 62)"/>
+                    <ellipse cx="78" cy="46" rx="3" ry="8" fill="#FBC02D" stroke="#111" stroke-width="1.5" transform="rotate(20 78 46)"/>
+                    <ellipse cx="65" cy="50" rx="3" ry="8" fill="#FBC02D" stroke="#111" stroke-width="1.5" transform="rotate(60 65 50)"/>
+                    <ellipse cx="73" cy="42" rx="3" ry="8" fill="#FBC02D" stroke="#111" stroke-width="1.5" transform="rotate(70 73 42)"/>
+                    <!-- sun -->
+                    <circle cx="25" cy="30" r="12" fill="#FBC02D" stroke="#111" stroke-width="2"/>
+                    <line x1="25" y1="10" x2="25" y2="15" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="25" y1="45" x2="25" y2="50" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="5" y1="30" x2="10" y2="30" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="40" y1="30" x2="45" y2="30" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">HARAPAN DESA</div>
+                <div class="quote">"Ladangku mungkin diam, tapi mataku tidak pernah tidur."</div>
+                <div class="desc">Kamu tidak memiliki kemampuan spesial di malam hari. Tapi suara dan analisamu di siang hari adalah kunci utama kemenangan warga. Bersatulah dan temukan serigala sebelum fajar memerah darah!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 18. VILLAGER (THE BAKER) -->
+    <div class="card t-vil2">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">VIL-02</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">WARGA BIASA</div>
+                <div class="title-en">The Baker</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Villager: Baker -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- shadow -->
+                    <path d="M 20,70 L 80,30" stroke="#F48FB1" stroke-width="18" stroke-linecap="round" transform="translate(4,4)"/>
+                    <rect x="25" y="45" width="40" height="25" rx="10" fill="#F48FB1" transform="translate(4,4)"/>
+                    <!-- rolling pin -->
+                    <path d="M 20,70 L 80,30" stroke="#111" stroke-width="14" stroke-linecap="round" />
+                    <path d="M 24,67 L 76,33" stroke="#F48FB1" stroke-width="10" stroke-linecap="round" />
+                    <line x1="12" y1="75" x2="22" y2="68" stroke="#111" stroke-width="6" stroke-linecap="round" />
+                    <line x1="78" y1="32" x2="88" y2="25" stroke="#111" stroke-width="6" stroke-linecap="round" />
+                    <!-- bread loaf -->
+                    <path d="M 25,60 Q 25,45 45,45 Q 65,45 65,60 L 65,70 L 25,70 Z" fill="#8D6E63" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+                    <!-- score marks -->
+                    <line x1="35" y1="50" x2="30" y2="60" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="45" y1="50" x2="40" y2="60" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="55" y1="50" x2="50" y2="60" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                    <!-- flour dust/sparkles -->
+                    <circle cx="20" cy="40" r="2" fill="#F48FB1"/>
+                    <circle cx="28" cy="30" r="3" fill="#F48FB1"/>
+                    <circle cx="70" cy="80" r="2" fill="#F48FB1"/>
+                    <circle cx="60" cy="85" r="3" fill="#F48FB1"/>
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">HARAPAN DESA</div>
+                <div class="quote">"Rotiku hangat, tapi ada yang dingin dari tatapan tetanggaku hari ini."</div>
+                <div class="desc">Kamu tidak memiliki kemampuan spesial di malam hari. Tapi suara dan analisamu di siang hari adalah kunci utama kemenangan warga. Bersatulah dan temukan serigala sebelum fajar memerah darah!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 19. VILLAGER (THE BLACKSMITH) -->
+    <div class="card t-vil3">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">VIL-03</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">WARGA BIASA</div>
+                <div class="title-en">The Blacksmith</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Villager: Blacksmith -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- shadow -->
+                    <path d="M 20,70 L 80,70 L 70,50 L 85,50 Q 90,50 85,40 L 30,40 L 30,50 L 40,50 Z" fill="#D84315" transform="translate(4,4)"/>
+                    <!-- anvil -->
+                    <path d="M 20,70 L 80,70 L 70,50 L 85,50 L 85,45 Q 95,45 85,38 L 25,38 L 25,47 L 35,50 Z" fill="#607D8B" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+                    <line x1="35" y1="50" x2="70" y2="50" stroke="#111" stroke-width="2"/>
+                    <line x1="40" y1="45" x2="75" y2="45" stroke="#fff" stroke-width="1.5" opacity="0.3"/>
+                    <!-- hammer -->
+                    <line x1="50" y1="10" x2="30" y2="40" stroke="#111" stroke-width="6" stroke-linecap="round" />
+                    <rect x="25" y="28" width="16" height="24" rx="2" fill="#D84315" stroke="#111" stroke-width="3" transform="rotate(-55 33 40)"/>
+                    <!-- sparks -->
+                    <polygon points="15,35 17,30 22,32 18,36" fill="#FFC107" />
+                    <polygon points="10,48 15,48 12,52 10,48" fill="#D84315" />
+                    <circle cx="8" cy="40" r="2" fill="#FFC107"/>
+                    <circle cx="24" cy="22" r="3" fill="#D84315"/>
+                    <circle cx="48" cy="30" r="2" fill="#FFC107"/>
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">HARAPAN DESA</div>
+                <div class="quote">"Baja ditempa dalam panas. Kita ditempa dalam teror ini."</div>
+                <div class="desc">Kamu tidak memiliki kemampuan spesial di malam hari. Tapi suara dan analisamu di siang hari adalah kunci utama kemenangan warga. Bersatulah dan temukan serigala sebelum fajar memerah darah!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 20. WEREWOLF (THE BEAST) -->
+    <div class="card t-werewolf-2">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">WOLF PACK</div>
+                <div class="badge code-badge">WLF-02</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">WEREWOLF</div>
+                <div class="title-en">The Apex Predator</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Werewolf 2: Claw Marks tearing reality -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- shadow -->
+                    <path d="M 25,10 Q 15,50 30,90" fill="none" stroke="#311B92" stroke-width="12" stroke-linecap="round" transform="translate(4,4)" />
+                    <path d="M 50,5 Q 40,50 55,95" fill="none" stroke="#311B92" stroke-width="12" stroke-linecap="round" transform="translate(4,4)" />
+                    <path d="M 75,15 Q 65,55 80,85" fill="none" stroke="#311B92" stroke-width="12" stroke-linecap="round" transform="translate(4,4)" />
+                    <!-- slash marks base white (like tearing canvas) -->
+                    <path d="M 25,10 Q 15,50 30,90" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" />
+                    <path d="M 50,5 Q 40,50 55,95" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" />
+                    <path d="M 75,15 Q 65,55 80,85" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" />
+                    <!-- inner tear orange/red -->
+                    <path d="M 25,10 Q 15,50 30,90" fill="none" stroke="#FF6D00" stroke-width="4" stroke-linecap="round" />
+                    <path d="M 50,5 Q 40,50 55,95" fill="none" stroke="#D50000" stroke-width="4" stroke-linecap="round" />
+                    <path d="M 75,15 Q 65,55 80,85" fill="none" stroke="#FF6D00" stroke-width="4" stroke-linecap="round" />
+                    <!-- details - jagged edges and blood spatter -->
+                    <path d="M 23,40 L 15,45 M 24,60 L 18,55" stroke="#111" stroke-width="2" />
+                    <path d="M 47,30 L 35,35 M 48,70 L 42,75" stroke="#111" stroke-width="2" />
+                    <path d="M 72,50 L 65,45" stroke="#111" stroke-width="2" />
+                    <!-- blood drops -->
+                    <circle cx="35" cy="85" r="3" fill="#D50000" stroke="#111" stroke-width="1.5" />
+                    <circle cx="62" cy="70" r="2" fill="#D50000" stroke="#111" stroke-width="1.5" />
+                    <circle cx="45" cy="25" r="2" fill="#D50000" stroke="#111" stroke-width="1.5" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">INSTING PEMBURU</div>
+                <div class="quote">"Bukan bulan yang memanggilku, tapi bau ketakutan kalian."</div>
+                <div class="desc">Bangun di malam hari bersama serigala lain untuk berdiskusi dan memilih satu korban untuk dibunuh. Identitasmu tetap rahasia di siang hari. Cobalah berbaur agar tidak dicurigai warga!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 21. LONE WOLF (WARGA TERKUTUK) -->
+    <div class="card t-lonewolf">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE?</div>
+                <div class="badge code-badge">LNW-11</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">TERKUTUK</div>
+                <div class="title-en">The Lone Wolf</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Lone Wolf: Spilt Face Man/Wolf -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- shadow -->
+                    <path d="M 50,10 C 20,10 15,40 25,85 L 50,85 Z" fill="#4A148C" transform="translate(4,4)" />
+                    <path d="M 50,10 C 80,10 85,40 75,85 L 50,85 Z" fill="#C6FF00" transform="translate(4,4)" />
+                    
+                    <!-- left face (human) -->
+                    <path d="M 50,10 C 20,10 15,40 25,85 L 50,85 Z" fill="#f5f5f5" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+                    <!-- left eye -->
+                    <ellipse cx="38" cy="45" rx="5" ry="3" fill="#fff" stroke="#111" stroke-width="2"/>
+                    <circle cx="38" cy="45" r="1.5" fill="#111"/>
+                    <!-- left mouth & nose -->
+                    <path d="M 50,60 L 45,65 L 50,65" fill="none" stroke="#111" stroke-width="2"/>
+                    <path d="M 40,75 C 45,75 48,76 50,75" fill="none" stroke="#111" stroke-width="2"/>
+                    
+                    <!-- right face (wolf) -->
+                    <path d="M 50,10 C 80,10 85,40 75,85 L 50,85 Z" fill="#111" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+                    <!-- wolf ear fur -->
+                    <polygon points="50,10 65,5 70,25 60,15 50,15" fill="#111" />
+                    <polygon points="75,30 85,25 80,45 75,40" fill="#111" />
+                    <!-- right eye (wolf glowing) -->
+                    <polygon points="55,42 67,38 65,47 57,47" fill="#C6FF00" />
+                    <circle cx="61" cy="43" r="1.5" fill="#111" />
+                    <!-- right mouth & fangs -->
+                    <path d="M 50,70 L 65,65 C 60,80 50,80 50,80 Z" fill="#D50000" />
+                    <polygon points="53,70 55,75 57,71 59,76 62,70" fill="#fff" />
+                    <path d="M 50,70 L 65,65 C 60,80 50,80 50,80" fill="none" stroke="#fff" stroke-width="2" />
+                    
+                    <!-- split line down the middle -->
+                    <polyline points="50,10 47,30 52,50 48,70 50,85" fill="none" stroke="#111" stroke-width="3"/>
+                    <!-- transformation zaps on the line -->
+                    <path d="M 40,25 L 55,30 L 45,35" fill="none" stroke="#C6FF00" stroke-width="2"/>
+                    <path d="M 55,60 L 45,65 L 58,70" fill="none" stroke="#C6FF00" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">TERKUTUK</div>
+                <div class="quote">"Ada monster yang tertidur di dalam diriku. Jangan bangunkan dia."</div>
+                <div class="desc">Awalnya kau adalah warga biasa. Namun, jika Serigala menyerangmu di malam hari, kamu <b>TIDAK MATI!</b> Kamu akan terbangun berubah menjadi <b>Serigala</b> dan bergabung dengan pihak mereka selamanya.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 22. DOPPELGANGER (THE MIMIC) -->
+    <div class="card t-doppelganger">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">UNKNOWN</div>
+                <div class="badge code-badge">DPG-00</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">DOPPELGANGER</div>
+                <div class="title-en">The Mimic</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Doppelganger: Overlapping Theatrical Masks with Glitch -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- Background Mask (Cyan) -->
+                    <path d="M 30,15 C 10,15 10,55 30,80 C 50,55 50,15 30,15 Z" fill="#00ACC1" opacity="0.6" transform="translate(15, -5)" stroke="#111" stroke-width="2"/>
+                    <!-- Second Background Mask (Pink) -->
+                    <path d="M 30,15 C 10,15 10,55 30,80 C 50,55 50,15 30,15 Z" fill="#FF4081" opacity="0.6" transform="translate(-15, 5)" stroke="#111" stroke-width="2"/>
+                    
+                    <!-- Main Foreground Mask (White/Grey) -->
+                    <path d="M 50,20 C 20,20 20,65 50,90 C 80,65 80,20 50,20 Z" fill="#fff" stroke="#111" stroke-width="3"/>
+                    
+                    <!-- Main Mask Eyes (hollow) -->
+                    <path d="M 35,45 Q 40,40 45,45 Q 40,50 35,45 Z" fill="#111" />
+                    <path d="M 55,45 Q 60,40 65,45 Q 60,50 55,45 Z" fill="#111" />
+                    
+                    <!-- Main Mask Mouth (smiling sinisterly) -->
+                    <path d="M 40,65 Q 50,75 60,65 Q 50,70 40,65 Z" fill="#111" />
+                    
+                    <!-- Glitch effect lines overlapping the face -->
+                    <line x1="20" y1="35" x2="80" y2="35" stroke="#FF4081" stroke-width="3" opacity="0.8"/>
+                    <line x1="15" y1="55" x2="85" y2="55" stroke="#00ACC1" stroke-width="3" opacity="0.8"/>
+                    <line x1="25" y1="75" x2="75" y2="75" stroke="#111" stroke-width="2" opacity="0.5"/>
+                    <polyline points="45,45 40,45 40,55 45,55" stroke="#00ACC1" stroke-width="3" fill="none" opacity="0.8"/>
+                    <polyline points="55,45 60,45 60,55 55,55" stroke="#FF4081" stroke-width="3" fill="none" opacity="0.8"/>
+                    
+                    <!-- Floating identity shards in background -->
+                    <polygon points="10,20 15,15 20,25 12,30" fill="#00ACC1" stroke="#111" stroke-width="1.5"/>
+                    <polygon points="85,30 95,25 90,40 80,35" fill="#FF4081" stroke="#111" stroke-width="1.5"/>
+                    <polygon points="80,75 88,80 82,90 75,85" fill="#FFEA00" stroke="#111" stroke-width="1.5"/>
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">CURI IDENTITAS</div>
+                <div class="quote">"Sebuah kehormatan untuk... menjadi dirimu. Selamanya."</div>
+                <div class="desc">Saat malam pertama, pilih satu pemain. Jika pemain tersebut mati kapan pun itu, <b>kamu langsung terbangun menggantikan peran, faksi, dan kekuatannya</b>. Sampai saat itu tiba, kamu tidak memiliki kubu.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 23. SERIAL KILLER (THE MANIAC) -->
+    <div class="card t-serialkiller">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">SOLO</div>
+                <div class="badge code-badge">SK-666</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">PEMBUNUH<br>BERANTAI</div>
+                <div class="title-en">The Maniac</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Serial Killer: Hockey Mask & Bloody Knife -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- shadow -->
+                    <path d="M 60,10 L 80,90 A 5,5 0 0 1 70,90 L 50,10 Z" fill="#C62828" transform="translate(6,6)" />
+                    <circle cx="45" cy="50" r="30" fill="#FFEA00" transform="translate(6,6)" />
+                    
+                    <!-- Knife -->
+                    <path d="M 60,10 L 80,90 A 5,5 0 0 1 70,90 L 50,10 Z" fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Knife handle -->
+                    <path d="M 72,70 L 80,90 A 5,5 0 0 1 70,90 L 62,70 Z" fill="#111" />
+                    <!-- Blood on Knife -->
+                    <path d="M 60,10 L 65,30 Q 62,35 60,40 Q 55,30 55,20 Z" fill="#C62828" />
+                    <circle cx="58" cy="45" r="2.5" fill="#C62828" />
+                    <circle cx="53" cy="30" r="1.5" fill="#C62828" />
+
+                    <!-- Hockey Mask -->
+                    <circle cx="45" cy="50" r="30" fill="#f5f5f5" stroke="#111" stroke-width="3" />
+                    <!-- Mask details (holes) -->
+                    <circle cx="45" cy="30" r="2" fill="#111" />
+                    <circle cx="35" cy="32" r="2" fill="#111" />
+                    <circle cx="55" cy="32" r="2" fill="#111" />
+                    <circle cx="45" cy="70" r="2" fill="#111" />
+                    <circle cx="35" cy="65" r="2" fill="#111" />
+                    <circle cx="55" cy="65" r="2" fill="#111" />
+                    <circle cx="30" cy="55" r="2" fill="#111" />
+                    <circle cx="60" cy="55" r="2" fill="#111" />
+                    <circle cx="45" cy="60" r="2" fill="#111" />
+                    <!-- Mask eye holes -->
+                    <ellipse cx="32" cy="45" rx="5" ry="4" fill="#111" transform="rotate(-15 32 45)" />
+                    <ellipse cx="58" cy="45" rx="5" ry="4" fill="#111" transform="rotate(15 58 45)" />
+                    <!-- Red marks on mask -->
+                    <polygon points="40,25 50,25 45,35" fill="#C62828" opacity="0.8" />
+                    <polygon points="25,40 30,50 20,45" fill="#C62828" opacity="0.8" />
+                    <polygon points="65,40 60,50 70,45" fill="#C62828" opacity="0.8" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">MALAM BERDARAH</div>
+                <div class="quote">"Serigala membunuh untuk bertahan hidup. Aku? Aku membunuh demi seni."</div>
+                <div class="desc">Setiap malam, kau boleh <b>membunuh 1 pemain</b> secara brutal. Kau kebal dari serangan Serigala karena keberingasanmu. Faksi: <b>SOLO</b> — kau menang bila berhasil selamat hingga menjadi orang terakhir yang ada!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 24. IDIOT (SANG PANDIR) -->
+    <div class="card t-idiot">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">IDI-0T</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">SANG PANDIR</div>
+                <div class="title-en">The Idiot</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Idiot: Dunce Cap with Pinwheel -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- shadow -->
+                    <path d="M 30,85 L 50,30 L 70,85 C 60,95 40,95 30,85 Z" fill="#D500F9" transform="translate(5,5)" />
+                    <!-- Dunce Cap -->
+                    <path d="M 30,85 L 50,30 L 70,85 C 60,95 40,95 30,85 Z" fill="#FFEA00" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Big Question Mark -->
+                    <text x="50" y="75" font-family="'Righteous', cursive" font-size="40" fill="#111" stroke="#fff" stroke-width="1.5" text-anchor="middle" font-weight="900" transform="rotate(-10 50 75)">?</text>
+                    <!-- Cap base rim -->
+                    <path d="M 25,85 C 40,100 60,100 75,85 C 60,80 40,80 25,85 Z" fill="#fff" stroke="#111" stroke-width="2" />
+                    <!-- Pinwheel Stick -->
+                    <line x1="50" y1="30" x2="50" y2="15" stroke="#111" stroke-width="3" />
+                    <!-- Pinwheel Blades -->
+                    <path d="M 50,15 L 40,10 L 50,5 L 60,10 Z" fill="#FFEA00" stroke="#111" stroke-width="2" transform="rotate(45 50 15)" />
+                    <path d="M 50,15 L 40,10 L 50,5 L 60,10 Z" fill="#D500F9" stroke="#111" stroke-width="2" transform="rotate(135 50 15)" />
+                    <circle cx="50" cy="15" r="2.5" fill="#111" />
+                    
+                    <!-- Dazed stars floating -->
+                    <polygon points="20,30 22,25 24,30 29,32 24,34 22,39 20,34 15,32" fill="#D500F9" stroke="#111" stroke-width="1.5" />
+                    <polygon points="85,45 87,40 89,45 94,47 89,49 87,54 85,49 80,47" fill="#fff" stroke="#111" stroke-width="1.5" />
+                    <polygon points="75,20 76,17 77,20 80,21 77,22 76,25 75,22 72,21" fill="#FFEA00" stroke="#111" stroke-width="1.5" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">KEBAL EJEKAN</div>
+                <div class="quote">"Haha! Kalian semua gantung orang yang salah!"</div>
+                <div class="desc">Jika wagra desa mem-voting mati dirimu di balai desa, ungkapkan identitasmu! Kamu <b>TIDAK MATI</b> dan dibiarkan hidup. Namun, kamu dianggap gila dan <b>kehilangan hak suara</b> dalam voting hingga game berakhir.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 25. PRINCE (SANG PANGERAN) -->
+    <div class="card t-prince">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">PRN-01</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">PANGERAN</div>
+                <div class="title-en">The Royal Heir</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Prince: Ornate Crown -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- shadow -->
+                    <path d="M 20,70 L 10,35 L 30,50 L 50,20 L 70,50 L 90,35 L 80,70 Z" fill="#2962FF" transform="translate(5,5)" />
+                    <!-- Crown Base Shape -->
+                    <path d="M 20,70 L 10,35 L 30,50 L 50,20 L 70,50 L 90,35 L 80,70 Z" fill="#FFC107" stroke="#111" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Crown Lower Band -->
+                    <rect x="22" y="70" width="56" height="10" rx="2" fill="#fff" stroke="#111" stroke-width="3" />
+                    <!-- Base Gems -->
+                    <circle cx="35" cy="75" r="3" fill="#D50000" stroke="#111" stroke-width="1.5" />
+                    <circle cx="50" cy="75" r="3" fill="#2962FF" stroke="#111" stroke-width="1.5" />
+                    <circle cx="65" cy="75" r="3" fill="#00E676" stroke="#111" stroke-width="1.5" />
+                    <!-- Peak Gems -->
+                    <circle cx="10" cy="35" r="4" fill="#fff" stroke="#111" stroke-width="2" />
+                    <circle cx="30" cy="50" r="3" fill="#fff" stroke="#111" stroke-width="2" />
+                    <circle cx="50" cy="20" r="5" fill="#fff" stroke="#111" stroke-width="2" />
+                    <circle cx="70" cy="50" r="3" fill="#fff" stroke="#111" stroke-width="2" />
+                    <circle cx="90" cy="35" r="4" fill="#fff" stroke="#111" stroke-width="2" />
+                    
+                    <!-- Inner details -->
+                    <path d="M 22,65 C 40,80 60,80 78,65" fill="none" stroke="#2962FF" stroke-width="2" opacity="0.5" />
+                    <path d="M 35,45 L 50,30 L 65,45" fill="none" stroke="#D50000" stroke-width="2" stroke-linecap="round" />
+                    <!-- Sparkles -->
+                    <polygon points="50,5 51,0 52,5 57,6 52,7 51,12 50,7 45,6" fill="#fff" stroke="#111" stroke-width="1" />
+                    <polygon points="25,25 26,21 27,25 31,26 27,27 26,31 25,27 21,26" fill="#FFC107" stroke="#111" stroke-width="1" />
+                    <polygon points="75,25 76,21 77,25 81,26 77,27 76,31 75,27 71,26" fill="#FFC107" stroke="#111" stroke-width="1" />
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">HAK ISTIMEWA</div>
+                <div class="quote">"Berani kalian menyentuh darah biru ini? Aku adalah hukum!"</div>
+                <div class="desc">Jika penduduk desa mem-votingmu untuk digantung di siang hari, singkap identitasmu! Hukuman gantungmu <b>dibatalkan otomatis</b>. Hebatnya lagi, wibawamu membuat kamu <b>tetap bisa melakukan voting</b> di kemudian hari, berbeda dari Idiot.</div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 26. LITTLE GIRL (GADIS KECIL) -->
+    <div class="card t-littlegirl">
+        <div class="bg-pattern"></div>
+        <div class="content">
+            <div class="header">
+                <div class="badge fac-badge">ALLIANCE</div>
+                <div class="badge code-badge">LGL-07</div>
+            </div>
+
+            <div class="title-box">
+                <div class="title-id">GADIS KECIL</div>
+                <div class="title-en">The Peeper</div>
+            </div>
+
+            <div class="art-box">
+                <!-- SVG Pop-Art Little Girl: Glowing Eyes in the Dark -->
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <!-- pitch black background offset for pop-art -->
+                    <rect x="0" y="0" width="100" height="100" fill="#6200EA" transform="translate(4,4)" />
+                    <rect x="0" y="0" width="100" height="100" fill="#111" stroke="#111" stroke-width="3" />
+                    
+                    <!-- Left Eye -->
+                    <ellipse cx="30" cy="50" rx="18" ry="12" fill="#fff" stroke="#64FFDA" stroke-width="3" />
+                    <circle cx="30" cy="50" r="6" fill="#6200EA" />
+                    <circle cx="32" cy="48" r="2" fill="#fff" />
+                    
+                    <!-- Right Eye -->
+                    <ellipse cx="70" cy="50" rx="18" ry="12" fill="#fff" stroke="#64FFDA" stroke-width="3" />
+                    <circle cx="70" cy="50" r="6" fill="#D50000" /> <!-- Right eye pupil red for terror/wolf reflection -->
+                    <circle cx="72" cy="48" r="2" fill="#fff" />
+
+                    <!-- Eyelashes & Brows -->
+                    <path d="M 12,45 C 20,35 40,35 48,45" fill="none" stroke="#64FFDA" stroke-width="2" stroke-linecap="round" />
+                    <path d="M 52,45 C 60,35 80,35 88,45" fill="none" stroke="#64FFDA" stroke-width="2" stroke-linecap="round" />
+                    
+                    <!-- Tiny Hands tugging at the bottom edge -->
+                    <path d="M 20,100 C 20,85 40,85 40,100 Z" fill="#f5f5f5" stroke="#64FFDA" stroke-width="2" />
+                    <line x1="25" y1="90" x2="25" y2="100" stroke="#64FFDA" stroke-width="2" />
+                    <line x1="30" y1="88" x2="30" y2="100" stroke="#64FFDA" stroke-width="2" />
+                    <line x1="35" y1="90" x2="35" y2="100" stroke="#64FFDA" stroke-width="2" />
+
+                    <path d="M 60,100 C 60,85 80,85 80,100 Z" fill="#f5f5f5" stroke="#64FFDA" stroke-width="2" />
+                    <line x1="65" y1="90" x2="65" y2="100" stroke="#64FFDA" stroke-width="2" />
+                    <line x1="70" y1="88" x2="70" y2="100" stroke="#64FFDA" stroke-width="2" />
+                    <line x1="75" y1="90" x2="75" y2="100" stroke="#64FFDA" stroke-width="2" />
+
+                    <!-- Floating ZZZs or question marks above -->
+                    <text x="50" y="25" font-family="'Righteous', cursive" font-size="12" fill="#64FFDA" opacity="0.6">?</text>
+                    <text x="25" y="15" font-family="'Righteous', cursive" font-size="10" fill="#6200EA" opacity="0.8">?</text>
+                    <text x="80" y="20" font-family="'Righteous', cursive" font-size="16" fill="#D50000" opacity="0.8">!</text>
+                </svg>
+            </div>
+
+            <div class="text-wrapper">
+                <div class="ability">PENGINTIP MALAM</div>
+                <div class="quote">"Ssst... aku lihat ada bayangan panjang bertaring di luar jendelaku."</div>
+                <div class="desc">Saat kawanan Serigala bangun, kamu <b>boleh mengintip diam-diam</b> untuk menebak identitas mereka. TAPI HATI-HATI! Jika serigala menunjuk dan menyadari kamu sedang mengintip, kamu akan langsung <b>dibunuh seketika!</b></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

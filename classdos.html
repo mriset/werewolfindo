@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf: Classified Dossier Deck</title>
+
+    <!-- Font Premium untuk Tema Dokumen Rahasia -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Courier+Prime:wght@400;700&family=Oswald:wght@500;700&family=Special+Elite&family=Caveat:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Dimensi Kartu Fisik Presisi (Standar Eropa/Tarot Mini) */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+            
+            /* Warna Dasar Kertas Dokumen (CMYK Safe) */
+            --paper-bg: #fdfbf7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #121212;
+            background-image: radial-gradient(circle at 50% 50%, #2a2a2a 0%, #121212 100%);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.8rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #ccc;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            font-family: 'Courier Prime', monospace;
+        }
+
+        /* --- CONTAINER KARTU --- */
+        .deck-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* Base Card Styling (DOSSIER THEME) */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background-color: var(--paper-bg);
+            border-radius: 2mm;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            color: #111; 
+            border: 0.5mm solid #a3a3a3;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Pita File Kiri */
+        .spine {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 7mm;
+            background: var(--faction-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid rgba(0,0,0,0.3);
+            box-shadow: inset -2px 0 5px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+
+        .spine-text {
+            transform: rotate(-90deg);
+            color: #fff;
+            font-family: 'Oswald', sans-serif;
+            font-size: 8pt;
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+
+        .content {
+            margin-left: 7mm;
+            padding: 3mm;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Stempel Status */
+        .stamp {
+            position: absolute;
+            font-family: 'Special Elite', monospace;
+            font-size: 8pt;
+            border: 2px solid var(--stamp-color);
+            color: var(--stamp-color);
+            padding: 0.5mm 1.5mm;
+            opacity: 0.8;
+            font-weight: bold;
+            z-index: 5;
+            mix-blend-mode: multiply;
+        }
+
+        /* Area Ilustrasi Schematic/Blueprint */
+        .art-box {
+            width: 100%;
+            height: 36mm;
+            border: 1.5px dashed #999;
+            background: #f4f4f4;
+            margin-top: 7mm;
+            margin-bottom: 2mm;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .art-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Header Teks */
+        .role-en {
+            font-family: 'Oswald', sans-serif;
+            font-size: 16pt;
+            font-weight: 900;
+            color: var(--faction-color);
+            text-transform: uppercase;
+            line-height: 0.9;
+        }
+
+        .role-id {
+            font-family: 'Courier Prime', monospace;
+            font-size: 6pt;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 2mm;
+            border-bottom: 1px dotted #ccc;
+            padding-bottom: 1mm;
+        }
+
+        /* Kotak Deskripsi */
+        .desc-box {
+            background: rgba(0,0,0,0.03);
+            border-left: 2mm solid var(--stamp-color);
+            padding: 1.5mm 2mm;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quote {
+            font-family: 'Courier Prime', monospace;
+            font-weight: 700;
+            font-style: italic;
+            font-size: 5pt;
+            color: #333;
+            margin-bottom: 1.5mm;
+            line-height: 1.2;
+        }
+
+        .desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4.8pt;
+            line-height: 1.35;
+            color: #111;
+            text-align: justify;
+        }
+
+
+        /* =========================================
+           KUSTOMISASI PER KARTU (Variabel Warna & Posisi)
+           ========================================= */
+
+        /* 1. SEER (Intelligence / Recon) */
+        .card-seer {
+            --faction-color: #1a237e; /* Navy Blue */
+            --stamp-color: #f57f17; /* Alert Orange */
+        }
+        .card-seer .stamp { top: 2mm; right: 2mm; transform: rotate(10deg); }
+
+        /* 2. HUNTER (Tactical / Eliminator) */
+        .card-hunter {
+            --faction-color: #2e7d32; /* Forest Green */
+            --stamp-color: #d84315; /* Rust Red */
+        }
+        .card-hunter .stamp { top: 2mm; left: 10mm; transform: rotate(-5deg); }
+
+        /* 3. WEREWOLF (Biohazard / Target) */
+        .card-werewolf {
+            --faction-color: #212121; /* Charcoal Black */
+            --stamp-color: #b71c1c; /* Blood Red */
+        }
+        .card-werewolf .stamp { bottom: 25mm; right: -2mm; transform: rotate(-25deg); font-size: 12pt; border-width: 3px; }
+        .ww-blood { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 80% 20%, rgba(183, 28, 28, 0.15) 0%, transparent 50%); pointer-events: none; mix-blend-mode: multiply; }
+
+        /* 4. JESTER (Anomalous / Corrupted File) */
+        .card-jester {
+            --faction-color: #880e4f; /* Deep Magenta */
+            --stamp-color: #00838f; /* Cyan */
+        }
+        .card-jester .stamp { top: 20mm; left: 15mm; transform: rotate(15deg); font-size: 10pt; color: #fff; background: var(--stamp-color); }
+        .jester-marker { position: absolute; font-family: 'Caveat', cursive; font-size: 14pt; color: #c2185b; transform: rotate(-15deg); z-index: 10; opacity: 0.8; }
+
+        /* 5. GUARDIAN (Defense / Asset Protection) */
+        .card-guardian {
+            --faction-color: #37474f; /* Slate Gray */
+            --stamp-color: #5d4037; /* Brown/Brass */
+        }
+        .card-guardian .stamp { top: 3mm; right: 8mm; transform: rotate(0deg); }
+
+        /* 6. CARD BACK (Folder Exterior) */
+        .card-back {
+            background-color: #d7ccc8; /* Manilla Folder Color */
+            border: 1px solid #8d6e63;
+            justify-content: center;
+            align-items: center;
+            padding: 5mm;
+        }
+        .card-back::before {
+            content: ''; position: absolute; top: 2mm; left: 2mm; right: 2mm; bottom: 2mm;
+            border: 2px solid #5d4037; opacity: 0.3; pointer-events: none;
+        }
+
+
+        @media print {
+            body {
+                background: none !important;
+                padding: 0 !important;
+            }
+            .header {
+                display: none !important;
+            }
+            .deck-container {
+                gap: 0;
+            }
+            .card {
+                box-shadow: none !important;
+                transform: none !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                page-break-inside: avoid;
+                margin: 5mm; 
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Classified Dossier Deck</h1>
+        <p>Project: Lycanthropy // 85.6 mm x 54 mm (CMYK Print Ready) // Press CTRL+P to Print</p>
+    </div>
+
+    <div class="deck-container">
+
+        <!-- KARTU 1: SEER -->
+        <div class="card card-seer">
+            <div class="spine"><div class="spine-text">INTEL-01 // ALLIANCE</div></div>
+            <div class="content">
+                <div class="stamp">TOP SECRET</div>
+                
+                <div class="art-box">
+                    <svg class="art-svg" viewBox="0 0 100 100">
+                        <!-- Grid Blueprint -->
+                        <g stroke="#1a237e" stroke-width="0.5" opacity="0.3">
+                            <line x1="0" y1="25" x2="100" y2="25"/><line x1="0" y1="50" x2="100" y2="50"/><line x1="0" y1="75" x2="100" y2="75"/>
+                            <line x1="25" y1="0" x2="25" y2="100"/><line x1="50" y1="0" x2="50" y2="100"/><line x1="75" y1="0" x2="75" y2="100"/>
+                        </g>
+                        <!-- Schematic Eye -->
+                        <path d="M 10 50 Q 50 15 90 50 Q 50 85 10 50" fill="none" stroke="#1a237e" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="18" fill="none" stroke="#1a237e" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="12" fill="none" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="2,2"/>
+                        <circle cx="50" cy="50" r="4" fill="#1a237e"/>
+                        
+                        <!-- Technical Annotations -->
+                        <line x1="50" y1="32" x2="50" y2="10" stroke="#f57f17" stroke-width="1"/>
+                        <text x="52" y="15" font-family="Courier Prime" font-size="5" fill="#f57f17">SCAN: ACTIVE</text>
+                        <path d="M 65 60 L 80 75 L 95 75" fill="none" stroke="#1a237e" stroke-width="1"/>
+                        <text x="75" y="73" font-family="Courier Prime" font-size="4" fill="#1a237e">SUBJECT ID</text>
+                        <!-- Target Box -->
+                        <rect x="42" y="42" width="16" height="16" fill="none" stroke="#f57f17" stroke-width="0.5"/>
+                    </svg>
+                </div>
+
+                <div class="role-en">The Seer</div>
+                <div class="role-id">ASSET: RECONNAISSANCE [SANG PERAMAL]</div>
+
+                <div class="desc-box">
+                    <div class="quote">"Satelit kami menangkap anomali biologis. Identitas target telah dikonfirmasi."</div>
+                    <div class="desc">
+                        <strong>SURVEILLANCE (MALAM):</strong> Tunjuk 1 subjek. Intelijen pusat akan mengirimkan laporan rahasia yang mengungkap faksi dan identitas asli subjek tersebut. Gunakan data ini untuk mengarahkan pemungutan suara di siang hari.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 2: HUNTER -->
+        <div class="card card-hunter">
+            <div class="spine"><div class="spine-text">VGD-99 // ALLIANCE</div></div>
+            <div class="content">
+                <div class="stamp">CLASSIFIED</div>
+                
+                <div class="art-box">
+                    <svg class="art-svg" viewBox="0 0 100 100">
+                        <!-- Grid Blueprint -->
+                        <g stroke="#2e7d32" stroke-width="0.5" opacity="0.3">
+                            <line x1="0" y1="20" x2="100" y2="20"/><line x1="0" y1="40" x2="100" y2="40"/><line x1="0" y1="60" x2="100" y2="60"/><line x1="0" y1="80" x2="100" y2="80"/>
+                            <line x1="20" y1="0" x2="20" y2="100"/><line x1="40" y1="0" x2="40" y2="100"/><line x1="60" y1="0" x2="60" y2="100"/><line x1="80" y1="0" x2="80" y2="100"/>
+                        </g>
+                        <!-- Schematic Crossbow Target -->
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="#2e7d32" stroke-width="1.5"/>
+                        <circle cx="50" cy="50" r="20" fill="none" stroke="#2e7d32" stroke-width="1" stroke-dasharray="3,3"/>
+                        <line x1="10" y1="50" x2="90" y2="50" stroke="#2e7d32" stroke-width="1"/>
+                        <line x1="50" y1="10" x2="50" y2="90" stroke="#2e7d32" stroke-width="1"/>
+                        
+                        <!-- Arrow Schematic -->
+                        <line x1="50" y1="15" x2="50" y2="65" stroke="#d84315" stroke-width="2"/>
+                        <polygon points="50,15 47,25 53,25" fill="#d84315"/>
+                        <path d="M 50 55 L 46 62 M 50 60 L 46 67 M 50 55 L 54 62 M 50 60 L 54 67" stroke="#111" stroke-width="1.5"/>
+                        
+                        <!-- Technical Annotations -->
+                        <text x="55" y="85" font-family="Courier Prime" font-size="4" fill="#2e7d32">CAL: .50 SILVER</text>
+                        <circle cx="65" cy="35" r="4" fill="#d84315" opacity="0.6"/>
+                        <line x1="65" y1="35" x2="80" y2="20" stroke="#d84315" stroke-width="1"/>
+                        <text x="75" y="18" font-family="Courier Prime" font-size="4" fill="#d84315">IMPACT</text>
+                    </svg>
+                </div>
+
+                <div class="role-en">The Hunter</div>
+                <div class="role-id">ASSET: ELIMINATOR [SANG PEMBURU]</div>
+
+                <div class="desc-box">
+                    <div class="quote">"Jika agen ini gugur dalam tugas, protokol 'Scorched Earth' akan langsung diaktifkan."</div>
+                    <div class="desc">
+                        <strong>LAST RESORT:</strong> Jika agen ini terbunuh (oleh serangan malam atau dieksekusi di siang hari), ia diizinkan melepas satu tembakan mematikan terakhir untuk <strong>membunuh 1 subjek</strong> pilihannya secara instan.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 3: WEREWOLF -->
+        <div class="card card-werewolf">
+            <div class="ww-blood"></div>
+            <div class="spine"><div class="spine-text">PRD-00 // SHADOWS</div></div>
+            <div class="content">
+                <div class="stamp">LETHAL</div>
+                
+                <div class="art-box" style="background:#e0e0e0; border-color:#212121;">
+                    <svg class="art-svg" viewBox="0 0 100 100">
+                        <!-- Grid Blueprint (Messed Up) -->
+                        <g stroke="#777" stroke-width="0.5" opacity="0.5">
+                            <line x1="0" y1="20" x2="100" y2="22"/><line x1="0" y1="40" x2="100" y2="40"/><line x1="0" y1="60" x2="100" y2="58"/>
+                            <line x1="20" y1="0" x2="20" y2="100"/><line x1="40" y1="0" x2="40" y2="100"/><line x1="60" y1="0" x2="62" y2="100"/>
+                        </g>
+                        
+                        <!-- Evidence Photo Frame -->
+                        <rect x="25" y="15" width="50" height="60" fill="#fff" stroke="#111" stroke-width="1" transform="rotate(5 50 45)"/>
+                        
+                        <!-- Silhouette of Beast Jaw -->
+                        <path d="M 30 25 Q 50 40 70 30 L 65 45 Q 50 55 35 45 Z" fill="#212121" transform="rotate(5 50 45)"/>
+                        <polygon points="40,35 43,48 46,36" fill="#fff" transform="rotate(5 50 45)"/>
+                        <polygon points="55,35 52,50 58,37" fill="#b71c1c" transform="rotate(5 50 45)"/>
+                        
+                        <!-- Claw Marks destroying the evidence -->
+                        <path d="M 10 10 Q 50 40 80 90" fill="none" stroke="#b71c1c" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M 25 5 Q 60 30 95 70" fill="none" stroke="#b71c1c" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M 40 -5 Q 70 20 105 50" fill="none" stroke="#b71c1c" stroke-width="3" stroke-linecap="round"/>
+                        
+                        <!-- Technical Annotations -->
+                        <text x="5" y="90" font-family="Courier Prime" font-size="5" fill="#212121" font-weight="bold">EVIDENCE CORRUPTED</text>
+                    </svg>
+                </div>
+
+                <div class="role-en" style="color:#b71c1c;">Werewolf</div>
+                <div class="role-id">THREAT: APEX PREDATOR [SERIGALA]</div>
+
+                <div class="desc-box" style="border-color:#b71c1c;">
+                    <div class="quote">"Subjek memutus komunikasi. Ditemukan mutasi biologis ekstrem. Menjadi sangat agresif di malam hari."</div>
+                    <div class="desc">
+                        <strong>NIGHT PREDATION:</strong> Sadar penuh setiap malam. Berkoordinasi dengan kawanannya untuk memilih dan <strong>membunuh 1 target</strong>. Di siang hari, subjek mampu meniru perilaku warga sipil secara sempurna.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 4: JESTER -->
+        <div class="card card-jester">
+            <div class="spine"><div class="spine-text">ERR-404 // CHAOS</div></div>
+            <div class="content">
+                <div class="stamp">REDACTED</div>
+                <div class="jester-marker" style="top: 8mm; right: 2mm;">Hahaha!</div>
+                
+                <div class="art-box">
+                    <svg class="art-svg" viewBox="0 0 100 100">
+                        <!-- Grid Blueprint -->
+                        <g stroke="#999" stroke-width="0.5" opacity="0.5">
+                            <line x1="0" y1="20" x2="100" y2="20"/><line x1="0" y1="40" x2="100" y2="40"/><line x1="0" y1="60" x2="100" y2="60"/>
+                            <line x1="20" y1="0" x2="20" y2="100"/><line x1="40" y1="0" x2="40" y2="100"/><line x1="60" y1="0" x2="60" y2="100"/>
+                        </g>
+                        
+                        <!-- Formal Dossier Profile (Siluet Kepala) -->
+                        <path d="M 30 90 C 30 60 70 60 70 90 Z" fill="#ccc" stroke="#888"/>
+                        <circle cx="50" cy="40" r="15" fill="#ccc" stroke="#888"/>
+                        
+                        <!-- Chaotic Marker Drawing over it -->
+                        <circle cx="50" cy="40" r="22" fill="none" stroke="#880e4f" stroke-width="2" stroke-dasharray="5,2"/>
+                        
+                        <!-- Mata Silang (X) -->
+                        <path d="M 38 32 L 44 38 M 44 32 L 38 38" stroke="#00838f" stroke-width="2.5" stroke-linecap="round"/>
+                        <!-- Mata Lebar Gila -->
+                        <circle cx="60" cy="35" r="5" fill="#fff" stroke="#880e4f" stroke-width="2"/>
+                        <circle cx="60" cy="35" r="1.5" fill="#00838f"/>
+                        
+                        <!-- Senyum Lebar berdarah/menyeramkan -->
+                        <path d="M 35 50 Q 50 65 65 48" fill="none" stroke="#880e4f" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="40" y1="50" x2="40" y2="56" stroke="#880e4f" stroke-width="1.5"/>
+                        <line x1="50" y1="54" x2="50" y2="60" stroke="#880e4f" stroke-width="1.5"/>
+                        <line x1="60" y1="49" x2="60" y2="55" stroke="#880e4f" stroke-width="1.5"/>
+                        
+                        <text x="5" y="15" font-family="Caveat" font-size="8" fill="#00838f" transform="rotate(-10)">WRONG FILE!</text>
+                    </svg>
+                </div>
+
+                <div class="role-en">The Jester</div>
+                <div class="role-id">ASSET: PSYCHOLOGICAL HAZARD [BADUT]</div>
+
+                <div class="desc-box">
+                    <div class="quote">"Profil psikologis: Tidak stabil. Manipulatif. Memiliki kecenderungan masokis tingkat fatal."</div>
+                    <div class="desc">
+                        <strong>SUICIDE MISSION:</strong> Tidak berafiliasi. Tujuan tunggal agen ini adalah menyebarkan disinformasi agar warga mem-voting dan <strong>mengeksekusinya</strong> di siang hari. Jika ia mati digantung, misi dianggap Sukses Mutlak!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 5: GUARDIAN -->
+        <div class="card card-guardian">
+            <div class="spine"><div class="spine-text">SEC-07 // ALLIANCE</div></div>
+            <div class="content">
+                <div class="stamp">SECURED</div>
+                
+                <div class="art-box">
+                    <svg class="art-svg" viewBox="0 0 100 100">
+                        <!-- Grid Blueprint -->
+                        <g stroke="#37474f" stroke-width="0.5" opacity="0.3">
+                            <line x1="0" y1="25" x2="100" y2="25"/><line x1="0" y1="50" x2="100" y2="50"/><line x1="0" y1="75" x2="100" y2="75"/>
+                            <line x1="25" y1="0" x2="25" y2="100"/><line x1="50" y1="0" x2="50" y2="100"/><line x1="75" y1="0" x2="75" y2="100"/>
+                        </g>
+                        
+                        <!-- Shield Schematic -->
+                        <path d="M 25 15 L 75 15 L 80 45 L 50 90 L 20 45 Z" fill="none" stroke="#37474f" stroke-width="2"/>
+                        <path d="M 30 20 L 70 20 L 75 45 L 50 82 L 25 45 Z" fill="none" stroke="#5d4037" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        
+                        <!-- Internal mechanism -->
+                        <rect x="45" y="30" width="10" height="30" fill="none" stroke="#37474f" stroke-width="1"/>
+                        <circle cx="50" cy="45" r="4" fill="#37474f"/>
+                        <line x1="25" y1="45" x2="75" y2="45" stroke="#37474f" stroke-width="1"/>
+                        
+                        <!-- Technical Annotations -->
+                        <text x="28" y="12" font-family="Courier Prime" font-size="4" fill="#37474f">KINETIC BARRIER V.3</text>
+                        <line x1="80" y1="45" x2="90" y2="45" stroke="#5d4037" stroke-width="1"/>
+                        <text x="82" y="42" font-family="Courier Prime" font-size="4" fill="#5d4037">ARMOR</text>
+                        <circle cx="50" cy="90" r="1.5" fill="#5d4037"/>
+                    </svg>
+                </div>
+
+                <div class="role-en">Guardian</div>
+                <div class="role-id">ASSET: HEAVY PROTECTION [PELINDUNG]</div>
+
+                <div class="desc-box">
+                    <div class="quote">"Deploying tactical shield. Selama aku berdiri, ancaman kelas Predator tidak akan menembus garis ini."</div>
+                    <div class="desc">
+                        <strong>KINETIC SHIELD (MALAM):</strong> Tugaskan penjagaan pada 1 subjek setiap malam. Jika subjek tersebut diserang malam itu, barikade akan menahan serangan dan subjek <strong>selamat</strong>. (Tidak bisa melindungi orang yang sama 2 malam berturut-turut).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 6: CARD BACK (COVER FOLDER) -->
+        <div class="card card-back">
+            <svg viewBox="0 0 100 150" style="width:100%; height:100%;">
+                
+                <!-- Folder Tab -->
+                <path d="M 0 10 L 40 10 L 45 20 L 100 20 L 100 150 L 0 150 Z" fill="#cfc2bc" stroke="#8d6e63" stroke-width="1"/>
+                <text x="5" y="16" font-family="Courier Prime" font-size="5" fill="#5d4037" font-weight="bold">FILE: LYCAN-001</text>
+                
+                <!-- Paperclip -->
+                <path d="M 70 5 L 70 30 A 5 5 0 0 0 80 30 L 80 10 A 3 3 0 0 0 74 10 L 74 25" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round"/>
+                
+                <!-- Center Logo / Seal -->
+                <circle cx="50" cy="70" r="25" fill="none" stroke="#5d4037" stroke-width="1.5"/>
+                <circle cx="50" cy="70" r="23" fill="none" stroke="#5d4037" stroke-width="0.5"/>
+                <path d="M 50 50 L 65 80 L 35 80 Z" fill="none" stroke="#5d4037" stroke-width="1.5"/>
+                <circle cx="50" cy="65" r="3" fill="#5d4037"/>
+                
+                <!-- Main Stamp -->
+                <rect x="15" y="105" width="70" height="15" fill="none" stroke="#b71c1c" stroke-width="2" transform="rotate(-10 50 110)"/>
+                <text x="18" y="116" font-family="Special Elite" font-size="8" fill="#b71c1c" font-weight="bold" transform="rotate(-10 50 110)" letter-spacing="1">CONFIDENTIAL</text>
+                
+                <!-- Barcode Base -->
+                <g transform="translate(10, 135)">
+                    <rect x="0" y="0" width="2" height="10" fill="#333"/>
+                    <rect x="3" y="0" width="1" height="10" fill="#333"/>
+                    <rect x="6" y="0" width="3" height="10" fill="#333"/>
+                    <rect x="11" y="0" width="1" height="10" fill="#333"/>
+                    <rect x="14" y="0" width="2" height="10" fill="#333"/>
+                    <rect x="18" y="0" width="4" height="10" fill="#333"/>
+                    <rect x="24" y="0" width="1" height="10" fill="#333"/>
+                    <rect x="27" y="0" width="2" height="10" fill="#333"/>
+                    <rect x="31" y="0" width="1" height="10" fill="#333"/>
+                    <text x="35" y="8" font-family="Courier Prime" font-size="5" fill="#333">DEPT OF DEFENSE</text>
+                </g>
+                
+                <!-- Fingerprint Smudge -->
+                <path d="M 85 85 Q 90 95 80 100 Q 75 90 85 85 Z" fill="#8d6e63" opacity="0.3"/>
+            </svg>
+        </div>
+
+    </div>
+
+</body>
+</html>

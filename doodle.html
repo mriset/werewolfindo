@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf Doodle Notebook Deck</title>
+    <!-- Fonts Handwriting / Doodle Style -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Kalam:wght@400;700&family=Patrick+Hand&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+            --ink-black: #2c2c2c;
+            --paper-bg: #fdfbf7;
+            --line-blue: #d9e6f2;
+            --line-red: #ffcdd2;
+        }
+
+        body {
+            /* Latar belakang meja kayu gelap untuk kontras dengan kertas */
+            background-color: #2c1e16;
+            background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 2px, transparent 2px, transparent 20px),
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 2px, transparent 2px, transparent 20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            padding: 50px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* --- BASE DOODLE CARD --- */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background-color: var(--paper-bg);
+            /* Tekstur Kertas Buku Tulis */
+            background-image:
+                linear-gradient(var(--line-blue) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line-red) 1.5px, transparent 1.5px);
+            background-size: 100% 6mm, 100% 100%;
+            background-position: 0 10mm, 8mm 0;
+
+            position: relative;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            /* Garis pinggir digambar acak dengan ujung membulat */
+            border: 2px solid var(--ink-black);
+            border-radius: 15px 18px 15px 17px / 17px 15px 18px 15px;
+            box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.5);
+
+            font-family: 'Patrick Hand', cursive;
+            color: var(--ink-black);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05) translateY(-10px) rotate(calc(var(--hover-rot) * 1deg));
+            z-index: 10;
+        }
+
+        /* Elemen Peniti / Tape (Disembunyikan) */
+        .tape {
+            display: none;
+        }
+
+        .art-box {
+            width: 100%;
+            height: 34mm;
+            /* Area gambar sedikit dikurangi (dari 40mm) untuk memberi ruang pada teks yang lebih besar */
+            position: relative;
+            margin-top: 2mm;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Style Coretan SVG */
+        svg .sketch {
+            fill: none;
+            stroke: var(--ink-black);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        svg .scribble-fill {
+            fill: none;
+            stroke-width: 1;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .title-id {
+            text-align: center;
+            margin-top: 1mm;
+        }
+
+        .stabilo {
+            font-family: 'Kalam', cursive;
+            font-size: 16pt;
+            font-weight: 700;
+            letter-spacing: 1px;
+            line-height: 1;
+            position: relative;
+            display: inline-block;
+            padding: 0 2mm;
+            z-index: 1;
+            color: var(--ink-black);
+        }
+
+        /* Efek stabilo realistis di belakang teks */
+        .stabilo::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            bottom: 0px;
+            left: -3px;
+            right: -5px;
+            background-color: var(--c-stabilo);
+            z-index: -1;
+            transform: skewX(-10deg) rotate(-1.5deg);
+            border-radius: 3px 6px 4px 5px / 5px 3px 6px 3px;
+            mix-blend-mode: multiply;
+            opacity: 0.85;
+        }
+
+        .title-en {
+            font-family: 'Caveat', cursive;
+            font-size: 9pt;
+            /* Diperbesar dari 8pt */
+            text-align: center;
+            color: #555;
+            margin-bottom: 1mm;
+        }
+
+        .content {
+            padding: 0 2mm 0 10mm;
+            /* Padding kiri menghindari garis merah buku */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .ability-name {
+            font-family: 'Kalam', cursive;
+            font-size: 13pt;
+            /* Diperbesar drastis dari 10pt agar sangat menonjol */
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-style: wavy;
+            text-decoration-color: var(--c-accent);
+            margin-bottom: 1mm;
+        }
+
+        .desc {
+            font-size: 7.5pt;
+            /* Diperbesar dari 5.5pt agar sangat terbaca */
+            line-height: 1.25;
+            margin-bottom: 1.5mm;
+        }
+
+        .quote {
+            font-family: 'Caveat', cursive;
+            font-size: 9.5pt;
+            /* Diperbesar drastis dari 6.5pt */
+            font-weight: 700;
+            color: var(--c-accent);
+            line-height: 1.15;
+            transform: rotate(-1deg);
+        }
+
+        /* --- SPECIFIC THEME VARIABLES & POSITIONS --- */
+
+        /* 1. JESTER (Sang Badut) - Highlight Ungu/Pink */
+        .theme-jester {
+            --c-accent: #d500f9;
+            --c-highlight: rgba(213, 0, 249, 0.2);
+            --c-stabilo: #ea80fc;
+            --hover-rot: 3;
+        }
+
+        .theme-jester .tape {
+            top: 2mm;
+            left: 50%;
+            transform: translateX(-50%) rotate(2deg);
+            width: 20mm;
+        }
+
+        /* 2. SEER (Penerawang) - Highlight Biru/Cyan */
+        .theme-seer {
+            --c-accent: #00838f;
+            --c-highlight: rgba(0, 229, 255, 0.2);
+            --c-stabilo: #84ffff;
+            --hover-rot: -2;
+        }
+
+        .theme-seer .tape {
+            top: -2mm;
+            left: -2mm;
+            transform: rotate(-45deg);
+            width: 15mm;
+        }
+
+        /* 3. HUNTER (Pemburu) - Highlight Oranye */
+        .theme-hunter {
+            --c-accent: #e65100;
+            --c-highlight: rgba(255, 143, 0, 0.2);
+            --c-stabilo: #ffb74d;
+            --hover-rot: 2;
+        }
+
+        .theme-hunter .tape {
+            top: -2mm;
+            right: -2mm;
+            transform: rotate(45deg);
+            width: 15mm;
+        }
+
+        /* 4. WEREWOLF (Serigala) - Highlight Merah Darah */
+        .theme-wolf {
+            --c-accent: #b71c1c;
+            --c-highlight: rgba(213, 0, 0, 0.2);
+            --c-stabilo: #ff8a80;
+            --hover-rot: -3;
+        }
+
+        .theme-wolf .tape {
+            bottom: -2mm;
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+            width: 20mm;
+        }
+
+        /* 5. GUARDIAN (Pelindung) - Highlight Emas/Kuning */
+        .theme-guardian {
+            --c-accent: #f57f17;
+            --c-highlight: rgba(255, 234, 0, 0.3);
+            --c-stabilo: #ffff00;
+            --hover-rot: 1;
+        }
+
+        .theme-guardian .tape {
+            top: 5mm;
+            left: -3mm;
+            transform: rotate(90deg);
+            width: 15mm;
+        }
+
+        /* 6. CARD BACK (Bagian Belakang) */
+        .theme-back {
+            background-position: 0 4mm, 50% 0;
+            /* Center red line */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .theme-back .art-box {
+            height: 50mm;
+            margin-bottom: 2mm;
+        }
+
+        .theme-back .brand-title {
+            font-family: 'Kalam', cursive;
+            font-size: 22pt;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            color: var(--ink-black);
+            text-shadow: 2px 2px 0 rgba(255, 0, 0, 0.2), -2px -2px 0 rgba(0, 0, 255, 0.2);
+        }
+
+        .theme-back .brand-sub {
+            font-family: 'Caveat', cursive;
+            font-size: 10pt;
+            color: #666;
+            transform: rotate(2deg);
+        }
+
+        /* Doodle background stars/arrows randomly absolute */
+        .doodle-deco {
+            position: absolute;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1. JESTER (Sang Badut) -->
+    <div class="card theme-jester">
+        <div class="tape"></div>
+
+        <div class="art-box">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <!-- Background Scribble Fill -->
+                <path d="M25,25 L30,75 L35,20 L40,80 L45,25 L50,75 L55,20 L60,80 L65,25 L70,75" class="scribble-fill"
+                    stroke="var(--c-highlight)" />
+
+                <!-- Sketchy Jester Hat -->
+                <path d="M50,50 Q20,30 15,60 M50,50 Q80,30 85,60" class="sketch" />
+                <circle cx="15" cy="62" r="4" class="sketch" />
+                <circle cx="85" cy="62" r="4" class="sketch" />
+
+                <!-- Wobbly Mask -->
+                <path d="M30,50 Q50,20 70,50 Q65,85 50,85 Q35,85 30,50 Z" class="sketch" />
+
+                <!-- Scribbled Eyes -->
+                <path d="M40,45 L45,55 L35,55 Z" class="sketch" fill="var(--ink-black)" />
+                <path d="M60,45 L65,55 L55,55 Z" class="sketch" fill="var(--ink-black)" />
+
+                <!-- Stitched Grin -->
+                <path d="M35,65 Q50,80 65,65" class="sketch" />
+                <line x1="40" y1="67" x2="40" y2="72" class="sketch" />
+                <line x1="50" y1="70" x2="50" y2="75" class="sketch" />
+                <line x1="60" y1="67" x2="60" y2="72" class="sketch" />
+
+                <!-- Confetti doodles -->
+                <path d="M10,20 L15,15 M80,10 L85,15 M20,80 L15,85" stroke="var(--c-accent)" stroke-width="2"
+                    stroke-linecap="round" />
+            </svg>
+        </div>
+
+        <div class="title-id"><span class="stabilo">Sang Badut</span></div>
+        <div class="title-en">(The Trickster)</div>
+
+        <div class="content">
+            <div class="ability-name">Tawa Kematian !!!</div>
+            <div class="desc">Tugasmu cuma satu: yakinkan semua orang untuk nge-gantung kamu di siang hari. Kalau kamu
+                mati digantung, kamu MENANG SENDIRIAN! Bikin rusuh aja!</div>
+            <div class="quote">"Hahaha! Ayo gantung aku! Bikin aku terbang!"</div>
+        </div>
+    </div>
+
+    <!-- 2. SEER (Penerawang) -->
+    <div class="card theme-seer">
+        <div class="tape"></div>
+
+        <div class="art-box">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <!-- Background Scribble Fill -->
+                <path d="M30,50 C30,20 70,20 70,50 C70,80 30,80 30,50" class="scribble-fill" stroke="var(--c-highlight)"
+                    stroke-width="8" opacity="0.5" />
+
+                <!-- Sketchy Crystal Ball / Eye -->
+                <circle cx="50" cy="50" r="25" class="sketch" />
+                <circle cx="48" cy="48" r="25" class="sketch" stroke-opacity="0.5" /> <!-- double line effect -->
+
+                <!-- Eye details inside -->
+                <path d="M35,50 Q50,35 65,50 Q50,65 35,50 Z" class="sketch" />
+                <circle cx="50" cy="50" r="6" class="sketch" fill="var(--ink-black)" />
+                <circle cx="52" cy="48" r="1.5" fill="#fff" />
+
+                <!-- Magic Sparks / Doodles -->
+                <path
+                    d="M50,10 L50,20 M50,80 L50,90 M10,50 L20,50 M80,50 L90,50 M25,25 L32,32 M75,75 L68,68 M75,25 L68,32 M25,75 L32,68"
+                    class="sketch" />
+
+                <!-- Star doodles -->
+                <path d="M15,20 L20,25 M20,20 L15,25" stroke="var(--c-accent)" stroke-width="2"
+                    stroke-linecap="round" />
+                <path d="M85,80 L90,85 M90,80 L85,85" stroke="var(--c-accent)" stroke-width="2"
+                    stroke-linecap="round" />
+            </svg>
+        </div>
+
+        <div class="title-id"><span class="stabilo">Penerawang</span></div>
+        <div class="title-en">(The Oracle)</div>
+
+        <div class="content">
+            <div class="ability-name">Mata Batin</div>
+            <div class="desc">Tunjuk 1 orang tiap malam. Moderator bakal ngasih tau apa dia Serigala atau bukan. Catat
+                baik-baik dan kasih tau warga, tapi hati-hati diincar!</div>
+            <div class="quote">"Psst... mata ketigaku liat siapa yang semalam keluar rumah."</div>
+        </div>
+
+        <!-- Random doodle arrow -->
+        <svg class="doodle-deco" style="top: 15mm; right: 2mm; width: 10mm; height: 10mm;" viewBox="0 0 50 50">
+            <path d="M10,10 Q30,10 40,30 L35,30 M40,30 L40,25" fill="none" stroke="var(--ink-black)" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </div>
+
+    <!-- 3. HUNTER (Pemburu) -->
+    <div class="card theme-hunter">
+        <div class="tape"></div>
+
+        <div class="art-box">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <!-- Background Scribble Splatter -->
+                <path d="M50,30 L60,20 L55,40 L75,50 L55,60 L60,80 L50,70 L40,80 L45,60 L25,50 L45,40 L40,20 Z"
+                    class="scribble-fill" stroke="var(--c-highlight)" fill="var(--c-highlight)" />
+
+                <!-- Sketchy Crosshair -->
+                <circle cx="50" cy="50" r="30" class="sketch" stroke-dasharray="5,5" />
+                <circle cx="50" cy="50" r="20" class="sketch" />
+                <line x1="50" y1="10" x2="50" y2="40" class="sketch" />
+                <line x1="50" y1="60" x2="50" y2="90" class="sketch" />
+                <line x1="10" y1="50" x2="40" y2="50" class="sketch" />
+                <line x1="60" y1="50" x2="90" y2="50" class="sketch" />
+
+                <!-- Center dot -->
+                <circle cx="50" cy="50" r="3" fill="var(--c-accent)" />
+
+                <!-- Doodle "BANG" text -->
+                <text x="65" y="35" font-family="'Kalam', cursive" font-size="12" fill="var(--ink-black)"
+                    transform="rotate(15)">BANG!</text>
+            </svg>
+        </div>
+
+        <div class="title-id"><span class="stabilo">Pemburu</span></div>
+        <div class="title-en">(The Marksman)</div>
+
+        <div class="content">
+            <div class="ability-name">Tembakan Terakhir</div>
+            <div class="desc">Kalau kamu mati (dimakan serigala atau divote warga), kamu berhak bawa 1 orang buat mati
+                bareng kamu! Tembak siapa aja yang menurutmu mencurigakan.</div>
+            <div class="quote">"Kalo aku mati, peluru ini bakal nyari temen buat ke alam baka."</div>
+        </div>
+    </div>
+
+    <!-- 4. WEREWOLF (Serigala) -->
+    <div class="card theme-wolf">
+        <div class="tape"></div>
+
+        <div class="art-box">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <!-- Background Red Scribble Slash -->
+                <path d="M20,20 L30,80 M25,20 L35,80 M30,20 L40,80" class="scribble-fill" stroke="var(--c-highlight)"
+                    stroke-width="4" />
+
+                <!-- Sketchy Wolf Snout / Teeth -->
+                <path d="M20,60 Q50,80 80,60" class="sketch" /> <!-- Jawline -->
+
+                <!-- Sharp scribbled teeth -->
+                <path d="M30,65 L35,45 L40,68 L45,50 L50,70 L55,50 L60,68 L65,45 L70,65" class="sketch" />
+
+                <!-- Angry scratched eyes -->
+                <path d="M30,35 L45,40" class="sketch" stroke-width="3" />
+                <path d="M70,35 L55,40" class="sketch" stroke-width="3" />
+
+                <circle cx="40" cy="45" r="2" fill="var(--c-accent)" />
+                <circle cx="60" cy="45" r="2" fill="var(--c-accent)" />
+
+                <!-- Claw marks over everything -->
+                <path d="M60,10 Q40,50 50,90 M70,10 Q50,50 60,90 M80,10 Q60,50 70,90" stroke="var(--c-accent)"
+                    stroke-width="2" fill="none" stroke-linecap="round" />
+            </svg>
+        </div>
+
+        <div class="title-id"><span class="stabilo">Serigala</span></div>
+        <div class="title-en">(The Beast)</div>
+
+        <div class="content">
+            <div class="ability-name">Insting Membunuh</div>
+            <div class="desc">Bangun tiap malam bareng serigala lain buat nentuin siapa yang mau dimakan. Pas siang,
+                pura-pura jadi warga biasa yang kaget ada pembunuhan!</div>
+            <div class="quote">"Rawrr! Daging malam ini kayaknya enak."</div>
+        </div>
+    </div>
+
+    <!-- 5. GUARDIAN (Pelindung) -->
+    <div class="card theme-guardian">
+        <div class="tape"></div>
+
+        <div class="art-box">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <!-- Background Yellow Scribble Shield -->
+                <path d="M20,30 L80,30 L50,80 Z" class="scribble-fill" stroke="var(--c-highlight)"
+                    fill="var(--c-highlight)" />
+
+                <!-- Sketchy Shield -->
+                <path d="M25,25 L75,25 L70,60 Q50,90 30,60 Z" class="sketch" />
+                <path d="M30,30 L70,30 L65,58 Q50,80 35,58 Z" class="sketch" stroke-opacity="0.5" />
+
+                <!-- Cross inside shield -->
+                <line x1="50" y1="25" x2="50" y2="85" class="sketch" />
+                <line x1="28" y1="45" x2="72" y2="45" class="sketch" />
+
+                <!-- Little wings scribbled on sides -->
+                <path d="M25,35 Q10,30 5,45 Q15,50 28,45" class="sketch" />
+                <path d="M75,35 Q90,30 95,45 Q85,50 72,45" class="sketch" />
+
+                <!-- Sparkles -->
+                <path d="M10,15 L15,20 M15,15 L10,20" stroke="var(--c-accent)" stroke-width="1.5"
+                    stroke-linecap="round" />
+                <path d="M85,75 L90,80 M90,75 L85,80" stroke="var(--c-accent)" stroke-width="1.5"
+                    stroke-linecap="round" />
+            </svg>
+        </div>
+
+        <div class="title-id"><span class="stabilo">Pelindung</span></div>
+        <div class="title-en">(The Aegis)</div>
+
+        <div class="content">
+            <div class="ability-name">Perisai Gaib</div>
+            <div class="desc">Tiap malam, pilih 1 orang buat dijaga. Kalau dia diserang serigala, dia nggak bakal mati!
+                Tapi inget, nggak boleh jaga orang yang sama 2x berturut-turut.</div>
+            <div class="quote">"Tenang bestie, malam ini kamu aman bersamaku."</div>
+        </div>
+    </div>
+
+    <!-- 6. CARD BACK (Bagian Belakang) -->
+    <div class="card theme-back">
+        <!-- Notebook doodle in the center -->
+        <div class="art-box">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <!-- Big scribbled moon -->
+                <circle cx="50" cy="50" r="35" class="scribble-fill" stroke="var(--line-blue)" stroke-width="3" />
+                <path d="M25,50 A25,25 0 1,1 75,50 A25,25 0 1,1 25,50" class="sketch" stroke-dasharray="4,4" />
+
+                <!-- Wolf howling on a cliff sketch -->
+                <path d="M15,80 L40,75 L50,85" class="sketch" /> <!-- cliff -->
+                <path d="M40,75 Q40,60 45,50 Q55,45 60,35 Q50,45 50,55 L45,75 Z" class="sketch"
+                    fill="var(--ink-black)" /> <!-- wolf silhouette -->
+
+                <!-- Little stars all around -->
+                <path d="M20,20 L25,25 M25,20 L20,25" stroke="var(--ink-black)" stroke-width="1.5"
+                    stroke-linecap="round" />
+                <path d="M80,30 L85,35 M85,30 L80,35" stroke="var(--ink-black)" stroke-width="1.5"
+                    stroke-linecap="round" />
+                <path d="M70,80 L75,85 M75,80 L70,85" stroke="var(--ink-black)" stroke-width="1.5"
+                    stroke-linecap="round" />
+            </svg>
+        </div>
+
+        <div class="brand-title">WEREWOLF</div>
+        <div class="brand-sub">~ Class Notes Edition ~</div>
+
+        <!-- Random squiggles at the bottom -->
+        <svg class="doodle-deco" style="bottom: 5mm; right: 5mm; width: 20mm; height: 10mm;" viewBox="0 0 100 50">
+            <path d="M10,25 Q20,10 30,25 T50,25 T70,25 T90,25" fill="none" stroke="var(--ink-black)" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </div>
+
+</body>
+
+</html>

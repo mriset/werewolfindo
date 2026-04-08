@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf Pop-Art Papercraft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600;800&family=Lora:ital,wght@1,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Faction Badge Colors */
+            --f-villager: #0077b6; /* Bright Blue */
+            --f-werewolf: #d90429; /* Blood Red */
+            --f-neutral: #e82c81;  /* Magenta/Pink */
+        }
+
+        body {
+            margin: 0;
+            padding: 50px 20px;
+            background-color: #121212;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(#ffffff15 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* * CARD BASE 
+         * Dimensi rasio 54.5 x 85.5 => 300px x 470px
+         */
+        .card {
+            width: 300px;
+            height: 470px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.1);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            /* Default dark bg to hide edges */
+            background-color: #111; 
+        }
+
+        .card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.8), inset 0 0 0 2px rgba(255,255,255,0.2);
+        }
+
+        /* Texture Overlay for paper feel */
+        .texture-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.1"/></svg>');
+            pointer-events: none;
+            z-index: 100;
+            mix-blend-mode: multiply;
+        }
+
+        /* =========================================
+           POP-ART PAPER STYLE (JESTER VIBE)
+           ========================================= */
+        .paper-content {
+            position: absolute;
+            bottom: 20px; left: 15px; right: 15px;
+            background: #ffffff;
+            color: #1a1a1a;
+            padding: 15px 15px 20px 15px;
+            border-radius: 12px;
+            z-index: 10;
+            /* Solid pop-art shadow and thick border */
+            border: 3px solid #111;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.9);
+        }
+
+        .serial {
+            position: absolute;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            z-index: 50;
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #111;
+            border: 2px solid #111;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.9);
+        }
+
+        .faksi-badge {
+            position: absolute;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            padding: 6px 12px;
+            z-index: 50;
+            color: white;
+            border: 2px solid #111;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.9);
+            text-transform: uppercase;
+            border-radius: 6px;
+        }
+
+        /* Typography */
+        .role-title-id {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0;
+            letter-spacing: 1px;
+            line-height: 1.1;
+        }
+        .role-title-en {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .quote {
+            font-family: 'Lora', serif;
+            font-size: 12px;
+            font-style: italic;
+            line-height: 1.4;
+            text-align: center;
+            margin: 10px 0;
+            color: #444;
+            border-bottom: 2px dotted #ccc;
+            padding-bottom: 8px;
+        }
+        .desc {
+            font-size: 11px;
+            line-height: 1.5;
+            text-align: justify;
+            margin: 0;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .svg-diorama {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        /* Individual Card Transforms to make it chaotic */
+        .card-seer .paper-content { transform: rotate(2deg); }
+        .card-seer .serial { top: 15px; left: 15px; transform: rotate(-3deg); }
+        .card-seer .faksi-badge { top: 15px; right: -5px; transform: rotate(4deg); background: var(--f-villager); }
+        .card-seer .role-title-id { color: #5a189a; }
+
+        .card-hunter .paper-content { transform: rotate(-2deg); }
+        .card-hunter .serial { top: 15px; right: 15px; transform: rotate(3deg); }
+        .card-hunter .faksi-badge { top: 60px; right: -15px; transform: rotate(10deg); background: var(--f-villager); }
+        .card-hunter .role-title-id { color: #bc4749; }
+
+        .card-werewolf .paper-content { transform: rotate(3deg); bottom: 15px;}
+        .card-werewolf .serial { top: 15px; left: 15px; transform: rotate(-5deg); background: #111; color: #fff; box-shadow: 4px 4px 0px #a4161a;}
+        .card-werewolf .faksi-badge { top: 15px; right: 15px; transform: rotate(-2deg); background: var(--f-werewolf); }
+        .card-werewolf .role-title-id { color: #d90429; }
+
+        .card-jester .paper-content { transform: rotate(-3deg); }
+        .card-jester .serial { top: 15px; right: 15px; transform: rotate(5deg); }
+        .card-jester .faksi-badge { top: 15px; left: 10px; transform: rotate(-4deg); background: var(--f-neutral); }
+        .card-jester .role-title-id { color: #e82c81; }
+
+        .card-guardian .paper-content { transform: rotate(1.5deg); }
+        .card-guardian .serial { bottom: 220px; left: -10px; transform: rotate(-90deg); }
+        .card-guardian .faksi-badge { top: 15px; right: 15px; transform: rotate(3deg); background: var(--f-villager); }
+        .card-guardian .role-title-id { color: #023e8a; }
+
+        /* Card Back specific */
+        .card-back .logo-box {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-4deg);
+            background: #ffffff;
+            padding: 30px 20px;
+            border-radius: 16px;
+            border: 4px solid #111;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.9);
+            z-index: 10;
+            text-align: center;
+            width: 70%;
+        }
+        .card-back .logo-title {
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: #111;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        .card-back .logo-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 5px;
+            color: #d90429;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- SVG Filters Definition for Layered Papercraft Shadows -->
+    <svg width="0" height="0" style="position:absolute;">
+        <defs>
+            <filter id="shadow-light" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+            </filter>
+            <filter id="shadow-med" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#000000" flood-opacity="0.5"/>
+            </filter>
+            <filter id="shadow-heavy" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="12" stdDeviation="6" flood-color="#000000" flood-opacity="0.7"/>
+            </filter>
+        </defs>
+    </svg>
+
+
+    <!-- ============================================================== -->
+    <!-- CARD 1: THE SEER (Penerawang) -->
+    <!-- ============================================================== -->
+    <div class="card card-seer">
+        <div class="texture-overlay"></div>
+        <div class="serial">S-01</div>
+        <div class="faksi-badge">WARGA DESA</div>
+        
+        <svg class="svg-diorama" viewBox="0 0 300 470" xmlns="http://www.w3.org/2000/svg">
+            <!-- Base & Pattern (Polka dots) -->
+            <rect width="300" height="470" fill="#240046" />
+            <circle cx="30" cy="30" r="8" fill="#5a189a" opacity="0.6"/>
+            <circle cx="100" cy="90" r="12" fill="#5a189a" opacity="0.6"/>
+            <circle cx="250" cy="50" r="10" fill="#5a189a" opacity="0.6"/>
+            <circle cx="50" cy="200" r="15" fill="#5a189a" opacity="0.6"/>
+            <circle cx="280" cy="250" r="8" fill="#5a189a" opacity="0.6"/>
+            
+            <!-- Geometric Tunnel -->
+            <polygon points="150,20 280,150 150,330 20,150" fill="#00f5d4" filter="url(#shadow-heavy)"/>
+            <polygon points="150,50 250,150 150,290 50,150" fill="#00bbf9" filter="url(#shadow-med)"/>
+            <polygon points="150,80 220,150 150,250 80,150" fill="#fee440" filter="url(#shadow-med)"/>
+            
+            <!-- Central Icon: Papercraft Eye & Crystal -->
+            <circle cx="150" cy="160" r="50" fill="#ffffff" filter="url(#shadow-heavy)"/>
+            <!-- Eye Frame -->
+            <path d="M105 160 Q 150 120 195 160 Q 150 200 105 160 Z" fill="#240046" filter="url(#shadow-med)"/>
+            <circle cx="150" cy="160" r="22" fill="#00f5d4" filter="url(#shadow-light)"/>
+            <circle cx="150" cy="160" r="10" fill="#111" />
+            <!-- Crystal Shards / Confetti breaking frame -->
+            <polygon points="40,50 60,30 50,80" fill="#fee440" filter="url(#shadow-med)"/>
+            <polygon points="260,250 290,280 240,290" fill="#00bbf9" filter="url(#shadow-med)"/>
+            <circle cx="260" cy="100" r="6" fill="#ffffff" filter="url(#shadow-light)"/>
+        </svg>
+
+        <div class="paper-content">
+            <div class="role-title-en">The Seer</div>
+            <h1 class="role-title-id">Penerawang</h1>
+            <p class="quote">"Mata ini menembus tabir malam, mencari kebenaran di balik topeng."</p>
+            <p class="desc"><strong>KEMAMPUAN:</strong> Setiap malam, tunjuk 1 pemain. Moderator akan mengangguk jika ia Werewolf, dan menggeleng jika ia Warga Desa (atau Netral).</p>
+        </div>
+    </div>
+
+
+    <!-- ============================================================== -->
+    <!-- CARD 2: THE HUNTER (Pemburu) -->
+    <!-- ============================================================== -->
+    <div class="card card-hunter">
+        <div class="texture-overlay"></div>
+        <div class="serial">H-02</div>
+        <div class="faksi-badge">WARGA DESA</div>
+        
+        <svg class="svg-diorama" viewBox="0 0 300 470" xmlns="http://www.w3.org/2000/svg">
+            <!-- Base & Pattern (Chevron stripes) -->
+            <rect width="300" height="470" fill="#386641" />
+            <polygon points="0,0 50,0 0,50" fill="#6a994e" opacity="0.5"/>
+            <polygon points="100,0 150,0 0,150 0,100" fill="#6a994e" opacity="0.5"/>
+            <polygon points="200,0 250,0 0,250 0,200" fill="#6a994e" opacity="0.5"/>
+            <polygon points="300,0 300,50 0,350 0,300" fill="#6a994e" opacity="0.5"/>
+            <polygon points="300,100 300,150 0,450 0,400" fill="#6a994e" opacity="0.5"/>
+            
+            <!-- Geometric Tunnel -->
+            <polygon points="150,30 280,180 150,330 20,180" fill="#f2e8cf" filter="url(#shadow-heavy)"/>
+            <polygon points="150,60 250,180 150,290 50,180" fill="#bc4749" filter="url(#shadow-med)"/>
+            
+            <!-- Central Icon: Target & Arrow -->
+            <!-- Target Board -->
+            <circle cx="150" cy="170" r="60" fill="#ffffff" filter="url(#shadow-heavy)"/>
+            <circle cx="150" cy="170" r="40" fill="#bc4749" filter="url(#shadow-light)"/>
+            <circle cx="150" cy="170" r="20" fill="#ffffff" filter="url(#shadow-light)"/>
+            <!-- Arrow Piercing -->
+            <polygon points="40,280 145,175 135,165 30,270" fill="#1a1a1a" filter="url(#shadow-heavy)"/>
+            <polygon points="145,175 170,140 185,165" fill="#f2e8cf" filter="url(#shadow-med)"/> <!-- arrow head -->
+            <polygon points="20,290 50,260 20,250 10,280" fill="#e9c46a" filter="url(#shadow-light)"/> <!-- feathers -->
+            
+            <!-- Confetti (Leaves / splinters) -->
+            <polygon points="250,60 280,80 260,100" fill="#f2e8cf" filter="url(#shadow-med)"/>
+            <circle cx="60" cy="100" r="5" fill="#bc4749" filter="url(#shadow-light)"/>
+        </svg>
+
+        <div class="paper-content">
+            <div class="role-title-en">The Hunter</div>
+            <h1 class="role-title-id">Pemburu</h1>
+            <p class="quote">"Satu peluru tersisa, dan itu sudah pasti bukan untukku."</p>
+            <p class="desc"><strong>KEMAMPUAN:</strong> Jika kamu terbunuh (baik oleh Werewolf di malam hari, atau digantung siang hari), kamu berhak menembak mati 1 pemain lain seketika.</p>
+        </div>
+    </div>
+
+
+    <!-- ============================================================== -->
+    <!-- CARD 3: THE WEREWOLF (Manusia Serigala) -->
+    <!-- ============================================================== -->
+    <div class="card card-werewolf">
+        <div class="texture-overlay"></div>
+        <div class="serial">W-01</div>
+        <div class="faksi-badge">WEREWOLF</div>
+        
+        <svg class="svg-diorama" viewBox="0 0 300 470" xmlns="http://www.w3.org/2000/svg">
+            <!-- Base & Pattern (Jagged cuts) -->
+            <rect width="300" height="470" fill="#660708" />
+            <polygon points="0,50 300,120 300,160 0,90" fill="#a4161a" opacity="0.7"/>
+            <polygon points="0,150 300,220 300,260 0,190" fill="#a4161a" opacity="0.7"/>
+            <polygon points="0,250 300,320 300,360 0,290" fill="#a4161a" opacity="0.7"/>
+            
+            <!-- Geometric Tunnel -->
+            <polygon points="150,40 290,160 150,330 10,160" fill="#161a1d" filter="url(#shadow-heavy)"/>
+            <polygon points="150,70 250,160 150,290 50,160" fill="#b1a7a6" filter="url(#shadow-med)"/>
+            
+            <!-- Central Icon: Red Moon & Geometric Wolf -->
+            <circle cx="150" cy="160" r="55" fill="#d90429" filter="url(#shadow-heavy)"/>
+            <!-- Wolf Head -->
+            <polygon points="110,240 135,130 155,130 180,180 150,250" fill="#0b090a" filter="url(#shadow-heavy)"/>
+            <polygon points="135,130 150,90 155,130" fill="#0b090a" filter="url(#shadow-med)"/> <!-- Ear Left -->
+            <polygon points="155,130 175,100 180,150" fill="#0b090a" filter="url(#shadow-med)"/> <!-- Ear Right -->
+            <polygon points="125,175 140,165 145,180" fill="#fca311" /> <!-- Glowing Eye -->
+            <!-- Teeth / Snout detail -->
+            <polygon points="155,220 170,240 145,245" fill="#ffffff" /> 
+            
+            <!-- Confetti (Blood splats / slashes) -->
+            <path d="M40 80 L 80 120 L 70 130 Z" fill="#ffffff" filter="url(#shadow-med)"/>
+            <path d="M260 220 L 290 200 L 280 190 Z" fill="#ffffff" filter="url(#shadow-med)"/>
+            <circle cx="240" cy="90" r="8" fill="#d90429" filter="url(#shadow-light)"/>
+        </svg>
+
+        <div class="paper-content">
+            <div class="role-title-en">The Werewolf</div>
+            <h1 class="role-title-id">Werewolf</h1>
+            <p class="quote">"Darah mereka adalah nyanyian merdu bagi sang rembulan merah."</p>
+            <p class="desc"><strong>KEMAMPUAN:</strong> Bangun setiap malam bersama kawanmu. Pilih satu mangsa untuk dihabisi secara diam-diam. Sembunyikan identitasmu di siang hari!</p>
+        </div>
+    </div>
+
+
+    <!-- ============================================================== -->
+    <!-- CARD 4: THE JESTER (Si Pandir) -->
+    <!-- ============================================================== -->
+    <div class="card card-jester">
+        <div class="texture-overlay"></div>
+        <div class="serial">J-01</div>
+        <div class="faksi-badge">NETRAL</div>
+        
+        <svg class="svg-diorama" viewBox="0 0 300 470" xmlns="http://www.w3.org/2000/svg">
+            <!-- Base & Pattern (Checkerboard) -->
+            <rect width="300" height="470" fill="#2bd4c9" />
+            <polygon points="0,0 150,0 150,150 0,150" fill="#e82c81" opacity="0.8"/>
+            <polygon points="150,150 300,150 300,300 150,300" fill="#e82c81" opacity="0.8"/>
+            <polygon points="0,300 150,300 150,470 0,470" fill="#e82c81" opacity="0.8"/>
+            
+            <!-- Geometric Tunnel -->
+            <polygon points="150,20 280,150 150,330 20,150" fill="#ffd166" filter="url(#shadow-heavy)"/>
+            <polygon points="150,50 240,150 150,290 60,150" fill="#42255c" filter="url(#shadow-med)"/>
+            
+            <!-- Central Icon: Jester Mask -->
+            <circle cx="150" cy="160" r="50" fill="#ffffff" filter="url(#shadow-heavy)"/>
+            <!-- Eyes -->
+            <polygon points="130,140 145,150 130,160 115,150" fill="#42255c" />
+            <polygon points="170,140 185,150 170,160 155,150" fill="#42255c" />
+            <!-- Smile -->
+            <path d="M120 180 Q 150 210 180 180 Q 150 200 120 180" fill="#e82c81" />
+            
+            <!-- Hat -->
+            <path d="M110 130 Q 50 90 60 40 Q 100 70 140 120 Z" fill="#e82c81" filter="url(#shadow-med)"/>
+            <circle cx="60" cy="40" r="10" fill="#ffca3a" filter="url(#shadow-light)"/>
+            <path d="M190 130 Q 250 90 240 40 Q 200 70 160 120 Z" fill="#2bd4c9" filter="url(#shadow-med)"/>
+            <circle cx="240" cy="40" r="10" fill="#ffca3a" filter="url(#shadow-light)"/>
+            
+            <!-- Confetti -->
+            <polygon points="20,200 40,190 50,210" fill="#ffffff" filter="url(#shadow-med)"/>
+            <polygon points="260,250 290,230 270,270" fill="#e82c81" filter="url(#shadow-med)"/>
+        </svg>
+
+        <div class="paper-content">
+            <div class="role-title-en">The Jester</div>
+            <h1 class="role-title-id">Si Pandir</h1>
+            <p class="quote">"Hukum gantungku! Kumohon, itu akan sangat lucu!"</p>
+            <p class="desc"><strong>KEMAMPUAN:</strong> Tujuanmu hanya satu: buat warga mencurigaimu dan <strong>mengevote mati</strong> dirimu di persidangan siang. Jika berhasil digantung, kamu menang!</p>
+        </div>
+    </div>
+
+
+    <!-- ============================================================== -->
+    <!-- CARD 5: THE GUARDIAN (Pelindung) -->
+    <!-- ============================================================== -->
+    <div class="card card-guardian">
+        <div class="texture-overlay"></div>
+        <div class="serial">G-01</div>
+        <div class="faksi-badge">WARGA DESA</div>
+        
+        <svg class="svg-diorama" viewBox="0 0 300 470" xmlns="http://www.w3.org/2000/svg">
+            <!-- Base & Pattern (Brick grid) -->
+            <rect width="300" height="470" fill="#023e8a" />
+            <!-- Simple grid effect -->
+            <path d="M0 50 L300 50 M0 100 L300 100 M0 150 L300 150 M0 200 L300 200 M0 250 L300 250 M0 300 L300 300" stroke="#0077b6" stroke-width="4" opacity="0.5"/>
+            <path d="M50 0 L50 470 M100 0 L100 470 M150 0 L150 470 M200 0 L200 470 M250 0 L250 470" stroke="#0077b6" stroke-width="4" opacity="0.5"/>
+            
+            <!-- Geometric Tunnel -->
+            <polygon points="150,20 280,150 150,330 20,150" fill="#ffb703" filter="url(#shadow-heavy)"/>
+            <polygon points="150,50 240,150 150,290 60,150" fill="#fb8500" filter="url(#shadow-med)"/>
+            
+            <!-- Central Icon: Wings & Shield -->
+            <!-- Wings (Back) -->
+            <path d="M150 140 Q 60 100 40 160 Q 80 180 120 190 Z" fill="#ffffff" filter="url(#shadow-med)"/>
+            <path d="M150 140 Q 240 100 260 160 Q 220 180 180 190 Z" fill="#ffffff" filter="url(#shadow-med)"/>
+            
+            <!-- Shield -->
+            <path d="M100 100 L200 100 L200 170 Q200 230 150 260 Q100 230 100 170 Z" fill="#ffffff" filter="url(#shadow-heavy)"/>
+            <path d="M110 110 L190 110 L190 170 Q190 220 150 245 Q110 220 110 170 Z" fill="#8ecae6" filter="url(#shadow-light)"/>
+            <!-- Cross -->
+            <polygon points="140,125 160,125 160,155 185,155 185,175 160,175 160,210 140,210 140,175 115,175 115,155 140,155" fill="#023e8a" filter="url(#shadow-light)"/>
+            
+            <!-- Confetti -->
+            <rect x="250" y="50" width="15" height="15" fill="#ffffff" transform="rotate(45 250 50)" filter="url(#shadow-med)"/>
+            <circle cx="50" cy="250" r="8" fill="#ffb703" filter="url(#shadow-light)"/>
+        </svg>
+
+        <div class="paper-content">
+            <div class="role-title-en">The Guardian</div>
+            <h1 class="role-title-id">Pelindung</h1>
+            <p class="quote">"Berdirilah di belakangku, malam ini maut tak akan menjemputmu."</p>
+            <p class="desc"><strong>KEMAMPUAN:</strong> Pilih 1 pemain setiap malam untuk dijaga. Pemain tersebut kebal dari gigitan Werewolf. Kamu tak bisa menjaga orang yang sama dua malam berturut-turut.</p>
+        </div>
+    </div>
+
+
+    <!-- ============================================================== -->
+    <!-- CARD 6: CARD BACK (Bagian Belakang Kartu) -->
+    <!-- ============================================================== -->
+    <div class="card card-back">
+        <div class="texture-overlay"></div>
+        
+        <svg class="svg-diorama" viewBox="0 0 300 470" xmlns="http://www.w3.org/2000/svg">
+            <!-- Base Dark -->
+            <rect width="300" height="470" fill="#0a0a0a" />
+            
+            <!-- Hypnotic Deep Tunnel stretching all the way -->
+            <polygon points="150,-20 320,235 150,490 -20,235" fill="#1a1a1a" filter="url(#shadow-heavy)"/>
+            <polygon points="150,20 280,235 150,450 20,235" fill="#d90429" filter="url(#shadow-heavy)"/>
+            <polygon points="150,60 240,235 150,410 60,235" fill="#ffffff" filter="url(#shadow-heavy)"/>
+            <polygon points="150,100 200,235 150,370 100,235" fill="#0077b6" filter="url(#shadow-heavy)"/>
+            
+            <!-- Floating pop-art geometric shapes on the background -->
+            <circle cx="40" cy="50" r="10" fill="#e82c81" filter="url(#shadow-med)"/>
+            <polygon points="260,380 280,360 290,390" fill="#ffb703" filter="url(#shadow-med)"/>
+            <rect x="250" y="80" width="20" height="20" fill="#00f5d4" transform="rotate(15 250 80)" filter="url(#shadow-med)"/>
+            <circle cx="50" cy="400" r="15" fill="#ffffff" filter="url(#shadow-med)"/>
+            
+            <!-- Moon & Wolf Silhouette inside the tunnel -->
+            <circle cx="150" cy="235" r="40" fill="#ffb703" filter="url(#shadow-light)"/>
+            <!-- Howling Wolf Mini -->
+            <path d="M140 260 L 150 220 L 165 210 L 160 225 L 170 235 L 155 260 Z" fill="#111" />
+        </svg>
+
+        <!-- Pop-Art Logo Box for Card Back -->
+        <div class="logo-box">
+            <h1 class="logo-title">WEREWOLF</h1>
+            <div class="logo-subtitle">Card Game</div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Desain Kartu OVE - Tema Putih (Layout Asimetris)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+            
+            /* Palet Warna Premium (Light Theme) */
+            --paper-white: #fcfcfc;
+            --paper-texture: #f5f5f5;
+            --text-dark: #1a1a1a;
+            --text-muted: #555555;
+            
+            /* Warna Faksi */
+            --sup-main: #8a2be2; /* Supreme Purple */
+            --sup-dark: #4a154b;
+            --sup-gold: #d4af37;
+            
+            --vil-main: #4183d7; /* Alliance Blue */
+            --vil-dark: #0f2c59;
+            --vil-gold: #c5a059;
+            
+            --ww-main: #dc143c;  /* Shadow Crimson */
+            --ww-dark: #8b0000;
+            --ww-gold: #b8860b;
+            
+            --nt-main: #32cd32;  /* Neutral Lime */
+            --nt-dark: #006400;
+            --nt-purp: #9370db;
+            
+            --back-gold: #d4af37;
+            --back-dark: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e0e5ec;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-dark);
+            padding: 40px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* ----------------------------------------------------
+           DASAR KARTU (TEMA PUTIH)
+           ---------------------------------------------------- */
+        .card-wrapper {
+            width: var(--card-w);
+            height: var(--card-h);
+            position: relative;
+            border-radius: 3mm;
+            overflow: hidden;
+            background: var(--paper-white);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+
+        /* Tekstur Kertas Mewah (Subtle Grain/Linen effect) */
+        .paper-texture {
+            position: absolute; inset: 0;
+            background-image: 
+                linear-gradient(45deg, rgba(0,0,0,0.01) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.01) 75%, rgba(0,0,0,0.01)), 
+                linear-gradient(45deg, rgba(0,0,0,0.01) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.01) 75%, rgba(0,0,0,0.01));
+            background-size: 2px 2px;
+            background-position: 0 0, 1px 1px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ----------------------------------------------------
+           STRUKTUR LAYOUT "JESTER" (Asimetris & Dinamis)
+           ---------------------------------------------------- */
+        .w-curve-top {
+            position: absolute; top: -12mm; left: -10mm; width: 45mm; height: 35mm;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .w-header {
+            position: absolute; top: 4mm; left: 3mm; right: 3mm;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 2;
+        }
+        
+        .w-id {
+            background: #fff;
+            font-size: 6px; font-weight: 900;
+            padding: 1.5mm; border-radius: 50%; 
+            width: 8mm; height: 8mm; 
+            display: flex; justify-content: center; align-items: center; 
+            transform: rotate(-10deg); 
+            box-shadow: 2px 3px 6px rgba(0,0,0,0.1); 
+        }
+        
+        .w-faction {
+            background: #fff;
+            font-size: 6px; font-weight: 900; 
+            padding: 1mm 3mm; border-radius: 4mm; 
+            transform: rotate(5deg); letter-spacing: 1px; 
+            box-shadow: 2px 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .w-art {
+            position: absolute;
+            top: 15mm; left: 50%; transform: translateX(-50%) rotate(3deg);
+            width: 36mm; height: 36mm;
+            z-index: 2;
+        }
+
+        .w-content {
+            position: absolute;
+            bottom: 3.5mm; left: 3mm; right: 3mm;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 5mm 0 5mm 0; /* Ciri Khas Asimetris */
+            padding: 3.5mm 3mm;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            z-index: 3;
+            backdrop-filter: blur(4px);
+        }
+
+        .w-title-container { 
+            display: flex; flex-direction: column; align-items: center; 
+            margin-bottom: 2mm; transform: rotate(-1deg); 
+        }
+        .w-title-id { 
+            font-family: 'Cinzel', serif; font-size: 16px; font-weight: 900; 
+            line-height: 1; text-transform: uppercase; 
+        }
+        .w-title-en { 
+            font-size: 5.5px; color: #fff; letter-spacing: 4px; font-weight: 700; 
+            padding: 0.5mm 2.5mm; margin-top: 1.5mm; border-radius: 1mm;
+        }
+        .w-ability { 
+            font-size: 6.5px; font-weight: 800; margin-bottom: 1.5mm; 
+            padding-bottom: 1mm; border-bottom: 1.5px dotted;
+        }
+        .w-desc { 
+            font-size: 5.5px; color: var(--text-muted); line-height: 1.45; font-weight: 600;
+        }
+        
+        .w-footer { 
+            position: absolute; bottom: 1.5mm; right: 2mm; 
+            font-size: 4px; font-weight: 800; 
+            transform: rotate(-90deg); transform-origin: right bottom; 
+            letter-spacing: 1px; z-index: 2;
+        }
+
+        /* ----------------------------------------------------
+           VARIAN FAKSI
+           ---------------------------------------------------- */
+
+        /* 1. SUPREME (Moderator) - Putih & Ungu/Emas */
+        .card-supreme .w-curve-top { background: rgba(138, 43, 226, 0.08); border: 1.5px dashed var(--sup-gold); }
+        .card-supreme .w-id { color: var(--sup-main); border: 1.5px solid var(--sup-gold); }
+        .card-supreme .w-faction { color: var(--sup-dark); border: 1px solid var(--sup-main); }
+        .card-supreme .w-content { border: 2px solid var(--sup-main); }
+        .card-supreme .w-title-id { color: var(--sup-dark); text-shadow: 1px 1px 0px rgba(212, 175, 55, 0.5); }
+        .card-supreme .w-title-en { background: var(--sup-main); }
+        .card-supreme .w-ability { color: var(--sup-main); border-color: var(--sup-gold); }
+        .card-supreme .w-desc strong { color: var(--sup-main); }
+        .card-supreme .w-footer { color: var(--sup-dark); }
+        .card-supreme .w-art { filter: drop-shadow(0 8px 12px rgba(138, 43, 226, 0.25)); }
+
+        /* 2. ALLIANCE (Villager) - Putih & Biru Navy/Emas Pucat */
+        .card-alliance .w-curve-top { background: rgba(65, 131, 215, 0.08); border: 1.5px dashed var(--vil-main); }
+        .card-alliance .w-id { color: var(--vil-dark); border: 1.5px solid var(--vil-gold); }
+        .card-alliance .w-faction { color: var(--vil-dark); border: 1px solid var(--vil-main); }
+        .card-alliance .w-content { border: 2px solid var(--vil-main); }
+        .card-alliance .w-title-id { color: var(--vil-dark); text-shadow: 1px 1px 0px rgba(65, 131, 215, 0.3); }
+        .card-alliance .w-title-en { background: var(--vil-main); }
+        .card-alliance .w-ability { color: var(--vil-dark); border-color: var(--vil-main); }
+        .card-alliance .w-desc strong { color: var(--vil-main); }
+        .card-alliance .w-footer { color: var(--vil-dark); }
+        .card-alliance .w-art { filter: drop-shadow(0 8px 12px rgba(15, 44, 89, 0.2)); }
+
+        /* 3. SHADOWS (Werewolf) - Putih & Merah Darah/Hitam */
+        .card-shadows .w-curve-top { background: rgba(220, 20, 60, 0.08); border: 1.5px dashed var(--ww-main); }
+        .card-shadows .w-id { color: var(--ww-dark); border: 1.5px solid var(--ww-main); }
+        .card-shadows .w-faction { color: var(--ww-dark); border: 1px solid var(--ww-main); }
+        .card-shadows .w-content { border: 2px solid var(--ww-dark); }
+        .card-shadows .w-title-id { color: var(--ww-dark); text-shadow: 1px 1px 0px rgba(220, 20, 60, 0.3); }
+        .card-shadows .w-title-en { background: var(--ww-dark); }
+        .card-shadows .w-ability { color: var(--ww-main); border-color: var(--ww-dark); }
+        .card-shadows .w-desc strong { color: var(--ww-main); }
+        .card-shadows .w-footer { color: var(--ww-dark); }
+        .card-shadows .w-art { filter: drop-shadow(0 8px 12px rgba(139, 0, 0, 0.25)); }
+
+        /* 4. NEUTRAL (Jester) - Putih & Hijau Lime/Ungu */
+        .card-neutral .w-curve-top { background: rgba(50, 205, 50, 0.08); border: 1.5px dashed var(--nt-main); }
+        .card-neutral .w-id { color: var(--nt-dark); border: 1.5px solid var(--nt-purp); }
+        .card-neutral .w-faction { color: var(--nt-dark); border: 1px solid var(--nt-main); }
+        .card-neutral .w-content { border: 2px solid var(--nt-main); border-radius: 0 5mm 0 5mm; /* Reverse Asymmetry just for fun */ }
+        .card-neutral .w-title-id { color: var(--nt-dark); text-shadow: 1px 1px 0px rgba(147, 112, 219, 0.4); }
+        .card-neutral .w-title-en { background: var(--nt-purp); }
+        .card-neutral .w-ability { color: var(--nt-dark); border-color: var(--nt-main); }
+        .card-neutral .w-desc strong { color: var(--nt-dark); }
+        .card-neutral .w-footer { color: var(--nt-dark); }
+        .card-neutral .w-art { filter: drop-shadow(0 8px 12px rgba(50, 205, 50, 0.25)); transform: translateX(-50%) rotate(-5deg); }
+
+        /* 5. CARD BACK - Putih & Emas Gelap */
+        .card-back {
+            background: #fff;
+        }
+        .card-back .w-curve-top { background: rgba(212, 175, 55, 0.1); border: 1.5px dashed var(--back-gold); width: 60mm; height: 60mm; top: -20mm; left: -20mm; }
+        .card-back .back-curve-bottom { position: absolute; bottom: -20mm; right: -20mm; width: 60mm; height: 60mm; border-radius: 50%; background: rgba(212, 175, 55, 0.1); border: 1.5px dashed var(--back-gold); z-index: 1;}
+        .card-back .w-art { top: 40mm; width: 45mm; height: 45mm; filter: drop-shadow(0 10px 15px rgba(212, 175, 55, 0.2)); transform: translate(-50%, -50%); }
+        .card-back .back-text-top { position: absolute; top: 10mm; left: 0; width: 100%; text-align: center; font-family: 'Cinzel', serif; font-size: 8px; font-weight: 900; color: var(--back-dark); letter-spacing: 5px; z-index: 2;}
+        .card-back .back-text-bottom { position: absolute; bottom: 12mm; left: 0; width: 100%; text-align: center; font-family: 'Cinzel', serif; font-size: 14px; font-weight: 900; color: var(--back-gold); letter-spacing: 6px; margin-left: 3px; z-index: 2;}
+    </style>
+</head>
+<body>
+
+    <!-- 1. KARTU GAME MODERATOR (SUPREME) -->
+    <div class="card-wrapper card-supreme">
+        <div class="paper-texture"></div>
+        <div class="w-curve-top"></div>
+        <div class="w-header">
+            <div class="w-id">SP·01</div>
+            <div class="w-faction">SUPREME</div>
+        </div>
+        <div class="w-art">
+            <!-- Light Theme SVG for Moderator (Faceless Deity / Cosmic God) -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <!-- Ethereal Glow Background -->
+                <circle cx="50" cy="45" r="38" fill="#fcf6f0" />
+                <circle cx="50" cy="45" r="35" fill="none" stroke="#d4af37" stroke-width="0.5" stroke-dasharray="2,4" />
+                
+                <!-- Divine Halo -->
+                <circle cx="50" cy="35" r="22" fill="none" stroke="#d4af37" stroke-width="2" />
+                <circle cx="50" cy="35" r="26" fill="none" stroke="#8a2be2" stroke-width="1" stroke-dasharray="4,4" />
+
+                <!-- Central Diamond/Core above head -->
+                <polygon points="50,5 54,12 50,19 46,12" fill="#d4af37" stroke="#aa771c" stroke-width="1" />
+                <polygon points="50,10 52,12 50,14 48,12" fill="#fff" />
+
+                <!-- Shoulders / Divine Robes -->
+                <path d="M 15 80 Q 35 55 50 55 Q 65 55 85 80 L 75 85 Q 50 65 25 85 Z" fill="#fff" stroke="#4a154b" stroke-width="2" stroke-linejoin="round" />
+                <path d="M 30 80 Q 50 65 70 80" fill="none" stroke="#8a2be2" stroke-width="1.5" opacity="0.6" />
+                
+                <!-- Collar / Golden Pauldrons -->
+                <path d="M 35 60 C 45 55, 55 55, 65 60 L 68 65 C 55 60, 45 60, 32 65 Z" fill="#fff" stroke="#d4af37" stroke-width="1.5" />
+
+                <!-- Hood / Faceless Head -->
+                <path d="M 40 35 C 40 18 60 18 60 35 C 60 52 50 58 50 58 C 50 58 40 52 40 35 Z" fill="#fff" stroke="#4a154b" stroke-width="2.5" />
+                
+                <!-- The cosmic void face -->
+                <path d="M 44 35 C 44 24 56 24 56 35 C 56 46 50 50 50 50 C 50 50 44 46 44 35 Z" fill="#8a2be2" opacity="0.1" />
+                
+                <!-- Glowing inner diamond on face (Symbolizing mind/omniscience) -->
+                <polygon points="50,30 53,35 50,40 47,35" fill="#d4af37" />
+
+                <!-- Floating Orbs (Sun and Moon - controlling day and night) -->
+                <!-- Left Orb (Day/Sun) -->
+                <circle cx="25" cy="45" r="7" fill="#fff" stroke="#d4af37" stroke-width="1.5" />
+                <circle cx="25" cy="45" r="3" fill="#d4af37" />
+                <!-- Right Orb (Night/Moon) -->
+                <circle cx="75" cy="45" r="7" fill="#fff" stroke="#4a154b" stroke-width="1.5" />
+                <path d="M 75 38 A 7 7 0 0 0 75 52" fill="#4a154b" /> 
+                <circle cx="77" cy="45" r="2" fill="#fff" />
+
+                <!-- Strings connecting Orbs to the Deity -->
+                <path d="M 32 45 Q 40 45 42 55" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="2,2" />
+                <path d="M 68 45 Q 60 45 58 55" fill="none" stroke="#8a2be2" stroke-width="1.5" stroke-dasharray="2,2" />
+
+                <!-- Deity Hands shaping the orbs -->
+                <path d="M 38 60 C 40 58 42 55 45 55" fill="none" stroke="#4a154b" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M 62 60 C 60 58 58 55 55 55" fill="none" stroke="#4a154b" stroke-width="1.5" stroke-linecap="round" />
+
+                <!-- Magical Sparkles -->
+                <path d="M 15 35 L 17 30 L 22 28 L 17 26 L 15 21 L 13 26 L 8 28 L 13 30 Z" fill="#d4af37" />
+                <path d="M 85 35 L 87 30 L 92 28 L 87 26 L 85 21 L 83 26 L 78 28 L 83 30 Z" fill="#8a2be2" opacity="0.6" />
+            </svg>
+        </div>
+        <div class="w-content">
+            <div class="w-title-container">
+                <h2 class="w-title-id">SANG NARATOR</h2>
+                <h3 class="w-title-en">GAME MODERATOR</h3>
+            </div>
+            <div class="w-ability">Tuhan Desa Werewolf</div>
+            <p class="w-desc">
+                Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, serta <strong>Mencatut Nyawa</strong> berdasarkan instruksi.
+            </p>
+        </div>
+        <div class="w-footer">Moderator // Supreme</div>
+    </div>
+
+    <!-- 2. KARTU WARGA DESA (ALLIANCE) -->
+    <div class="card-wrapper card-alliance">
+        <div class="paper-texture"></div>
+        <div class="w-curve-top"></div>
+        <div class="w-header">
+            <div class="w-id">VL·14</div>
+            <div class="w-faction">ALLIANCE</div>
+        </div>
+        <div class="w-art">
+            <!-- Light Theme SVG for Villager -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <circle cx="50" cy="50" r="40" fill="#f0f4f8" />
+                <circle cx="50" cy="50" r="35" fill="none" stroke="#88aadd" stroke-width="1.5" />
+                <line x1="15" y1="50" x2="85" y2="50" stroke="#88aadd" stroke-width="1" />
+                <line x1="50" y1="15" x2="50" y2="85" stroke="#88aadd" stroke-width="1" />
+                <path d="M50,15 L65,25 L75,40 L65,35 L45,25 Z" fill="none" stroke="#4183d7" stroke-width="1" />
+                <path d="M50,15 L35,25 L25,40 L35,35 L55,25 Z" fill="none" stroke="#4183d7" stroke-width="1" />
+                <path d="M25,40 L35,55 L45,50 Z" fill="none" stroke="#4183d7" stroke-width="1" />
+                <path d="M75,40 L65,55 L55,50 Z" fill="none" stroke="#4183d7" stroke-width="1" />
+                <path d="M50,85 L50,60 L40,45 M50,60 L60,45 M40,65 L35,55 M60,65 L65,55 M50,45 L45,25 M50,45 L55,25" fill="none" stroke="#0f2c59" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="50" cy="15" r="3" fill="#c5a059" />
+                <circle cx="35" cy="25" r="2.5" fill="#0f2c59" />
+                <circle cx="65" cy="25" r="2.5" fill="#0f2c59" />
+                <circle cx="25" cy="40" r="3" fill="#c5a059" />
+                <circle cx="75" cy="40" r="3" fill="#c5a059" />
+                <circle cx="35" cy="55" r="2" fill="#4183d7" />
+                <circle cx="65" cy="55" r="2" fill="#4183d7" />
+                <polygon points="40,85 60,85 50,95" fill="#fff" stroke="#0f2c59" stroke-width="2" />
+                <line x1="30" y1="85" x2="70" y2="85" stroke="#c5a059" stroke-width="2" />
+            </svg>
+        </div>
+        <div class="w-content">
+            <div class="w-title-container">
+                <h2 class="w-title-id">WARGA DESA</h2>
+                <h3 class="w-title-en">VILLAGER</h3>
+            </div>
+            <div class="w-ability">Pemilik Suara Demokrasi</div>
+            <p class="w-desc">
+                Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari.
+            </p>
+        </div>
+        <div class="w-footer">Villager // Tim Desa</div>
+    </div>
+
+    <!-- KARTU PENJAGA (ALLIANCE) -->
+    <div class="card-wrapper card-alliance">
+        <div class="paper-texture"></div>
+        <div class="w-curve-top"></div>
+        <div class="w-header">
+            <div class="w-id">VL·02</div>
+            <div class="w-faction">ALLIANCE</div>
+        </div>
+        <div class="w-art">
+            <!-- Light Theme SVG for Guardian -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <circle cx="50" cy="50" r="40" fill="#f0f4f8" />
+                <!-- Wing Structures -->
+                <path d="M50,45 Q70,25 90,40 Q80,55 50,65" fill="none" stroke="#4183d7" stroke-width="1.5" />
+                <path d="M50,45 Q90,10 95,30 Q85,45 50,55" fill="none" stroke="#88aadd" stroke-width="1" />
+                <path d="M50,45 Q30,25 10,40 Q20,55 50,65" fill="none" stroke="#4183d7" stroke-width="1.5" />
+                <path d="M50,45 Q10,10 5,30 Q15,45 50,55" fill="none" stroke="#88aadd" stroke-width="1" />
+                
+                <!-- Geometric Frame -->
+                <polygon points="50,15 80,50 50,85 20,50" fill="none" stroke="#c5a059" stroke-width="1.5" stroke-dasharray="4,2" />
+
+                <!-- Shield Aegis -->
+                <path d="M30,30 L70,30 L70,50 C70,70 50,90 50,90 C50,90 30,70 30,50 Z" fill="#fff" stroke="#0f2c59" stroke-width="2.5" stroke-linejoin="round" />
+                <path d="M40,30 L60,30 L60,50 C60,65 50,80 50,80 C50,80 40,65 40,50 Z" fill="#f0f4f8" stroke="#4183d7" stroke-width="1.5" stroke-linejoin="round" />
+                
+                <!-- Cross Element -->
+                <line x1="50" y1="35" x2="50" y2="75" stroke="#c5a059" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="35" y1="45" x2="65" y2="45" stroke="#c5a059" stroke-width="2.5" stroke-linecap="round"/>
+                
+                <!-- Core Gem -->
+                <polygon points="50,38 56,45 50,52 44,45" fill="#4183d7" stroke="#0f2c59" stroke-width="1.5" />
+                <circle cx="50" cy="45" r="2" fill="#fff" />
+                
+                <!-- Halo -->
+                <path d="M35,20 C45,10 55,10 65,20" fill="none" stroke="#c5a059" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="w-content">
+            <div class="w-title-container">
+                <h2 class="w-title-id">PENJAGA</h2>
+                <h3 class="w-title-en">GUARDIAN</h3>
+            </div>
+            <div class="w-ability">Pelindung Malam</div>
+            <p class="w-desc">
+                Setiap malam, memilih satu pemain untuk <strong>dilindungi</strong> dari serangan serigala. Penjaga tidak boleh melindungi dirinya atau target yang sama 2 malam berturut-turut.
+            </p>
+        </div>
+        <div class="w-footer">Guardian // Tim Desa</div>
+    </div>
+
+    <!-- KARTU CUPID (ALLIANCE) -->
+    <div class="card-wrapper card-alliance">
+        <div class="paper-texture"></div>
+        <div class="w-curve-top"></div>
+        <div class="w-header">
+            <div class="w-id">VL·03</div>
+            <div class="w-faction">ALLIANCE</div>
+        </div>
+        <div class="w-art">
+            <!-- Light Theme SVG for Cupid -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <circle cx="50" cy="50" r="40" fill="#f0f4f8" />
+                
+                <!-- Halo / Background rings -->
+                <circle cx="50" cy="50" r="32" fill="none" stroke="#88aadd" stroke-width="1.5" stroke-dasharray="2,4" />
+                
+                <!-- Bow -->
+                <path d="M25,20 Q5,50 25,80" fill="none" stroke="#c5a059" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="25" y1="20" x2="25" y2="80" stroke="#4183d7" stroke-width="1" stroke-dasharray="2,2" />
+                
+                <!-- Heart Shape -->
+                <path d="M55,45 C55,35 40,35 40,45 C40,60 55,70 55,70 C55,70 70,60 70,45 C70,35 55,35 55,45 Z" fill="#fff" stroke="#0f2c59" stroke-width="2" stroke-linejoin="round" />
+                <path d="M55,48 C55,40 45,40 45,48 C45,58 55,65 55,65 C55,65 65,58 65,48 C65,40 55,40 55,48 Z" fill="#f0f4f8" stroke="#dc143c" stroke-width="1.5" stroke-linejoin="round" />
+                
+                <!-- Arrow Piercing -->
+                <line x1="15" y1="50" x2="85" y2="50" stroke="#0f2c59" stroke-width="2" stroke-linecap="round" />
+                
+                <!-- Arrowhead -->
+                <polygon points="85,50 75,44 75,56" fill="#c5a059" stroke="#0f2c59" stroke-width="1.5" stroke-linejoin="round" />
+                
+                <!-- Feathers -->
+                <line x1="20" y1="50" x2="14" y2="44" stroke="#0f2c59" stroke-width="1.5" stroke-linecap="round" />
+                <line x1="20" y1="50" x2="14" y2="56" stroke="#0f2c59" stroke-width="1.5" stroke-linecap="round" />
+                <line x1="26" y1="50" x2="20" y2="44" stroke="#0f2c59" stroke-width="1.5" stroke-linecap="round" />
+                <line x1="26" y1="50" x2="20" y2="56" stroke="#0f2c59" stroke-width="1.5" stroke-linecap="round" />
+                
+                <!-- Sparkles -->
+                <path d="M75,25 L77,20 L82,18 L77,16 L75,11 L73,16 L68,18 L73,20 Z" fill="#c5a059" />
+                <path d="M35,80 L36.5,76 L40.5,74.5 L36.5,73 L35,69 L33.5,73 L29.5,74.5 L33.5,76 Z" fill="#c5a059" />
+            </svg>
+        </div>
+        <div class="w-content">
+            <div class="w-title-container">
+                <h2 class="w-title-id">MAK COMBLANG</h2>
+                <h3 class="w-title-en">CUPID</h3>
+            </div>
+            <div class="w-ability">Panah Asmara</div>
+            <p class="w-desc">
+                Pada malam pertama, memilih dua pemain menjadi <strong>sepasang kekasih</strong>. Jika salah satu mati, pasangannya ikut mati karena patah hati.
+            </p>
+        </div>
+        <div class="w-footer">Cupid // Tim Desa</div>
+    </div>
+
+    <!-- KARTU PEMBURU (ALLIANCE) -->
+    <div class="card-wrapper card-alliance">
+        <div class="paper-texture"></div>
+        <div class="w-curve-top"></div>
+        <div class="w-header">
+            <div class="w-id">VL·04</div>
+            <div class="w-faction">ALLIANCE</div>
+        </div>
+        <div class="w-art">
+            <!-- Light Theme SVG for Hunter -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <circle cx="50" cy="50" r="40" fill="#f0f4f8" />
+                
+                <!-- Target Reticle -->
+                <circle cx="50" cy="50" r="30" fill="none" stroke="#88aadd" stroke-width="1.5" stroke-dasharray="6,4" />
+                <circle cx="50" cy="50" r="20" fill="none" stroke="#4183d7" stroke-width="1.5" />
+                <circle cx="50" cy="50" r="10" fill="none" stroke="#0f2c59" stroke-width="2" />
+                
+                <!-- Crosshairs -->
+                <line x1="15" y1="50" x2="35" y2="50" stroke="#0f2c59" stroke-width="2" stroke-linecap="round" />
+                <line x1="65" y1="50" x2="85" y2="50" stroke="#0f2c59" stroke-width="2" stroke-linecap="round" />
+                <line x1="50" y1="15" x2="50" y2="35" stroke="#0f2c59" stroke-width="2" stroke-linecap="round" />
+                <line x1="50" y1="65" x2="50" y2="85" stroke="#0f2c59" stroke-width="2" stroke-linecap="round" />
+
+                <!-- Bullet / Projectile -->
+                <path d="M46,45 C46,38 50,30 50,30 C50,30 54,38 54,45 L54,65 L46,65 Z" fill="#c5a059" stroke="#0f2c59" stroke-width="1.5" stroke-linejoin="round" />
+                <path d="M46,58 L54,58 M46,62 L54,62" stroke="#0f2c59" stroke-width="1.5" />
+                
+                <!-- Action Sparks -->
+                <path d="M50,25 L52,18 L50,15 L48,18 Z" fill="#c5a059" />
+                <path d="M35,35 L30,30 L28,32 L32,38 Z" fill="#4183d7" />
+                <path d="M65,35 L70,30 L72,32 L68,38 Z" fill="#4183d7" />
+            </svg>
+        </div>
+        <div class="w-content">
+            <div class="w-title-container">
+                <h2 class="w-title-id">PEMBURU</h2>
+                <h3 class="w-title-en">HUNTER</h3>
+            </div>
+            <div class="w-ability">Peluru Terakhir</div>
+            <p class="w-desc">
+                Jika kamu mati terbunuh oleh serigala atau digantung warga, kamu dapat menggunakan sisa napas terakhirmu untuk <strong>membunuh satu pemain lain</strong>.
+            </p>
+        </div>
+        <div class="w-footer">Hunter // Tim Desa</div>
+    </div>
+
+    <!-- 3. KARTU WEREWOLF (SHADOWS) -->
+    <div class="card-wrapper card-shadows">
+        <div class="paper-texture"></div>
+        <div class="w-curve-top"></div>
+        <div class="w-header">
+            <div class="w-id">WW·01</div>
+            <div class="w-faction">SHADOWS</div>
+        </div>
+        <div class="w-art">
+            <!-- Light Theme SVG for Werewolf -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <circle cx="50" cy="45" r="40" fill="#fff0f0" />
+                <circle cx="50" cy="45" r="30" fill="none" stroke="#dc143c" stroke-width="1.5" stroke-dasharray="8,4" />
+                <circle cx="50" cy="45" r="25" fill="none" stroke="#8b0000" stroke-width="2.5" />
+                <path d="M50,15 L50,5 M50,85 L50,75 M15,45 L5,45 M85,45 L75,45" stroke="#dc143c" stroke-width="2" />
+                <polygon points="50,15 70,25 75,45 60,55 65,85 50,70 35,85 40,55 25,45 30,25" fill="#fff" stroke="#8b0000" stroke-width="2.5" stroke-linejoin="round" />
+                <polygon points="50,15 70,25 75,45 60,55 50,70 50,15" fill="#fff5f5" />
+                <polygon points="40,55 45,70 35,85" fill="#dc143c" opacity="0.6" />
+                <polygon points="60,55 55,70 65,85" fill="#dc143c" opacity="0.6" />
+                <line x1="50" y1="15" x2="50" y2="70" stroke="#8b0000" stroke-width="2" />
+                <path d="M42,75 L46,88 L50,80 L54,88 L58,75" fill="none" stroke="#8b0000" stroke-width="2" stroke-linejoin="round" />
+                <polygon points="38,35 45,45 32,45" fill="#fff" stroke="#dc143c" stroke-width="1.5" />
+                <polygon points="62,35 55,45 68,45" fill="#fff" stroke="#dc143c" stroke-width="1.5" />
+                <circle cx="41" cy="42" r="2" fill="#8b0000" />
+                <circle cx="59" cy="42" r="2" fill="#8b0000" />
+                <polygon points="20,15 25,25 15,22" fill="#dc143c" />
+                <polygon points="80,15 85,22 75,25" fill="#dc143c" />
+            </svg>
+        </div>
+        <div class="w-content">
+            <div class="w-title-container">
+                <h2 class="w-title-id">SERIGALA</h2>
+                <h3 class="w-title-en">WEREWOLF</h3>
+            </div>
+            <div class="w-ability">Membunuh di Malam Hari</div>
+            <p class="w-desc">
+                Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling mengetahui identitas koloninya. Menang jika populasi menyamai warga sisa.
+            </p>
+        </div>
+        <div class="w-footer">Werewolf // Tim Jahat</div>
+    </div>
+
+    <!-- 4. KARTU JESTER (NEUTRAL) -->
+    <div class="card-wrapper card-neutral">
+        <div class="paper-texture"></div>
+        <div class="w-curve-top"></div>
+        <div class="w-header">
+            <div class="w-id">NT·01</div>
+            <div class="w-faction">NEUTRAL</div>
+        </div>
+        <div class="w-art">
+            <!-- Light Theme SVG for Jester -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <!-- Glowing/Soft Background -->
+                <circle cx="50" cy="45" r="35" fill="#f4fdf4" />
+                <circle cx="50" cy="45" r="30" fill="none" stroke="#32cd32" stroke-width="1" stroke-dasharray="2,4" opacity="0.6" />
+
+                <!-- Floating Card Suits / Diamonds -->
+                <polygon points="15,45 20,35 25,45 20,55" fill="none" stroke="#9370db" stroke-width="1.5" />
+                <polygon points="85,45 90,35 95,45 90,55" fill="none" stroke="#32cd32" stroke-width="1.5" />
+
+                <!-- The Face Mask -->
+                <path d="M30,50 C30,70 40,80 50,80 C60,80 70,70 70,50 Z" fill="#fff" stroke="#1a1a1a" stroke-width="2" stroke-linejoin="round" />
+
+                <!-- Eye Sockets / Makeup -->
+                <path d="M35,57 Q45,53 48,60 L38,63 Z" fill="#32cd32" />
+                <path d="M65,57 Q55,53 52,60 L62,63 Z" fill="#9370db" />
+
+                <!-- Eyes -->
+                <circle cx="43" cy="59" r="1.5" fill="#fff" />
+                <circle cx="57" cy="59" r="1.5" fill="#fff" />
+
+                <!-- Jester Grin -->
+                <path d="M38,67 Q50,77 62,67 Q50,71 38,67 Z" fill="#1a1a1a" />
+                <path d="M42,67 L42,70 M46,68 L46,71 M50,69 L50,72 M54,68 L54,71 M58,67 L58,70" stroke="#fff" stroke-width="1" />
+
+                <!-- Hat Horns -->
+                <!-- Left Horn (Lime) -->
+                <path d="M45,50 Q25,40 15,30 C5,20 20,5 30,20 C35,30 45,40 50,50 Z" fill="#fff" stroke="#32cd32" stroke-width="2" stroke-linejoin="round"/>
+                <!-- Right Horn (Purple) -->
+                <path d="M55,50 Q75,40 85,30 C95,20 80,5 70,20 C65,30 55,40 50,50 Z" fill="#f9f2ff" stroke="#9370db" stroke-width="2" stroke-linejoin="round"/>
+                <!-- Center Horn (Dark/Gold) -->
+                <path d="M45,50 Q40,25 50,10 Q60,25 55,50 Z" fill="#fff" stroke="#1a1a1a" stroke-width="2" stroke-linejoin="round"/>
+
+                <!-- Hat Rim -->
+                <path d="M28,50 Q50,57 72,50 L68,45 Q50,50 32,45 Z" fill="#1a1a1a" />
+
+                <!-- Golden Bells -->
+                <circle cx="28" cy="17" r="4.5" fill="#d4af37" stroke="#1a1a1a" stroke-width="1.5"/>
+                <path d="M26,17 L30,17 M28,17 L28,21" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+
+                <circle cx="72" cy="17" r="4.5" fill="#d4af37" stroke="#1a1a1a" stroke-width="1.5"/>
+                <path d="M70,17 L74,17 M72,17 L72,21" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+
+                <circle cx="50" cy="7" r="4.5" fill="#d4af37" stroke="#1a1a1a" stroke-width="1.5"/>
+                <path d="M48,7 L52,7 M50,7 L50,11" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+
+                <!-- Small Confetti -->
+                <circle cx="25" cy="70" r="1.5" fill="#32cd32" />
+                <circle cx="75" cy="70" r="1.5" fill="#9370db" />
+                <polygon points="50,85 52,88 50,91 48,88" fill="#d4af37" />
+            </svg>
+        </div>
+        <div class="w-content">
+            <div class="w-title-container">
+                <h2 class="w-title-id">BADUT</h2>
+                <h3 class="w-title-en">JESTER</h3>
+            </div>
+            <div class="w-ability">Tawa Terakhir</div>
+            <p class="w-desc">
+                Tujuan utamanya memprovokasi agar <strong>dieksekusi</strong> warga siang hari. Jika Badut berhasil digantung, maka ia memenangkan permainan seorang diri.
+            </p>
+        </div>
+        <div class="w-footer">Jester // Tim Netral</div>
+    </div>
+
+    <!-- KARTU PENIRU (NEUTRAL) -->
+    <div class="card-wrapper card-neutral">
+        <div class="paper-texture"></div>
+        <div class="w-curve-top"></div>
+        <div class="w-header">
+            <div class="w-id">NT·02</div>
+            <div class="w-faction">NEUTRAL</div>
+        </div>
+        <div class="w-art">
+            <!-- Light Theme SVG for Doppelganger / Peniru -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <circle cx="50" cy="45" r="35" fill="#f4fdf4" />
+                
+                <!-- Background Connection Lines -->
+                <path d="M30,30 Q50,10 70,30" fill="none" stroke="#9370db" stroke-width="1" stroke-dasharray="2,3" />
+                <path d="M30,60 Q50,80 70,60" fill="none" stroke="#32cd32" stroke-width="1" stroke-dasharray="2,3" />
+
+                <!-- Left Face Silhouette (Original Form) -->
+                <path d="M48,15 C30,15 20,25 20,45 C20,65 30,75 48,75 Z" fill="#f9f2ff" stroke="#9370db" stroke-width="2" stroke-linejoin="round" />
+                
+                <!-- Right Face Silhouette (Copied Form - slightly shifted) -->
+                <path d="M52,25 C70,25 80,35 80,55 C80,75 70,85 52,85 Z" fill="#fff" stroke="#32cd32" stroke-width="2.5" stroke-linejoin="round" />
+                
+                <!-- Eye Left -->
+                <ellipse cx="36" cy="40" rx="3" ry="5" fill="#9370db" />
+                <!-- Eye Right -->
+                <ellipse cx="64" cy="50" rx="3" ry="5" fill="#006400" />
+
+                <!-- Morphing / DNA / Thread links between identities -->
+                <path d="M48,30 Q50,35 52,40 M48,45 Q50,50 52,55 M48,60 Q50,65 52,70" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" />
+                
+                <!-- Spark of magic/copying -->
+                <polygon points="50,45 52,50 57,51 52,52 50,57 48,52 43,51 48,50" fill="#c5a059" />
+            </svg>
+        </div>
+        <div class="w-content">
+            <div class="w-title-container">
+                <h2 class="w-title-id">PENIRU</h2>
+                <h3 class="w-title-en">DOPPELGÄNGER</h3>
+            </div>
+            <div class="w-ability">Cermin Identitas</div>
+            <p class="w-desc">
+                Di malam pertama, diam-diam memilih satu pemain. Jika pemain tersebut mati, Peniru akan <strong>mengambil alih peran dan faksi</strong> pemain itu secara permanen.
+            </p>
+        </div>
+        <div class="w-footer">Doppelgänger // Tim Netral</div>
+    </div>
+
+    <!-- 5. KARTU BELAKANG (CARD BACK) -->
+    <div class="card-wrapper card-back">
+        <div class="paper-texture"></div>
+        <div class="w-curve-top"></div>
+        <div class="back-curve-bottom"></div>
+        
+        <div class="back-text-top">OBSIDIAN VANGUARD</div>
+        
+        <div class="w-art">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <circle cx="50" cy="50" r="48" fill="none" stroke="#d4af37" stroke-width="1" stroke-dasharray="3 4"/>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#2a2a2a" stroke-width="2"/>
+                <circle cx="50" cy="50" r="41.5" fill="none" stroke="#d4af37" stroke-width="1"/>
+                <rect x="22" y="22" width="56" height="56" fill="none" stroke="#d4af37" stroke-width="1.5" transform="rotate(45 50 50)" />
+                <rect x="22" y="22" width="56" height="56" fill="none" stroke="#d4af37" stroke-width="1.5" />
+                <polygon points="50,6 61,39 94,50 61,61 50,94 39,61 6,50 39,39" fill="#fff" stroke="#2a2a2a" stroke-width="1.5" />
+                <circle cx="50" cy="50" r="28" fill="#fdfbf7" stroke="#d4af37" stroke-width="2" />
+                <circle cx="50" cy="50" r="25" fill="none" stroke="#2a2a2a" stroke-width="1" stroke-dasharray="2 4" />
+                <path d="M 28,50 Q 50,28 72,50 Q 50,72 28,50 Z" fill="none" stroke="#d4af37" stroke-width="1.5" />
+                <circle cx="50" cy="50" r="8" fill="#fff" stroke="#2a2a2a" stroke-width="2"/>
+                <circle cx="50" cy="50" r="3" fill="#d4af37" />
+                <path d="M 50,0 L 53,7 L 50,14 L 47,7 Z" fill="#2a2a2a" />
+                <path d="M 50,100 L 53,93 L 50,86 L 47,93 Z" fill="#2a2a2a" />
+                <path d="M 0,50 L 7,47 L 14,50 L 7,53 Z" fill="#2a2a2a" />
+                <path d="M 100,50 L 93,47 L 86,50 L 93,53 Z" fill="#2a2a2a" />
+            </svg>
+        </div>
+        
+        <div class="back-text-bottom">WEREWOLF</div>
+    </div>
+
+</body>
+</html>

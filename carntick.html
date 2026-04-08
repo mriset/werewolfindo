@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf: The Carnival Ticket Deck</title>
+    <!-- Font Premium Karnaval & Tipografi Bersih -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,700;0,900;1,600&family=Rye&family=Special+Elite&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            /* Standar Kartu ID / Tarot Mini: 54mm x 85.6mm */
+            --w: 54mm;
+            --h: 85.6mm;
+
+            /* Warna Dasar Lingkungan */
+            --bg-page: #121217;
+            --paper-texture: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.06"/></svg>');
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            background-image: radial-gradient(circle at 50% 50%, #2a1b38 0%, #121217 100%);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        .header h1 {
+            font-family: 'Rye', cursive;
+            font-size: 3rem;
+            color: #FF4081;
+            text-shadow: 2px 2px 0px #9C27B0, 4px 4px 0px #000;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            color: #ccc;
+            font-size: 1.1rem;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #222;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        kbd {
+            background: #333;
+            border-radius: 3px;
+            border: 1px solid #555;
+            color: #fff;
+            display: inline-block;
+            font-size: .85em;
+            font-weight: 700;
+            padding: 2px 4px;
+        }
+
+        /* --- PAGES --- */
+        .page {
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin: 0 auto 40px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: flex-start;
+            box-sizing: border-box;
+        }
+
+        @media print {
+            :root {
+                --paper-texture: none !important;
+            }
+
+            .screen-only,
+            .control-panel,
+            .header {
+                display: none !important;
+            }
+
+            body {
+                background: none !important;
+                padding: 0 !important;
+            }
+
+            .page {
+                box-shadow: none !important;
+                margin: 0 !important;
+                page-break-after: always;
+                page-break-inside: avoid;
+                background: none !important;
+            }
+
+            .card-wrapper {
+                box-shadow: none !important;
+                transform: none !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                page-break-inside: avoid;
+            }
+        }
+
+        /* =========================================
+           STRUKTUR MASTER TIKET KARNAVAL
+           ========================================= */
+        .card-wrapper {
+            position: relative;
+            width: var(--w);
+            height: var(--h);
+            /* Shadow and hover removed intentionally based on requirements */
+        }
+
+        .card-ticket {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+
+            /* Variabel Warna Default (Ditiban oleh tiap role) */
+            --c1: #9C27B0;
+            --c2: #FF4081;
+            --bg-ticket: #FDFDFD;
+            --text-main: #333;
+
+            background-color: var(--bg-ticket);
+
+            /* Bentuk Potongan Sudut Tiket (Punch Holes) */
+            background-image:
+                radial-gradient(circle at 0 20mm, transparent 2mm, var(--bg-ticket) 2.2mm),
+                radial-gradient(circle at 100% 20mm, transparent 2mm, var(--bg-ticket) 2.2mm),
+                radial-gradient(circle at 0 65mm, transparent 2mm, var(--bg-ticket) 2.2mm),
+                radial-gradient(circle at 100% 65mm, transparent 2mm, var(--bg-ticket) 2.2mm),
+                var(--paper-texture);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            border: 1.5px solid var(--c1);
+            border-radius: 2mm;
+            overflow: hidden;
+        }
+
+        /* Ornamen Barcode Samping */
+        .card-ticket::before {
+            content: '';
+            position: absolute;
+            left: 1mm;
+            top: 25mm;
+            bottom: 25mm;
+            width: 2.5mm;
+            background: repeating-linear-gradient(to bottom, var(--c1) 0, var(--c1) 1px, transparent 1px, transparent 3px, var(--c1) 3px, var(--c1) 4px, transparent 4px, transparent 5.5px);
+            opacity: 0.3;
+        }
+
+        .t-header {
+            background: var(--c1);
+            color: #fff;
+            text-align: center;
+            padding: 2.5mm 0;
+            position: relative;
+        }
+
+        .t-faction {
+            font-family: 'Rye', cursive;
+            font-size: 8pt;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .t-serial {
+            position: absolute;
+            bottom: 47.5%;
+            left: 6.5mm;
+            transform: rotate(-90deg);
+            transform-origin: left bottom;
+            font-family: 'Special Elite', monospace;
+            font-size: 6pt;
+            font-weight: bold;
+            color: var(--c1);
+            letter-spacing: 1px;
+        }
+
+        .t-title-en {
+            font-family: 'Rye', cursive;
+            font-size: 14pt;
+            color: var(--c1);
+            text-align: center;
+            margin-top: 1mm;
+            line-height: 0.9;
+            padding: 0 3mm;
+        }
+
+        .t-title-id {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 6.5pt;
+            color: var(--c2);
+            text-align: center;
+            letter-spacing: 1px;
+            margin-bottom: 0;
+            text-transform: uppercase;
+        }
+
+        .t-art {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 1mm;
+            position: relative;
+            min-height: 0;
+        }
+
+        .t-art svg {
+            max-height: 48mm;
+            max-width: 100%;
+            height: 100%;
+            width: 100%;
+            transform: scale(1.1);
+            transform-origin: center;
+        }
+
+        .t-info {
+            padding: 2mm 3.5mm 2mm 3.5mm;
+            border-top: 2px dashed var(--c1);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .t-quote {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-style: italic;
+            font-size: 6pt;
+            color: var(--text-main);
+            margin-bottom: 1mm;
+            line-height: 1.2;
+        }
+
+        .t-quote span {
+            color: var(--c1);
+        }
+
+        .t-ability-box {
+            background: var(--c2);
+            color: #fff;
+            padding: 2mm;
+            border-radius: 2mm;
+            box-shadow: 1.5px 1.5px 0 var(--c1);
+            text-align: left;
+        }
+
+        .t-ability-title {
+            font-family: 'Rye', cursive;
+            font-size: 7pt;
+            margin-bottom: 0.5mm;
+            color: #fff;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 0.5mm;
+        }
+
+        .t-ability-desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5pt;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .t-ability-desc b {
+            color: #fff;
+            background: var(--c1);
+            padding: 0 0.5mm;
+            border-radius: 0.5mm;
+        }
+
+        /* =========================================
+           WARNA KHUSUS PER ROLE (THEME OVERRIDES)
+           ========================================= */
+
+        /* 1. SEER */
+        .role-seer {
+            --c1: #283593;
+            --c2: #FFB300;
+        }
+
+        /* MODERATOR */
+        .role-moderator {
+            --c1: #1A1A2E;
+            --c2: #E63946;
+            --bg-ticket: #FAFAFA;
+        }
+
+        /* 2. HUNTER */
+        .role-hunter {
+            --c1: #1B5E20;
+            --c2: #FF5722;
+        }
+
+        /* 3. WEREWOLF */
+        .role-werewolf {
+            --c1: #b71c1c;
+            --c2: #424242;
+            --bg-ticket: #fff5f5;
+        }
+
+        /* 4. JESTER */
+        .role-jester {
+            --c1: #7B1FA2;
+            --c2: #E91E63;
+        }
+
+        /* 5. GUARDIAN */
+        .role-guardian {
+            --c1: #263238;
+            --c2: #00BCD4;
+        }
+
+        /* 6. CARD BACK */
+        .role-back {
+            --c1: #D4AF37;
+            --c2: #FFF;
+            --bg-ticket: #1A1A1A;
+            border: 2px solid #D4AF37;
+        }
+
+        /* 7. ALPHA WOLF */
+        .role-alpha-wolf {
+            --c1: #4A0E0E;
+            --c2: #BF360C;
+            --bg-ticket: #fff8f6;
+        }
+
+        /* 8. CUPID */
+        .role-cupid {
+            --c1: #880E4F;
+            --c2: #F06292;
+        }
+
+        /* 9. WITCH */
+        .role-witch {
+            --c1: #2E0854;
+            --c2: #7C4DFF;
+            --bg-ticket: #fbf8ff;
+        }
+
+        /* 10. WIZARD */
+        .role-wizard {
+            --c1: #0D2B4E;
+            --c2: #29B6F6;
+        }
+
+        /* 11. VETERAN */
+        .role-veteran {
+            --c1: #3E2723;
+            --c2: #8D6E63;
+            --bg-ticket: #fdf8f5;
+        }
+
+        /* 12. BODYGUARD */
+        .role-bodyguard {
+            --c1: #1A237E;
+            --c2: #546E7A;
+            --bg-ticket: #f5f7ff;
+        }
+
+        /* 13. PRIEST */
+        .role-priest {
+            --c1: #4E342E;
+            --c2: #D4AF37;
+            --bg-ticket: #fffef5;
+        }
+
+        /* 14. MAYOR */
+        .role-mayor {
+            --c1: #1B3A6B;
+            --c2: #C0392B;
+        }
+
+        /* 15. SHERIFF */
+        .role-sheriff {
+            --c1: #5D4037;
+            --c2: #F9A825;
+            --bg-ticket: #fffdf0;
+        }
+
+        /* 16. VILLAGER-1 */
+        .role-villager-1 {
+            --c1: #2E7D32;
+            --c2: #A5D6A7;
+        }
+
+        /* 17. VILLAGER-2 */
+        .role-villager-2 {
+            --c1: #01579B;
+            --c2: #81D4FA;
+        }
+
+        /* 18. VILLAGER-3 */
+        .role-villager-3 {
+            --c1: #E65100;
+            --c2: #FFCC80;
+        }
+
+        /* 19. WEREWOLF-2 */
+        .role-werewolf-2 {
+            --c1: #212121;
+            --c2: #616161;
+            --bg-ticket: #f8f8f8;
+        }
+
+        /* 20. LONE WOLF */
+        .role-lone-wolf {
+            --c1: #263238;
+            --c2: #78909C;
+            --bg-ticket: #f4f6f8;
+        }
+
+        /* 21. DOPPELGANGER */
+        .role-doppelganger {
+            --c1: #4A148C;
+            --c2: #CE93D8;
+        }
+
+        /* 22. SERIAL KILLER */
+        .role-serial-killer {
+            --c1: #B71C1C;
+            --c2: #212121;
+            --bg-ticket: #fff5f5;
+        }
+
+        /* 23. IDIOT */
+        .role-idiot {
+            --c1: #F57F17;
+            --c2: #AED581;
+        }
+
+        /* 24. PRINCE */
+        .role-prince {
+            --c1: #1A237E;
+            --c2: #D4AF37;
+            --bg-ticket: #fffff8;
+        }
+
+        /* 25. LITTLE GIRL */
+        .role-little-girl {
+            --c1: #880E4F;
+            --c2: #F48FB1;
+            --bg-ticket: #fff8fb;
+        }
+
+        .role-back {
+            background-image:
+                radial-gradient(circle at 0 20mm, transparent 2mm, var(--bg-ticket) 2.2mm),
+                radial-gradient(circle at 100% 20mm, transparent 2mm, var(--bg-ticket) 2.2mm),
+                radial-gradient(circle at 0 65mm, transparent 2mm, var(--bg-ticket) 2.2mm),
+                radial-gradient(circle at 100% 65mm, transparent 2mm, var(--bg-ticket) 2.2mm),
+                var(--paper-texture);
+        }
+
+        .role-back .t-art svg {
+            max-height: none;
+            width: 100%;
+            transform: scale(1);
+        }
+        @media print {
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body {
+                display: block !important;
+            }
+            #pages-container {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .page {
+                break-after: page;
+            }
+            .page:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="header screen-only">
+        <h1>NIGHTMARE CARNIVAL</h1>
+        <p>Deck Werewolf — Edisi Desain "The Carnival Ticket"</p>
+    </div>
+
+    <!-- CONTROL PANEL -->
+    <div class="control-panel screen-only" style="background: rgba(30,30,30,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px 25px; margin: 0 auto 30px; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; z-index: 10;">
+        <div style="width:100%; text-align:center; margin-bottom:12px; border-bottom:1px solid #444; padding-bottom:10px;">
+            <p style="margin:0; font-size:13px; color:#fff; font-weight:500;">
+                <span style="color:#27AE60; font-weight:700;">PANDUAN CETAK:</span>
+                Tekan <kbd>Ctrl+P</kbd> dan pastikan:
+                <strong>1.</strong> Format: <strong style="color:#27AE60">A4</strong>&nbsp;&nbsp;
+                <strong>2.</strong> Scale: <strong style="color:#27AE60">100%</strong>&nbsp;&nbsp;
+                <strong>3.</strong> Margins: <strong style="color:#27AE60">None</strong>&nbsp;&nbsp;
+                <strong>4.</strong> Centang <strong style="color:#27AE60">Background graphics</strong>.
+            </p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; width:100%;">
+            <div class="control-group">
+                <label for="paper-size" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Kertas:</label>
+                <select id="paper-size" onchange="changePaperSize()" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="a4">A4 (9 Kartu)</option>
+                    <option value="f4">F4 / Folio (9 Kartu)</option>
+                    <option value="a3">A3 (20 Kartu)</option>
+                    <option value="a3plus">A3+ (25 Kartu)</option>
+                    <option value="single">Single (Per Kartu)</option>
+                </select>
+            </div>
+            <div style="width:2px; background:#444; margin:0 5px; border-radius:2px;"></div>
+            <div class="control-group">
+                <label for="export-dpi" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Detail PDF:</label>
+                <select id="export-dpi" onchange="changePaperSize()" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="1">Standar (96 DPI)</option>
+                    <option value="2">Tajam (192 DPI)</option>
+                    <option value="4" selected>Ekstrem (384 DPI)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="back-mode" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Balik:</label>
+                <select id="back-mode" onchange="changePaperSize()" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="duplex">Duplex / Otomatis</option>
+                    <option value="manual-long">Manual (Sisi Panjang)</option>
+                    <option value="manual-short">Manual (Sisi Pendek)</option>
+                </select>
+            </div>
+            <button onclick="window.print()" style="font-family:'Montserrat',sans-serif; font-size:12px; font-weight:700; padding:10px 18px; border-radius:8px; cursor:pointer; border:none; background:linear-gradient(135deg,#1E272E,#27AE60); box-shadow:0 4px 12px rgba(39,174,96,0.3); color:white;">
+                🖨️ Simpan PDF
+            </button>
+            <div style="width:2px; background:#444; margin:0 5px; border-radius:2px;"></div>
+            <div class="control-group">
+                <label for="export-format" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Zip:</label>
+                <select id="export-format" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="png">PNG</option>
+                    <option value="jpg">JPG</option>
+                </select>
+            </div>
+            <button id="btn-download-all" onclick="downloadAllCardsDomToImage('CarnTick', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})" style="font-family:'Montserrat',sans-serif; font-size:12px; font-weight:700; padding:10px 18px; border-radius:8px; cursor:pointer; border:none; background:linear-gradient(135deg,#3B1C54,#F39C12); box-shadow:0 4px 12px rgba(243,156,18,0.3); color:white;">
+                ⬇ Download (.ZIP)
+            </button>
+        </div>
+    </div>
+
+    <!-- DYNAMIC CONTAINER -->
+    <div id="pages-container"></div>
+
+    <!-- DATA & ART SCRIPTS -->
+    <script src="carntick_data.js"></script>
+    <script src="svg_carntick.js"></script>
+
+    <script>
+        function generateCarntickCard(card) {
+            var html = '';
+            
+            html += '<div class="card-wrapper" id="carntick-' + card.id + '">';
+            html += '<div class="card-ticket ' + card.roleClass + '">';
+            
+            if (card.isBack) {
+                html += '    <div class="t-art" style="padding: 5mm;">';
+                html += '        ' + (carntickArt[card.id] || '');
+                html += '    </div>';
+            } else {
+                html += '    <div class="t-header">';
+                html += '        <div class="t-faction">' + card.faction + '</div>';
+                html += '    </div>';
+                html += '    <div class="t-serial">' + card.serial + '</div>';
+                html += '    <div class="t-title-en">' + card.titleEn + '</div>';
+                html += '    <div class="t-title-id">' + card.titleId + '</div>';
+                html += '    <div class="t-art">';
+                html += '        ' + (carntickArt[card.id] || '');
+                html += '    </div>';
+                html += '    <div class="t-info">';
+                html += '        <div class="t-quote">' + card.quote + '</div>';
+                html += '        <div class="t-ability-box">';
+                html += '            <div class="t-ability-title">' + card.abilityTitle + '</div>';
+                html += '            <div class="t-ability-desc">' + card.abilityDesc + '</div>';
+                html += '        </div>';
+                html += '    </div>';
+            }
+            html += '</div>';
+            html += '</div>';
+
+            return html;
+        }
+
+                function mapBackSlotIndex(slotIndex, cols, rows, backMode) {
+            var row = Math.floor(slotIndex / cols);
+            var col = slotIndex % cols;
+            if (backMode === 'manual-long') {
+                col = (cols - 1) - col;
+            } else if (backMode === 'manual-short') {
+                row = (rows - 1) - row;
+            }
+            return (row * cols) + col;
+        }
+
+        function renderPageFromSlots(slotCards, isBackPage, renderCardFn, placeholderClass) {
+            var html = "<div class=\"page" + (isBackPage ? " page-back" : "") + "\">";
+            var placeholder = "<div class=\"" + placeholderClass + " card-placeholder\" style=\"visibility:hidden;border:0 !important;box-shadow:none !important;background:transparent !important;pointer-events:none !important;\" aria-hidden=\"true\"></div>";
+            for (var i = 0; i < slotCards.length; i++) {
+                if (slotCards[i]) html += renderCardFn(slotCards[i]);
+                else html += placeholder;
+            }
+            html += "</div>";
+            return html;
+        }
+
+        function changePaperSize() {
+            var paperSelect = document.getElementById('paper-size');
+            var dpiSelect = document.getElementById('export-dpi') || document.getElementById('pdf-dpi');
+            var backModeSelect = document.getElementById('back-mode');
+            var paperId = paperSelect ? paperSelect.value : 'a4';
+            var dpiScale = parseFloat(dpiSelect ? dpiSelect.value : '1');
+            var backMode = backModeSelect ? backModeSelect.value : 'duplex';
+            var container = document.getElementById('pages-container') || document.querySelector('.pages-container');
+            if (!container) return;
+            container.innerHTML = "";
+
+            var config = window.CardPrintLayout ? window.CardPrintLayout.applyCSS(paperId, dpiScale) : { cardsPerPage: 9, cols: 3, rows: 3 };
+            var cardsPerPage = config.cardsPerPage || (config.cols * config.rows);
+            var cols = config.cols || 3;
+            var rows = config.rows || 3;
+            var renderCardFn = generateCarntickCard;
+            var placeholderClass = 'card-wrapper';
+
+            var htmlContent = "";
+            var frontCards = carntickDeckData.filter(function(c) { return !c.isBack; });
+            var backCardData = null;
+            for (var k = 0; k < carntickDeckData.length; k++) {
+                if (carntickDeckData[k].isBack) { backCardData = carntickDeckData[k]; break; }
+            }
+
+            if (paperId === 'single') {
+                for (var s = 0; s < frontCards.length; s++) {
+                    htmlContent += renderPageFromSlots([frontCards[s]], false, renderCardFn, placeholderClass);
+                    if (backCardData) {
+                        htmlContent += renderPageFromSlots([backCardData], true, renderCardFn, placeholderClass);
+                    }
+                }
+            } else {
+                for (var i = 0; i < frontCards.length; i += cardsPerPage) {
+                    var pageCards = frontCards.slice(i, i + cardsPerPage);
+                    var frontSlots = new Array(cardsPerPage).fill(null);
+                    for (var j = 0; j < pageCards.length; j++) {
+                        frontSlots[j] = pageCards[j];
+                    }
+                    htmlContent += renderPageFromSlots(frontSlots, false, renderCardFn, placeholderClass);
+
+                    if (backCardData) {
+                        var backSlots = new Array(cardsPerPage).fill(null);
+                        for (var b = 0; b < pageCards.length; b++) {
+                            var mappedIndex = mapBackSlotIndex(b, cols, rows, backMode);
+                            backSlots[mappedIndex] = backCardData;
+                        }
+                        htmlContent += renderPageFromSlots(backSlots, true, renderCardFn, placeholderClass);
+                    }
+                }
+            }
+
+            container.innerHTML = htmlContent;
+        }
+        document.addEventListener('DOMContentLoaded', function() { changePaperSize(); });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+    <script src="download_helper.js?v=2"></script>
+</body>
+</html>

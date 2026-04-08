@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Desain Kartu Premium Putih - Unified Layout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@300;400;600;800;900&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Ukuran presisi cetak */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            /* Latar belakang web abu-abu gelap agar kartu putih menonjol */
+            background: #222;
+            font-family: 'Montserrat', sans-serif;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header { text-align: center; margin-bottom: 40px; color: #fff; }
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #d4af37;
+        }
+        .header p { color: #ccc; font-size: 14px; letter-spacing: 2px; margin-top: 10px; }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* =========================================
+           UNIFIED CARD STYLING (Based on Werewolf Layout)
+        ========================================= */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            position: relative;
+            border-radius: 3mm;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: inset 0 0 0 2px var(--fac-sec), 0 15px 35px rgba(0,0,0,0.4);
+            flex-shrink: 0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .card:hover { 
+            transform: translateY(-10px) scale(1.02); 
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5), 0 0 0 2px var(--fac-sec) inset; 
+        }
+
+        /* Faction Color Variables */
+        .faction-supreme { --fac-main: #4a154b; --fac-sec: #8a2be2; --fac-light: rgba(138,43,226,0.15); --fac-glow: rgba(138,43,226,0.3); }
+        .faction-alliance { --fac-main: #0f2c59; --fac-sec: #4183d7; --fac-light: rgba(65,131,215,0.15); --fac-glow: rgba(65,131,215,0.3); }
+        .faction-shadows { --fac-main: #8b0000; --fac-sec: #dc143c; --fac-light: rgba(220,20,60,0.15); --fac-glow: rgba(220,20,60,0.3); }
+        .faction-neutral { --fac-main: #990099; --fac-sec: #00cccc; --fac-light: rgba(0,204,204,0.15); --fac-glow: rgba(204,0,204,0.2); }
+        .faction-cupid { --fac-main: #d81b60; --fac-sec: #ff4081; --fac-light: rgba(255,64,129,0.15); --fac-glow: rgba(255,64,129,0.3); }
+        .faction-back { --fac-main: #8c6214; --fac-sec: #d4af37; --fac-light: rgba(212,175,55,0.2); --fac-glow: rgba(212,175,55,0.3); }
+
+        /* Background Splatter & Slash */
+        .bg-splatter {
+            position: absolute; inset: 0; 
+            background: radial-gradient(circle at 70% 30%, var(--fac-light) 0%, transparent 60%);
+            z-index: 1; 
+        }
+        .bg-slash {
+            position: absolute; top: -10mm; right: -10mm; width: 40mm; height: 50mm;
+            background: linear-gradient(135deg, transparent 40%, var(--fac-light) 45%, var(--fac-glow) 50%, transparent 55%);
+            z-index: 1; transform: rotate(15deg);
+        }
+
+        /* Top Elements */
+        .vertical-id {
+            position: absolute; left: 1.5mm; top: 10mm; font-family: 'Cinzel', serif; font-size: 8px; color: var(--fac-main); font-weight: 900; writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 4px; z-index: 3;
+        }
+        .faction-slash {
+            position: absolute; top: 0; right: 0; background: var(--fac-sec); color: #fff; font-size: 5px; font-weight: 900; padding: 3mm 6mm 2mm 8mm; clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%); z-index: 3; letter-spacing: 1px;
+        }
+
+        /* SVG Art Container */
+        .svg-container { 
+            position: absolute; top: 5mm; left: 0; width: 100%; height: 50mm; z-index: 2; 
+            filter: drop-shadow(0 8px 8px var(--fac-light)); 
+        }
+
+        /* Bottom Text Area */
+        .text-area {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 4mm 4mm 4mm 6mm; 
+            background: linear-gradient(to top, rgba(255,255,255,1) 70%, rgba(255,255,255,0) 100%); 
+            z-index: 3; border-top: 2px solid var(--fac-light); 
+            clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
+        }
+        .name-id { 
+            font-family: 'Cinzel', serif; font-size: 18px; font-weight: 900; color: var(--fac-main); text-transform: uppercase; line-height: 0.9; margin-bottom: 1mm; margin-top: 2mm;
+        }
+        .name-en { 
+            font-size: 6px; color: #888; letter-spacing: 5px; font-weight: 800; margin-bottom: 2mm; 
+        }
+        .ability { 
+            display: inline-block; background: var(--fac-sec); color: #fff; font-size: 6px; font-weight: 900; padding: 1mm 2mm; letter-spacing: 1px; transform: skewX(-15deg); margin-bottom: 2mm; box-shadow: 2px 2px 0 var(--fac-glow);
+        }
+        .ability span { display: inline-block; transform: skewX(15deg); }
+        .desc { 
+            font-size: 5.5px; color: #333; line-height: 1.4; text-align: left; border-left: 2px solid var(--fac-main); padding-left: 2mm; margin-bottom: 2mm; font-weight: 600;
+        }
+        .desc strong { color: var(--fac-main); font-weight: 800;}
+        .footer-text { 
+            font-size: 4px; color: #888; font-weight: 700; text-align: right; letter-spacing: 1px; text-transform: uppercase;
+        }
+
+        /* Khusus layout belakang kartu agar teks pas di tengah bawah */
+        .card-back-text {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 4mm 4mm 10mm 4mm; 
+            background: linear-gradient(to top, rgba(255,255,255,1) 80%, rgba(255,255,255,0) 100%); 
+            z-index: 3; border-top: 2px solid var(--fac-light); 
+            clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Obsidian Vanguard: Unified Edition</h1>
+        <p>Premium White Theme - Aggressive Layout (54.5mm × 85.5mm)</p>
+    </div>
+
+    <div class="cards-container">
+        
+        <!-- KARTU 1: MODERATOR (SUPREME) -->
+        <div class="card faction-supreme">
+            <div class="bg-splatter"></div>
+            <div class="bg-slash"></div>
+            <div class="vertical-id">SP·01</div>
+            <div class="faction-slash">SUPREME</div>
+            <div class="svg-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20,0 Q30,50 15,90" fill="none" stroke="#8a2be2" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+                    <path d="M50,-10 Q60,50 45,100" fill="none" stroke="#8a2be2" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+                    <path d="M80,0 Q90,50 75,90" fill="none" stroke="#8a2be2" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+                    
+                    <!-- The Zenith Eye -->
+                    <circle cx="50" cy="50" r="25" fill="#fff" stroke="#4a154b" stroke-width="2" />
+                    <path d="M30,50 Q50,25 70,50 Q50,75 30,50 Z" fill="rgba(138,43,226,0.1)" stroke="#d4af37" stroke-width="2.5" />
+                    <circle cx="50" cy="50" r="8" fill="#8a2be2" />
+                    <circle cx="50" cy="50" r="3" fill="#4a154b" />
+                    <circle cx="52" cy="48" r="1.5" fill="#fff" />
+                    <!-- Geometric Frame -->
+                    <polygon points="50,15 85,50 50,85 15,50" fill="none" stroke="#4a154b" stroke-width="1.5" stroke-dasharray="4,2"/>
+                </svg>
+            </div>
+            <div class="text-area">
+                <div class="name-id">Moderator</div>
+                <div class="name-en">NARRATOR</div>
+                <div class="ability"><span>Tuhan Desa Werewolf</span></div>
+                <div class="desc">Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain.</div>
+                <div class="footer-text">Moderator // Supreme</div>
+            </div>
+        </div>
+
+        <!-- KARTU 2: VILLAGER (ALLIANCE) -->
+        <div class="card faction-alliance">
+            <div class="bg-splatter"></div>
+            <div class="bg-slash"></div>
+            <div class="vertical-id">VL·14</div>
+            <div class="faction-slash">ALLIANCE</div>
+            <div class="svg-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20,0 Q30,50 15,90" fill="none" stroke="#4183d7" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+                    <path d="M50,-10 Q60,50 45,100" fill="none" stroke="#4183d7" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+                    <path d="M80,0 Q90,50 75,90" fill="none" stroke="#4183d7" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+                    
+                    <!-- Shield and Pitchfork Crest -->
+                    <path d="M30,25 L70,25 L70,50 C70,75 50,90 50,90 C50,90 30,75 30,50 Z" fill="#fff" stroke="#0f2c59" stroke-width="2.5" stroke-linejoin="round" />
+                    <!-- Pitchfork -->
+                    <line x1="50" y1="15" x2="50" y2="80" stroke="#d4af37" stroke-width="2" />
+                    <path d="M38,35 C38,50 62,50 62,35" fill="none" stroke="#d4af37" stroke-width="2" />
+                    <line x1="38" y1="35" x2="38" y2="25" stroke="#d4af37" stroke-width="2" />
+                    <line x1="62" y1="35" x2="62" y2="25" stroke="#d4af37" stroke-width="2" />
+                    <!-- Wheat Stalks -->
+                    <path d="M20,70 Q30,45 25,25" fill="none" stroke="#4183d7" stroke-width="1.5" stroke-dasharray="4,2" />
+                    <path d="M80,70 Q70,45 75,25" fill="none" stroke="#4183d7" stroke-width="1.5" stroke-dasharray="4,2" />
+                </svg>
+            </div>
+            <div class="text-area">
+                <div class="name-id">Warga Desa</div>
+                <div class="name-en">VILLAGER</div>
+                <div class="ability"><span>Suara Demokrasi</span></div>
+                <div class="desc">Tidak memiliki magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk mengeksekusi serigala.</div>
+                <div class="footer-text">Villager // Tim Desa</div>
+            </div>
+        </div>
+
+        <!-- KARTU 3: WEREWOLF (SHADOWS) -->
+        <div class="card faction-shadows">
+            <div class="bg-splatter"></div>
+            <div class="bg-slash"></div>
+            <div class="vertical-id">WW·01</div>
+            <div class="faction-slash">SHADOWS</div>
+            <div class="svg-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20,0 Q30,50 15,90" fill="none" stroke="#dc143c" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+                    <path d="M50,-10 Q60,50 45,100" fill="none" stroke="#dc143c" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+                    <path d="M80,0 Q90,50 75,90" fill="none" stroke="#dc143c" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+                    
+                    <!-- Angular Beast Head -->
+                    <polygon points="50,15 80,25 85,60 65,75 70,100 50,85 30,100 35,75 15,60 20,25" fill="#fff" stroke="#8b0000" stroke-width="2.5" stroke-linejoin="round" />
+                    <polygon points="50,15 80,25 85,60 50,70" fill="#fcf6ba" opacity="0.3" />
+                    
+                    <!-- Piercing Demonic Eyes -->
+                    <polygon points="30,45 45,52 35,58" fill="#8b0000" />
+                    <polygon points="70,45 55,52 65,58" fill="#8b0000" />
+                    <circle cx="38" cy="52" r="1.5" fill="#fff" />
+                    <circle cx="62" cy="52" r="1.5" fill="#fff" />
+                    
+                    <!-- Fangs & Jaw -->
+                    <polygon points="40,85 45,100 48,80" fill="#8b0000" />
+                    <polygon points="60,85 55,100 52,80" fill="#8b0000" />
+                    <circle cx="45" cy="105" r="2" fill="#dc143c" />
+                </svg>
+            </div>
+            <div class="text-area">
+                <div class="name-id">Serigala</div>
+                <div class="name-en">WEREWOLF</div>
+                <div class="ability"><span>Membunuh Malam Hari</span></div>
+                <div class="desc">Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh secara brutal</strong>. Serigala saling mengenali koloninya. Menang jika jumlah serigala menyamai warga.</div>
+                <div class="footer-text">Werewolf // Tim Jahat</div>
+            </div>
+        </div>
+
+        <!-- KARTU 4: JESTER (NEUTRAL) -->
+        <div class="card faction-neutral">
+            <div class="bg-splatter"></div>
+            <div class="bg-slash"></div>
+            <div class="vertical-id">NT·01</div>
+            <div class="faction-slash" style="color: #000;">NEUTRAL</div>
+            <div class="svg-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20,0 Q30,50 15,90" fill="none" stroke="#00cccc" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+                    <path d="M50,-10 Q60,50 45,100" fill="none" stroke="#cc00cc" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+                    <path d="M80,0 Q90,50 75,90" fill="none" stroke="#00cccc" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+                    
+                    <!-- Split Mask -->
+                    <!-- Left Smile -->
+                    <path d="M50,25 C25,25 20,50 32,75 L50,80 Z" fill="#fff" stroke="#00cccc" stroke-width="2.5" />
+                    <path d="M30,60 Q40,50 48,65" fill="none" stroke="#00cccc" stroke-width="2" />
+                    <ellipse cx="38" cy="48" rx="4" ry="6" fill="#00cccc" />
+                    <!-- Right Frown -->
+                    <path d="M50,20 C80,20 85,50 72,75 L50,80 Z" fill="rgba(204,0,204,0.05)" stroke="#990099" stroke-width="2.5" />
+                    <path d="M52,65 Q60,50 70,65" fill="none" stroke="#990099" stroke-width="2" />
+                    <polygon points="58,44 66,48 62,56" fill="#990099" />
+                    
+                    <!-- Puppet Strings -->
+                    <line x1="38" y1="10" x2="38" y2="48" stroke="#555" stroke-dasharray="2,2" stroke-width="1.5" />
+                    <line x1="62" y1="10" x2="62" y2="48" stroke="#555" stroke-dasharray="2,2" stroke-width="1.5" />
+                </svg>
+            </div>
+            <div class="text-area">
+                <div class="name-id">Badut</div>
+                <div class="name-en">JESTER</div>
+                <div class="ability"><span style="color: #fff;">Tawa Terakhir</span></div>
+                <div class="desc">Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi mati</strong> oleh warga di siang hari. Jika digantung, ia memenangkan permainan seorang diri.</div>
+                <div class="footer-text">Jester // Tim Netral</div>
+            </div>
+        </div>
+
+        <!-- KARTU 5: CUPID (MYSTIC) -->
+        <div class="card faction-cupid">
+            <div class="bg-splatter"></div>
+            <div class="bg-slash"></div>
+            <div class="vertical-id">CP·01</div>
+            <div class="faction-slash">MYSTIC</div>
+            <div class="svg-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20,0 Q30,50 15,90" fill="none" stroke="#ff4081" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+                    <path d="M50,-10 Q60,50 45,100" fill="none" stroke="#ff4081" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+                    <path d="M80,0 Q90,50 75,90" fill="none" stroke="#ff4081" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+                    
+                    <!-- Geometric Heart -->
+                    <path d="M50,75 L25,45 L25,25 L40,15 L50,30 L60,15 L75,25 L75,45 Z" fill="#fff" stroke="#d81b60" stroke-width="2.5" stroke-linejoin="round" />
+                    <path d="M50,75 L25,45 L25,25 L50,30 Z" fill="rgba(255,64,129,0.1)" />
+                    
+                    <!-- Piercing Arrow (Gold) -->
+                    <line x1="15" y1="85" x2="85" y2="15" stroke="#d4af37" stroke-width="2.5" />
+                    <!-- Arrowhead -->
+                    <polygon points="85,15 75,12 78,22" fill="#d4af37" />
+                    <!-- Arrow Feathers -->
+                    <polygon points="15,85 22,95 28,88 20,80" fill="#d4af37" />
+
+                    <!-- Floating Love/Blood Drops -->
+                    <circle cx="50" cy="85" r="2.5" fill="#ff4081" />
+                    <circle cx="55" cy="93" r="1.5" fill="#ff4081" />
+                </svg>
+            </div>
+            <div class="text-area">
+                <div class="name-id">Cupid</div>
+                <div class="name-en">MATCHMAKER</div>
+                <div class="ability"><span>Panah Asmara</span></div>
+                <div class="desc">Malam pertama, pilih dua pemain menjadi <strong>Sepasang Kekasih</strong>. Jika salah satu mati, yang lainnya akan ikut mati seketika karena patah hati.</div>
+                <div class="footer-text">Cupid // Tim Aliansi</div>
+            </div>
+        </div>
+
+        <!-- KARTU 6: CARD BACK (WHITE MARBLE & GOLD FOIL) -->
+        <div class="card faction-back">
+            <div class="bg-splatter"></div>
+            <div class="bg-slash"></div>
+            <div class="vertical-id">VANGUARD</div>
+            <div class="faction-slash">EDITION</div>
+            <div class="svg-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20,0 Q30,50 15,90" fill="none" stroke="#d4af37" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+                    <path d="M50,-10 Q60,50 45,100" fill="none" stroke="#d4af37" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+                    <path d="M80,0 Q90,50 75,90" fill="none" stroke="#d4af37" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+
+                    <!-- Intricate Mandala / Seal -->
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="2,3" />
+                    <circle cx="50" cy="50" r="32" fill="none" stroke="#8c6214" stroke-width="2" />
+                    
+                    <!-- Hexagram -->
+                    <polygon points="50,22 74,36 74,64 50,78 26,64 26,36" fill="none" stroke="#d4af37" stroke-width="1.5" />
+                    <polygon points="50,26 70,38 70,62 50,74 30,62 30,38" fill="rgba(212,175,55,0.1)" stroke="#8c6214" stroke-width="1" transform="rotate(30 50 50)" />
+                    
+                    <!-- Central Inner Wolf/Moon Icon -->
+                    <circle cx="50" cy="50" r="16" fill="#fff" stroke="#d4af37" stroke-width="2" />
+                    <path d="M40,50 A10,10 0 1,1 55,60 A14,14 0 0,0 40,50 Z" fill="#8c6214" />
+                    <polygon points="53,42 60,45 57,55 50,62 43,55 53,49" fill="#fff" stroke="#d4af37" stroke-width="1" />
+                </svg>
+            </div>
+            
+            <div class="card-back-text">
+                <div class="name-en" style="letter-spacing: 8px; margin-bottom: 0;">OBSIDIAN</div>
+                <div class="name-id" style="font-size: 22px; margin-bottom: 2mm;">WEREWOLF</div>
+                <div class="footer-text" style="text-align: center; font-size: 5px;">Light Edition Layout</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

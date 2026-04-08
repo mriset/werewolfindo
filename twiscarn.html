@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nightmare Asylum - Twisted Carnival Edition</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Montserrat:wght@400;600;700;900&family=Rye&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Dimensi Kartu Fisik Presisi */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+            --scale: 1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Rye', serif;
+            color: #ff007f;
+            font-size: 3rem;
+            letter-spacing: 2px;
+            margin: 0 0 10px 0;
+            text-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* --- CONTROL PANEL --- */
+        .control-panel {
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 127, 0.3);
+            border-radius: 12px;
+            padding: 15px 25px;
+            margin: 0 auto 30px;
+            max-width: 900px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #222;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 0, 127, 0.2);
+        }
+
+        .control-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .control-group select {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background: #333;
+            color: #fff;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .control-group select:focus {
+            border-color: #ff007f;
+        }
+
+        .control-btn {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            border: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        kbd {
+            background: #333;
+            border-radius: 3px;
+            border: 1px solid #555;
+            color: #fff;
+            display: inline-block;
+            font-size: .85em;
+            font-weight: 700;
+            padding: 2px 4px;
+        }
+
+        @media print {
+            .screen-only,
+            .control-panel,
+            .header {
+                display: none !important;
+            }
+        }
+
+        /* --- PAGES CONTAINER --- */
+        .page {
+            background: #ffffff;    /* Kertas Warna Putih */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin: 0 auto 40px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: flex-start;
+            box-sizing: border-box;
+        }
+
+        @media print {
+            html, body {
+                background: none !important;
+                background-color: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                min-height: auto !important;
+            }
+
+            .page {
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                page-break-after: always;
+                background: none !important;
+                background-color: #ffffff !important;
+            }
+        }
+
+        /* BINGKAI UTAMA KARTU */
+        .card {
+            width: calc(var(--card-w) * var(--scale));
+            height: calc(var(--card-h) * var(--scale));
+            border-radius: 4mm;
+            position: relative;
+            box-sizing: border-box;
+            overflow: hidden;
+            cursor: pointer;
+            flex-shrink: 0;
+            background: var(--c-dark, #1a052b);
+            border: 1.5mm solid var(--c-neon, #39ff14);
+        }
+
+        @media print {
+            .card {
+                box-shadow: none !important;
+                transform: none !important;
+                /* Essential to print background colors and neon borders accurately */
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+
+        /* POLA LATAR BELAKANG DINAMIS */
+        .madness-bg {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            opacity: 0.25;
+            z-index: 0;
+        }
+
+        /* ELEMEN DESAIN KARNAVAL MIRING */
+        .madness-faction {
+            position: absolute;
+            top: 2.5mm;
+            left: 1.5mm;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5pt;
+            font-weight: 900;
+            background: var(--c-neon);
+            color: var(--c-dark);
+            padding: 0.5mm 2mm;
+            transform: rotate(-6deg);
+            z-index: 3;
+            box-shadow: 2px 2px 0 #000;
+            text-transform: uppercase;
+        }
+
+        .madness-code {
+            position: absolute;
+            bottom: 2mm;
+            right: 2mm;
+            font-family: monospace;
+            font-size: 5pt;
+            color: var(--c-neon);
+            font-weight: bold;
+            transform: rotate(-90deg);
+            transform-origin: right bottom;
+            z-index: 3;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .madness-title-box {
+            position: absolute;
+            top: 9mm;
+            right: -2.5mm;
+            background: var(--c-alt);
+            padding: 1.5mm 4mm 1.5mm 6mm;
+            transform: rotate(7deg);
+            border: 1px solid #fff;
+            box-shadow: -2px 3px 0 var(--c-neon);
+            z-index: 4;
+        }
+
+        .madness-title-en {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4.5pt;
+            font-weight: 900;
+            color: var(--c-neon);
+            letter-spacing: 2px;
+            text-align: right;
+            margin-bottom: 0.5mm;
+            text-transform: uppercase;
+        }
+
+        .madness-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 11pt;
+            color: #fff;
+            line-height: 1;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        /* CONTAINER ILUSTRASI SVG */
+        .madness-art {
+            position: absolute;
+            top: 20mm;
+            left: 0;
+            width: 100%;
+            height: 42mm;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .madness-art svg {
+            width: 85%;
+            height: 85%;
+            filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.8));
+        }
+
+        /* KOTAK DESKRIPSI (BAWAH) */
+        .madness-desc-box {
+            position: absolute;
+            bottom: 2.5mm;
+            left: 2.5mm;
+            width: 44mm;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1.2px dashed var(--c-neon);
+            padding: 2.5mm;
+            transform: rotate(-3deg);
+            z-index: 5;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5mm;
+        }
+
+        .madness-quote {
+            font-family: 'IM Fell English', serif;
+            font-size: 6pt;
+            font-style: italic;
+            color: var(--c-alt);
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .madness-ability {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4.5pt;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.3;
+            text-align: left;
+            border-top: 1px dotted var(--c-neon);
+            padding-top: 1mm;
+        }
+
+        .madness-ability span {
+            color: var(--c-neon);
+        }
+
+        /* CARD BACK LAYOUT SYMMETRY */
+        .back-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            padding: 4mm;
+            box-sizing: border-box;
+        }
+
+        .back-ticket {
+            background: var(--c-dark);
+            border: 1.5px dashed var(--c-neon);
+            padding: 3mm;
+            transform: rotate(-4deg);
+            text-align: center;
+            width: 85%;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .back-title {
+            font-family: 'Rye', serif;
+            font-size: 14pt;
+            color: var(--c-alt);
+            text-shadow: 1px 1px 0 var(--c-neon);
+            line-height: 1.1;
+            margin-bottom: 2mm;
+            text-align: center;
+        }
+
+        .back-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5pt;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 3px;
+            border-top: 1px solid var(--c-neon);
+            padding-top: 1.5mm;
+            text-align: center;
+        }
+
+        /* =======================================================
+           TEMA SPESIFIK TIAP KARTU (WARNA & BACKGROUND PATTERN)
+           ======================================================= */
+
+        .role-jester { --c-dark: #1a052b; --c-neon: #39ff14; --c-alt: #b00b69; }
+        .role-jester .madness-bg { background-image: conic-gradient(var(--c-dark) 90deg, transparent 90deg, transparent 180deg, var(--c-dark) 180deg, var(--c-dark) 270deg, transparent 270deg); background-size: 15mm 15mm; background-color: #2d0a4e; transform: rotate(15deg); }
+
+        .role-seer { --c-dark: #001220; --c-neon: #00f0ff; --c-alt: #ff007f; }
+        .role-seer .madness-bg { background-image: radial-gradient(circle, transparent 20%, #00334d 20%, #00334d 40%, transparent 40%, transparent 60%, #00334d 60%, #00334d 80%, transparent 80%); background-size: 20mm 20mm; background-position: center; background-color: var(--c-dark); transform: rotate(-10deg); opacity: 0.35; }
+
+        .role-hunter { --c-dark: #2b0a00; --c-neon: #ff5e00; --c-alt: #ffd700; }
+        .role-hunter .madness-bg { background-image: repeating-conic-gradient(var(--c-dark) 0 15deg, #4a1500 15deg 30deg); background-color: var(--c-dark); transform: rotate(5deg); opacity: 0.4; }
+
+        .role-werewolf { --c-dark: #0a0a0a; --c-neon: #ff003c; --c-alt: #ccff00; }
+        .role-werewolf .madness-bg { background-image: repeating-linear-gradient(45deg, transparent, transparent 3mm, #33000a 3mm, #33000a 6mm); background-color: var(--c-dark); transform: rotate(-15deg); opacity: 0.5; }
+
+        .role-guardian { --c-dark: #011c18; --c-neon: #ffbb00; --c-alt: #00aeff; }
+        .role-guardian .madness-bg { background-image: linear-gradient(var(--c-dark) 2mm, transparent 2mm), linear-gradient(90deg, var(--c-dark) 2mm, transparent 2mm); background-size: 6mm 6mm; background-color: #03362e; transform: rotate(8deg); opacity: 0.4; }
+
+        .role-moderator { --c-dark: #0d0800; --c-neon: #ffd700; --c-alt: #dc143c; }
+        .role-moderator .madness-bg { background-image: repeating-linear-gradient(-45deg, transparent, transparent 4mm, #1a1000 4mm, #1a1000 8mm); background-color: var(--c-dark); transform: rotate(10deg); opacity: 0.5; }
+
+        .role-alphawolf { --c-dark: #030d05; --c-neon: #c0f0c0; --c-alt: #7b2fff; }
+        .role-alphawolf .madness-bg { background-image: radial-gradient(ellipse at 50% 50%, #0a2010 0%, #030d05 60%, transparent 100%), repeating-linear-gradient(30deg, transparent, transparent 6mm, #061208 6mm, #061208 12mm); background-color: var(--c-dark); transform: rotate(-5deg); opacity: 0.6; }
+
+        .role-cupid { --c-dark: #150008; --c-neon: #ff2d9b; --c-alt: #00ff88; }
+        .role-cupid .madness-bg { background-image: radial-gradient(circle at 30% 40%, #2d0015 0%, transparent 50%), radial-gradient(circle at 70% 60%, #2d0015 0%, transparent 50%); background-color: var(--c-dark); background-size: 100% 100%; transform: rotate(8deg) scale(1.3); opacity: 0.7; }
+
+        .role-witch { --c-dark: #0a0015; --c-neon: #b829ff; --c-alt: #aaff00; }
+        .role-witch .madness-bg { background-image: radial-gradient(circle at 50% 80%, #1a002e 0%, transparent 60%), repeating-conic-gradient(#0d001a 0deg 20deg, #0a0015 20deg 40deg); background-color: var(--c-dark); transform: rotate(-12deg) scale(1.4); opacity: 0.5; }
+
+        .role-wizard { --c-dark: #00051a; --c-neon: #ffc642; --c-alt: #a0d8ff; }
+        .role-wizard .madness-bg { background-image: radial-gradient(circle at 50% 30%, #000d33 0%, transparent 55%), radial-gradient(circle at 20% 80%, #00051a 0%, transparent 40%); background-color: #00051a; transform: rotate(3deg) scale(1.3); opacity: 0.7; }
+
+        .role-veteran { --c-dark: #0d0f00; --c-neon: #8aff00; --c-alt: #ff3300; }
+        .role-veteran .madness-bg { background-image: repeating-linear-gradient(0deg, transparent, transparent 3mm, #111400 3mm, #111400 6mm), repeating-linear-gradient(90deg, transparent, transparent 8mm, #0d0f00 8mm, #0d0f00 16mm); background-color: #0d0f00; transform: rotate(-3deg); opacity: 0.6; }
+
+        .role-bodyguard { --c-dark: #0a0f14; --c-neon: #c8d8e8; --c-alt: #dc2626; }
+        .role-bodyguard .madness-bg { background-image: repeating-linear-gradient(90deg, transparent, transparent 5mm, #111820 5mm, #111820 10mm), repeating-linear-gradient(0deg, transparent, transparent 5mm, #0d141c 5mm, #0d141c 10mm); background-color: #0a0f14; transform: rotate(2deg); opacity: 0.5; }
+
+        .role-priest { --c-dark: #0e0a00; --c-neon: #f5e642; --c-alt: #8b1a8b; }
+        .role-priest .madness-bg { background-image: repeating-linear-gradient(45deg, transparent, transparent 6mm, #1a1200 6mm, #1a1200 12mm), repeating-linear-gradient(-45deg, transparent, transparent 6mm, #120e00 6mm, #120e00 12mm); background-color: #0e0a00; transform: rotate(-5deg); opacity: 0.45; }
+
+        .role-mayor { --c-dark: #050a18; --c-neon: #e8b800; --c-alt: #00e87a; }
+        .role-mayor .madness-bg { background-image: radial-gradient(circle at 20% 20%, #0a1530 0%, transparent 50%), radial-gradient(circle at 80% 80%, #0d1a0a 0%, transparent 50%), repeating-linear-gradient(0deg, transparent, transparent 8mm, #080f20 8mm, #080f20 16mm); background-color: #050a18; transform: rotate(4deg) scale(1.2); opacity: 0.5; }
+
+        .role-sheriff { --c-dark: #120a00; --c-neon: #d4aa50; --c-alt: #ff6600; }
+        .role-sheriff .madness-bg { background-image: repeating-linear-gradient(30deg, transparent, transparent 4mm, #1a0f00 4mm, #1a0f00 8mm), repeating-linear-gradient(-30deg, transparent, transparent 4mm, #150b00 4mm, #150b00 8mm); background-color: #120a00; transform: rotate(-4deg); opacity: 0.45; }
+
+        .role-villager1 { --c-dark: #140d0a; --c-neon: #ff9933; --c-alt: #cc3300; }
+        .role-villager1 .madness-bg { background-image: repeating-linear-gradient(0deg, transparent, transparent 2mm, #1f140f 2mm, #1f140f 4mm), repeating-linear-gradient(90deg, transparent, transparent 10mm, #1a110d 10mm, #1a110d 20mm); background-color: #140d0a; transform: rotate(2deg) scale(1.1); opacity: 0.5; }
+
+        .role-villager2 { --c-dark: #1c1815; --c-neon: #ffd166; --c-alt: #b0412e; }
+        .role-villager2 .madness-bg { background-image: repeating-linear-gradient(-15deg, transparent, transparent 3mm, #241f1b 3mm, #241f1b 4mm), radial-gradient(circle at 60% 80%, #2f251c 0%, transparent 60%); background-color: #1c1815; transform: rotate(-1deg); opacity: 0.6; }
+
+        .role-villager3 { --c-dark: #0c1014; --c-neon: #8aa7c2; --c-alt: #50423c; }
+        .role-villager3 .madness-bg { background-image: linear-gradient(45deg, transparent 45%, #182028 45%, #182028 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, #151a20 45%, #151a20 55%, transparent 55%); background-size: 8mm 8mm; background-color: #0c1014; transform: rotate(5deg) scale(1.3); opacity: 0.4; }
+
+        .role-werewolf2 { --c-dark: #120303; --c-neon: #ff2a2a; --c-alt: #00e5ff; }
+        .role-werewolf2 .madness-bg { background-image: repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent 5mm, #1f0505 5mm, #1f0505 6mm), linear-gradient(45deg, #120303 25%, transparent 25%, transparent 75%, #120303 75%, #120303); background-color: #120303; transform: scale(1.2); opacity: 0.55; }
+
+        .role-lonewolf { --c-dark: #050810; --c-neon: #d4f0ff; --c-alt: #73081c; }
+        .role-lonewolf .madness-bg { background-image: radial-gradient(ellipse at 50% 10%, #151a2e 0%, transparent 40%), repeating-linear-gradient(rgba(212, 240, 255, 0.05) 0, rgba(212, 240, 255, 0.05) 1px, transparent 1px, transparent 10px), repeating-linear-gradient(90deg, rgba(212, 240, 255, 0.05) 0, rgba(212, 240, 255, 0.05) 1px, transparent 1px, transparent 10px); background-color: #050810; transform: scale(1.1); opacity: 0.6; }
+
+        .role-doppelganger { --c-dark: #0c051a; --c-neon: #b8cadd; --c-alt: #ff0066; }
+        .role-doppelganger .madness-bg { background-image: linear-gradient(90deg, transparent 48%, rgba(184, 202, 221, 0.1) 48%, rgba(184, 202, 221, 0.1) 52%, transparent 52%), repeating-linear-gradient(45deg, transparent 0, transparent 4mm, #130a24 4mm, #130a24 8mm), repeating-linear-gradient(-45deg, transparent 0, transparent 4mm, #0c051a 4mm, #0c051a 8mm); background-color: #0c051a; transform: scale(1.1); opacity: 0.6; }
+
+        .role-serialkiller { --c-dark: #0a0808; --c-neon: #e60000; --c-alt: #7ea4b3; }
+        .role-serialkiller .madness-bg { background-image: repeating-linear-gradient(15deg, transparent 0, transparent 8mm, #140a0a 8mm, #140a0a 10mm), repeating-linear-gradient(-35deg, transparent 0, transparent 15mm, #1f0a0a 15mm, #1f0a0a 18mm); background-color: #0a0808; transform: scale(1.1) rotate(5deg); opacity: 0.7; }
+
+        .role-idiot { --c-dark: #1a1005; --c-neon: #e6b800; --c-alt: #d96600; }
+        .role-idiot .madness-bg { background-image: repeating-radial-gradient(circle at 20% 80%, transparent 0, transparent 4mm, rgba(230, 184, 0, 0.05) 4mm, rgba(230, 184, 0, 0.05) 8mm), repeating-radial-gradient(circle at 80% 20%, transparent 0, transparent 5mm, rgba(217, 102, 0, 0.05) 5mm, rgba(217, 102, 0, 0.05) 10mm); background-color: #1a1005; opacity: 0.6; }
+
+        .role-prince { --c-dark: #2a004d; --c-neon: #ffcc00; --c-alt: #990033; }
+        .role-prince .madness-bg { background-image: repeating-linear-gradient(45deg, transparent 0, transparent 15mm, rgba(255, 204, 0, 0.05) 15mm, rgba(255, 204, 0, 0.05) 16mm), repeating-linear-gradient(-45deg, transparent 0, transparent 15mm, rgba(255, 204, 0, 0.05) 15mm, rgba(255, 204, 0, 0.05) 16mm), radial-gradient(circle at 50% 50%, #3e0073 0%, transparent 60%); background-color: #2a004d; background-size: 20mm 20mm; opacity: 0.8; }
+
+        .role-littlegirl { --c-dark: #101620; --c-neon: #a1c8e6; --c-alt: #e6678a; }
+        .role-littlegirl .madness-bg { background-image: radial-gradient(ellipse at 50% 50%, rgba(161, 200, 230, 0.1) 0, rgba(161, 200, 230, 0.1) 2mm, transparent 2mm, transparent 6mm), repeating-linear-gradient(45deg, transparent 0, transparent 10mm, rgba(230, 103, 138, 0.05) 10mm, rgba(230, 103, 138, 0.05) 12mm); background-size: 15mm 15mm; background-color: #101620; opacity: 0.7; }
+
+        .role-card_back { --c-dark: #111111; --c-neon: #c5a059; --c-alt: #8b0021; border-width: 2mm; }
+        .role-card_back .madness-bg { background-image: repeating-linear-gradient(0deg, #1a1a1a, #1a1a1a 4mm, #2a080d 4mm, #2a080d 8mm); transform: rotate(3deg) scale(1.2); opacity: 0.5; }
+        @media print {
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body {
+                display: block !important;
+            }
+            #pages-container {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .page {
+                break-after: page;
+            }
+            .page:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="header screen-only">
+        <h1>TWISTED CARNIVAL</h1>
+        <p>Nightmare Asylum - Asymmetric Neon Deck (54.5 x 85.5 mm)</p>
+    </div>
+
+    <!-- CONTROL PANEL FOR PRINT/DOWNLOAD -->
+    <div class="control-panel screen-only">
+        <div style="width: 100%; text-align: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,0,127,0.3); padding-bottom: 10px;">
+            <p style="margin: 0; font-size: 13px; color: #fff; font-weight: 600;">
+                <span style="color: #ff007f; font-weight: 800;">PANDUAN CETAK:</span> Tekan <kbd>Ctrl+P</kbd> dan pastikan:
+                <strong>1.</strong> Format: <strong style="color:#00f0ff">A4</strong> &nbsp;&nbsp;
+                <strong>2.</strong> Scale: <strong style="color:#00f0ff">100% (Custom)</strong> &nbsp;&nbsp;
+                <strong>3.</strong> Margins: <strong style="color:#00f0ff">None</strong> &nbsp;&nbsp;
+                <strong>4.</strong> Centang <strong style="color:#00f0ff">Background graphics</strong>.
+            </p>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; width: 100%;">
+            <div class="control-group">
+                <label for="paper-size">Kertas:</label>
+                <select id="paper-size" onchange="changePaperSize()">
+                    <option value="a4">A4 (9 Kartu)</option>
+                    <option value="f4">F4 / Folio (9 Kartu)</option>
+                    <option value="a3">A3 (20 Kartu)</option>
+                    <option value="a3plus">A3+ (25 Kartu)</option>
+                    <option value="single">Single (Per Kartu)</option>
+                </select>
+            </div>
+
+            <div style="width: 2px; background: rgba(255,0,127,0.3); margin: 0 5px; border-radius: 2px;"></div>
+
+            <div class="control-group">
+                <label for="export-dpi">Detail PDF:</label>
+                <select id="export-dpi" onchange="changePaperSize()">
+                    <option value="1">Standar (96 DPI)</option>
+                    <option value="2">Tajam (192 DPI)</option>
+                    <option value="4" selected>Ekstrem (384 DPI)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="back-mode">Balik:</label>
+                <select id="back-mode" onchange="changePaperSize()">
+                    <option value="duplex">Duplex / Otomatis</option>
+                    <option value="manual-long">Manual (Sisi Panjang)</option>
+                    <option value="manual-short">Manual (Sisi Pendek)</option>
+                </select>
+            </div>
+
+
+            <button class="control-btn" onclick="window.print()" title="Simpan sebagai PDF (Ctrl+P)"
+                style="background: linear-gradient(135deg, #a30052, #ff007f); box-shadow: 0 4px 12px rgba(255, 0, 127, 0.4); color: white;">
+                🖨️ Simpan PDF
+            </button>
+
+            <div style="width: 2px; background: rgba(255,0,127,0.3); margin: 0 5px; border-radius: 2px;"></div>
+
+            <div class="control-group">
+                <label for="export-format">Zip:</label>
+                <select id="export-format">
+                    <option value="png">PNG</option>
+                    <option value="jpg">JPG</option>
+                </select>
+            </div>
+            <button id="btn-download-all" class="control-btn"
+                onclick="downloadAllCardsDomToImage('TwistedCarnival', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#111111':null})" style="background: linear-gradient(135deg, #0099aa, #00f0ff); box-shadow: 0 4px 12px rgba(0, 240, 255, 0.4); color: #000;">
+                ⬇ Download (.ZIP)
+            </button>
+        </div>
+    </div>
+
+    <!-- DYNAMIC CONTAINER -->
+    <div id="pages-container" style="display: flex; flex-direction: column; align-items: center; width: 100%;"></div>
+
+    <!-- SCRIPTS -->
+    <script src="twiscarn_data.js"></script>
+    <script src="svg_twiscarn.js"></script>
+
+    <script>
+        // Generate front card HTML
+        function generateTwiscarnCard(card) {
+            if (card.id === 'card_back') {
+                return `
+                <div class="card role-card_back">
+                    <div class="madness-bg"></div>
+                    <div class="back-content">
+                        <div class="back-ticket">
+                            <div class="back-title">NIGHTMARE<br>ASYLUM</div>
+                            <div class="back-subtitle">TWISTED CARNIVAL EDITION</div>
+                        </div>
+                        <div style="width: 100%; height: 40mm; margin-top: 5mm; display: flex; justify-content: center; align-items: center; position: relative;">
+                            ${twiscarnArt[card.id] || ''}
+                        </div>
+                        <div style="font-family: 'IM Fell English', serif; font-size: 7pt; font-style: italic; color: var(--c-neon); margin-top: auto; font-weight: bold; text-align: center;">
+                            "MRSETIAWAN"<br>
+                            <span style="color: #fff; font-size: 5pt; font-family: 'Montserrat', sans-serif;">TRUST NO ONE</span>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            return `
+            <div class="card role-${card.id}">
+                <div class="madness-bg"></div>
+                ${card.faction ? `<div class="madness-faction" ${card.factionStyle ? `style="${card.factionStyle}"` : ''}>${card.faction}</div>` : ''}
+                ${card.code ? `<div class="madness-code c-code">${card.code}</div>` : ''}
+
+                <div class="madness-title-box" ${card.titleBoxStyle ? `style="${card.titleBoxStyle}"` : ''}>
+                    <div class="madness-title-en" ${card.titleEnStyle ? `style="${card.titleEnStyle}"` : ''}>${card.titleEn}</div>
+                    <div class="madness-title">${card.titleId}</div>
+                </div>
+
+                <div class="madness-art">
+                    ${twiscarnArt[card.id] || ''}
+                </div>
+
+                <div class="madness-desc-box">
+                    <div class="madness-quote">${card.quote}</div>
+                    <div class="madness-ability">${card.ability}</div>
+                </div>
+            </div>`;
+        }
+
+                function mapBackSlotIndex(slotIndex, cols, rows, backMode) {
+            var row = Math.floor(slotIndex / cols);
+            var col = slotIndex % cols;
+            if (backMode === 'manual-long') {
+                col = (cols - 1) - col;
+            } else if (backMode === 'manual-short') {
+                row = (rows - 1) - row;
+            }
+            return (row * cols) + col;
+        }
+
+        function renderPageFromSlots(slotCards, isBackPage, renderCardFn, placeholderClass) {
+            var html = "<div class=\"page" + (isBackPage ? " page-back" : "") + "\">";
+            var placeholder = "<div class=\"" + placeholderClass + " card-placeholder\" style=\"visibility:hidden;border:0 !important;box-shadow:none !important;background:transparent !important;pointer-events:none !important;\" aria-hidden=\"true\"></div>";
+            for (var i = 0; i < slotCards.length; i++) {
+                if (slotCards[i]) html += renderCardFn(slotCards[i]);
+                else html += placeholder;
+            }
+            html += "</div>";
+            return html;
+        }
+
+        function changePaperSize() {
+            var paperSelect = document.getElementById('paper-size');
+            var dpiSelect = document.getElementById('export-dpi') || document.getElementById('pdf-dpi');
+            var backModeSelect = document.getElementById('back-mode');
+            var paperId = paperSelect ? paperSelect.value : 'a4';
+            var dpiScale = parseFloat(dpiSelect ? dpiSelect.value : '1');
+            var backMode = backModeSelect ? backModeSelect.value : 'duplex';
+            var container = document.getElementById('pages-container') || document.querySelector('.pages-container');
+            if (!container) return;
+            container.innerHTML = "";
+
+            var config = window.CardPrintLayout ? window.CardPrintLayout.applyCSS(paperId, dpiScale) : { cardsPerPage: 9, cols: 3, rows: 3 };
+            var cardsPerPage = config.cardsPerPage || (config.cols * config.rows);
+            var cols = config.cols || 3;
+            var rows = config.rows || 3;
+            var renderCardFn = generateTwiscarnCard;
+            var placeholderClass = 'card';
+
+            var htmlContent = "";
+            var frontCards = twiscarnDeckData.filter(function(c) { return c.id !== 'card_back'; });
+            var backCardData = null;
+            for (var k = 0; k < twiscarnDeckData.length; k++) {
+                if (twiscarnDeckData[k].id === 'card_back') { backCardData = twiscarnDeckData[k]; break; }
+            }
+
+            if (paperId === 'single') {
+                for (var s = 0; s < frontCards.length; s++) {
+                    htmlContent += renderPageFromSlots([frontCards[s]], false, renderCardFn, placeholderClass);
+                    if (backCardData) {
+                        htmlContent += renderPageFromSlots([backCardData], true, renderCardFn, placeholderClass);
+                    }
+                }
+            } else {
+                for (var i = 0; i < frontCards.length; i += cardsPerPage) {
+                    var pageCards = frontCards.slice(i, i + cardsPerPage);
+                    var frontSlots = new Array(cardsPerPage).fill(null);
+                    for (var j = 0; j < pageCards.length; j++) {
+                        frontSlots[j] = pageCards[j];
+                    }
+                    htmlContent += renderPageFromSlots(frontSlots, false, renderCardFn, placeholderClass);
+
+                    if (backCardData) {
+                        var backSlots = new Array(cardsPerPage).fill(null);
+                        for (var b = 0; b < pageCards.length; b++) {
+                            var mappedIndex = mapBackSlotIndex(b, cols, rows, backMode);
+                            backSlots[mappedIndex] = backCardData;
+                        }
+                        htmlContent += renderPageFromSlots(backSlots, true, renderCardFn, placeholderClass);
+                    }
+                }
+            }
+
+            container.innerHTML = htmlContent;
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof twiscarnDeckData !== 'undefined') {
+                changePaperSize();
+            } else {
+                console.error("Data cards failed to load!");
+            }
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+    <script src="download_helper.js?v=2"></script>
+</body>
+
+</html>

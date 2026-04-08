@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf - Jester's Playing Card Deck</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,700;0,900;1,600;1,900&family=Courier+Prime:wght@400;700&family=Creepster&family=Rye&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Dimensi Kartu (Standar Tarot Mini / ID Card) */
+            --w: 54mm;
+            --h: 85.6mm;
+            --bg-body: #1a1a1a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-family: 'Creepster', cursive;
+            font-size: 3rem;
+            color: #C2185B;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .header p {
+            color: #ccc;
+            font-size: 1rem;
+        }
+
+        .deck-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* -------------------------------------------
+           BASE PLAYING CARD
+        ------------------------------------------- */
+        .card {
+            width: var(--w);
+            height: var(--h);
+            background-color: #ffffff;
+            border-radius: 4mm;
+            border: 3px solid #111;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* Latar Diagonal Terbelah */
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(var(--rgb-c1), 0.06) 50%, rgba(var(--rgb-c2), 0.06) 50%);
+            z-index: 0;
+        }
+
+        /* Latar untuk Kartu Belakang (Berbeda) */
+        .card.card-back::before {
+            background: #111;
+        }
+
+        /* Hilangkan shadow saat cetak */
+        @media print {
+            body { background: none; padding: 0; }
+            .header { display: none; }
+            .deck-container { gap: 5mm; }
+            .card { box-shadow: none; border: 2px solid #ccc; page-break-inside: avoid; }
+        }
+
+        /* -------------------------------------------
+           ELEMEN KARTU REMI (JESTER STYLE)
+        ------------------------------------------- */
+        .index-top {
+            position: absolute;
+            top: 2mm; left: 2.5mm;
+            text-align: center;
+            z-index: 2;
+        }
+        .index-bottom {
+            position: absolute;
+            bottom: 2mm; right: 2.5mm;
+            text-align: center;
+            transform: rotate(180deg);
+            z-index: 2;
+        }
+        .index-letter {
+            font-family: 'Rye', cursive;
+            font-size: 15pt;
+            line-height: 1;
+        }
+        .index-icon {
+            font-size: 10.5pt;
+            margin-top: -1mm;
+        }
+
+        /* Variasi Warna Indeks berdasarkan Role */
+        .card-seer { --rgb-c1: 74,20,140; --rgb-c2: 212,175,55; --c1: #4A148C; --c2: #D4AF37; } /* Purple & Gold */
+        .card-wolf { --rgb-c1: 183,28,28; --rgb-c2: 33,33,33; --c1: #B71C1C; --c2: #212121; } /* Blood & Dark */
+        .card-hunter { --rgb-c1: 27,94,32; --rgb-c2: 230,81,0; --c1: #1B5E20; --c2: #E65100; } /* Forest & Leather */
+        .card-jester { --rgb-c1: 194,24,91; --rgb-c2: 0,151,167; --c1: #C2185B; --c2: #0097A7; } /* Pink & Teal */
+        .card-guardian { --rgb-c1: 21,101,192; --rgb-c2: 84,110,122; --c1: #1565C0; --c2: #546E7A; } /* Navy & Steel */
+
+        .index-top .index-letter { color: var(--c1); }
+        .index-top .index-icon { color: var(--c2); }
+        .index-bottom .index-letter { color: var(--c2); }
+        .index-bottom .index-icon { color: var(--c1); }
+
+        .serial {
+            position: absolute;
+            top: 2.5mm; right: 2.5mm;
+            font-family: 'Courier Prime', monospace;
+            font-size: 5.5pt;
+            color: #888;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        /* -------------------------------------------
+           KONTEN TENGAH KARTU (MIRING/CHAOTIC)
+        ------------------------------------------- */
+        .content {
+            position: absolute;
+            inset: 5.5mm 7mm 4mm 7mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+        
+        .title-en {
+            font-family: 'Creepster', cursive;
+            font-size: 17pt;
+            color: #111;
+            letter-spacing: 1.5px;
+        }
+        
+        .title-id {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6.5pt;
+            font-weight: 900;
+            color: var(--c2);
+            background: #111;
+            padding: 0.8mm 2mm;
+            border-radius: 1mm;
+            margin-top: -1.5mm;
+            margin-bottom: 2mm;
+        }
+
+        .art {
+            width: 30mm; height: 30mm;
+            margin-bottom: 2.5mm;
+        }
+
+        .quote {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            font-size: 5.8pt;
+            text-align: center;
+            color: var(--c1);
+            margin-bottom: 1.5mm;
+            line-height: 1.25;
+            padding: 0 1mm;
+        }
+        
+        .desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5pt;
+            text-align: center;
+            color: #222;
+            line-height: 1.35;
+        }
+        .desc strong { 
+            color: var(--c1); 
+            font-weight: 900; 
+        }
+
+        /* Rotasi Khusus Tiap Role untuk kesan Asimetris */
+        .card-seer .title-en { transform: rotate(2deg); }
+        .card-seer .title-id { transform: rotate(-2deg); }
+        
+        .card-wolf .title-en { transform: rotate(-4deg); }
+        .card-wolf .title-id { transform: rotate(3deg); }
+        
+        .card-hunter .title-en { transform: rotate(3deg); }
+        .card-hunter .title-id { transform: rotate(-1deg); }
+        
+        .card-jester .title-en { transform: rotate(-3deg); }
+        .card-jester .title-id { transform: rotate(2deg); }
+        
+        .card-guardian .title-en { transform: rotate(-2deg); }
+        .card-guardian .title-id { transform: rotate(2deg); }
+
+        /* -------------------------------------------
+           KARTU BELAKANG (CARD BACK)
+        ------------------------------------------- */
+        .back-pattern {
+            position: absolute;
+            inset: 3mm;
+            border: 1.5px solid #D4AF37;
+            border-radius: 2mm;
+            background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        /* Ornamen Simetris di Belakang Kartu */
+        .back-art {
+            width: 44mm;
+            height: 75mm;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>THE JESTER'S DECK</h1>
+        <p>1 Tema Desain, 5 Role Berbeda + Card Back (Print-Ready CMYK)</p>
+    </div>
+
+    <div class="deck-container">
+
+        <!-- KARTU 1: JESTER (THE ORIGINAL) -->
+        <div class="card card-jester">
+            <div class="index-top">
+                <div class="index-letter">J</div>
+                <div class="index-icon">♦</div>
+            </div>
+            <div class="index-bottom">
+                <div class="index-letter">J</div>
+                <div class="index-icon">♦</div>
+            </div>
+            <div class="serial">SN: CHS-00</div>
+
+            <div class="content">
+                <div class="title-en">JESTER</div>
+                <div class="title-id">SANG BADUT</div>
+                
+                <div class="art">
+                    <svg viewBox="0 0 100 100">
+                        <polygon points="50,5 90,50 50,95 10,50" fill="none" stroke="#C2185B" stroke-width="2" opacity="0.3"/>
+                        <path d="M 50 40 Q 20 10 10 35 Q 30 40 40 45 Z" fill="#0097A7" stroke="#111" stroke-width="2.5"/>
+                        <circle cx="10" cy="35" r="5" fill="#C2185B" stroke="#111" stroke-width="2"/>
+                        <path d="M 50 40 Q 80 10 90 35 Q 70 40 60 45 Z" fill="#C2185B" stroke="#111" stroke-width="2.5"/>
+                        <circle cx="90" cy="35" r="5" fill="#0097A7" stroke="#111" stroke-width="2"/>
+                        <path d="M 40 45 Q 50 15 60 45 Z" fill="#fff" stroke="#111" stroke-width="2.5"/>
+                        <circle cx="50" cy="15" r="5" fill="#111"/>
+
+                        <!-- Wajah Topeng Terbelah -->
+                        <path d="M 50 40 C 20 40 25 85 50 95 Z" fill="#fff" stroke="#111" stroke-width="3"/>
+                        <path d="M 50 40 C 80 40 75 85 50 95 Z" fill="#111"/>
+                        
+                        <!-- Mata & Mulut -->
+                        <path d="M 40 60 A 5 5 0 1 1 35 55 A 8 8 0 1 1 42 62 A 10 10 0 0 1 30 55" fill="none" stroke="#C2185B" stroke-width="2"/>
+                        <line x1="58" y1="52" x2="72" y2="66" stroke="#0097A7" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="72" y1="52" x2="58" y2="66" stroke="#0097A7" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M 30 80 Q 50 95 70 75" fill="none" stroke="#C2185B" stroke-width="3"/>
+                        <line x1="35" y1="80" x2="33" y2="86" stroke="#C2185B" stroke-width="2"/>
+                        <line x1="45" y1="84" x2="43" y2="90" stroke="#C2185B" stroke-width="2"/>
+                        <line x1="55" y1="85" x2="57" y2="91" stroke="#C2185B" stroke-width="2"/>
+                        <line x1="65" y1="80" x2="67" y2="85" stroke="#C2185B" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <div class="quote">"Hukum gantung aku! Kematianku adalah puncak komedi dari karnaval gila ini!"</div>
+                <div class="desc">
+                    Kamu <strong>menang mutlak sendirian</strong> jika berhasil memprovokasi warga untuk memvoting eksekusi gantung dirimu di siang hari.
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 2: SEER (QUEEN OF SPADES) -->
+        <div class="card card-seer">
+            <div class="index-top">
+                <div class="index-letter">Q</div>
+                <div class="index-icon">♠</div>
+            </div>
+            <div class="index-bottom">
+                <div class="index-letter">Q</div>
+                <div class="index-icon">♠</div>
+            </div>
+            <div class="serial">SN: MYS-01</div>
+
+            <div class="content">
+                <div class="title-en">SEER</div>
+                <div class="title-id">SANG PERAMAL</div>
+                
+                <div class="art">
+                    <svg viewBox="0 0 100 100">
+                        <!-- Bola Kristal Retak/Terbelah -->
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#4A148C" stroke-width="2" opacity="0.3"/>
+                        
+                        <!-- Sisi Kiri (Ungu Mistik) -->
+                        <path d="M 50 5 C 20 5 5 30 5 50 C 5 70 20 95 50 95 Z" fill="#4A148C" opacity="0.1" stroke="#4A148C" stroke-width="2"/>
+                        <path d="M 15 50 Q 50 20 50 50 Q 50 80 15 50 Z" fill="none" stroke="#4A148C" stroke-width="3"/>
+                        <circle cx="38" cy="50" r="6" fill="#4A148C"/>
+                        
+                        <!-- Sisi Kanan (Emas Iluminasi) -->
+                        <path d="M 50 5 C 80 5 95 30 95 50 C 95 70 80 95 50 95 Z" fill="#D4AF37" opacity="0.1" stroke="#D4AF37" stroke-width="2"/>
+                        <path d="M 85 50 Q 50 20 50 50 Q 50 80 85 50 Z" fill="none" stroke="#D4AF37" stroke-width="3"/>
+                        <circle cx="62" cy="50" r="6" fill="#D4AF37"/>
+                        
+                        <!-- Bintang di Tengah -->
+                        <polygon points="50,25 55,40 70,42 58,52 62,68 50,58 38,68 42,52 30,42 45,40" fill="#111"/>
+                        
+                        <!-- Retakan Diagonal (Gaya Jester) -->
+                        <path d="M 20 10 L 40 30 L 30 50 L 60 70 L 50 90" fill="none" stroke="#111" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <div class="quote">"Sebelah mataku melihat masa lalu, sebelahnya lagi mengunci takdirmu. Tak ada yang luput."</div>
+                <div class="desc">
+                    Setiap malam, pilih 1 pemain. Sang Moderator akan memberitahumu <strong>identitas dan faksi asli</strong> mereka. Kebenaran tak bisa sembunyi dari mata batinmu.
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 3: WEREWOLF (KING OF CLUBS) -->
+        <div class="card card-wolf">
+            <div class="index-top">
+                <div class="index-letter">K</div>
+                <div class="index-icon">♣</div>
+            </div>
+            <div class="index-bottom">
+                <div class="index-letter">K</div>
+                <div class="index-icon">♣</div>
+            </div>
+            <div class="serial">SN: PRD-99</div>
+
+            <div class="content">
+                <div class="title-en">WEREWOLF</div>
+                <div class="title-id">SANG SERIGALA</div>
+                
+                <div class="art">
+                    <svg viewBox="0 0 100 100">
+                        <!-- Cipratan Latar -->
+                        <path d="M 10 10 Q 50 50 90 90" fill="none" stroke="#B71C1C" stroke-width="3" opacity="0.3"/>
+                        <path d="M 90 10 Q 50 50 10 90" fill="none" stroke="#212121" stroke-width="3" opacity="0.3"/>
+
+                        <!-- Kepala Serigala Terbelah -->
+                        <!-- Kiri: Bulu/Daging (Merah Gelap) -->
+                        <path d="M 50 15 Q 30 10 20 30 Q 10 60 30 80 Q 40 90 50 85 Z" fill="#B71C1C" stroke="#111" stroke-width="2"/>
+                        <path d="M 25 35 L 35 40 L 30 45 Z" fill="#111"/> <!-- Mata Kiri -->
+                        <path d="M 20 30 Q 15 15 30 20 Z" fill="#111"/> <!-- Telinga Kiri -->
+                        
+                        <!-- Kanan: Tengkorak (Hitam/Abu) -->
+                        <path d="M 50 15 Q 70 10 80 30 Q 90 60 70 80 Q 60 90 50 85 Z" fill="#212121" stroke="#111" stroke-width="2"/>
+                        <circle cx="65" cy="40" r="6" fill="#fff"/> <!-- Lubang Mata Tengkorak -->
+                        <path d="M 80 30 Q 85 15 70 20 Z" fill="#111"/> <!-- Tulang Telinga Kanan -->
+                        
+                        <!-- Taring Menganga di Tengah -->
+                        <polygon points="50,60 40,80 50,70 60,80" fill="#fff" stroke="#111" stroke-width="1.5"/>
+                        <polygon points="45,65 48,75 50,65" fill="#B71C1C"/>
+                        
+                        <!-- Garis Jahitan / Belahan Tengah -->
+                        <line x1="50" y1="5" x2="50" y2="95" stroke="#111" stroke-width="2.5" stroke-dasharray="6,4"/>
+                    </svg>
+                </div>
+
+                <div class="quote">"Kami adalah raja di atas rantai makanan. Mahkota kami adalah ketakutan kalian."</div>
+                <div class="desc">
+                    Bangun di malam hari bersama kawanan. Diskusikan secara diam-diam dan <strong>pilih 1 mangsa</strong> untuk dicabik. Berbaur dan pura-puralah menjadi warga biasa di siang hari.
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 4: HUNTER (ACE OF DIAMONDS) -->
+        <div class="card card-hunter">
+            <div class="index-top">
+                <div class="index-letter">A</div>
+                <div class="index-icon">♦</div>
+            </div>
+            <div class="index-bottom">
+                <div class="index-letter">A</div>
+                <div class="index-icon">♦</div>
+            </div>
+            <div class="serial">SN: VGD-07</div>
+
+            <div class="content">
+                <div class="title-en">HUNTER</div>
+                <div class="title-id">SANG PEMBURU</div>
+                
+                <div class="art">
+                    <svg viewBox="0 0 100 100">
+                        <!-- Target Terbelah Diagonal -->
+                        <path d="M 10 10 L 90 90" fill="none" stroke="#111" stroke-width="2"/>
+                        <!-- Kiri Atas (Hijau Hutan) -->
+                        <path d="M 50 15 A 35 35 0 0 0 15 50" fill="none" stroke="#1B5E20" stroke-width="4"/>
+                        <path d="M 50 30 A 20 20 0 0 0 30 50" fill="none" stroke="#1B5E20" stroke-width="4"/>
+                        <!-- Kanan Bawah (Oranye Pemburu) -->
+                        <path d="M 50 85 A 35 35 0 0 0 85 50" fill="none" stroke="#E65100" stroke-width="4"/>
+                        <path d="M 50 70 A 20 20 0 0 0 70 50" fill="none" stroke="#E65100" stroke-width="4"/>
+
+                        <!-- Anak Panah Menancap Miring -->
+                        <line x1="70" y1="10" x2="30" y2="90" stroke="#111" stroke-width="3"/>
+                        <polygon points="30,90 20,80 35,75" fill="#E65100" stroke="#111" stroke-width="1.5"/>
+                        <path d="M 65 20 L 75 25 M 68 15 L 78 20" stroke="#1B5E20" stroke-width="2"/>
+                        
+                        <!-- Cipratan Darah / Impact -->
+                        <circle cx="50" cy="50" r="8" fill="#111"/>
+                        <circle cx="50" cy="50" r="4" fill="#E65100"/>
+                        <path d="M 50 50 L 40 45 L 45 35 Z" fill="#1B5E20"/>
+                    </svg>
+                </div>
+
+                <div class="quote">"Senjataku tidak pernah tertidur. Pelatuk ini adalah kartu as terakhirku menuju neraka."</div>
+                <div class="desc">
+                    Saat kamu terbunuh (dimakan serigala di malam hari atau dieksekusi warga), kamu berhak <strong>langsung menembak mati 1 pemain</strong> pilihanmu seketika itu juga.
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 5: GUARDIAN (JACK OF HEARTS) -->
+        <div class="card card-guardian">
+            <div class="index-top">
+                <div class="index-letter">J</div>
+                <div class="index-icon">♥</div>
+            </div>
+            <div class="index-bottom">
+                <div class="index-letter">J</div>
+                <div class="index-icon">♥</div>
+            </div>
+            <div class="serial">SN: AGS-12</div>
+
+            <div class="content">
+                <div class="title-en">GUARDIAN</div>
+                <div class="title-id">SANG PENJAGA</div>
+                
+                <div class="art">
+                    <svg viewBox="0 0 100 100">
+                        <!-- Perisai Retak/Terbelah -->
+                        <!-- Sisi Kiri (Navy) -->
+                        <path d="M 50 10 L 20 15 L 20 50 Q 20 80 48 95 Z" fill="#1565C0" stroke="#111" stroke-width="2"/>
+                        <!-- Sisi Kanan (Baja/Steel yang merosot/terpotong) -->
+                        <path d="M 52 15 L 80 20 L 80 55 Q 80 85 52 100 Z" fill="#546E7A" stroke="#111" stroke-width="2"/>
+                        
+                        <!-- Salib/Simbol Penjaga Kiri -->
+                        <line x1="35" y1="30" x2="35" y2="70" stroke="#fff" stroke-width="3" opacity="0.8"/>
+                        <line x1="25" y1="45" x2="45" y2="45" stroke="#fff" stroke-width="3" opacity="0.8"/>
+                        
+                        <!-- Salib/Simbol Penjaga Kanan -->
+                        <line x1="65" y1="35" x2="65" y2="75" stroke="#111" stroke-width="3" opacity="0.5"/>
+                        <line x1="55" y1="50" x2="75" y2="50" stroke="#111" stroke-width="3" opacity="0.5"/>
+
+                        <!-- Retakan Petir Pembatas -->
+                        <path d="M 50 10 L 45 30 L 55 50 L 48 70 L 52 95" fill="none" stroke="#111" stroke-width="3"/>
+                        
+                        <!-- Mata Pisau Serigala yg Patah di Kanan -->
+                        <path d="M 90 40 L 70 50 L 85 60 Z" fill="#111"/>
+                    </svg>
+                </div>
+
+                <div class="quote">"Perisaiku mungkin hancur dan retak, namun nyawa di belakangku takkan tersentuh malam ini."</div>
+                <div class="desc">
+                    Setiap malam, pilih 1 pemain. Pemain tersebut mendapat <strong>Perlindungan Mutlak</strong>. Jika ia diserang serigala, serangan tersebut akan diblokir & gagal total.
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 6: CARD BACK (BELAKANG KARTU) -->
+        <div class="card card-back">
+            <div class="back-pattern">
+                <div class="back-art">
+                    <svg viewBox="0 0 100 170" width="100%" height="100%">
+                        <!-- Bingkai Tepi -->
+                        <rect x="2" y="2" width="96" height="166" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
+                        <rect x="6" y="6" width="88" height="158" fill="none" stroke="#D4AF37" stroke-width="0.5" stroke-dasharray="2,2"/>
+                        
+                        <!-- Refleksi Atas & Bawah -->
+                        <g id="half-pattern">
+                            <!-- Bintang Sudut -->
+                            <polygon points="15,15 20,25 30,25 22,32 25,42 15,35 5,42 8,32 0,25 10,25" fill="#D4AF37" opacity="0.8" transform="scale(0.5) translate(10,10)"/>
+                            <polygon points="15,15 20,25 30,25 22,32 25,42 15,35 5,42 8,32 0,25 10,25" fill="#D4AF37" opacity="0.8" transform="scale(0.5) translate(160,10)"/>
+                            
+                            <!-- Mandala Jester (Mata Batin & Cakar) -->
+                            <path d="M 50 10 Q 70 30 90 10 Q 70 40 50 70 Q 30 40 10 10 Q 30 30 50 10 Z" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
+                            <circle cx="50" cy="30" r="12" fill="none" stroke="#C2185B" stroke-width="2"/>
+                            <circle cx="50" cy="30" r="4" fill="#0097A7"/>
+                            
+                            <path d="M 20 60 L 40 85 M 30 55 L 45 80 M 10 65 L 35 90" stroke="#D4AF37" stroke-width="1" opacity="0.5"/>
+                            <path d="M 80 60 L 60 85 M 70 55 L 55 80 M 90 65 L 65 90" stroke="#D4AF37" stroke-width="1" opacity="0.5"/>
+                        </g>
+
+                        <!-- Copy dan Putar untuk Bawah -->
+                        <use href="#half-pattern" transform="rotate(180 50 85)" />
+
+                        <!-- Center Emblem (Bulan & Simbol W) -->
+                        <circle cx="50" cy="85" r="18" fill="#111" stroke="#D4AF37" stroke-width="2"/>
+                        <path d="M 45 75 A 10 10 0 1 0 55 75 A 12 12 0 1 1 45 75" fill="#C2185B"/>
+                        <polyline points="40,90 45,95 50,88 55,95 60,90" fill="none" stroke="#0097A7" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

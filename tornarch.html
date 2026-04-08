@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf - White Torn Archives Edition</title>
+
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,500;1,700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Grenze+Gotisch:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Dimensi Kartu Fisik Presisi (Eropa Standard) */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+            --paper-white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0f1115;
+            background-image: radial-gradient(circle at 50% 50%, #1e222a 0%, #050608 100%);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: #fff;
+            letter-spacing: 4px;
+            margin: 0 0 10px 0;
+            text-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .header p {
+            color: #a0aec0;
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #222;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        kbd {
+            background: #333;
+            border-radius: 3px;
+            border: 1px solid #555;
+            color: #fff;
+            display: inline-block;
+            font-size: .85em;
+            font-weight: 700;
+            padding: 2px 4px;
+        }
+
+        /* --- PAGES --- */
+        .page {
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin: 0 auto 40px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: flex-start;
+            box-sizing: border-box;
+        }
+
+        @media print {
+            .screen-only,
+            .control-panel,
+            .header {
+                display: none !important;
+            }
+
+            body {
+                background: none !important;
+                padding: 0 !important;
+            }
+
+            .page {
+                box-shadow: none !important;
+                margin: 0 !important;
+                page-break-after: always;
+                page-break-inside: avoid;
+                background: none !important;
+            }
+
+            .card {
+                /* Purely white and clean for print */
+                box-shadow: none !important;
+                border: 0.5px solid #eaeaea !important; 
+                transform: none !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                page-break-inside: avoid;
+            }
+            .card::after {
+                display: none !important;
+            }
+        }
+
+        /* =========================================================
+           BASE CARD STRUCTURE (THE "TORN PAPER" TEMPLATE)
+           ========================================================= */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background: var(--paper-white);
+            border-radius: 3.5mm;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            padding: 3mm;
+            border: 1px solid #ddd; /* Light border in UI to show the card limits */
+        }
+
+        /* We completely removed hover floating and shadows to ensure simple solid white output */
+
+        /* The edge shadow inside the white paper */
+        .card::after {
+            /* Removed the inner shadow overlay completely as requested "tanpa shadow" */
+            display: none;
+        }
+
+        .c-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            z-index: 2;
+            gap: 2mm;
+            margin-bottom: 2mm;
+        }
+
+        .c-faction {
+            font-family: 'Grenze Gotisch', cursive;
+            font-size: 7pt;
+            color: var(--c-accent);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .c-code {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4.5pt;
+            font-weight: 900;
+            color: #fff;
+            background: var(--c-dark);
+            padding: 0.5mm 1.5mm;
+            transform: skew(-10deg);
+        }
+
+        /* Art Container: Uses negative margin to bleed to the edges */
+        .c-art {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            position: relative;
+            margin: -2mm -3mm;
+            overflow: hidden;
+            background: var(--paper-white);
+        }
+
+        .c-art svg {
+            width: 110%;
+            height: 110%;
+            transform: rotate(var(--svg-rot, 0deg));
+        }
+
+        .c-footer {
+            z-index: 2;
+            margin-top: 2mm;
+            position: relative;
+        }
+
+        .c-title-en {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5pt;
+            font-weight: 900;
+            color: var(--c-dark);
+            letter-spacing: 2px;
+            margin-bottom: 0.5mm;
+        }
+
+        .c-title {
+            font-family: 'Grenze Gotisch', cursive;
+            font-size: 18pt;
+            color: var(--c-accent);
+            line-height: 0.8;
+            margin-bottom: 2mm;
+            text-transform: uppercase;
+            text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .c-quote {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-style: italic;
+            font-size: 5.5pt;
+            color: #111;
+            margin-bottom: 1.5mm;
+            line-height: 1.2;
+        }
+
+        .c-desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4.8pt;
+            font-weight: 600;
+            color: #444;
+            line-height: 1.35;
+            text-align: justify;
+        }
+
+        .c-desc strong {
+            color: var(--c-accent);
+        }
+
+        .c-desc b {
+            color: var(--c-dark);
+        }
+        @media print {
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body {
+                display: block !important;
+            }
+            #pages-container {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .page {
+                break-after: page;
+            }
+            .page:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="header screen-only">
+        <h1>WEREWOLF: TORN ARCHIVES</h1>
+        <p>5 EXCLUSIVE UNIFIED DESIGNS + 1 CARD BACK (85.6 x 54 mm)</p>
+    </div>
+
+    <!-- CONTROL PANEL -->
+    <div class="control-panel screen-only" style="background: rgba(30,30,30,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px 25px; margin: 0 auto 30px; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; z-index: 10;">
+        <div style="width:100%; text-align:center; margin-bottom:12px; border-bottom:1px solid #444; padding-bottom:10px;">
+            <p style="margin:0; font-size:13px; color:#fff; font-weight:500;">
+                <span style="color:#27AE60; font-weight:700;">PANDUAN CETAK:</span>
+                Tekan <kbd>Ctrl+P</kbd> dan pastikan:
+                <strong>1.</strong> Format: <strong style="color:#27AE60">A4</strong>&nbsp;&nbsp;
+                <strong>2.</strong> Scale: <strong style="color:#27AE60">100%</strong>&nbsp;&nbsp;
+                <strong>3.</strong> Margins: <strong style="color:#27AE60">None</strong>&nbsp;&nbsp;
+                <strong>4.</strong> Centang <strong style="color:#27AE60">Background graphics</strong>.
+            </p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; width:100%;">
+            <div class="control-group">
+                <label for="paper-size" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Kertas:</label>
+                <select id="paper-size" onchange="changePaperSize()" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="a4">A4 (9 Kartu)</option>
+                    <option value="f4">F4 / Folio (9 Kartu)</option>
+                    <option value="a3">A3 (20 Kartu)</option>
+                    <option value="a3plus">A3+ (25 Kartu)</option>
+                    <option value="single">Single (Per Kartu)</option>
+                </select>
+            </div>
+            <div style="width:2px; background:#444; margin:0 5px; border-radius:2px;"></div>
+            <div class="control-group">
+                <label for="export-dpi" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Detail PDF:</label>
+                <select id="export-dpi" onchange="changePaperSize()" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="1">Standar (96 DPI)</option>
+                    <option value="2">Tajam (192 DPI)</option>
+                    <option value="4" selected>Ekstrem (384 DPI)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="back-mode" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Balik:</label>
+                <select id="back-mode" onchange="changePaperSize()" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="duplex">Duplex / Otomatis</option>
+                    <option value="manual-long">Manual (Sisi Panjang)</option>
+                    <option value="manual-short">Manual (Sisi Pendek)</option>
+                </select>
+            </div>
+            <button onclick="window.print()" style="font-family:'Montserrat',sans-serif; font-size:12px; font-weight:700; padding:10px 18px; border-radius:8px; cursor:pointer; border:none; background:linear-gradient(135deg,#1E272E,#27AE60); box-shadow:0 4px 12px rgba(39,174,96,0.3); color:white;">
+                🖨️ Simpan PDF
+            </button>
+            <div style="width:2px; background:#444; margin:0 5px; border-radius:2px;"></div>
+            <div class="control-group">
+                <label for="export-format" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Zip:</label>
+                <select id="export-format" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="png">PNG</option>
+                    <option value="jpg">JPG</option>
+                </select>
+            </div>
+            <button id="btn-download-all" onclick="downloadAllCardsDomToImage('TornArch', {format: document.getElementById('export-format').value, bgColor: '#ffffff'})" style="font-family:'Montserrat',sans-serif; font-size:12px; font-weight:700; padding:10px 18px; border-radius:8px; cursor:pointer; border:none; background:linear-gradient(135deg,#3B1C54,#F39C12); box-shadow:0 4px 12px rgba(243,156,18,0.3); color:white;">
+                ⬇ Download (.ZIP)
+            </button>
+        </div>
+    </div>
+
+    <!-- DYNAMIC CONTAINER -->
+    <div id="pages-container"></div>
+
+    <!-- DATA & ART SCRIPTS -->
+    <script src="tornarch_data.js"></script>
+    <script src="svg_tornarch.js"></script>
+
+    <script>
+        function generateTornarchCard(card) {
+            var html = '';
+            html += '<div class="card" id="' + card.id + '" data-id="' + card.id + '" style="' + card.cssVars + '">';
+            
+            if (card.isBack) {
+                // Card Back specific layout
+                html += '  <div class="c-header" style="justify-content: center; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 2mm;">';
+                html += '    <div class="c-faction" style="color: var(--c-dark); letter-spacing: 2px;">' + card.faction + '</div>';
+                html += '  </div>';
+                html += '  <div class="c-art">' + (tornarchArt[card.id] || '') + '</div>';
+                html += '  <div class="c-footer" style="text-align: center; margin-top: 1mm;">';
+                html += '    <div class="c-title-en" style="color: var(--c-dark); font-size: 4.5pt; margin-bottom: 1mm;">' + card.titleEn + '</div>';
+                html += '    <div class="c-title" style="font-size: 11pt; letter-spacing: 2px; margin-top: 3mm;">' + card.titleId + '</div>';
+                html += '    <div class="c-desc" style="text-align: center; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1mm; font-size: 4pt; color: #777;">' + card.desc + '</div>';
+                html += '  </div>';
+            } else {
+                // Front Card normal layout
+                html += '  <div class="c-header">';
+                html += '    <div class="c-faction">' + card.faction + '</div>';
+                html += '    <div class="c-code">' + card.code + '</div>';
+                html += '  </div>';
+                html += '  <div class="c-art">' + (tornarchArt[card.id] || '') + '</div>';
+                html += '  <div class="c-footer">';
+                html += '    <div class="c-title-en">' + card.titleEn + '</div>';
+                html += '    <div class="c-title">' + card.titleId + '</div>';
+                html += '    <div class="c-quote">' + card.quote + '</div>';
+                html += '    <div class="c-desc">' + card.desc + '</div>';
+                html += '  </div>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+                function mapBackSlotIndex(slotIndex, cols, rows, backMode) {
+            var row = Math.floor(slotIndex / cols);
+            var col = slotIndex % cols;
+            if (backMode === 'manual-long') {
+                col = (cols - 1) - col;
+            } else if (backMode === 'manual-short') {
+                row = (rows - 1) - row;
+            }
+            return (row * cols) + col;
+        }
+
+        function renderPageFromSlots(slotCards, isBackPage, renderCardFn, placeholderClass) {
+            var html = "<div class=\"page" + (isBackPage ? " page-back" : "") + "\">";
+            var placeholder = "<div class=\"" + placeholderClass + " card-placeholder\" style=\"visibility:hidden;border:0 !important;box-shadow:none !important;background:transparent !important;pointer-events:none !important;\" aria-hidden=\"true\"></div>";
+            for (var i = 0; i < slotCards.length; i++) {
+                if (slotCards[i]) html += renderCardFn(slotCards[i]);
+                else html += placeholder;
+            }
+            html += "</div>";
+            return html;
+        }
+
+        function changePaperSize() {
+            var paperSelect = document.getElementById('paper-size');
+            var dpiSelect = document.getElementById('export-dpi') || document.getElementById('pdf-dpi');
+            var backModeSelect = document.getElementById('back-mode');
+            var paperId = paperSelect ? paperSelect.value : 'a4';
+            var dpiScale = parseFloat(dpiSelect ? dpiSelect.value : '1');
+            var backMode = backModeSelect ? backModeSelect.value : 'duplex';
+            var container = document.getElementById('pages-container') || document.querySelector('.pages-container');
+            if (!container) return;
+            container.innerHTML = "";
+
+            var config = window.CardPrintLayout ? window.CardPrintLayout.applyCSS(paperId, dpiScale) : { cardsPerPage: 9, cols: 3, rows: 3 };
+            var cardsPerPage = config.cardsPerPage || (config.cols * config.rows);
+            var cols = config.cols || 3;
+            var rows = config.rows || 3;
+            var renderCardFn = generateTornarchCard;
+            var placeholderClass = 'card';
+
+            var htmlContent = "";
+            var frontCards = tornarchDeckData.filter(function(c) { return !c.isBack; });
+            var backCardData = null;
+            for (var k = 0; k < tornarchDeckData.length; k++) {
+                if (tornarchDeckData[k].isBack) { backCardData = tornarchDeckData[k]; break; }
+            }
+
+            if (paperId === 'single') {
+                for (var s = 0; s < frontCards.length; s++) {
+                    htmlContent += renderPageFromSlots([frontCards[s]], false, renderCardFn, placeholderClass);
+                    if (backCardData) {
+                        htmlContent += renderPageFromSlots([backCardData], true, renderCardFn, placeholderClass);
+                    }
+                }
+            } else {
+                for (var i = 0; i < frontCards.length; i += cardsPerPage) {
+                    var pageCards = frontCards.slice(i, i + cardsPerPage);
+                    var frontSlots = new Array(cardsPerPage).fill(null);
+                    for (var j = 0; j < pageCards.length; j++) {
+                        frontSlots[j] = pageCards[j];
+                    }
+                    htmlContent += renderPageFromSlots(frontSlots, false, renderCardFn, placeholderClass);
+
+                    if (backCardData) {
+                        var backSlots = new Array(cardsPerPage).fill(null);
+                        for (var b = 0; b < pageCards.length; b++) {
+                            var mappedIndex = mapBackSlotIndex(b, cols, rows, backMode);
+                            backSlots[mappedIndex] = backCardData;
+                        }
+                        htmlContent += renderPageFromSlots(backSlots, true, renderCardFn, placeholderClass);
+                    }
+                }
+            }
+
+            container.innerHTML = htmlContent;
+        }
+        document.addEventListener('DOMContentLoaded', function() { changePaperSize(); });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+    <script src="download_helper.js?v=2"></script>
+</body>
+</html>

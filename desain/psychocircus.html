@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desain Kartu Werewolf - Edisi Psycho Kegilaan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Jolly+Lodger&family=Special+Elite&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --card-width: 272.5px; 
+            --card-height: 427.5px; 
+            --color-primary: #6b21a8; /* Ungu Kegilaan (Base semua kartu) */
+        }
+
+        body {
+            background-color: #111;
+            color: #e5e5e5;
+            font-family: 'Special Elite', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            overflow-x: hidden;
+            background-image: repeating-radial-gradient(circle at 50% 50%, #111 0, #111 10px, #1a0b2e 11px, #1a0b2e 12px);
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            justify-content: center;
+            max-width: 1600px;
+        }
+
+        /* ---------------------------------------------------
+           BASE PSYCHO CARD DESIGN
+           --------------------------------------------------- */
+        .card {
+            width: var(--card-width);
+            height: var(--card-height);
+            background-color: #ffffff;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: #111;
+            box-sizing: border-box;
+            cursor: pointer;
+            border: 3px solid var(--color-primary);
+        }
+
+        .card:hover {
+            transform: translateY(-15px) scale(1.05) rotate(2deg);
+            box-shadow: 0 25px 50px rgba(107, 33, 168, 0.5), 0 0 30px rgba(255,255,255,0.2);
+            z-index: 10;
+        }
+
+        .serial-code {
+            position: absolute;
+            font-family: 'Special Elite', monospace;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 5;
+            padding: 2px 6px;
+            background: #fff;
+        }
+        
+        .faction {
+            position: absolute;
+            font-family: 'Jolly Lodger', cursive;
+            font-size: 1.4rem;
+            z-index: 5;
+            text-shadow: 1px 1px 0px #fff;
+        }
+
+        .desc-box {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 15px 15px 20px 15px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 5;
+            text-align: center;
+        }
+
+        .quote {
+            font-family: 'Jolly Lodger', cursive;
+            font-size: 1.25rem;
+            margin-bottom: 6px;
+            line-height: 1.1;
+            letter-spacing: 1px;
+        }
+
+        .action {
+            font-size: 0.7rem;
+            line-height: 1.3;
+            font-weight: bold;
+        }
+
+        /* ---------------------------------------------------
+           KARTU 1: MODERATOR
+           --------------------------------------------------- */
+        .card-mod {
+            outline: 2px dashed #eab308;
+            outline-offset: -10px;
+        }
+        .card-mod .faction { top: 15px; left: 15px; color: var(--color-primary); transform: rotate(-5deg); }
+        .card-mod .serial-code { top: 15px; right: 15px; color: #eab308; transform: rotate(8deg); border: 1px solid #eab308; }
+        
+        .card-mod .role-name-id {
+            font-family: 'Jolly Lodger', cursive;
+            font-size: 2.2rem;
+            text-align: center;
+            margin-top: 45px;
+            line-height: 0.85;
+            color: var(--color-primary);
+            text-shadow: 2px 2px 0px #eab308, -2px -1px 0px #111;
+            transform: rotate(-2deg);
+            padding: 0 10px;
+        }
+        .card-mod .role-name-en {
+            font-family: 'Creepster', cursive;
+            font-size: 0.9rem;
+            text-align: center;
+            color: #111;
+            letter-spacing: 4px;
+            transform: rotate(3deg);
+            padding: 0 10px;
+            margin-top: 5px;
+        }
+        .card-mod .desc-box { border-top: 3px dotted #eab308; }
+        .card-mod .quote { color: #854d0e; }
+
+        .art-mod {
+            position: absolute;
+            top: 115px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 165px;
+            height: 165px;
+            z-index: 0;
+        }
+
+        /* ---------------------------------------------------
+           KARTU 2: WARGA
+           --------------------------------------------------- */
+        .card-vil {
+            outline: 2px dashed #f97316;
+            outline-offset: -6px;
+        }
+        .card-vil .faction { top: 15px; right: 15px; color: #f97316; transform: rotate(5deg); letter-spacing: 1px;}
+        .card-vil .serial-code { top: 15px; left: 15px; color: var(--color-primary); transform: rotate(-4deg); background: none;}
+        
+        .card-vil .role-name-id {
+            font-family: 'Jolly Lodger', cursive;
+            font-size: 2.2rem;
+            text-align: right;
+            padding-right: 15px;
+            margin-top: 45px;
+            line-height: 0.85;
+            color: #111;
+            text-shadow: 2px -2px 0px #f97316;
+            transform: rotate(5deg);
+        }
+        .card-vil .role-name-en {
+            font-family: 'Creepster', cursive;
+            font-size: 0.95rem;
+            text-align: right;
+            padding-right: 15px;
+            color: var(--color-primary);
+            transform: rotate(-3deg);
+            margin-top: 5px;
+        }
+        .card-vil .desc-box { border-top: 3px dotted #f97316; background: rgba(255, 255, 255, 0.95); }
+        .card-vil .quote { color: #c2410c; font-size: 1.1rem; transform: rotate(-1deg); }
+
+        .art-vil {
+            position: absolute;
+            top: 115px;
+            left: 15%;
+            width: 155px;
+            height: 155px;
+            z-index: 0;
+        }
+
+        /* ---------------------------------------------------
+           KARTU 3: WEREWOLF
+           --------------------------------------------------- */
+        .card-ww {
+            outline: 3px dashed #ef4444;
+            outline-offset: -12px;
+        }
+        /* Faksi dan Serial dipastikan berada di atas, aman dari pinggiran terpotong */
+        .card-ww .faction { top: 15px; right: 15px; color: #ef4444; transform: rotate(10deg); font-size: 1.5rem;}
+        .card-ww .serial-code { top: 15px; left: 15px; color: #111; transform: rotate(-6deg); border-bottom: 2px solid #ef4444;}
+        
+        .card-ww .role-name-id {
+            font-family: 'Jolly Lodger', cursive;
+            font-size: 2.1rem;
+            text-align: left;
+            padding-left: 20px;
+            margin-top: 45px;
+            line-height: 0.85; /* Mencegah teks dua baris memakan spasi vertikal ke bawah */
+            color: #ef4444;
+            text-shadow: 2px 2px 0px var(--color-primary), -1px -1px 0px #111;
+            transform: rotate(-5deg);
+        }
+        .card-ww .role-name-en {
+            font-family: 'Creepster', cursive;
+            font-size: 1rem;
+            text-align: left;
+            padding-left: 25px;
+            color: #111;
+            margin-top: 5px;
+            transform: rotate(2deg);
+        }
+        .card-ww .desc-box { border-top: 4px dashed #ef4444; background: rgba(255, 255, 255, 0.9); }
+        .card-ww .quote { color: #b91c1c; font-size: 1.3rem; }
+
+        .art-ww {
+            position: absolute;
+            top: 135px; /* Didorong turun untuk menjauhi teks "Serigala" */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 155px; /* Skala disesuaikan agar tidak menyentuh kotak deskripsi */
+            height: 155px;
+            z-index: 0;
+        }
+
+        /* ---------------------------------------------------
+           KARTU 4: JESTER
+           --------------------------------------------------- */
+        .card-jst {
+            outline: 2px dashed #16a34a;
+            outline-offset: -8px;
+        }
+        .card-jst .faction { top: 15px; left: 15px; color: var(--color-primary); transform: rotate(-10deg); }
+        .card-jst .serial-code { top: 15px; right: 15px; color: #16a34a; transform: rotate(5deg); }
+        
+        .card-jst .role-name-id {
+            font-family: 'Jolly Lodger', cursive;
+            font-size: 2.1rem;
+            line-height: 0.85; /* Merapatkan kata "Si Badut" dan "Gila" */
+            text-align: center;
+            margin-top: 45px;
+            color: var(--color-primary);
+            text-shadow: 2px 2px 0px #16a34a, -2px -2px 0px #111;
+            transform: rotate(-3deg);
+            padding: 0 10px;
+        }
+        .card-jst .role-name-en {
+            font-family: 'Creepster', cursive;
+            font-size: 0.9rem;
+            text-align: center;
+            color: #111;
+            letter-spacing: 3px;
+            transform: rotate(2deg);
+            padding: 0 10px;
+            margin-top: 5px;
+        }
+        .card-jst .desc-box { border-top: 2px dotted #16a34a; }
+        .card-jst .quote { color: #15803d; }
+
+        .art-jst {
+            position: absolute;
+            top: 135px; /* Didorong turun agar TIDAK menutupi kata "Gila" */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 155px; /* Skala disesuaikan */
+            height: 155px;
+            z-index: 0;
+        }
+
+        /* ---------------------------------------------------
+           KARTU 5: HUNTER
+           --------------------------------------------------- */
+        .card-hnt {
+            outline: 2px dashed #0ea5e9;
+            outline-offset: -8px;
+        }
+        .card-hnt .faction { top: 15px; left: 15px; color: #0ea5e9; transform: rotate(-8deg); letter-spacing: 2px;}
+        .card-hnt .serial-code { top: 15px; right: 15px; color: #fff; background: var(--color-primary); transform: rotate(5deg); border: 2px dashed #0ea5e9;}
+        
+        .card-hnt .role-name-id {
+            font-family: 'Jolly Lodger', cursive;
+            font-size: 2.2rem;
+            text-align: center;
+            margin-top: 45px;
+            line-height: 0.85;
+            color: #0ea5e9;
+            text-shadow: 2px 2px 0px var(--color-primary), -1px -1px 0px #111;
+            transform: rotate(4deg);
+            padding: 0 10px;
+        }
+        .card-hnt .role-name-en {
+            font-family: 'Creepster', cursive;
+            font-size: 0.9rem;
+            text-align: center;
+            color: #111;
+            letter-spacing: 2px;
+            transform: rotate(-2deg);
+            padding: 0 10px;
+            margin-top: 5px;
+        }
+        .card-hnt .desc-box { border-top: 3px dotted #0ea5e9; background: rgba(255, 255, 255, 0.95); }
+        .card-hnt .quote { color: #0369a1; }
+
+        .art-hnt {
+            position: absolute;
+            top: 115px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 165px;
+            height: 165px;
+            z-index: 0;
+        }
+
+        /* ---------------------------------------------------
+           KARTU 6: KARTU BELAKANG
+           --------------------------------------------------- */
+        .card-back {
+            background-color: #0a0a0a;
+            border: 3px solid var(--color-primary);
+            outline: 2px dashed #16a34a;
+            outline-offset: -10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 40px rgba(107, 33, 168, 0.5);
+        }
+        
+        .art-back {
+            width: 200px;
+            height: 200px;
+        }
+
+        .back-title {
+            position: absolute;
+            font-family: 'Jolly Lodger', cursive;
+            font-size: 2.6rem;
+            color: #fff;
+            text-shadow: 3px 3px 0px var(--color-primary), -2px -2px 0px #16a34a;
+            transform: rotate(-5deg);
+            z-index: 10;
+        }
+        .back-subtitle {
+            position: absolute;
+            bottom: 35px;
+            font-family: 'Special Elite', monospace;
+            font-size: 0.8rem;
+            color: #eab308;
+            letter-spacing: 2px;
+            transform: rotate(2deg);
+            background: #111;
+            padding: 2px 10px;
+            border: 1px dashed #eab308;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold mb-2" style="font-family: 'Creepster', cursive; color: #16a34a; text-shadow: 2px 2px 0 #6b21a8;">WEREWOLF: PSYCHO CIRCUS</h1>
+        <p class="text-gray-300 font-mono text-sm">Ukuran Standar: 54.5mm × 85.5mm | Tema: Badut/Psikopat/Asimetris</p>
+    </div>
+
+    <div class="card-container">
+
+        <!-- KARTU 1: MODERATOR -->
+        <div class="card card-mod">
+            <div class="faction">FAKSI: NETRAL</div>
+            <div class="serial-code">MOD-Ω-PUPPET</div>
+            
+            <div class="role-name-id">Moderator</div>
+            <div class="role-name-en">THE PUPPET MASTER</div>
+
+            <div class="art-mod">
+                <svg viewBox="0 0 200 200" width="100%" height="100%">
+                    <path d="M 40 30 L 160 50 M 100 10 L 90 80" stroke="#eab308" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="100" cy="40" r="5" fill="#6b21a8" />
+                    <path d="M 40 30 Q 60 100 80 140 M 160 50 Q 140 120 120 140 M 100 10 Q 110 80 100 150 M 50 40 L 50 120 M 140 45 L 140 130" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="4 2"/>
+                    <path d="M 50 140 Q 100 100 150 140 Q 100 190 50 140 Z" fill="#fff" stroke="#6b21a8" stroke-width="4" />
+                    <path d="M 100 140 m -20 0 a 20 20 0 1 0 40 0 a 20 20 0 1 0 -40 0" fill="none" stroke="#eab308" stroke-width="3" stroke-dasharray="5 5"></path>
+                    <circle cx="100" cy="140" r="6" fill="#111" />
+                    <path d="M 70 160 Q 75 180 70 190 M 100 165 Q 100 195 105 200 M 130 160 Q 125 185 130 190" fill="none" stroke="#6b21a8" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <div class="desc-box">
+                <div class="quote">"Menarilah, boneka-bonekaku! Pertunjukan malam ini butuh darah!"</div>
+                <div class="action" style="color: #4a044e;"><strong>PERAN:</strong> Sang sutradara gila. Kamu mengatur jalannya malam dan siang, menunjuk siapa yang mati, dan menertawakan kebodohan mereka semua.</div>
+            </div>
+        </div>
+
+        <!-- KARTU 2: WARGA -->
+        <div class="card card-vil">
+            <div class="faction">FAKSI: WARGA</div>
+            <div class="serial-code">VIL-???-LOST</div>
+            
+            <div class="role-name-id">Warga Biasa</div>
+            <div class="role-name-en">PARANOID VILLAGER</div>
+
+            <div class="art-vil">
+                <svg viewBox="0 0 200 200" width="100%" height="100%">
+                    <path d="M 20 50 Q 80 10 180 60 T 40 120 T 160 160 Q 50 190 20 140 Z" fill="none" stroke="#f97316" stroke-width="2" opacity="0.4"/>
+                    <path d="M 40 20 L 160 180 M 160 20 L 40 180 M 100 10 L 100 190 M 10 100 L 190 100" stroke="#6b21a8" stroke-width="1" stroke-dasharray="2 4" opacity="0.5"/>
+                    <path d="M 60 180 Q 50 100 80 60 Q 100 30 140 70 Q 160 120 140 180 Z" fill="#111" />
+                    <g fill="#fff">
+                        <ellipse cx="90" cy="80" rx="12" ry="8" transform="rotate(-15 90 80)"/>
+                        <circle cx="87" cy="80" r="3" fill="#f97316" />
+                        <ellipse cx="130" cy="90" rx="10" ry="14" transform="rotate(20 130 90)"/>
+                        <circle cx="132" cy="95" r="3" fill="#f97316" />
+                        <ellipse cx="100" cy="120" rx="8" ry="6" transform="rotate(45 100 120)"/>
+                        <circle cx="98" cy="118" r="2" fill="#f97316" />
+                        <ellipse cx="125" cy="140" rx="15" ry="5" transform="rotate(-10 125 140)"/>
+                        <circle cx="120" cy="140" r="3" fill="#f97316" />
+                    </g>
+                    <path d="M 80 160 Q 100 170 120 155" fill="none" stroke="#fff" stroke-width="2"/>
+                    <path d="M 85 155 L 80 165 M 95 158 L 90 168 M 105 160 L 100 170 M 115 155 L 110 165" stroke="#f97316" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <div class="desc-box">
+                <div class="quote">"Suara-suara itu... mereka menyuruhku menggantung tetanggaku sendiri!"</div>
+                <div class="action" style="color: #111;"><strong>PERAN:</strong> Tidak punya kekuatan malam. Di siang hari, biarkan paranoiamu mengambil alih, tuduh siapapun, dan <i>voting</i> untuk mengeksekusi mereka!</div>
+            </div>
+        </div>
+
+        <!-- KARTU 3: WEREWOLF -->
+        <div class="card card-ww">
+            <div class="faction">FAKSI: SERIGALA</div>
+            <!-- POSISI SERIAL CODE SUDAH DIPINDAHKAN KE ATAS AMAN DARI POTONGAN -->
+            <div class="serial-code">WW-666-BITE</div>
+            
+            <div class="role-name-id">Manusia<br>Serigala</div>
+            <div class="role-name-en">RABID WEREWOLF</div>
+
+            <div class="art-ww">
+                <svg viewBox="0 0 200 200" width="100%" height="100%">
+                    <circle cx="100" cy="100" r="80" fill="none" stroke="#ef4444" stroke-width="15" stroke-dasharray="10 30" opacity="0.3"/>
+                    <path d="M 20 60 Q 100 20 180 80 Q 150 100 100 90 Q 50 100 20 60 Z" fill="#111" stroke="#6b21a8" stroke-width="3"/>
+                    <path d="M 30 75 L 40 120 L 50 80 L 60 110 L 70 85 L 80 130 L 95 90 L 110 140 L 125 90 L 140 125 L 150 85 L 160 115 L 170 80" fill="#fff" stroke="#ef4444" stroke-width="2"/>
+                    <path d="M 30 160 Q 100 190 170 140 Q 140 120 100 130 Q 60 120 30 160 Z" fill="#111" stroke="#6b21a8" stroke-width="3"/>
+                    <path d="M 40 145 L 45 110 L 55 140 L 65 115 L 75 135 L 90 105 L 105 130 L 120 100 L 135 130 L 145 115 L 155 135" fill="#fff" stroke="#ef4444" stroke-width="2"/>
+                    <path d="M 80 130 Q 85 170 80 190 M 110 140 Q 115 180 120 195 M 140 125 Q 145 160 140 175" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="82" cy="195" r="3" fill="#ef4444"/>
+                    <circle cx="122" cy="200" r="4" fill="#ef4444"/>
+                    <ellipse cx="100" cy="45" rx="20" ry="10" fill="#fff" transform="rotate(-10 100 45)"/>
+                    <circle cx="105" cy="45" r="4" fill="#ef4444" />
+                </svg>
+            </div>
+
+            <div class="desc-box">
+                <div class="quote">"Gigitan ini gatal... aku harus merobek daging mereka untuk menggaruknya!"</div>
+                <div class="action" style="color: #7f1d1d;"><strong>PERAN:</strong> Mangsa kewarasanmu di malam hari dengan membunuh satu orang bersama kawananmu. Di siang hari, tertawalah layaknya warga normal.</div>
+            </div>
+        </div>
+
+        <!-- KARTU 4: JESTER -->
+        <div class="card card-jst">
+            <div class="faction">FAKSI: SOLO</div>
+            <div class="serial-code">JST-404-HA!</div>
+            
+            <div class="role-name-id">Si Badut<br>Gila</div>
+            <div class="role-name-en">THE JESTER</div>
+
+            <div class="art-jst">
+                <svg viewBox="0 0 200 200" width="100%" height="100%">
+                    <path d="M 100 100 m -60 0 a 60 60 0 1 0 120 0 a 60 60 0 1 0 -120 0" fill="none" stroke="#16a34a" stroke-width="5" stroke-dasharray="15 15" opacity="0.4"></path>
+                    <path d="M 40 80 Q 40 20 100 30 Q 160 40 160 90 Q 160 150 110 170 Q 60 180 40 80 Z" fill="#111" stroke="#6b21a8" stroke-width="5" />
+                    <path d="M 40 80 Q 40 20 100 30 Q 160 40 160 90 Q 160 150 110 170 Q 60 180 40 80 Z" fill="none" stroke="#16a34a" stroke-width="2" transform="translate(6, 6)" opacity="0.8"/>
+                    <path d="M 55 55 L 95 95 M 95 55 L 55 95" stroke="#16a34a" stroke-width="10" stroke-linecap="round"/>
+                    <circle cx="135" cy="75" r="18" fill="#fff" />
+                    <circle cx="135" cy="75" r="6" fill="#6b21a8" />
+                    <path d="M 45 120 Q 100 180 155 110" fill="none" stroke="#fff" stroke-width="5" />
+                    <path d="M 55 115 L 60 140 M 75 125 L 80 150 M 95 132 L 100 157 M 115 130 L 120 155 M 135 118 L 140 143 M 150 105 L 155 130" stroke="#6b21a8" stroke-width="4" />
+                    <path d="M 135 93 Q 140 140 125 170" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <div class="desc-box">
+                <div class="quote">"Gantung aku! Kumohon, gantung aku dan buat lelucon panggung ini abadi!"</div>
+                <div class="action" style="color: #111;"><strong>PERAN:</strong> Tujuanmu hanya satu: buat warga mencurigaimu. Jika kamu berhasil divoting dan digantung di siang hari, <strong>KAMU MENANG</strong> dan permainan berakhir.</div>
+            </div>
+        </div>
+
+        <!-- KARTU 5: PEMBURU -->
+        <div class="card card-hnt">
+            <div class="faction">FAKSI: WARGA</div>
+            <!-- SERIAL HUNTER JUGA DIPINDAH KE ATAS AGAR KONSISTEN & AMAN -->
+            <div class="serial-code">HNT-999-BANG</div>
+            
+            <div class="role-name-id">Sang Pemburu</div>
+            <div class="role-name-en">THE HUNTER</div>
+
+            <div class="art-hnt">
+                <svg viewBox="0 0 200 200" width="100%" height="100%">
+                    <circle cx="100" cy="100" r="70" fill="none" stroke="#0ea5e9" stroke-width="4" stroke-dasharray="10 20" />
+                    <circle cx="100" cy="100" r="50" fill="none" stroke="#6b21a8" stroke-width="2" />
+                    <path d="M 100 10 L 100 190 M 10 100 L 190 100" stroke="#0ea5e9" stroke-width="3" stroke-dasharray="15 5" />
+                    <path d="M 100 100 L 30 30 M 100 100 L 170 40 M 100 100 L 160 160 M 100 100 L 40 150 M 100 100 L 10 100 M 100 100 L 190 110" stroke="#111" stroke-width="2" stroke-dasharray="4 2"/>
+                    <circle cx="100" cy="100" r="12" fill="#111" />
+                    <circle cx="103" cy="103" r="4" fill="#fff" />
+                    <circle cx="80" cy="70" r="6" fill="#0ea5e9" opacity="0.6"/>
+                    <circle cx="130" cy="120" r="4" fill="#6b21a8" />
+                    <circle cx="110" cy="60" r="3" fill="#111" />
+                    <path d="M 80 200 L 90 150 L 130 145 L 140 200 Z" fill="#111" stroke="#6b21a8" stroke-width="4" />
+                    <circle cx="110" cy="160" r="15" fill="none" stroke="#0ea5e9" stroke-width="3" />
+                    <path d="M 110 140 Q 90 100 120 70" fill="none" stroke="#0ea5e9" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+                </svg>
+            </div>
+
+            <div class="desc-box">
+                <div class="quote">"Satu peluru tersisa... dan itu untuk siapapun yang berani mengirimku ke neraka!"</div>
+                <div class="action" style="color: #111;"><strong>PERAN:</strong> Jika kamu mati (dibunuh serigala atau digantung warga), kamu dapat menembak mati <strong>SATU</strong> pemain lain untuk ikut ke alam baka bersamamu.</div>
+            </div>
+        </div>
+
+        <!-- KARTU 6: KARTU BELAKANG -->
+        <div class="card card-back">
+            <div class="art-back">
+                <svg viewBox="0 0 200 200" width="100%" height="100%">
+                    <defs>
+                        <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6b21a8; stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#16a34a; stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#eab308; stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <g fill="none" stroke="#222" stroke-width="4">
+                        <polygon points="100,100 10,10 50,0" />
+                        <polygon points="100,100 190,10 150,0" />
+                        <polygon points="100,100 190,190 200,150" />
+                        <polygon points="100,100 10,190 0,150" />
+                        <polygon points="100,100 0,80 0,120" />
+                        <polygon points="100,100 200,80 200,120" />
+                    </g>
+                    <polygon points="100,10 180,50 180,150 100,190 20,150 20,50" fill="none" stroke="url(#neonGrad)" stroke-width="3" transform="rotate(15 100 100)"/>
+                    <polygon points="100,20 170,60 170,140 100,180 30,140 30,60" fill="none" stroke="url(#neonGrad)" stroke-width="2" stroke-dasharray="10 5" transform="rotate(-10 100 100)"/>
+                    <path d="M 100 140 Q 50 120 60 70 Q 100 100 100 60 Q 100 100 140 70 Q 150 120 100 140 Z" fill="#111" stroke="#fff" stroke-width="2" />
+                    <circle cx="60" cy="70" r="5" fill="#6b21a8" />
+                    <circle cx="100" cy="60" r="5" fill="#eab308" />
+                    <circle cx="140" cy="70" r="5" fill="#16a34a" />
+                    <path d="M 70 150 Q 100 170 130 150" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+            </div>
+            
+            <div class="back-title">WEREWOLF</div>
+            <div class="back-subtitle">PSYCHO CIRCUS EDITION</div>
+        </div>
+
+    </div>
+
+</body>
+</html>

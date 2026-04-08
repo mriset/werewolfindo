@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf: Swiss Split Luxury Edition</title>
+    <!-- Font Premium: Crimson Pro (Elegan) & Outfit (Modern Clean) -->
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Standar Ukuran Presisi */
+            --w: 54.5mm;
+            --h: 85.5mm;
+            
+            /* Palet Warna Faksi */
+            --c-gold: #B38B36;       /* Matte Gold */
+            --c-gold-light: #DFCA9B;
+            --c-sup: #2A1F3D;        /* Supreme: Deep Purple */
+            --c-vil: #1A365D;        /* Alliance: Navy Blue */
+            --c-ww: #6B1717;         /* Shadows: Crimson Red */
+            --c-nt: #1B4332;         /* Neutral: Emerald Green */
+            --c-back-top: #1A1A1A;   /* Back Card Top */
+            --c-back-bot: #0A0A0A;   /* Back Card Bottom */
+            
+            /* Warna Teks & Background Umum */
+            --c-text: #111111;
+            --c-text-mut: #444444;
+            --c-bg: #FFFFFF;
+            --c-bg-alt: #F9F9FB;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0; padding: 0;
+        }
+
+        body {
+            background-color: #E2E6E9;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .showcase-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #1A365D;
+            font-weight: 900;
+            letter-spacing: 4px;
+            font-size: 24px;
+            text-transform: uppercase;
+        }
+
+        .deck-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* =======================================================
+           UNIVERSAL "SWISS SPLIT" LAYOUT
+           ======================================================= */
+        .card-swiss {
+            width: var(--w);
+            height: var(--h);
+            border-radius: 2.5mm;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--c-bg-alt);
+        }
+
+        /* BLOK ATAS: ARTWORK & BADGE */
+        .card-swiss .art-block {
+            height: 48%; /* Proporsi sedikit diturunkan agar teks lega */
+            background-color: var(--f-color); /* Di-set via inline CSS variable per kartu */
+            position: relative;
+            padding: 3mm;
+            border-bottom: 0.8mm solid var(--c-gold);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .card-swiss .id-badge {
+            position: absolute;
+            top: 3mm;
+            right: 3mm;
+            color: var(--c-gold);
+            font-family: 'Outfit', sans-serif;
+            font-size: 6.5pt;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            z-index: 10;
+        }
+        
+        .card-swiss .faction-badge {
+            position: absolute;
+            bottom: 3mm;
+            left: 3mm;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 5pt;
+            letter-spacing: 3px;
+            opacity: 0.85;
+            z-index: 10;
+        }
+
+        /* SVGs styling in Art Block */
+        .card-swiss .art-block svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0; left: 0;
+        }
+
+        /* BLOK BAWAH: TIPOGRAFI & DESKRIPSI */
+        .card-swiss .text-block {
+            padding: 4mm;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--c-bg-alt);
+        }
+        
+        .card-swiss .title-id {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16pt;
+            font-weight: 900;
+            color: var(--f-color);
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+        
+        .card-swiss .title-en {
+            font-family: 'Crimson Pro', serif;
+            font-style: italic;
+            font-size: 9pt;
+            color: var(--c-gold);
+            margin-top: 1mm;
+            margin-bottom: 2.5mm;
+        }
+        
+        .card-swiss .ability-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 5.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--f-color);
+            margin-bottom: 1.5mm;
+        }
+        
+        .card-swiss .desc-text {
+            font-family: 'Crimson Pro', serif;
+            font-size: 8.5pt;
+            line-height: 1.35;
+            color: var(--c-text);
+            text-align: left;
+            border-left: 0.5mm solid var(--c-gold-light);
+            padding-left: 2mm;
+        }
+        
+        .card-swiss .desc-text strong {
+            font-weight: 700;
+            color: #000;
+        }
+
+        /* Custom untuk Kartu Belakang agar konsisten dengan tema Split namun Dark Mode */
+        .card-back.card-swiss .text-block {
+            background: var(--c-back-bot);
+            justify-content: center;
+            align-items: center;
+        }
+        .card-back.card-swiss .desc-text {
+            border-left: none;
+            padding-left: 0;
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="showcase-title">THE SWISS SPLIT COLLECTION</div>
+
+    <div class="deck-container">
+
+        <!-- 1. PERAMAL (ALLIANCE) -->
+        <div class="card-swiss" style="--f-color: var(--c-vil);">
+            <div class="art-block">
+                <div class="id-badge">VL·01</div>
+                <div class="faction-badge">ALLIANCE</div>
+                
+                <!-- Line Art: Celestial Moons & Astrolabe -->
+                <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="#FFFFFF" stroke-width="0.5" opacity="0.3"/>
+                    <ellipse cx="50" cy="50" rx="40" ry="15" fill="none" stroke="var(--c-gold)" stroke-width="0.8" transform="rotate(30 50 50)"/>
+                    <ellipse cx="50" cy="50" rx="40" ry="15" fill="none" stroke="var(--c-gold)" stroke-width="0.8" transform="rotate(-30 50 50)"/>
+                    <!-- Center Star -->
+                    <path d="M 50,35 L 53,47 L 65,50 L 53,53 L 50,65 L 47,53 L 35,50 L 47,47 Z" fill="#FFFFFF" opacity="0.9"/>
+                    <!-- Crescent -->
+                    <path d="M 75,30 A 15 15 0 1 0 85,50 A 20 20 0 1 1 75,30" fill="var(--c-gold)"/>
+                    <line x1="10" y1="50" x2="90" y2="50" stroke="#FFFFFF" stroke-width="0.3" opacity="0.4"/>
+                    <line x1="50" y1="10" x2="50" y2="90" stroke="#FFFFFF" stroke-width="0.3" opacity="0.4"/>
+                </svg>
+            </div>
+            <div class="text-block">
+                <div class="title-id">PERAMAL</div>
+                <div class="title-en">The Seer</div>
+                <div class="ability-label">Penerawang Identitas</div>
+                <div class="desc-text">
+                    Setiap malam, peramal dapat menunjuk satu pemain. Moderator akan mengonfirmasi apakah pemain tersebut <strong>Serigala atau bukan</strong>. Pemain paling vital bagi pihak desa.
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. MODERATOR (SUPREME) -->
+        <div class="card-swiss" style="--f-color: var(--c-sup);">
+            <div class="art-block">
+                <div class="id-badge">SP·01</div>
+                <div class="faction-badge">SUPREME</div>
+                
+                <!-- Line Art: Sacred Geometry & Eye -->
+                <svg viewBox="0 0 100 100">
+                    <!-- Background Orbits -->
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#FFFFFF" stroke-width="0.3" stroke-dasharray="2 3" opacity="0.5"/>
+                    <circle cx="50" cy="50" r="28" fill="none" stroke="var(--c-gold)" stroke-width="0.5" opacity="0.8"/>
+                    <!-- Triangles -->
+                    <polygon points="50,15 85,75 15,75" fill="none" stroke="#FFFFFF" stroke-width="0.8" opacity="0.7"/>
+                    <polygon points="50,85 15,25 85,25" fill="none" stroke="var(--c-gold)" stroke-width="0.8" opacity="0.7"/>
+                    <!-- The Eye -->
+                    <path d="M 32,50 Q 50,32 68,50 Q 50,68 32,50 Z" fill="var(--f-color)" stroke="#FFFFFF" stroke-width="1.2"/>
+                    <circle cx="50" cy="50" r="6" fill="var(--c-gold)"/>
+                    <circle cx="52" cy="48" r="1.5" fill="#FFFFFF"/>
+                </svg>
+            </div>
+            <div class="text-block">
+                <div class="title-id">SANG NARATOR</div>
+                <div class="title-en">Game Moderator</div>
+                <div class="ability-label">Tuhan Desa Werewolf</div>
+                <div class="desc-text">
+                    Tugas Anda absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain.
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. SERIGALA (SHADOWS) -->
+        <div class="card-swiss" style="--f-color: var(--c-ww);">
+            <div class="art-block">
+                <div class="id-badge">WW·01</div>
+                <div class="faction-badge">SHADOWS</div>
+                
+                <!-- Line Art: Sharp Geometric Wolf Silhouette & Scratches -->
+                <svg viewBox="0 0 100 100">
+                    <!-- Triple Scratch Background -->
+                    <path d="M 70,10 L 40,90 M 80,15 L 50,95 M 90,20 L 60,100" stroke="var(--c-gold)" stroke-width="0.5" stroke-dasharray="5 5" opacity="0.6"/>
+                    <!-- Geometric Wolf Profile (Facing Left) -->
+                    <polygon points="85,85 75,35 55,25 20,45 15,60 35,65 35,85" fill="none" stroke="#FFFFFF" stroke-width="1.2" opacity="0.9"/>
+                    <!-- Abstract Inner Geometry -->
+                    <polygon points="75,35 55,55 35,65 55,25" fill="#FFFFFF" opacity="0.1"/>
+                    <line x1="55" y1="25" x2="35" y2="85" stroke="var(--c-gold)" stroke-width="1"/>
+                    <line x1="20" y1="45" x2="55" y2="55" stroke="var(--c-gold)" stroke-width="0.8"/>
+                    <!-- Glowing Red/Gold Eye (Abstract) -->
+                    <polygon points="50,42 56,40 54,46" fill="var(--c-gold)"/>
+                    <!-- Fang hint -->
+                    <polygon points="15,60 22,65 18,70" fill="#FFFFFF" opacity="0.8"/>
+                </svg>
+            </div>
+            <div class="text-block">
+                <div class="title-id">SERIGALA</div>
+                <div class="title-en">Werewolf</div>
+                <div class="ability-label">Membunuh di Malam Hari</div>
+                <div class="desc-text">
+                    Setiap malam, kawanan serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling mengetahui identitas koloninya dan menang jika jumlah mereka menyamai jumlah warga.
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. BADUT (NEUTRAL) -->
+        <div class="card-swiss" style="--f-color: var(--c-nt);">
+            <div class="art-block">
+                <div class="id-badge">NT·01</div>
+                <div class="faction-badge">NEUTRAL</div>
+                
+                <!-- Line Art: Diamond Grid & Abstract Jester Mask -->
+                <svg viewBox="0 0 100 100">
+                    <!-- Diamond Grid Pattern -->
+                    <g stroke="#FFFFFF" stroke-width="0.3" opacity="0.2">
+                        <line x1="0" y1="50" x2="50" y2="0"/> <line x1="25" y1="75" x2="75" y2="25"/>
+                        <line x1="50" y1="100" x2="100" y2="50"/> <line x1="0" y1="50" x2="50" y2="100"/>
+                        <line x1="25" y1="25" x2="75" y2="75"/> <line x1="50" y1="0" x2="100" y2="50"/>
+                    </g>
+                    <!-- Art Deco Theatrical Mask Half -->
+                    <path d="M 50,15 Q 85,15 85,50 Q 85,85 50,85 Q 40,65 50,50 Q 60,35 50,15 Z" fill="none" stroke="var(--c-gold)" stroke-width="1.5"/>
+                    <path d="M 50,15 Q 15,15 15,50 Q 15,85 50,85" fill="none" stroke="#FFFFFF" stroke-width="0.8" opacity="0.6"/>
+                    <!-- Eye slot -->
+                    <path d="M 58,45 Q 65,40 72,45 Q 65,50 58,45 Z" fill="#FFFFFF" opacity="0.9"/>
+                    <!-- Joker Smile Curve -->
+                    <path d="M 55,65 Q 65,75 75,60" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
+                    <!-- Tear Drop -->
+                    <circle cx="65" cy="55" r="2" fill="var(--c-gold)"/>
+                </svg>
+            </div>
+            <div class="text-block">
+                <div class="title-id">BADUT</div>
+                <div class="title-en">The Jester</div>
+                <div class="ability-label">Tawa Terakhir</div>
+                <div class="desc-text">
+                    Tujuan utamanya hanya satu, yaitu memprovokasi agar dirinya <strong>dieksekusi</strong> warga pada siang hari. Jika ia berhasil digantung, ia memenangkan permainan seorang diri.
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. KARTU BELAKANG (THE DARK SWISS SPLIT) -->
+        <div class="card-swiss card-back" style="--f-color: var(--c-back-top);">
+            <div class="art-block" style="border-bottom: 1.5mm solid var(--c-gold);">
+                <!-- Symmetric Dark Mandala / Geometric Wolf Backing -->
+                <svg viewBox="0 0 100 100">
+                    <defs>
+                        <!-- Satu kuadran garis untuk direfleksikan 4 arah (Symmetrical) -->
+                        <g id="bg-quad">
+                            <line x1="50" y1="50" x2="100" y2="0" stroke="#333" stroke-width="0.5"/>
+                            <path d="M 50,20 L 70,20 L 80,40 L 50,50" fill="none" stroke="var(--c-gold)" stroke-width="0.6" opacity="0.5"/>
+                            <circle cx="80" cy="20" r="15" fill="none" stroke="#555" stroke-width="0.3"/>
+                            <circle cx="80" cy="20" r="10" fill="none" stroke="var(--c-gold)" stroke-width="0.4" opacity="0.4"/>
+                        </g>
+                    </defs>
+                    <use href="#bg-quad" />
+                    <use href="#bg-quad" transform="scale(-1, 1) translate(-100, 0)" />
+                    <use href="#bg-quad" transform="scale(1, -1) translate(0, -100)" />
+                    <use href="#bg-quad" transform="scale(-1, -1) translate(-100, -100)" />
+                    
+                    <!-- Center Core Diamond -->
+                    <polygon points="50,15 85,50 50,85 15,50" fill="#111111" stroke="var(--c-gold)" stroke-width="1"/>
+                    <circle cx="50" cy="50" r="12" fill="var(--c-back-bot)" stroke="#FFFFFF" stroke-width="0.5" opacity="0.8"/>
+                    <polygon points="50,42 58,50 50,58 42,50" fill="var(--c-gold)"/>
+                </svg>
+            </div>
+            <div class="text-block">
+                <!-- Tipografi elegan di blok bawah hitam -->
+                <div class="title-id" style="color: var(--c-gold); letter-spacing: 5px; font-size: 14pt;">WEREWOLF</div>
+                <div class="title-en" style="color: #666; letter-spacing: 3px; font-size: 6pt; margin-top: 0; font-style: normal;">LUXURY EDITORIAL DECK</div>
+                
+                <div style="margin-top: 5mm; opacity: 0.3;">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="none" stroke="#FFF" stroke-width="1"/>
+                        <circle cx="10" cy="10" r="3" fill="#FFF"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

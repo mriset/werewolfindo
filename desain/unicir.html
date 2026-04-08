@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Werewolf - Uniform Circular Layout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --gold-light: #fef0ca;
+            --gold-base: #d4af37;
+            --gold-dark: #9e7b1a;
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #111;
+            font-family: 'Montserrat', sans-serif;
+            padding: 40px 20px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold-base);
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+            text-align: center;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* =========================================================
+           BASE CARD & VILLAGER LAYOUT STRUCTURE
+           ========================================================= */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            position: relative;
+            border-radius: 4mm;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,175,55,0.2);
+            page-break-inside: avoid;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gold-text {
+            background: linear-gradient(to right, #bf953f, var(--gold-light), #b38728, #fbf5b7, var(--gold-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+        }
+
+        /* THEME VARIABLES */
+        .theme-supreme {
+            --bg-top: radial-gradient(circle at top, #581c87, #2e1065);
+            --bg-bottom: #170a2b;
+            --accent-color: #d8b4fe;
+            --border-top: #a855f7;
+            --art-bg: #2d1747;
+            --faction-bg: #4c1d95;
+            --faction-text: #fff;
+        }
+
+        .theme-good {
+            --bg-top: radial-gradient(circle at top, #2563eb, #1e3a8a);
+            --bg-bottom: #0f172a;
+            --accent-color: #93c5fd;
+            --border-top: var(--gold-base);
+            --art-bg: #0f172a;
+            --faction-bg: var(--gold-base);
+            --faction-text: #0f172a;
+        }
+
+        .theme-evil {
+            --bg-top: radial-gradient(circle at top, #991b1b, #7f1d1d);
+            --bg-bottom: #2a0000;
+            --accent-color: #fca5a5;
+            --border-top: #ef4444;
+            --art-bg: #450a0a;
+            --faction-bg: #ef4444;
+            --faction-text: #2a0000;
+        }
+
+        .theme-neutral {
+            --bg-top: radial-gradient(circle at top, #52525b, #27272a);
+            --bg-bottom: #18181b;
+            --accent-color: #d4d4d8;
+            --border-top: #a1a1aa;
+            --art-bg: #27272a;
+            --faction-bg: #a1a1aa;
+            --faction-text: #18181b;
+        }
+
+        .theme-back {
+            --bg-top: radial-gradient(circle at top, #1a1a1a, #050505);
+            --bg-bottom: #0a0a0c;
+            --accent-color: var(--gold-base);
+            --border-top: var(--gold-dark);
+            --art-bg: #000;
+        }
+
+        /* LAYOUT COMPONENTS */
+        .v-top {
+            height: 35mm;
+            background: var(--bg-top);
+            position: relative;
+            border-bottom: 2px solid var(--border-top);
+            padding: 3mm;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Pattern Overlay for Top */
+        .v-top::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 2mm, rgba(255,255,255,0.03) 2mm, rgba(255,255,255,0.03) 4mm);
+            pointer-events: none;
+        }
+
+        .v-art {
+            position: absolute;
+            bottom: -5mm;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28mm;
+            height: 28mm;
+            background: var(--art-bg);
+            border: 1.5px solid var(--border-top);
+            border-radius: 50%;
+            padding: 2mm;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.5);
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .v-id { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 8px; 
+            font-weight: 800; 
+            color: #fff; 
+            background: rgba(0,0,0,0.6); 
+            padding: 1mm 2mm; 
+            border-radius: 1mm; 
+            height: fit-content;
+            z-index: 1;
+        }
+
+        .v-faction { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 6px; 
+            font-weight: 800; 
+            color: var(--faction-text); 
+            background: var(--faction-bg); 
+            padding: 1mm 2mm; 
+            border-radius: 1mm; 
+            height: fit-content; 
+            text-transform: uppercase;
+            z-index: 1;
+        }
+
+        .v-bottom {
+            background: var(--bg-bottom);
+            padding: 7mm 4mm 4mm 4mm;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .v-title-en { 
+            font-size: 6px; 
+            color: var(--accent-color); 
+            letter-spacing: 3px; 
+            text-transform: uppercase; 
+            margin-bottom: 0.5mm; 
+            font-weight: 600; 
+        }
+
+        .v-title-id { 
+            font-family: 'Cinzel', serif; 
+            font-size: 14px; 
+            font-weight: 800; 
+            margin-bottom: 2mm; 
+            text-transform: uppercase; 
+        }
+
+        .v-ability { 
+            background: rgba(0,0,0,0.4); 
+            border-left: 2px solid var(--accent-color); 
+            color: var(--accent-color); 
+            font-size: 6.5px; 
+            padding: 1.5mm; 
+            margin-bottom: 2mm; 
+            font-weight: 600; 
+            text-align: left; 
+            text-transform: uppercase;
+        }
+
+        .v-desc { 
+            font-size: 7.5px; 
+            line-height: 1.4; 
+            color: #e2e8f0; 
+            text-align: left; 
+        }
+
+        .v-desc strong {
+            color: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .v-footer { 
+            margin-top: auto; 
+            font-size: 5px; 
+            color: #64748b; 
+            letter-spacing: 1px; 
+            text-align: right; 
+            text-transform: uppercase;
+        }
+
+        /* Specific modifications for Card Back Layout */
+        .theme-back .v-bottom {
+            justify-content: center;
+            align-items: center;
+            padding-top: 10mm;
+        }
+        .theme-back .v-art {
+            border-color: var(--gold-base);
+        }
+
+    
+        /* Mobile Responsive */
+        @media screen and (max-width: 768px) {
+            body { padding: 15px 5px !important; }
+            h1.print-title, .header-title { font-size: 22px !important; letter-spacing: 5px !important; text-align: center !important; }
+            .print-subtitle, .header-subtitle { font-size: 10px !important; letter-spacing: 2px !important; text-align: center !important; margin-bottom: 15px !important; }
+            .control-panel { 
+                padding: 12px !important; 
+                flex-direction: column !important; 
+                gap: 10px !important;
+                border-radius: 8px !important;
+                margin-left: 10px !important;
+                margin-right: 10px !important;
+            }
+            .control-panel > div {
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+            .control-group { 
+                width: 100% !important; 
+                flex-direction: column !important; 
+                align-items: stretch !important; 
+                gap: 5px !important; 
+            }
+            .control-group label { text-align: left !important; }
+            .control-group select { width: 100% !important; font-size: 14px !important; padding: 8px !important; }
+            .control-btn { width: 100% !important; justify-content: center !important; padding: 12px !important; font-size: 14px !important; }
+            .control-panel > div > div[style*="width: 2px"] { display: none !important; }
+            
+            #pages-container {
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                padding-bottom: 20px !important;
+                padding-top: 5px !important;
+            }
+            
+            #pages-container::after {
+                content: '→ Geser untuk melihat semua kartu →' !important;
+                display: block !important;
+                text-align: center !important;
+                font-size: 11px !important;
+                color: #888 !important;
+                margin-top: 10px !important;
+                font-family: inherit !important;
+                width: max-content !important;
+                min-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Uniform Circular Layout Series</h1>
+
+    <div class="cards-container">
+
+        <!-- KARTU 1: MODERATOR (SUPREME) -->
+        <div class="card theme-supreme">
+            <div class="v-top">
+                <div class="v-id">SP·01</div>
+                <div class="v-faction">Supreme</div>
+                <div class="v-art">
+                    <!-- SVG Supreme: Eye of Providence Astral -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="44" fill="none" stroke="#d8b4fe" stroke-width="1" opacity="0.3"/>
+                        <circle cx="50" cy="50" r="38" fill="none" stroke="#d8b4fe" stroke-width="0.5" stroke-dasharray="2,3"/>
+                        <polygon points="50,15 80,75 20,75" fill="#1e1030" stroke="#a855f7" stroke-width="1.5"/>
+                        <polygon points="50,15 80,75 50,75" fill="#3b0764"/>
+                        <circle cx="50" cy="55" r="14" fill="#000" stroke="#d8b4fe" stroke-width="1.5"/>
+                        <path d="M36,55 Q50,42 64,55 Q50,68 36,55 Z" fill="#b282ed" opacity="0.9"/>
+                        <circle cx="50" cy="55" r="5" fill="#000"/>
+                        <circle cx="52" cy="53" r="2" fill="#fff"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="v-bottom">
+                <div class="v-title-en">Game Moderator</div>
+                <div class="v-title-id gold-text">Sang Narator</div>
+                <div class="v-ability">Tuhan Desa Werewolf</div>
+                <div class="v-desc">Tugas pemegang ini absolut, bukan lagi menjadi pemain. Anda dilarang memihak. Tugas Anda hanyalah mengatur malam dan siang, memandu langkah, serta <strong>Mencatut Nyawa</strong> pemain berdasarkan instruksi.</div>
+                <div class="v-footer">Moderator // Supreme</div>
+            </div>
+        </div>
+
+        <!-- KARTU 2: WARGA DESA (GOOD) -->
+        <div class="card theme-good">
+            <div class="v-top">
+                <div class="v-id">VL·14</div>
+                <div class="v-faction">Alliance</div>
+                <div class="v-art">
+                    <!-- SVG Good: Lentera Bersinar -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="lanGlow" cx="50%" cy="50%">
+                                <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.8"/>
+                                <stop offset="100%" stop-color="#b45309" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="45" fill="url(#lanGlow)"/>
+                        <path d="M38,25 L62,25 L68,30 L68,75 L32,75 L32,30 Z" fill="#0f172a" stroke="#d4af37" stroke-width="2"/>
+                        <path d="M32,35 L68,35 M32,70 L68,70" stroke="#d4af37" stroke-width="1.5"/>
+                        <rect x="40" y="40" width="20" height="25" rx="10" fill="#fef08a" stroke="#d4af37" stroke-width="1"/>
+                        <line x1="50" y1="40" x2="50" y2="65" stroke="#ca8a04" stroke-width="1.5"/>
+                        <line x1="40" y1="52.5" x2="60" y2="52.5" stroke="#ca8a04" stroke-width="1.5"/>
+                        <path d="M43,25 L50,15 L57,25 Z" fill="#d4af37"/>
+                        <circle cx="50" cy="12" r="3" fill="#d4af37"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="v-bottom">
+                <div class="v-title-en">Villager</div>
+                <div class="v-title-id gold-text">Warga Desa</div>
+                <div class="v-ability">Pemilik Suara Demokrasi</div>
+                <div class="v-desc">Tidak memiliki kemampuan magis di malam hari. Kekuatan utama warga desa terletak pada kepekaan analitis dan <strong>hak suara (voting)</strong> di siang hari untuk menyingkirkan para serigala.</div>
+                <div class="v-footer">Villager // Tim Desa</div>
+            </div>
+        </div>
+
+        <!-- KARTU 3: WEREWOLF (EVIL) -->
+        <div class="card theme-evil">
+            <div class="v-top">
+                <div class="v-id">WW·01</div>
+                <div class="v-faction">Shadows</div>
+                <div class="v-art">
+                    <!-- SVG Evil: Tengkorak Serigala Berdarah -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" fill="#2a0000"/>
+                        <path d="M25,65 C20,40 35,25 50,20 C65,25 80,40 75,65 L60,85 L50,70 L40,85 Z" fill="#0a0a0c" stroke="#ef4444" stroke-width="2"/>
+                        <polygon points="35,28 40,45 45,35" fill="#ef4444"/>
+                        <polygon points="65,28 60,45 55,35" fill="#ef4444"/>
+                        <ellipse cx="40" cy="55" rx="6" ry="4" fill="#fca5a5" transform="rotate(-15 40 55)"/>
+                        <ellipse cx="60" cy="55" rx="6" ry="4" fill="#fca5a5" transform="rotate(15 60 55)"/>
+                        <circle cx="40" cy="55" r="2" fill="#fff"/>
+                        <circle cx="60" cy="55" r="2" fill="#fff"/>
+                        <path d="M42,70 L50,58 L58,70" fill="none" stroke="#ef4444" stroke-width="2"/>
+                        <line x1="20" y1="20" x2="80" y2="80" stroke="#fca5a5" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="30" y1="10" x2="90" y2="70" stroke="#fca5a5" stroke-width="1.5" opacity="0.6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="v-bottom">
+                <div class="v-title-en">Werewolf</div>
+                <div class="v-title-id" style="color: #fff; text-shadow: 0 2px 4px #000;">Serigala</div>
+                <div class="v-ability">Membunuh di Malam Hari</div>
+                <div class="v-desc">Setiap malam, serigala memilih satu pemain untuk <strong>dibunuh</strong>. Serigala saling mengetahui identitas koloninya. Menang jika jumlah serigala menyamai sisa warga desa.</div>
+                <div class="v-footer">Werewolf // Tim Jahat</div>
+            </div>
+        </div>
+
+        <!-- KARTU 4: JESTER (NEUTRAL) -->
+        <div class="card theme-neutral">
+            <div class="v-top">
+                <div class="v-id">NT·01</div>
+                <div class="v-faction">Neutral</div>
+                <div class="v-art">
+                    <!-- SVG Neutral: Topeng Venetian Terbelah -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50,15 C25,15 20,45 20,65 C20,85 40,90 50,90" fill="#18181b" stroke="#a1a1aa" stroke-width="1.5"/>
+                        <path d="M50,15 C75,15 80,45 80,65 C80,85 60,90 50,90" fill="#3f3f46" stroke="#a1a1aa" stroke-width="1.5"/>
+                        <path d="M50,15 L50,90" stroke="#a1a1aa" stroke-width="1.5"/>
+                        <path d="M25,55 Q35,45 45,55" fill="none" stroke="#d4d4d8" stroke-width="2"/>
+                        <path d="M75,55 Q65,65 55,55" fill="none" stroke="#d4d4d8" stroke-width="2"/>
+                        <circle cx="35" cy="40" r="5" fill="#000"/>
+                        <circle cx="65" cy="40" r="5" fill="#000"/>
+                        <circle cx="65" cy="41" r="2" fill="#fff"/>
+                        <!-- Harlequin Hat Elements -->
+                        <path d="M50,15 Q25,5 15,25" fill="none" stroke="#d4d4d8" stroke-width="2"/>
+                        <path d="M50,15 Q75,5 85,25" fill="none" stroke="#d4d4d8" stroke-width="2"/>
+                        <circle cx="15" cy="25" r="4" fill="#d4af37"/>
+                        <circle cx="85" cy="25" r="4" fill="#d4af37"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="v-bottom">
+                <div class="v-title-en">Jester</div>
+                <div class="v-title-id" style="color: #fff; font-style: italic;">Sang Badut</div>
+                <div class="v-ability">Tawa Terakhir</div>
+                <div class="v-desc">Tujuan utamanya hanya satu, yaitu memprovokasi agar <strong>dieksekusi</strong> warga di siang hari. Jika Badut berhasil membuat dirinya digantung, ia memenangkan permainan seorang diri.</div>
+                <div class="v-footer">Jester // Tim Netral</div>
+            </div>
+        </div>
+
+        <!-- KARTU 5: CARD BACK (BLACK & GOLD) -->
+        <div class="card theme-back">
+            <div class="v-top" style="border-bottom: 2px solid var(--gold-base);">
+                <!-- Pola hiasan latar atas opsional -->
+                <div style="position: absolute; inset: 2mm; border: 1px dashed rgba(212,175,55,0.3); border-radius: 2mm; pointer-events: none;"></div>
+                <div class="v-art">
+                    <!-- SVG Card Back: Monogram W Elegan -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="46" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#aa771c" stroke-width="0.5" stroke-dasharray="2,2"/>
+                        <polygon points="50,10 58,42 90,50 58,58 50,90 42,58 10,50 42,42" fill="#111" stroke="#d4af37" stroke-width="1.5"/>
+                        <polygon points="50,10 50,90 M10,50 L90,50" stroke="#d4af37" stroke-width="1"/>
+                        <circle cx="50" cy="50" r="16" fill="#000" stroke="#d4af37" stroke-width="2"/>
+                        <text x="50" y="58" font-family="'Cinzel', serif" font-size="24" font-weight="900" fill="#d4af37" text-anchor="middle">W</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="v-bottom">
+                <div class="v-title-id gold-text" style="font-size: 18px; letter-spacing: 6px; margin-bottom: 2mm; text-shadow: 0 2px 4px #000;">WEREWOLF</div>
+                <div class="v-title-en" style="color: #888; letter-spacing: 4px;">OBSIDIAN VANGUARD</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

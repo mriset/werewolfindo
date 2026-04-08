@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf - Slashed Reveal Collection</title>
+    <!-- Import Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:ital,wght@0,400;0,600;0,800;0,900;1,600&family=Courier+Prime:wght@700&family=Creepster&family=Rye&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            background-color: #111115;
+            background-image: radial-gradient(circle at 50% 50%, #2a2a35 0%, #0a0a0c 100%);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 40px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .showcase-title {
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            font-family: 'Cinzel', serif;
+            font-size: 26px;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 10px rgba(255,255,255,0.2);
+        }
+
+        .showcase-desc {
+            width: 100%;
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 30px;
+            font-family: 'Courier Prime', monospace;
+        }
+
+        /* ========================================================
+           BASE CARD "SLASHED REVEAL"
+        ======================================================== */
+        .card-slashed {
+            width: var(--card-w);
+            height: var(--card-h);
+            position: relative;
+            border-radius: 3.5mm;
+            background: #ffffff;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.8);
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            cursor: pointer;
+        }
+
+        .card-slashed:hover {
+            transform: translateY(-12px) scale(1.08) rotate(1deg);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 0 0 1px #fff;
+            z-index: 10;
+        }
+
+        /* Komponen General */
+        .slash-bg {
+            position: absolute;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            z-index: 1;
+        }
+        .slash-pattern {
+            position: absolute; inset: 0;
+            pointer-events: none;
+        }
+        .faction-content {
+            position: absolute;
+            z-index: 2;
+        }
+        .faction-name {
+            font-size: 8pt; letter-spacing: 2px; line-height: 1;
+        }
+        .faction-code {
+            font-family: 'Montserrat', sans-serif; font-size: 4.5pt; font-weight: 800; color: #fff;
+            background: rgba(0,0,0,0.5); padding: 0.5mm 1.5mm; display: inline-block; margin-top: 1mm;
+        }
+        .art-box {
+            position: absolute;
+            width: 38mm; height: 38mm;
+            z-index: 2;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .info-content {
+            position: absolute;
+            width: 100%; padding: 4mm;
+            z-index: 3;
+        }
+        .title-en { font-family: 'Courier Prime', monospace; font-size: 5pt; font-weight: 700; letter-spacing: 1px;}
+        .title-id { font-family: 'Montserrat', sans-serif; font-size: 14pt; font-weight: 900; line-height: 1; letter-spacing: -0.5px; margin-bottom: 2mm;}
+        .quote { font-size: 5.5pt; font-weight: 800; font-style: italic; margin-bottom: 2mm; padding: 1mm 2mm; line-height: 1.3;}
+        .desc { font-size: 5.5pt; color: #111; line-height: 1.4; font-weight: 600; text-align: justify;}
+
+        /* ========================================================
+           1. WEREWOLF (SLASH KIRI ATAS)
+           Tema: Merah Darah & Hitam
+        ======================================================== */
+        .t-ww .slash-bg {
+            top: -12mm; left: -15mm; width: 65mm; height: 65mm;
+            background: #b71c1c; transform: rotate(-25deg);
+            border-bottom: 2.5px solid #ff5252;
+        }
+        .t-ww .slash-pattern {
+            background-image: radial-gradient(circle at 80% 20%, rgba(11,11,11,0.8) 1px, transparent 2px), radial-gradient(circle at 90% 40%, rgba(11,11,11,0.6) 2px, transparent 3px);
+            background-size: 15px 15px;
+        }
+        .t-ww .faction-content { top: 3mm; left: 3mm; transform: rotate(-25deg); }
+        .t-ww .faction-name { font-family: 'Creepster', cursive; color: #ff5252; }
+        .t-ww .art-box { top: 12mm; left: 8mm; transform: rotate(-10deg); }
+        .t-ww .info-content {
+            bottom: 0; left: 0; background: linear-gradient(to top, #ffffff 75%, transparent 100%);
+        }
+        .t-ww .title-en { color: #b71c1c; }
+        .t-ww .title-id { color: #111; }
+        .t-ww .quote { color: #fff; background: #b71c1c; border-left: 3px solid #111; }
+        .t-ww .desc strong { color: #b71c1c; font-weight: 900; text-transform: uppercase;}
+
+        /* ========================================================
+           2. SEER (SLASH KANAN ATAS)
+           Tema: Navy Blue & Emas
+        ======================================================== */
+        .t-seer .slash-bg {
+            top: -12mm; right: -15mm; width: 65mm; height: 65mm;
+            background: #0d47a1; transform: rotate(25deg);
+            border-bottom: 2.5px solid #d4af37;
+        }
+        .t-seer .slash-pattern {
+            background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 5mm 5mm;
+        }
+        .t-seer .faction-content { top: 3mm; right: 3mm; transform: rotate(25deg); text-align: right; }
+        .t-seer .faction-name { font-family: 'Cinzel', serif; font-weight: 900; color: #d4af37; }
+        .t-seer .art-box { top: 12mm; right: 8mm; transform: rotate(10deg); }
+        .t-seer .info-content {
+            bottom: 0; left: 0; background: linear-gradient(to top, #ffffff 75%, transparent 100%);
+        }
+        .t-seer .title-en { color: #0d47a1; }
+        .t-seer .title-id { color: #111; }
+        .t-seer .quote { color: #0d47a1; border-left: 2px solid #d4af37; border-right: 2px solid #d4af37; background: #f0f4c3; }
+        .t-seer .desc strong { color: #0d47a1; font-weight: 900; text-transform: uppercase;}
+
+        /* ========================================================
+           3. HUNTER (SLASH KIRI BAWAH)
+           Tema: Coklat Karat & Oranye Api
+        ======================================================== */
+        .t-hunt .slash-bg {
+            bottom: -15mm; left: -15mm; width: 65mm; height: 65mm;
+            background: #3e2723; transform: rotate(35deg);
+            border-top: 2.5px solid #d84315;
+        }
+        .t-hunt .slash-pattern {
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(216, 67, 21, 0.2) 5px, rgba(216, 67, 21, 0.2) 10px);
+        }
+        .t-hunt .faction-content { bottom: 3mm; left: 3mm; transform: rotate(35deg); }
+        .t-hunt .faction-name { font-family: 'Rye', serif; color: #d84315; }
+        .t-hunt .art-box { bottom: 12mm; left: 6mm; transform: rotate(15deg); }
+        .t-hunt .info-content {
+            top: 0; left: 0; background: linear-gradient(to bottom, #ffffff 75%, transparent 100%);
+        }
+        .t-hunt .title-en { color: #d84315; }
+        .t-hunt .title-id { color: #3e2723; }
+        .t-hunt .quote { color: #3e2723; background: rgba(216, 67, 21, 0.15); border-left: 3px solid #d84315; }
+        .t-hunt .desc strong { color: #d84315; font-weight: 900; text-transform: uppercase;}
+
+        /* ========================================================
+           4. JESTER (SLASH KANAN BAWAH)
+           Tema: Hijau Racun & Magenta Gelap
+        ======================================================== */
+        .t-jest .slash-bg {
+            bottom: -15mm; right: -15mm; width: 65mm; height: 65mm;
+            background: #00e676; transform: rotate(-35deg);
+            border-top: 2.5px solid #d500f9;
+            box-shadow: inset 0 0 30px rgba(213,0,249,0.5);
+        }
+        .t-jest .slash-pattern {
+            background-image: radial-gradient(rgba(213,0,249,0.4) 2px, transparent 2px);
+            background-size: 10px 10px;
+        }
+        .t-jest .faction-content { bottom: 3mm; right: 3mm; transform: rotate(-35deg); text-align: right;}
+        .t-jest .faction-name { font-family: 'Courier Prime', monospace; color: #d500f9; font-weight: bold;}
+        .t-jest .faction-code { background: #d500f9; color: #fff;}
+        .t-jest .art-box { bottom: 12mm; right: 6mm; transform: rotate(-15deg); }
+        .t-jest .info-content {
+            top: 0; left: 0; background: linear-gradient(to bottom, #ffffff 75%, transparent 100%);
+        }
+        .t-jest .title-en { color: #00c853; }
+        .t-jest .title-id { color: #d500f9; font-family: 'Creepster', cursive; font-size: 16pt; letter-spacing: 1px;}
+        .t-jest .quote { color: #fff; background: #111; border-bottom: 2px dashed #00e676; }
+        .t-jest .desc strong { color: #d500f9; font-weight: 900; text-transform: uppercase;}
+
+        /* ========================================================
+           5. GUARDIAN (TANGKISAN DARI ATAS TENGAH)
+           Tema: Hijau Zamrud & Perak
+        ======================================================== */
+        .t-grd .slash-bg {
+            top: -20mm; left: -10mm; width: 80mm; height: 50mm;
+            background: #004d40; transform: rotate(-5deg);
+            border-bottom: 3px solid #80cbc4;
+        }
+        .t-grd .slash-pattern {
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(128, 203, 196, 0.1) 10px, rgba(128, 203, 196, 0.1) 11px);
+        }
+        .t-grd .faction-content { top: 3mm; left: 50%; transform: translateX(-50%) rotate(-5deg); text-align: center;}
+        .t-grd .faction-name { font-family: 'Cinzel', serif; color: #80cbc4; font-weight: 900;}
+        .t-grd .art-box { top: 18mm; left: 50%; transform: translateX(-50%); width: 32mm; height: 32mm;}
+        .t-grd .info-content {
+            bottom: 0; left: 0; background: linear-gradient(to top, #ffffff 65%, transparent 100%); text-align: center;
+        }
+        .t-grd .title-en { color: #80cbc4; }
+        .t-grd .title-id { color: #004d40; }
+        .t-grd .quote { color: #004d40; border-top: 1px solid #80cbc4; border-bottom: 1px solid #80cbc4; }
+        .t-grd .desc { text-align: center; }
+        .t-grd .desc strong { color: #00695c; font-weight: 900; text-transform: uppercase;}
+
+        /* ========================================================
+           6. KARTU BELAKANG (DIAGONAL MASSIVE SLASH)
+           Tema: Hitam & Emas Bersinar
+        ======================================================== */
+        .t-back {
+            background: #111;
+        }
+        .t-back .slash-bg {
+            top: -10mm; left: -20mm; width: 100mm; height: 40mm;
+            background: #d4af37; transform: rotate(45deg);
+            box-shadow: 0 0 20px rgba(212,175,55,0.6);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .t-back .slash-pattern {
+            background-image: repeating-linear-gradient(90deg, rgba(0,0,0,0.1) 0, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 8px);
+        }
+        .t-back .logo-text {
+            position: absolute; width: 100%; text-align: center;
+            font-family: 'Cinzel', serif; font-size: 8pt; font-weight: 900; letter-spacing: 5px;
+            color: #d4af37;
+        }
+        .t-back .top-text { top: 12mm; }
+        .t-back .bot-text { bottom: 12mm; color: #555; font-family: 'Montserrat', sans-serif; font-size: 5pt;}
+        .t-back .center-emblem {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 45mm; height: 45mm; z-index: 5;
+            filter: drop-shadow(0 0 10px rgba(212,175,55,0.5));
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="showcase-title">WEREWOLF: SLASHED REVEAL EDITION</div>
+    <div class="showcase-desc">Desain asimetris agresif di mana setiap faksi memiliki arah koyakan dan gaya ilustrasi yang unik.</div>
+
+    <!-- 1. KARTU WEREWOLF (Koyakan Kiri Atas) -->
+    <div class="card-slashed t-ww">
+        <div class="slash-bg">
+            <div class="slash-pattern"></div>
+        </div>
+        
+        <div class="faction-content">
+            <div class="faction-name">SHADOWS</div>
+            <div class="faction-code">WW-66</div>
+        </div>
+
+        <div class="art-box">
+            <!-- SVG Werewolf: Tengkorak Serigala Merah -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <path d="M 20 60 Q 40 40 60 60 Q 40 70 20 60 Z" fill="#111" stroke="#ff5252" stroke-width="1.5"/>
+                <circle cx="40" cy="58" r="4" fill="#ff5252"/>
+                <circle cx="41" cy="57" r="1.5" fill="#fff"/>
+                
+                <polygon points="50,90 55,70 60,90" fill="#111"/>
+                <polygon points="65,85 68,72 72,85" fill="#111"/>
+                <polygon points="75,95 80,75 85,95" fill="#111"/>
+                
+                <path d="M 80 20 Q 90 50 85 90" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/>
+                <path d="M 60 10 Q 75 50 65 100" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <div class="info-content">
+            <div class="title-en">NIGHT PREDATOR</div>
+            <div class="title-id">SERIGALA</div>
+            <div class="quote">"Domba yang malang, kalian membiarkan monster menjaga pintu kandang."</div>
+            <div class="desc">
+                Bangkitlah di kegelapan malam. Berkomunikasilah secara rahasia dengan klan serigala lainnya untuk <strong>merobek leher satu korban</strong> tanpa ampun. Di siang hari, kenakan topeng kepolosanmu.
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. KARTU SEER (Koyakan Kanan Atas) -->
+    <div class="card-slashed t-seer">
+        <div class="slash-bg">
+            <div class="slash-pattern"></div>
+        </div>
+        
+        <div class="faction-content">
+            <div class="faction-name">ALLIANCE</div>
+            <div class="faction-code" style="color: #0d47a1; background: #d4af37;">SEE-01</div>
+        </div>
+
+        <div class="art-box">
+            <!-- SVG Seer: Mata Bintang & Bulan Sabit -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <path d="M 10 50 A 40 40 0 1 1 50 90 A 45 45 0 0 0 10 50 Z" fill="#d4af37"/>
+                <circle cx="50" cy="50" r="30" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="4 4"/>
+                
+                <path d="M 30 50 Q 50 35 70 50 Q 50 65 30 50 Z" fill="#fff" stroke="#0d47a1" stroke-width="2"/>
+                <circle cx="50" cy="50" r="8" fill="#d4af37"/>
+                <circle cx="50" cy="50" r="3" fill="#0d47a1"/>
+                
+                <circle cx="75" cy="25" r="2" fill="#fff"/>
+                <circle cx="85" cy="40" r="1.5" fill="#fff"/>
+                <circle cx="25" cy="75" r="2" fill="#fff"/>
+                <line x1="75" y1="25" x2="50" y2="50" stroke="#fff" stroke-width="0.5" opacity="0.5"/>
+            </svg>
+        </div>
+
+        <div class="info-content">
+            <div class="title-en">MYSTIC VISIONARY</div>
+            <div class="title-id">SANG PERAMAL</div>
+            <div class="quote">"Kebenaran seringkali bersembunyi di balik robekan realita dan kebohongan."</div>
+            <div class="desc">
+                Setiap malam, pilih satu pemain untuk diterawang. Moderator akan memberi sinyal apakah ia <strong>Serigala atau bukan</strong>. Bimbing warga di siang hari tanpa membongkar identitasmu sendiri.
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. KARTU HUNTER (Koyakan Kiri Bawah) -->
+    <div class="card-slashed t-hunt">
+        <div class="slash-bg">
+            <div class="slash-pattern"></div>
+        </div>
+        
+        <div class="info-content">
+            <div class="title-en">VETERAN MARKSMAN</div>
+            <div class="title-id">PEMBURU</div>
+            <div class="quote">"Satu tarikan pelatuk untuk membalas luka cabikan yang menembus dadaku."</div>
+            <div class="desc">
+                Jika kamu terbunuh oleh serigala di malam hari atau mati digantung warga, kamu memiliki satu napas terakhir untuk <strong>menembak mati satu pemain lain</strong> untuk ikut bersamamu ke alam baka.
+            </div>
+        </div>
+
+        <div class="art-box">
+            <!-- SVG Hunter: Crossbow membidik cakaran -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <!-- Cakaran berdarah di latar -->
+                <path d="M 20 20 Q 30 50 25 80 M 40 10 Q 50 50 45 90 M 60 20 Q 70 50 65 80" fill="none" stroke="#d84315" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+                
+                <!-- Crossbow -->
+                <line x1="85" y1="15" x2="25" y2="75" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+                <line x1="85" y1="15" x2="25" y2="75" stroke="#3e2723" stroke-width="2" stroke-linecap="round"/>
+                <path d="M 50 15 Q 80 40 85 70" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                <line x1="50" y1="15" x2="85" y2="70" stroke="#d84315" stroke-width="1.5" stroke-dasharray="2 2"/>
+                
+                <!-- Anak panah -->
+                <line x1="75" y1="25" x2="35" y2="65" stroke="#d84315" stroke-width="3"/>
+                <polygon points="35,65 25,60 30,70" fill="#fff"/>
+            </svg>
+        </div>
+
+        <div class="faction-content">
+            <div class="faction-name">ALLIANCE</div>
+            <div class="faction-code" style="background: #fff; color: #3e2723;">HNT-99</div>
+        </div>
+    </div>
+
+    <!-- 4. KARTU JESTER (Koyakan Kanan Bawah) -->
+    <div class="card-slashed t-jest">
+        <div class="slash-bg">
+            <div class="slash-pattern"></div>
+        </div>
+        
+        <div class="info-content">
+            <div class="title-en">THE TRICKSTER</div>
+            <div class="title-id">BADUT GILA</div>
+            <div class="quote">"Hahaha! Sayat lagi! Potongan ini membuat senyumku makin lebar di tiang gantungan!"</div>
+            <div class="desc">
+                Kemenanganmu diukur dari penderitaanmu. Manipulasi dan bertingkahlah mencurigakan. Jika kamu sukses memprovokasi warga sehingga <strong>dieksekusi di siang hari</strong>, kamu menang mutlak.
+            </div>
+        </div>
+
+        <div class="art-box">
+            <!-- SVG Jester: Topeng Seram Terbelah -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#111" stroke-width="2"/>
+                
+                <!-- Wajah Kiri -->
+                <path d="M 50 10 C 20 10 10 50 30 80 Q 50 90 50 90 Z" fill="#fff" stroke="#111" stroke-width="2"/>
+                <line x1="25" y1="35" x2="40" y2="50" stroke="#111" stroke-width="3"/>
+                <line x1="40" y1="35" x2="25" y2="50" stroke="#111" stroke-width="3"/>
+                
+                <!-- Wajah Kanan (Gila) -->
+                <path d="M 50 10 C 80 10 90 50 70 80 Q 50 90 50 90 Z" fill="#111" stroke="#111" stroke-width="2"/>
+                <circle cx="65" cy="42" r="8" fill="#d500f9"/>
+                <circle cx="65" cy="42" r="3" fill="#fff"/>
+                
+                <!-- Senyum Terjahit -->
+                <path d="M 25 65 Q 50 85 75 60" fill="none" stroke="#d500f9" stroke-width="4" stroke-linecap="round"/>
+                <line x1="35" y1="65" x2="40" y2="75" stroke="#111" stroke-width="2"/>
+                <line x1="50" y1="68" x2="55" y2="78" stroke="#111" stroke-width="2"/>
+                <line x1="65" y1="62" x2="70" y2="72" stroke="#111" stroke-width="2"/>
+            </svg>
+        </div>
+
+        <div class="faction-content">
+            <div class="faction-name">NEUTRAL</div>
+            <div class="faction-code">JST-00</div>
+        </div>
+    </div>
+
+    <!-- 5. KARTU GUARDIAN (Tangkisan Dari Atas) -->
+    <div class="card-slashed t-grd">
+        <div class="slash-bg">
+            <div class="slash-pattern"></div>
+        </div>
+        
+        <div class="faction-content">
+            <div class="faction-name">ALLIANCE</div>
+            <div class="faction-code" style="background: #80cbc4; color: #004d40;">GRD-07</div>
+        </div>
+
+        <div class="art-box">
+            <!-- SVG Guardian: Sayap Menangkis Serangan -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <!-- Cakaran merah yang ditahan -->
+                <path d="M 30 -10 L 30 40 M 50 -10 L 50 50 M 70 -10 L 70 40" stroke="#ff5252" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+                
+                <!-- Perisai Bersayap -->
+                <polygon points="50,30 75,40 65,80 50,95 35,80 25,40" fill="#004d40" stroke="#80cbc4" stroke-width="2.5" stroke-linejoin="round"/>
+                <polygon points="50,35 68,43 60,75 50,88 40,75 32,43" fill="#fff"/>
+                
+                <path d="M 50 45 C 30 45 15 60 25 85 C 35 75 45 70 50 85" fill="none" stroke="#004d40" stroke-width="2"/>
+                <path d="M 50 45 C 70 45 85 60 75 85 C 65 75 55 70 50 85" fill="none" stroke="#004d40" stroke-width="2"/>
+                
+                <!-- Bintang di tengah perisai -->
+                <polygon points="50,55 53,62 60,62 55,67 57,74 50,70 43,74 45,67 40,62 47,62" fill="#004d40"/>
+            </svg>
+        </div>
+
+        <div class="info-content">
+            <div class="title-en">HOLY PROTECTOR</div>
+            <div class="title-id">PELINDUNG</div>
+            <div class="quote">"Biar sayap ini yang terkoyak, asalkan nyawamu tetap utuh hingga fajar tiba."</div>
+            <div class="desc">
+                Setiap malam, pilih satu pemain untuk dilindungi. Jika pemain tersebut menjadi target serigala, <strong>mereka akan selamat dari kematian</strong>. Kamu dilarang melindungi pemain yang sama 2 malam berturut-turut.
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. KARTU BELAKANG (Diagonal Massive Slash) -->
+    <div class="card-slashed t-back">
+        <div class="slash-bg">
+            <div class="slash-pattern"></div>
+        </div>
+        
+        <div class="logo-text top-text">OBSIDIAN</div>
+        
+        <div class="center-emblem">
+            <!-- SVG Back: Wolf Emblem -->
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <circle cx="50" cy="50" r="48" fill="#111" stroke="#d4af37" stroke-width="2"/>
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#d4af37" stroke-width="1" stroke-dasharray="4 4"/>
+                
+                <!-- Geometri Bintang -->
+                <polygon points="50,15 80,35 80,65 50,85 20,65 20,35" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+                <polygon points="50,22 74,36 74,64 50,78 26,64 26,36" fill="rgba(212,175,55,0.1)" stroke="#d4af37" stroke-width="0.5" transform="rotate(30 50 50)"/>
+                
+                <!-- Kepala Serigala Emas -->
+                <path d="M 50 30 L 65 45 L 60 70 L 50 60 L 40 70 L 35 45 Z" fill="#d4af37" stroke="#111" stroke-width="1.5" stroke-linejoin="round"/>
+                <polygon points="45,45 55,45 50,55" fill="#111"/> <!-- Hidung/Mata -->
+                <polygon points="40,70 45,60 50,65 55,60 60,70 50,75 Z" fill="#111"/> <!-- Mulut Bawah -->
+            </svg>
+        </div>
+
+        <div class="logo-text bot-text">THE VANGUARD DECK</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Duality Collection - Nightmare Asylum</title>
+    <!-- Premium Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Montserrat:ital,wght@0,400;0,600;0,800;0,900;1,600;1,800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Oswald:wght@500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu */
+            --w: 54mm;
+            --h: 85.6mm;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0a0a0c;
+            background-image: radial-gradient(circle at 50% 0%, #1f1f24 0%, #0a0a0c 80%);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-title h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            letter-spacing: 6px;
+            color: #fdfdfd;
+            margin: 0 0 10px 0;
+            text-shadow: 0 5px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .page-title p {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #bbb;
+            letter-spacing: 1px;
+        }
+
+        .deck-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            justify-content: center;
+            max-width: 1600px;
+            /* Zoom untuk tampilan web */
+            zoom: 1.6;
+        }
+
+        /* ====================================================
+           BASE CARD (DUALITY SYSTEM)
+           ==================================================== */
+        .card {
+            width: var(--w);
+            height: var(--h);
+            position: relative;
+            border-radius: 3mm;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            cursor: pointer;
+            background: var(--bg-left);
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 45px rgba(255, 255, 255, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
+            z-index: 10;
+        }
+
+        /* Split Background Right */
+        .split-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: var(--bg-right);
+            clip-path: var(--clip-shape);
+            z-index: 1;
+        }
+
+        /* Split Line / Divider Decoration */
+        .split-line {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Content Wrapper */
+        .content {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Header (Code & Faction) */
+        .head-area {
+            display: flex;
+            justify-content: space-between;
+            padding: 2.5mm 3mm;
+            /* Dikecilkan paddingnya agar luas untuk teks bawah */
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6pt;
+            /* DIBESARKAN dari 4.5pt */
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .code-txt {
+            color: var(--text-left);
+        }
+
+        .faction-txt {
+            color: var(--text-right);
+            text-align: right;
+        }
+
+        /* Artwork Area */
+        .art-area {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .art-area svg {
+            width: 36mm;
+            /* DIKECILKAN dari 42mm agar muat teks besar */
+            height: 36mm;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Bottom Info Box */
+        .info-box {
+            margin: 0 2mm 2.5mm 2mm;
+            /* Margin disesuaikan */
+            background: #ffffff;
+            border-radius: 1.5mm;
+            padding: 1.5mm 2mm;
+            /* Padding disesuaikan */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            border: 0.4mm solid var(--border-box);
+            position: relative;
+        }
+
+        .role-en {
+            font-family: 'Oswald', sans-serif;
+            font-size: 5.5pt;
+            /* DIBESARKAN dari 4.5pt */
+            color: #777;
+            letter-spacing: 1.5px;
+            text-align: center;
+            margin-bottom: 0.2mm;
+        }
+
+        .role-id {
+            font-family: 'Cinzel', serif;
+            font-size: 13pt;
+            /* DIBESARKAN dari 12pt */
+            color: #111;
+            font-weight: 900;
+            text-align: center;
+            line-height: 1;
+            margin-bottom: 1mm;
+        }
+
+        .quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 5.5pt;
+            /* DIBESARKAN dari 4.5pt */
+            font-style: italic;
+            font-weight: 700;
+            color: #444;
+            text-align: center;
+            line-height: 1.25;
+            margin-bottom: 1mm;
+            padding: 0 1mm;
+            border-bottom: 0.2mm dashed #ccc;
+            padding-bottom: 1mm;
+        }
+
+        .ability-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6pt;
+            /* DIBESARKAN dari 4.5pt */
+            color: var(--border-box);
+            font-weight: 900;
+            margin-bottom: 0.5mm;
+        }
+
+        .ability-desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5pt;
+            /* DIBESARKAN dari 4pt */
+            color: #222;
+            font-weight: 600;
+            line-height: 1.3;
+            text-align: justify;
+        }
+
+        /* ====================================================
+           1. MODERATOR (Observer vs Puppeteer)
+           ==================================================== */
+        .c-mod {
+            --bg-left: #f0f2f5;
+            --bg-right: #120e1f;
+            --text-left: #2c3e50;
+            --text-right: #d4af37;
+            --clip-shape: polygon(100% 0, 50% 0, 60% 20%, 40% 50%, 60% 80%, 50% 100%, 100% 100%);
+            --border-box: #120e1f;
+        }
+
+        .c-mod .split-line::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #d4af37;
+            clip-path: polygon(50% 0, 51% 0, 61% 20%, 41% 50%, 61% 80%, 51% 100%, 50% 100%, 60% 80%, 40% 50%, 60% 20%, 50% 0);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* ====================================================
+           2. JESTER (Sanity vs Madness)
+           ==================================================== */
+        .c-jester {
+            --bg-left: #fdfdfd;
+            --bg-right: #7fff00;
+            --text-left: #702963;
+            --text-right: #702963;
+            --clip-shape: polygon(48% 0, 100% 0, 100% 100%, 55% 100%);
+            --border-box: #702963;
+        }
+
+        .c-jester .split-line {
+            border-right: 0.6mm dashed #702963;
+            width: 51%;
+            transform: skewX(-4deg);
+        }
+
+        /* ====================================================
+           3. SEER (Physical Blindness vs Astral Vision)
+           ==================================================== */
+        .c-seer {
+            --bg-left: #e8ded1;
+            --bg-right: #0b1d3a;
+            --text-left: #5c4d3c;
+            --text-right: #d4af37;
+            --clip-shape: ellipse(65% 100% at 100% 50%);
+            --border-box: #0b1d3a;
+        }
+
+        .c-seer .split-line {
+            background: radial-gradient(ellipse 65% 100% at 100% 50%, transparent 98.5%, #d4af37 99%, transparent 100%);
+        }
+
+        /* ====================================================
+           4. WEREWOLF (Human Innocence vs Bestial Blood)
+           ==================================================== */
+        .c-wolf {
+            --bg-left: #f4f1ea;
+            --bg-right: #6e0b0b;
+            --text-left: #333;
+            --text-right: #ffb3b3;
+            --clip-shape: polygon(100% 0, 60% 0, 45% 20%, 55% 40%, 35% 60%, 50% 80%, 40% 100%, 100% 100%);
+            --border-box: #6e0b0b;
+        }
+
+        .c-wolf .split-line {
+            filter: drop-shadow(-2px 0 2px rgba(0, 0, 0, 0.4));
+        }
+
+        /* ====================================================
+           5. HUNTER (Calculated Calm vs Lethal Strike)
+           ==================================================== */
+        .c-hunt {
+            --bg-left: #2d3a28;
+            --bg-right: #cc6633;
+            --text-left: #a9bca1;
+            --text-right: #2d3a28;
+            --clip-shape: polygon(100% 0, 30% 0, 80% 100%, 100% 100%);
+            --border-box: #2d3a28;
+        }
+
+        .c-hunt .split-line {
+            background: linear-gradient(108deg, transparent 49.5%, #fdfdfd 50%, transparent 50.5%);
+        }
+
+        /* ====================================================
+           6. GUARDIAN (Pristine Defense vs Shattered Impact)
+           ==================================================== */
+        .c-guard {
+            --bg-left: #fdfdfd;
+            --bg-right: #2c3e50;
+            --text-left: #2c3e50;
+            --text-right: #aab7c4;
+            --clip-shape: polygon(100% 0, 50% 0, 50% 30%, 65% 30%, 65% 60%, 45% 60%, 45% 85%, 55% 85%, 55% 100%, 100% 100%);
+            --border-box: #2c3e50;
+        }
+
+        .c-guard .split-line::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #d4af37;
+            clip-path: polygon(50% 0, 51% 0, 51% 29%, 66% 29%, 66% 30%, 50% 30%, 50% 0,
+                    65% 30%, 66% 30%, 66% 59%, 46% 59%, 46% 60%, 65% 60%, 65% 30%,
+                    45% 60%, 46% 60%, 46% 84%, 56% 84%, 56% 85%, 45% 85%, 45% 60%,
+                    55% 85%, 56% 85%, 56% 100%, 55% 100%, 55% 85%);
+        }
+
+        /* ====================================================
+           7. CUPID (Pure Love vs Fatal Bond)
+           ==================================================== */
+        .c-cupid {
+            --bg-left: #fff0f3;
+            --bg-right: #4a0010;
+            --text-left: #800f2f;
+            --text-right: #ffb3c1;
+            --clip-shape: polygon(100% 0, 50% 0, 30% 50%, 50% 100%, 100% 100%);
+            --border-box: #800f2f;
+        }
+
+        .c-cupid .split-line::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #ff4d6d;
+            clip-path: polygon(50% 0, 51% 0, 31% 50%, 51% 100%, 50% 100%, 30% 50%);
+            box-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+        }
+
+        /* ====================================================
+           8. CARD BACK (Day Alliance vs Night Shadows)
+           ==================================================== */
+        .c-back {
+            --bg-left: #fcf1d8;
+            --bg-right: #111115;
+            --clip-shape: polygon(100% 0, 60% 0, 40% 100%, 100% 100%);
+        }
+
+        .c-back .art-area svg {
+            width: 45mm;
+            height: 45mm;
+        }
+
+        .c-back .split-line {
+            background: linear-gradient(101deg, transparent 49%, #d4af37 49.5%, #d4af37 50.5%, transparent 51%);
+        }
+
+        .c-back .title-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel', serif;
+            font-size: 16pt;
+            /* DIBESARKAN */
+            font-weight: 900;
+            color: #d4af37;
+            text-align: center;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            background: #111;
+            padding: 2mm 4mm;
+            border: 0.3mm solid #d4af37;
+            border-radius: 1mm;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-title">
+        <h1>NIGHTMARE ASYLUM</h1>
+        <p>The Duality Collection - Asymmetric Masterpieces</p>
+    </div>
+
+    <div class="deck-container">
+
+        <!-- KARTU 1: MODERATOR -->
+        <div class="card c-mod">
+            <div class="split-right"></div>
+            <div class="split-line"></div>
+            <div class="content">
+                <div class="head-area">
+                    <span class="code-txt">SUP-00</span>
+                    <span class="faction-txt">SUPREME</span>
+                </div>
+                <div class="art-area">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 15 35 Q 30 30 50 40 L 50 80 Q 30 70 15 75 Z" fill="none" stroke="#2c3e50"
+                            stroke-width="1.5" />
+                        <path d="M 20 40 Q 35 35 45 42 L 45 78 Q 35 72 20 77 Z" fill="none" stroke="#2c3e50"
+                            stroke-width="0.8" />
+                        <path d="M 25 45 Q 35 40 40 45 L 40 75 Q 35 70 25 75 Z" fill="none" stroke="#2c3e50"
+                            stroke-width="0.5" />
+                        <circle cx="30" cy="20" r="3" fill="#2c3e50" />
+                        <line x1="30" y1="20" x2="30" y2="30" stroke="#2c3e50" stroke-width="1.5" />
+
+                        <line x1="60" y1="15" x2="90" y2="25" stroke="#d4af37" stroke-width="2" />
+                        <line x1="75" y1="5" x2="80" y2="35" stroke="#d4af37" stroke-width="2" />
+                        <line x1="60" y1="15" x2="65" y2="80" stroke="#d4af37" stroke-width="0.8"
+                            stroke-dasharray="2 2" />
+                        <line x1="90" y1="25" x2="85" y2="75" stroke="#d4af37" stroke-width="0.8"
+                            stroke-dasharray="2 2" />
+                        <line x1="75" y1="5" x2="70" y2="85" stroke="#d4af37" stroke-width="0.8"
+                            stroke-dasharray="2 2" />
+                        <line x1="80" y1="35" x2="95" y2="80" stroke="#d4af37" stroke-width="0.8"
+                            stroke-dasharray="2 2" />
+
+                        <path d="M 35 50 Q 50 35 65 50 Q 50 65 35 50 Z" fill="#120e1f" stroke="#d4af37"
+                            stroke-width="2.5" />
+                        <circle cx="50" cy="50" r="7" fill="#d4af37" />
+                        <circle cx="50" cy="50" r="2.5" fill="#120e1f" />
+                    </svg>
+                </div>
+                <div class="info-box">
+                    <div class="role-en">THE MODERATOR</div>
+                    <div class="role-id">SANG NARATOR</div>
+                    <div class="quote">"Panggung ini milikku. Kalian hanyalah bidak rapuh yang menari di atas naskah
+                        yang telah kutulis."</div>
+                    <div class="ability-title">HUKUM MUTLAK</div>
+                    <div class="ability-desc">Bertindak sebagai arsitek mutlak permainan. Mengontrol seluruh narasi,
+                        pergantian fase siang/malam, dan interaksi pemain.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 2: JESTER -->
+        <div class="card c-jester">
+            <div class="split-right"></div>
+            <div class="split-line"></div>
+            <div class="content">
+                <div class="head-area">
+                    <span class="code-txt">JST-00</span>
+                    <span class="faction-txt">CHAOS</span>
+                </div>
+                <div class="art-area">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 50 15 C 20 15 15 45 25 75 C 30 85 45 90 50 90 Z" fill="#fff" stroke="#d4af37"
+                            stroke-width="2" />
+                        <ellipse cx="33" cy="45" rx="5" ry="3" fill="#d4af37" />
+                        <path d="M 33 25 Q 38 20 43 25" fill="none" stroke="#d4af37" stroke-width="1.5" />
+                        <path d="M 28 70 Q 40 75 50 70" fill="none" stroke="#d4af37" stroke-width="2" />
+
+                        <path d="M 50 15 C 80 10 90 40 80 80 C 70 95 50 90 50 90 Z" fill="none" stroke="#702963"
+                            stroke-width="3" />
+                        <path d="M 50 15 C 80 10 90 40 80 80 C 70 95 50 90 50 90 Z" fill="#111" opacity="0.1" />
+                        <polygon points="58,40 75,35 68,52" fill="#702963" />
+                        <circle cx="68" cy="42" r="2.5" fill="#7fff00" />
+                        <path d="M 50 70 Q 70 95 85 60" fill="none" stroke="#702963" stroke-width="4" />
+                        <path d="M 55 74 L 60 68 M 65 80 L 68 70 M 75 75 L 75 65" stroke="#702963" stroke-width="2" />
+                        <path d="M 60 10 Q 70 -5 85 15" fill="none" stroke="#702963" stroke-width="2"
+                            stroke-dasharray="2 2" />
+                    </svg>
+                </div>
+                <div class="info-box">
+                    <div class="role-en">THE JESTER</div>
+                    <div class="role-id">SANG BADUT</div>
+                    <div class="quote">"Sebelah mataku menangis, sebelahnya tertawa. Tali gantungan itu... sungguh
+                        lelucon yang sempurna!"</div>
+                    <div class="ability-title">KEMENANGAN GILA</div>
+                    <div class="ability-desc">Faksi Independen. Kamu menang telak dan permainan berakhir seketika jika
+                        kamu berhasil memanipulasi warga untuk memvotingmu mati.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 3: SEER -->
+        <div class="card c-seer">
+            <div class="split-right"></div>
+            <div class="split-line"></div>
+            <div class="content">
+                <div class="head-area">
+                    <span class="code-txt">SER-01</span>
+                    <span class="faction-txt">ALLIANCE</span>
+                </div>
+                <div class="art-area">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 50 25 Q 20 25 10 50 Q 20 75 50 75" fill="none" stroke="#5c4d3c" stroke-width="2" />
+                        <path d="M 15 50 Q 30 65 50 65" fill="none" stroke="#5c4d3c" stroke-width="1.5" />
+                        <line x1="25" y1="60" x2="20" y2="70" stroke="#5c4d3c" stroke-width="1.5" />
+                        <line x1="35" y1="63" x2="35" y2="75" stroke="#5c4d3c" stroke-width="1.5" />
+                        <line x1="45" y1="65" x2="48" y2="78" stroke="#5c4d3c" stroke-width="1.5" />
+                        <path d="M 35 80 Q 35 85 32 85 Q 29 85 29 80 L 32 75 Z" fill="#8ea4b3" />
+
+                        <path d="M 50 25 Q 80 25 90 50 Q 80 75 50 75" fill="none" stroke="#d4af37" stroke-width="2" />
+                        <circle cx="65" cy="50" r="12" fill="none" stroke="#d4af37" stroke-width="1.5" />
+                        <circle cx="65" cy="50" r="4" fill="#d4af37" />
+                        <path d="M 70 20 L 72 25 L 77 25 L 73 28 L 75 33 L 70 30 L 65 33 L 67 28 L 63 25 L 68 25 Z"
+                            fill="#d4af37" />
+                        <circle cx="85" cy="35" r="2" fill="#fff" />
+                        <circle cx="80" cy="65" r="1.5" fill="#fff" />
+                        <line x1="65" y1="50" x2="85" y2="35" stroke="#d4af37" stroke-width="0.5"
+                            stroke-dasharray="1 1" />
+                        <line x1="65" y1="50" x2="80" y2="65" stroke="#d4af37" stroke-width="0.5"
+                            stroke-dasharray="1 1" />
+                    </svg>
+                </div>
+                <div class="info-box">
+                    <div class="role-en">THE SEER</div>
+                    <div class="role-id">SANG PERAMAL</div>
+                    <div class="quote">"Mata fisikku buta oleh tipu daya dunia, namun mata batinku melihat wujud
+                        monstermu dengan jelas."</div>
+                    <div class="ability-title">PENGLIHATAN ASTRAL</div>
+                    <div class="ability-desc">Bangun setiap malam dan pilih 1 pemain. Narator akan memberi isyarat
+                        rahasia apakah ia adalah Serigala atau Warga biasa.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 4: WEREWOLF -->
+        <div class="card c-wolf">
+            <div class="split-right" style="filter: drop-shadow(-3px 0 0 #330000);"></div>
+            <div class="split-line"></div>
+            <div class="content">
+                <div class="head-area">
+                    <span class="code-txt">WWF-06</span>
+                    <span class="faction-txt">SHADOWS</span>
+                </div>
+                <div class="art-area">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 50 15 C 35 15 20 25 20 45 C 20 60 25 65 25 75 L 50 75" fill="none" stroke="#6e0b0b"
+                            stroke-width="1.5" />
+                        <path d="M 20 45 Q 25 50 25 55" fill="none" stroke="#6e0b0b" stroke-width="1" />
+                        <path d="M 28 42 Q 35 40 40 42 Q 35 44 28 42 Z" fill="#6e0b0b" />
+
+                        <path d="M 50 15 L 65 20 L 70 10 L 80 30 C 90 40 95 60 85 75 C 75 85 60 80 50 85" fill="none"
+                            stroke="#fff" stroke-width="2.5" />
+                        <path d="M 85 75 L 80 65 L 70 70 L 60 65 L 50 75" fill="none" stroke="#fff" stroke-width="2" />
+                        <polygon points="60,40 75,35 68,48" fill="#ffb3b3" />
+                        <circle cx="68" cy="42" r="2" fill="#6e0b0b" />
+                        <polygon points="70,70 72,85 75,70" fill="#fff" />
+                        <polygon points="60,65 62,75 65,65" fill="#fff" />
+                        <circle cx="72" cy="90" r="1.5" fill="#fff" />
+                        <circle cx="62" cy="82" r="1" fill="#fff" />
+                    </svg>
+                </div>
+                <div class="info-box">
+                    <div class="role-en">THE WEREWOLF</div>
+                    <div class="role-id">SANG SERIGALA</div>
+                    <div class="quote">"Di siang hari kami tersenyum bersamamu. Di bawah sinar bulan purnama, senyum itu
+                        berubah menjadi taring."</div>
+                    <div class="ability-title">TERKAMAN KAWANAN</div>
+                    <div class="ability-desc">Berbaur di siang hari. Bangun bersama klan serigala lainnya di malam hari
+                        untuk berdiskusi dan memilih 1 mangsa untuk dicabik.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 5: HUNTER -->
+        <div class="card c-hunt">
+            <div class="split-right"></div>
+            <div class="split-line"></div>
+            <div class="content">
+                <div class="head-area">
+                    <span class="code-txt">HNT-99</span>
+                    <span class="faction-txt">ALLIANCE</span>
+                </div>
+                <div class="art-area">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#a9bca1" stroke-width="0.5"
+                            stroke-dasharray="3 3" />
+
+                        <path d="M 50 15 L 45 15 L 45 85 L 50 85" fill="none" stroke="#a9bca1" stroke-width="3" />
+                        <path d="M 50 35 Q 20 30 15 50" fill="none" stroke="#a9bca1" stroke-width="2" />
+                        <line x1="15" y1="50" x2="50" y2="65" stroke="#a9bca1" stroke-width="1" />
+                        <polygon points="45,20 40,30 50,30" fill="#a9bca1" />
+                        <rect x="47" y="20" width="3" height="45" fill="#fdfdfd" />
+
+                        <path d="M 50 35 Q 80 40 85 70" fill="none" stroke="#2d3a28" stroke-width="2" />
+                        <line x1="85" y1="70" x2="65" y2="85" stroke="#2d3a28" stroke-width="1" />
+                        <line x1="60" y1="20" x2="95" y2="20" stroke="#fdfdfd" stroke-width="3"
+                            stroke-dasharray="10 4" />
+                        <polygon points="95,15 105,20 95,25" fill="#fdfdfd" />
+                        <circle cx="65" cy="30" r="1.5" fill="#fdfdfd" />
+                        <circle cx="75" cy="15" r="2" fill="#2d3a28" />
+                        <circle cx="85" cy="35" r="1" fill="#2d3a28" />
+                        <path d="M 55 10 L 60 5 M 55 30 L 65 35" stroke="#2d3a28" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="info-box">
+                    <div class="role-en">THE HUNTER</div>
+                    <div class="role-id">SANG PEMBURU</div>
+                    <div class="quote">"Kesabaranku setenang air di danau, namun seranganku secepat kilat yang menyambar
+                        para pendosa."</div>
+                    <div class="ability-title">TEMBAKAN PENGHAKIMAN</div>
+                    <div class="ability-desc">Jika mati terbunuh serigala atau dieksekusi warga, lepaskan tembakan
+                        peluru perak terakhir untuk menyeret 1 pemain mati bersamamu.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 6: GUARDIAN -->
+        <div class="card c-guard">
+            <div class="split-right"></div>
+            <div class="split-line"></div>
+            <div class="content">
+                <div class="head-area">
+                    <span class="code-txt">GRD-11</span>
+                    <span class="faction-txt">ALLIANCE</span>
+                </div>
+                <div class="art-area">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 50 15 L 20 20 L 20 50 C 20 75 50 95 50 95 C 50 95 80 75 80 50 L 80 20 Z" fill="none"
+                            stroke="#aab7c4" stroke-width="1" />
+
+                        <path d="M 50 15 L 25 19 L 25 50 C 25 70 50 88 50 88" fill="none" stroke="#2c3e50"
+                            stroke-width="3" />
+                        <path d="M 25 30 Q 10 30 5 50 Q 15 60 25 50" fill="#2c3e50" opacity="0.1" />
+                        <line x1="50" y1="15" x2="50" y2="88" stroke="#2c3e50" stroke-width="1.5" />
+                        <line x1="25" y1="40" x2="50" y2="40" stroke="#2c3e50" stroke-width="1.5" />
+                        <circle cx="30" cy="25" r="2" fill="#2c3e50" />
+
+                        <path d="M 50 15 L 75 19 L 75 50 C 75 70 50 88 50 88" fill="#aab7c4" opacity="0.2" />
+                        <path d="M 50 15 L 65 17 L 60 25 L 75 28 L 75 50 C 75 60 65 72 50 88" fill="none"
+                            stroke="#aab7c4" stroke-width="3" />
+                        <path d="M 75 40 L 65 45 L 68 55 L 55 60" fill="none" stroke="#aab7c4" stroke-width="1.5" />
+                        <path d="M 60 25 L 55 35 L 65 45" fill="none" stroke="#aab7c4" stroke-width="1" />
+                        <line x1="90" y1="30" x2="70" y2="42" stroke="#d4af37" stroke-width="2" />
+                        <polygon points="90,30 95,25 88,27" fill="#d4af37" />
+                        <line x1="85" y1="65" x2="68" y2="55" stroke="#d4af37" stroke-width="2" />
+                        <polygon points="85,65 92,68 88,72" fill="#d4af37" />
+                    </svg>
+                </div>
+                <div class="info-box">
+                    <div class="role-en">THE GUARDIAN</div>
+                    <div class="role-id">SANG PELINDUNG</div>
+                    <div class="quote">"Biar perisaiku yang hancur berkeping-keping, asalkan nyawamu tetap utuh di
+                        belakangku malam ini."</div>
+                    <div class="ability-title">BENTENG NYAWA</div>
+                    <div class="ability-desc">Pilih 1 pemain setiap malam. Jika diserang serigala, ia akan selamat. (Tak
+                        bisa melindungi diri sendiri / orang yang sama berturut-turut).</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 7: CUPID -->
+        <div class="card c-cupid">
+            <div class="split-right"></div>
+            <div class="split-line"></div>
+            <div class="content">
+                <div class="head-area">
+                    <span class="code-txt">CPD-14</span>
+                    <span class="faction-txt">NEUTRAL</span>
+                </div>
+                <div class="art-area">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 50 30 C 25 5 5 25 15 50 C 25 70 50 85 50 85" fill="#ffb3c1" stroke="#800f2f"
+                            stroke-width="2" />
+                        <path d="M 20 40 Q 15 45 25 55" fill="none" stroke="#800f2f" stroke-width="1.5" />
+                        <circle cx="25" cy="25" r="1.5" fill="#800f2f" />
+
+                        <path d="M 50 30 C 75 5 95 25 85 50 C 75 70 50 85 50 85" fill="#300712" stroke="#ffb3c1"
+                            stroke-width="2" stroke-dasharray="3 2" />
+                        <path d="M 55 35 Q 70 45 65 60 Q 55 75 55 80" fill="none" stroke="#ffb3c1" stroke-width="1.5" />
+                        <polygon points="60,40 65,38 62,43" fill="#ffb3c1" />
+                        <polygon points="63,55 68,56 64,59" fill="#ffb3c1" />
+                        <path d="M 65 80 Q 65 85 63 88 Q 61 85 61 80 Z" fill="#ff4d6d" />
+
+                        <line x1="10" y1="65" x2="35" y2="52" stroke="#800f2f" stroke-width="2.5" />
+                        <path d="M 10 65 L 5 70 M 15 62 L 10 67 M 13 58 L 8 63" stroke="#800f2f" stroke-width="1.5" />
+
+                        <line x1="35" y1="52" x2="90" y2="23" stroke="#ffb3c1" stroke-width="2.5" />
+                        <polygon points="90,23 80,21 85,30" fill="#ffb3c1" />
+                    </svg>
+                </div>
+                <div class="info-box">
+                    <div class="role-en">THE CUPID</div>
+                    <div class="role-id">SANG DEWA CINTA</div>
+                    <div class="quote">"Cinta sejati adalah sehidup semati. Jika satu jantung berhenti berdetak, jantung
+                        yang lain tak punya alasan berdenyut."</div>
+                    <div class="ability-title">PANAH ASMARA</div>
+                    <div class="ability-desc">Di malam pertama, pilih 2 pemain untuk diikat cintanya secara rahasia.
+                        Jika salah satu dari mereka mati terbunuh, pasangannya akan ikut mati bunuh diri.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 8: THE BACK -->
+        <div class="card c-back">
+            <div class="split-right"></div>
+            <div class="split-line"></div>
+            <div class="title-center">NIGHTMARE<br>ASYLUM</div>
+            <div class="content">
+                <div class="art-area">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="#d4af37" stroke-width="1"
+                            stroke-dasharray="2 2" />
+                        <circle cx="50" cy="50" r="44" fill="none" stroke="#d4af37" stroke-width="0.5" />
+
+                        <g clip-path="url(#leftHalf)">
+                            <path d="M 50 50 L 10 10 M 50 50 L 5 50 M 50 50 L 10 90 M 50 50 L 30 5 M 50 50 L 30 95"
+                                stroke="#d4af37" stroke-width="1.5" />
+                            <path d="M 50 50 L 20 30 M 50 50 L 20 70 M 50 50 L 40 15 M 50 50 L 40 85" stroke="#d4af37"
+                                stroke-width="0.8" stroke-dasharray="2 1" />
+                            <circle cx="50" cy="50" r="15" fill="#fcf1d8" stroke="#d4af37" stroke-width="2" />
+                            <circle cx="50" cy="50" r="10" fill="none" stroke="#d4af37" stroke-width="1" />
+                        </g>
+
+                        <g clip-path="url(#rightHalf)">
+                            <circle cx="70" cy="20" r="1.5" fill="#d4af37" />
+                            <circle cx="85" cy="40" r="1" fill="#d4af37" />
+                            <circle cx="65" cy="80" r="2" fill="#d4af37" />
+                            <circle cx="80" cy="70" r="1" fill="#d4af37" />
+                            <path d="M 50 35 C 75 35 75 65 50 65 C 60 65 65 55 65 50 C 65 45 60 35 50 35 Z"
+                                fill="#d4af37" />
+                            <path d="M 50 50 L 90 10 M 50 50 L 95 50 M 50 50 L 90 90" stroke="#d4af37"
+                                stroke-width="0.5" stroke-dasharray="1 3" />
+                        </g>
+
+                        <defs>
+                            <clipPath id="leftHalf">
+                                <polygon points="0 0, 60 0, 40 100, 0 100" />
+                            </clipPath>
+                            <clipPath id="rightHalf">
+                                <polygon points="100 0, 60 0, 40 100, 100 100" />
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

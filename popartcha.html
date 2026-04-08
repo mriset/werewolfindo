@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Werewolf - Pop-Art Chaos Edition</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet" />
+
+    <style>
+
+        /* --- CONTROL PANEL --- */
+        .screen-only {}
+        .control-panel {
+            background: #1a1a1a;
+            border: 2px solid #D500F9;
+            border-radius: 8px;
+            padding: 15px 25px;
+            margin: 0 auto 30px;
+            max-width: 900px;
+            box-shadow: 5px 5px 0 #00E5FF;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            z-index: 10;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #111;
+            padding: 8px 14px;
+            border-radius: 4px;
+            border: 1.5px solid #00E5FF;
+        }
+        .control-group label {
+            font-size: 11px;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+        .control-group select {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1.5px solid #fff;
+            background: #fff;
+            color: #111;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .control-group select:focus {
+            border-color: #D500F9;
+        }
+        .control-btn {
+            font-family: 'Righteous', cursive;
+            font-size: 14px;
+            padding: 10px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            border: 2px solid #111;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-gold {
+            background: #FFEA00;
+            color: #111;
+            box-shadow: 3px 3px 0 #111;
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 0 #111;
+        }
+        .btn-red {
+            background: #FF3D00;
+            color: #fff;
+            box-shadow: 3px 3px 0 #111;
+        }
+        .btn-red:hover {
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 0 #111;
+        }
+        kbd {
+            background: #FFEA00;
+            color: #111;
+            border: 1.5px solid #111;
+            border-radius: 2px;
+            display: inline-block;
+            font-family: 'Righteous', cursive;
+            font-size: .85em;
+            padding: 2px 4px;
+            box-shadow: 1px 1px 0 #111;
+        }
+        @media print {
+            .screen-only, .control-panel, .showcase-header { display: none !important; }
+            body { padding: 0 !important; margin: 0 !important; background: none !important; }
+            .page { box-shadow: none; margin: 0; page-break-after: always; background: none; }
+            .card { box-shadow: none !important; transform: none !important; border: 1.5mm solid #111 !important; }
+            /* Memastikan drop-shadow SVG atau elemen tetap terekstrak saat print (opsional) */
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+        /* --- PAGES CONTAINER --- */
+        .page {
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: flex-start;
+            box-sizing: border-box;
+            background: #fff;
+            margin: 0 auto 40px;
+        }
+
+
+
+        :root {
+            /* Dimensi Kartu Presisi Cetak */
+            --w: 54.5mm;
+            --h: 85.5mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #111;
+            background-image: repeating-linear-gradient(45deg, #1a1a1a 0, #1a1a1a 2px, #111 2px, #111 8px);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 50px 20px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .showcase-header {
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .showcase-header h1 {
+            font-family: 'Righteous', cursive;
+            font-size: 32px;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 3px 3px 0px #D500F9, -3px -3px 0px #00E5FF;
+        }
+
+        .showcase-header p {
+            font-size: 12px;
+            color: #ccc;
+            margin-top: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* =========================================================
+           BASE POP-ART CARD LAYOUT (Berdasarkan Layout Badut)
+        ========================================================= */
+        .card {
+            width: var(--w);
+            height: var(--h);
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+            border-radius: 3mm;
+            border: 1.5mm solid #111;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* Latar Belakang Pattern */
+        .bg-pattern {
+            position: absolute;
+            inset: 0;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            padding: 3mm;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Komponen Atas (Header Miring) */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 3mm;
+        }
+
+        .badge {
+            font-family: 'Righteous', cursive;
+            font-size: 6pt;
+            color: #111;
+            padding: 1mm 2mm;
+            border: 1.5px solid #111;
+            box-shadow: 2px 2px 0 #111;
+        }
+
+        /* Komponen Judul (Dual Text-Shadow) */
+        .title-box {
+            text-align: center;
+            margin-bottom: 1mm;
+        }
+
+        .title-id {
+            font-family: 'Righteous', cursive;
+            font-size: 15pt;
+            line-height: 1;
+            color: #111;
+            text-transform: uppercase;
+        }
+
+        .title-en {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5pt;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Komponen Ilustrasi SVG (Hard Drop Shadow) */
+        .art-box {
+            width: 34mm;
+            height: 34mm;
+            margin: 0 auto;
+            filter: drop-shadow(4px 4px 0px #111);
+        }
+
+        /* Komponen Teks Bawah (Kotak Miring dengan Shadow Warna) */
+        .text-wrapper {
+            position: absolute;
+            bottom: 3mm;
+            left: 3mm;
+            right: 3mm;
+            background: #fff;
+            border: 2px solid #111;
+            padding: 2.5mm;
+        }
+
+        .ability {
+            font-family: 'Righteous', cursive;
+            font-size: 6.5pt;
+            text-align: center;
+            margin-bottom: 1mm;
+            text-shadow: 1px 1px 0 #111;
+            letter-spacing: 0.5px;
+        }
+
+        .quote {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 5pt;
+            color: #111;
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 1.5mm;
+            padding-bottom: 1mm;
+        }
+
+        .desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4.5pt;
+            font-weight: 700;
+            color: #222;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* =========================================================
+           1. SEER (PENERAWANG) - Tema Cyan & Yellow
+        ========================================================= */
+        .t-seer .bg-pattern {
+            background-image: radial-gradient(#FFEA00 1.5px, transparent 1.5px);
+            background-size: 6px 6px;
+        }
+
+        .t-seer .header {
+            transform: rotate(4deg);
+        }
+
+        .t-seer .code-badge {
+            background: #00E5FF;
+            color: #111;
+        }
+
+        .t-seer .fac-badge {
+            background: #FFEA00;
+            color: #111;
+        }
+
+        .t-seer .title-box {
+            transform: rotate(-3deg);
+        }
+
+        .t-seer .title-id {
+            text-shadow: -2px 2px 0 #00E5FF, 2px -2px 0 #FFEA00;
+        }
+
+        .t-seer .title-en {
+            color: #00E5FF;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-seer .art-box {
+            transform: rotate(5deg);
+        }
+
+        .t-seer .text-wrapper {
+            transform: rotate(2deg);
+            box-shadow: 3px 3px 0 #00E5FF;
+        }
+
+        .t-seer .ability {
+            color: #FFEA00;
+        }
+
+        .t-seer .quote {
+            border-bottom: 2px dotted #00E5FF;
+        }
+
+        /* =========================================================
+           2. HUNTER (PEMBURU) - Tema Deep Blue & Hot Orange
+        ========================================================= */
+        .t-hunter .bg-pattern {
+            background: repeating-linear-gradient(45deg, #FF3D00 0, #FF3D00 1px, transparent 1px, transparent 5px);
+        }
+
+        .t-hunter .header {
+            transform: rotate(-5deg);
+        }
+
+        .t-hunter .code-badge {
+            background: #FF3D00;
+            color: #fff;
+        }
+
+        .t-hunter .fac-badge {
+            background: #2962FF;
+            color: #fff;
+        }
+
+        .t-hunter .title-box {
+            transform: rotate(4deg);
+        }
+
+        .t-hunter .title-id {
+            text-shadow: -2px -2px 0 #FF3D00, 2px 2px 0 #2962FF;
+            color: #fff;
+        }
+
+        .t-hunter .title-en {
+            color: #FF3D00;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-hunter .art-box {
+            transform: rotate(-6deg);
+        }
+
+        .t-hunter .text-wrapper {
+            transform: rotate(-3deg);
+            box-shadow: -3px 3px 0 #FF3D00;
+        }
+
+        .t-hunter .ability {
+            color: #2962FF;
+        }
+
+        .t-hunter .quote {
+            border-bottom: 2px dotted #FF3D00;
+        }
+
+        /* =========================================================
+           3. WEREWOLF (SERIGALA) - Tema Crimson Red & Dark Grey
+        ========================================================= */
+        .t-wolf .bg-pattern {
+            background-image: repeating-radial-gradient(circle at 0 0, transparent 0, #fff 4px, #D50000 4px, #D50000 5px);
+        }
+
+        .t-wolf .header {
+            transform: rotate(3deg);
+        }
+
+        .t-wolf .code-badge {
+            background: #D50000;
+            color: #fff;
+        }
+
+        .t-wolf .fac-badge {
+            background: #424242;
+            color: #fff;
+        }
+
+        .t-wolf .title-box {
+            transform: rotate(-5deg);
+        }
+
+        .t-wolf .title-id {
+            text-shadow: 2px 2px 0 #D50000, -2px -2px 0 #424242;
+        }
+
+        .t-wolf .title-en {
+            color: #D50000;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-wolf .art-box {
+            transform: rotate(8deg);
+        }
+
+        .t-wolf .text-wrapper {
+            transform: rotate(4deg);
+            box-shadow: 3px -3px 0 #D50000;
+        }
+
+        .t-wolf .ability {
+            color: #D50000;
+        }
+
+        .t-wolf .quote {
+            border-bottom: 2px dotted #424242;
+        }
+
+        /* =========================================================
+           4. JESTER (BADUT) - Tema Magenta & Toxic Green (Original)
+        ========================================================= */
+        .t-jester .bg-pattern {
+            background-image: radial-gradient(#00E676 1.5px, transparent 1.5px);
+            background-size: 6px 6px;
+        }
+
+        .t-jester .header {
+            transform: rotate(-6deg);
+        }
+
+        .t-jester .code-badge {
+            background: #D500F9;
+            color: #fff;
+        }
+
+        .t-jester .fac-badge {
+            background: #00E676;
+            color: #111;
+        }
+
+        .t-jester .title-box {
+            transform: rotate(5deg);
+        }
+
+        .t-jester .title-id {
+            text-shadow: -2px 2px 0 #00E676, 2px -2px 0 #D500F9;
+        }
+
+        .t-jester .title-en {
+            color: #D500F9;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-jester .art-box {
+            transform: rotate(-8deg);
+        }
+
+        .t-jester .text-wrapper {
+            transform: rotate(-2deg);
+            box-shadow: 3px 3px 0 #D500F9;
+        }
+
+        .t-jester .ability {
+            color: #00E676;
+        }
+
+        .t-jester .quote {
+            border-bottom: 2px dotted #D500F9;
+        }
+
+        /* =========================================================
+           5. GUARDIAN (PELINDUNG) - Tema Hot Pink & Cyan Blue
+        ========================================================= */
+        .t-guard .bg-pattern {
+            background-image: linear-gradient(45deg, #00B0FF 25%, transparent 25%, transparent 75%, #00B0FF 75%, #00B0FF), linear-gradient(45deg, #00B0FF 25%, transparent 25%, transparent 75%, #00B0FF 75%, #00B0FF);
+            background-size: 10px 10px;
+            background-position: 0 0, 5px 5px;
+            opacity: 0.1;
+        }
+
+        .t-guard .header {
+            transform: rotate(4deg);
+        }
+
+        .t-guard .code-badge {
+            background: #FF4081;
+            color: #fff;
+        }
+
+        .t-guard .fac-badge {
+            background: #00B0FF;
+            color: #111;
+        }
+
+        .t-guard .title-box {
+            transform: rotate(-4deg);
+        }
+
+        .t-guard .title-id {
+            text-shadow: 2px 2px 0 #FF4081, -2px -2px 0 #00B0FF;
+        }
+
+        .t-guard .title-en {
+            color: #FF4081;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-guard .art-box {
+            transform: rotate(6deg);
+        }
+
+        .t-guard .text-wrapper {
+            transform: rotate(3deg);
+            box-shadow: -3px 3px 0 #00B0FF;
+        }
+
+        .t-guard .ability {
+            color: #FF4081;
+        }
+
+        .t-guard .quote {
+            border-bottom: 2px dotted #00B0FF;
+        }
+
+        /* =========================================================
+           6. MODERATOR - Tema Gold & Black (GOD MODE)
+        ========================================================= */
+        .t-mod .bg-pattern {
+            background-image: repeating-linear-gradient(0deg, #FFD600 0, #FFD600 1px, transparent 1px, transparent 8px), repeating-linear-gradient(90deg, #FFD600 0, #FFD600 1px, transparent 1px, transparent 8px);
+            background-size: 8px 8px;
+            opacity: 0.12;
+        }
+
+        .t-mod .header {
+            transform: rotate(-3deg);
+        }
+
+        .t-mod .code-badge {
+            background: #FFD600;
+            color: #111;
+        }
+
+        .t-mod .fac-badge {
+            background: #111;
+            color: #FFD600;
+            border-color: #FFD600;
+            box-shadow: 2px 2px 0 #FFD600;
+        }
+
+        .t-mod .title-box {
+            transform: rotate(4deg);
+        }
+
+        .t-mod .title-id {
+            text-shadow: -3px 3px 0 #FFD600, 3px -3px 0 #888;
+            color: #111;
+        }
+
+        .t-mod .title-en {
+            color: #FFD600;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-mod .art-box {
+            transform: rotate(-5deg);
+        }
+
+        .t-mod .text-wrapper {
+            transform: rotate(-2deg);
+            box-shadow: 4px 4px 0 #FFD600;
+            border-width: 2.5px;
+        }
+
+        .t-mod .ability {
+            color: #111;
+            background: #FFD600;
+            padding: 0.5mm 2mm;
+            display: inline-block;
+            margin: 0 auto;
+        }
+
+        .t-mod .quote {
+            border-bottom: 2px dotted #FFD600;
+        }
+
+        /* =========================================================
+           8. ALPHA WOLF - Tema Deep Purple & Blood Red (APEX PREDATOR)
+        ========================================================= */
+        .t-alphawolf .bg-pattern {
+            background-image: repeating-linear-gradient(-45deg, #6A0DAD 0, #6A0DAD 1px, transparent 1px, transparent 7px);
+        }
+
+        .t-alphawolf .header {
+            transform: rotate(5deg);
+        }
+
+        .t-alphawolf .code-badge {
+            background: #B71C1C;
+            color: #fff;
+        }
+
+        .t-alphawolf .fac-badge {
+            background: #6A0DAD;
+            color: #fff;
+        }
+
+        .t-alphawolf .title-box {
+            transform: rotate(-4deg);
+        }
+
+        .t-alphawolf .title-id {
+            text-shadow: 3px 3px 0 #B71C1C, -3px -3px 0 #6A0DAD;
+        }
+
+        .t-alphawolf .title-en {
+            color: #6A0DAD;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-alphawolf .art-box {
+            transform: rotate(7deg);
+        }
+
+        .t-alphawolf .text-wrapper {
+            transform: rotate(3deg);
+            box-shadow: -4px 4px 0 #6A0DAD;
+        }
+
+        .t-alphawolf .ability {
+            color: #B71C1C;
+        }
+
+        .t-alphawolf .quote {
+            border-bottom: 2px dotted #6A0DAD;
+        }
+
+        /* =========================================================
+           9. CUPID - Tema Hot Pink & Electric Red (CHAOS LOVE)
+        ========================================================= */
+        .t-cupid .bg-pattern {
+            background-image: radial-gradient(#FF1493 1px, transparent 1px), radial-gradient(#FF1493 1px, transparent 1px);
+            background-size: 8px 8px;
+            background-position: 0 0, 4px 4px;
+        }
+
+        .t-cupid .header {
+            transform: rotate(-5deg);
+        }
+
+        .t-cupid .code-badge {
+            background: #FF1493;
+            color: #fff;
+        }
+
+        .t-cupid .fac-badge {
+            background: #FF1744;
+            color: #fff;
+        }
+
+        .t-cupid .title-box {
+            transform: rotate(5deg);
+        }
+
+        .t-cupid .title-id {
+            text-shadow: -2px 2px 0 #FF1493, 2px -2px 0 #FF1744;
+        }
+
+        .t-cupid .title-en {
+            color: #FF1493;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-cupid .art-box {
+            transform: rotate(-7deg);
+        }
+
+        .t-cupid .text-wrapper {
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 #FF1493;
+        }
+
+        .t-cupid .ability {
+            color: #FF1493;
+        }
+
+        .t-cupid .quote {
+            border-bottom: 2px dotted #FF1744;
+        }
+
+        /* =========================================================
+           10. WITCH - Tema Toxic Green & Poison Purple (BREW MASTER)
+        ========================================================= */
+        .t-witch .bg-pattern {
+            background-image: repeating-radial-gradient(circle at 50% 50%, #76FF03 0, #76FF03 1px, transparent 1px, transparent 6px);
+            background-size: 12px 12px;
+        }
+
+        .t-witch .header {
+            transform: rotate(4deg);
+        }
+
+        .t-witch .code-badge {
+            background: #AA00FF;
+            color: #fff;
+        }
+
+        .t-witch .fac-badge {
+            background: #76FF03;
+            color: #111;
+        }
+
+        .t-witch .title-box {
+            transform: rotate(-5deg);
+        }
+
+        .t-witch .title-id {
+            text-shadow: 2px 2px 0 #76FF03, -2px -2px 0 #AA00FF;
+        }
+
+        .t-witch .title-en {
+            color: #AA00FF;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-witch .art-box {
+            transform: rotate(6deg);
+        }
+
+        .t-witch .text-wrapper {
+            transform: rotate(2deg);
+            box-shadow: -3px -3px 0 #76FF03, 3px 3px 0 #AA00FF;
+        }
+
+        .t-witch .ability {
+            color: #AA00FF;
+        }
+
+        .t-witch .quote {
+            border-bottom: 2px dotted #76FF03;
+        }
+
+        /* =========================================================
+           11. WIZARD - Tema Electric Blue & Gold (ARCANE MASTER)
+        ========================================================= */
+        .t-wizard .bg-pattern {
+            background-image: repeating-linear-gradient(60deg, #00B0FF 0, #00B0FF 1px, transparent 1px, transparent 9px), repeating-linear-gradient(-60deg, #FFD700 0, #FFD700 1px, transparent 1px, transparent 9px);
+            opacity: 0.15;
+        }
+
+        .t-wizard .header {
+            transform: rotate(-4deg);
+        }
+
+        .t-wizard .code-badge {
+            background: #00B0FF;
+            color: #111;
+        }
+
+        .t-wizard .fac-badge {
+            background: #FFD700;
+            color: #111;
+        }
+
+        .t-wizard .title-box {
+            transform: rotate(3deg);
+        }
+
+        .t-wizard .title-id {
+            text-shadow: -2px 2px 0 #00B0FF, 2px -2px 0 #FFD700;
+        }
+
+        .t-wizard .title-en {
+            color: #00B0FF;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-wizard .art-box {
+            transform: rotate(-5deg);
+        }
+
+        .t-wizard .text-wrapper {
+            transform: rotate(-2deg);
+            box-shadow: 4px -4px 0 #00B0FF;
+        }
+
+        .t-wizard .ability {
+            color: #00B0FF;
+        }
+
+        .t-wizard .quote {
+            border-bottom: 2px dotted #FFD700;
+        }
+
+        /* =========================================================
+           12. VETERAN - Tema Military Green & Amber (WAR MACHINE)
+        ========================================================= */
+        .t-veteran .bg-pattern {
+            background-image: repeating-linear-gradient(90deg, #558B2F 0, #558B2F 2px, transparent 2px, transparent 10px), repeating-linear-gradient(0deg, #558B2F 0, #558B2F 2px, transparent 2px, transparent 10px);
+            opacity: 0.2;
+        }
+
+        .t-veteran .header {
+            transform: rotate(3deg);
+        }
+
+        .t-veteran .code-badge {
+            background: #FF6F00;
+            color: #fff;
+        }
+
+        .t-veteran .fac-badge {
+            background: #558B2F;
+            color: #fff;
+        }
+
+        .t-veteran .title-box {
+            transform: rotate(-4deg);
+        }
+
+        .t-veteran .title-id {
+            text-shadow: 3px 3px 0 #558B2F, -2px -2px 0 #FF6F00;
+        }
+
+        .t-veteran .title-en {
+            color: #558B2F;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-veteran .art-box {
+            transform: rotate(5deg);
+        }
+
+        .t-veteran .text-wrapper {
+            transform: rotate(2deg);
+            box-shadow: -4px 4px 0 #558B2F;
+        }
+
+        .t-veteran .ability {
+            color: #FF6F00;
+        }
+
+        .t-veteran .quote {
+            border-bottom: 2px dotted #558B2F;
+        }
+
+        /* =========================================================
+           7. CARD BACK (KARTU BELAKANG) - Tema Black, Yellow, White
+        ========================================================= */
+        .t-back {
+            background: #111;
+            border-color: #fff;
+        }
+
+        .t-back .bg-pattern {
+            background-image: radial-gradient(#FFEA00 2px, transparent 2px);
+            background-size: 8px 8px;
+            opacity: 0.2;
+        }
+
+        .t-back .header {
+            justify-content: center;
+            transform: rotate(-2deg);
+            margin-top: 5mm;
+        }
+
+        .t-back .code-badge {
+            background: #FFEA00;
+            color: #111;
+            border-color: #fff;
+            box-shadow: 2px 2px 0 #fff;
+            font-size: 8pt;
+            letter-spacing: 2px;
+        }
+
+        .t-back .art-box {
+            width: 45mm;
+            height: 45mm;
+            transform: rotate(5deg);
+            margin-top: 5mm;
+            filter: drop-shadow(4px 4px 0px #FFEA00);
+        }
+
+        .t-back .title-box {
+            position: absolute;
+            bottom: 8mm;
+            width: 100%;
+            text-align: center;
+            transform: rotate(-4deg);
+            left: 0;
+        }
+
+        .t-back .title-id {
+            color: #fff;
+            font-size: 22pt;
+            text-shadow: -3px 3px 0 #FFEA00, 3px -3px 0 #00E5FF;
+        }
+
+        /* =========================================================
+           13. BODYGUARD - Tema Steel Blue & Crimson (SACRIFICE)
+        ========================================================= */
+        .t-bodyguard .bg-pattern {
+            background-image: repeating-linear-gradient(0deg, #1565C0 0, #1565C0 1px, transparent 1px, transparent 7px);
+        }
+
+        .t-bodyguard .header {
+            transform: rotate(-3deg);
+        }
+
+        .t-bodyguard .code-badge {
+            background: #C62828;
+            color: #fff;
+        }
+
+        .t-bodyguard .fac-badge {
+            background: #1565C0;
+            color: #fff;
+        }
+
+        .t-bodyguard .title-box {
+            transform: rotate(4deg);
+        }
+
+        .t-bodyguard .title-id {
+            text-shadow: 3px 3px 0 #C62828, -2px -2px 0 #1565C0;
+        }
+
+        .t-bodyguard .title-en {
+            color: #1565C0;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-bodyguard .art-box {
+            transform: rotate(-6deg);
+        }
+
+        .t-bodyguard .text-wrapper {
+            transform: rotate(-2deg);
+            box-shadow: 5px 5px 0 #C62828;
+        }
+
+        .t-bodyguard .ability {
+            color: #C62828;
+        }
+
+        .t-bodyguard .quote {
+            border-bottom: 2px dotted #1565C0;
+        }
+
+        /* =========================================================
+           14. PRIEST - Tema Sacred Black & Holy Gold (DIVINE)
+        ========================================================= */
+        .t-priest .bg-pattern {
+            background-image: radial-gradient(ellipse at center, #FFD700 1px, transparent 1px);
+            background-size: 9px 9px;
+        }
+
+        .t-priest .header {
+            transform: rotate(4deg);
+        }
+
+        .t-priest .code-badge {
+            background: #111;
+            color: #FFD700;
+            border-color: #FFD700;
+            box-shadow: 2px 2px 0 #FFD700;
+        }
+
+        .t-priest .fac-badge {
+            background: #FFD700;
+            color: #111;
+        }
+
+        .t-priest .title-box {
+            transform: rotate(-3deg);
+        }
+
+        .t-priest .title-id {
+            text-shadow: -2px 2px 0 #FFD700, 2px -2px 0 #888;
+            color: #111;
+        }
+
+        .t-priest .title-en {
+            color: #888;
+            text-shadow: 1px 1px 0 #FFD700;
+        }
+
+        .t-priest .art-box {
+            transform: rotate(5deg);
+        }
+
+        .t-priest .text-wrapper {
+            transform: rotate(2deg);
+            box-shadow: -3px 3px 0 #FFD700;
+            background: #f9f5e7;
+        }
+
+        .t-priest .ability {
+            color: #111;
+        }
+
+        .t-priest .quote {
+            border-bottom: 2px dotted #FFD700;
+        }
+
+        /* =========================================================
+           15. MAYOR - Tema Official Red & Navy Blue (DOUBLE VOTE)
+        ========================================================= */
+        .t-mayor .bg-pattern {
+            background-image: repeating-linear-gradient(45deg, #E53935 0, #E53935 1px, transparent 1px, transparent 8px),
+                repeating-linear-gradient(-45deg, #1A237E 0, #1A237E 1px, transparent 1px, transparent 8px);
+            opacity: 0.12;
+        }
+
+        .t-mayor .header {
+            transform: rotate(-3deg);
+        }
+
+        .t-mayor .code-badge {
+            background: #E53935;
+            color: #fff;
+        }
+
+        .t-mayor .fac-badge {
+            background: #1A237E;
+            color: #fff;
+        }
+
+        .t-mayor .title-box {
+            transform: rotate(3deg);
+        }
+
+        .t-mayor .title-id {
+            text-shadow: -2px 2px 0 #E53935, 2px -2px 0 #1A237E;
+        }
+
+        .t-mayor .title-en {
+            color: #E53935;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-mayor .art-box {
+            transform: rotate(-4deg);
+        }
+
+        .t-mayor .text-wrapper {
+            transform: rotate(-2deg);
+            box-shadow: 4px 4px 0 #E53935;
+        }
+
+        .t-mayor .ability {
+            color: #1A237E;
+        }
+
+        .t-mayor .quote {
+            border-bottom: 2px dotted #E53935;
+        }
+
+        /* =========================================================
+           16. SHERIFF - Tema Justice Blue & Sheriff Gold (LAW MAKER)
+        ========================================================= */
+        .t-sheriff .bg-pattern {
+            background-image: radial-gradient(circle at 50% 50%, #FFB300 2px, transparent 2px),
+                radial-gradient(circle at 50% 50%, #1565C0 1px, transparent 1px);
+            background-size: 16px 16px;
+            background-position: 0 0, 8px 8px;
+            opacity: 0.15;
+        }
+
+        .t-sheriff .header {
+            transform: rotate(4deg);
+        }
+
+        .t-sheriff .code-badge {
+            background: #1565C0;
+            color: #fff;
+        }
+
+        .t-sheriff .fac-badge {
+            background: #FFB300;
+            color: #111;
+        }
+
+        .t-sheriff .title-box {
+            transform: rotate(-3deg);
+        }
+
+        .t-sheriff .title-id {
+            text-shadow: 2px 2px 0 #1565C0, -2px -2px 0 #FFB300;
+        }
+
+        .t-sheriff .title-en {
+            color: #1565C0;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-sheriff .art-box {
+            transform: rotate(5deg);
+        }
+
+        .t-sheriff .text-wrapper {
+            transform: rotate(3deg);
+            box-shadow: -4px 4px 0 #1565C0;
+        }
+
+        .t-sheriff .ability {
+            color: #FFB300;
+            text-shadow: 1px 1px 0 #111;
+        }
+
+        .t-sheriff .quote {
+            border-bottom: 2px dotted #1565C0;
+        }
+
+        /* =========================================================
+           17. VILLAGER 1 - Tema Olive & Sunflower (THE FARMER)
+        ========================================================= */
+        .t-vil1 .bg-pattern { background-image: radial-gradient(#FBC02D 1.5px, transparent 1.5px); background-size: 8px 8px; }
+        .t-vil1 .header { transform: rotate(-2deg); }
+        .t-vil1 .code-badge { background: #689F38; color: #fff; }
+        .t-vil1 .fac-badge { background: #FBC02D; color: #111; }
+        .t-vil1 .title-box { transform: rotate(3deg); }
+        .t-vil1 .title-id { text-shadow: -2px 2px 0 #689F38, 2px -2px 0 #FBC02D; }
+        .t-vil1 .title-en { color: #689F38; text-shadow: 1px 1px 0 #111; }
+        .t-vil1 .art-box { transform: rotate(-4deg); }
+        .t-vil1 .text-wrapper { transform: rotate(-1deg); box-shadow: 3px 3px 0 #689F38; }
+        .t-vil1 .ability { color: #689F38; }
+        .t-vil1 .quote { border-bottom: 2px dotted #FBC02D; }
+
+        /* =========================================================
+           18. VILLAGER 2 - Tema Pink & Crust (THE BAKER)
+        ========================================================= */
+        .t-vil2 .bg-pattern { background-image: repeating-linear-gradient(45deg, #F48FB1 0, #F48FB1 1px, transparent 1px, transparent 6px); }
+        .t-vil2 .header { transform: rotate(3deg); }
+        .t-vil2 .code-badge { background: #8D6E63; color: #fff; }
+        .t-vil2 .fac-badge { background: #F48FB1; color: #111; }
+        .t-vil2 .title-box { transform: rotate(-3deg); }
+        .t-vil2 .title-id { text-shadow: 2px 2px 0 #8D6E63, -2px -2px 0 #F48FB1; }
+        .t-vil2 .title-en { color: #8D6E63; text-shadow: 1px 1px 0 #111; }
+        .t-vil2 .art-box { transform: rotate(4deg); }
+        .t-vil2 .text-wrapper { transform: rotate(2deg); box-shadow: -3px -3px 0 #8D6E63; }
+        .t-vil2 .ability { color: #8D6E63; }
+        .t-vil2 .quote { border-bottom: 2px dotted #F48FB1; }
+
+        /* =========================================================
+           19. VILLAGER 3 - Tema Steel & Fire (THE BLACKSMITH)
+        ========================================================= */
+        .t-vil3 .bg-pattern { background-image: repeating-linear-gradient(90deg, #607D8B 0, #607D8B 2px, transparent 2px, transparent 8px); opacity:0.25; }
+        .t-vil3 .header { transform: rotate(-4deg); }
+        .t-vil3 .code-badge { background: #D84315; color: #fff; }
+        .t-vil3 .fac-badge { background: #607D8B; color: #fff; }
+        .t-vil3 .title-box { transform: rotate(2deg); }
+        .t-vil3 .title-id { text-shadow: -3px 3px 0 #D84315, 3px -3px 0 #607D8B; }
+        .t-vil3 .title-en { color: #D84315; text-shadow: 1px 1px 0 #111; }
+        .t-vil3 .art-box { transform: rotate(-5deg); }
+        .t-vil3 .text-wrapper { transform: rotate(-3deg); box-shadow: 4px 4px 0 #D84315; }
+        .t-vil3 .ability { color: #D84315; }
+        .t-vil3 .quote { border-bottom: 2px dotted #607D8B; }
+
+        /* =========================================================
+           20. WEREWOLF 2 - Tema Neon Orange & Midnight Purple (THE BEAST)
+        ========================================================= */
+        .t-werewolf-2 .bg-pattern { background-image: repeating-linear-gradient(-45deg, #FF6D00 0, #FF6D00 2px, transparent 2px, transparent 10px); }
+        .t-werewolf-2 .header { transform: rotate(5deg); }
+        .t-werewolf-2 .code-badge { background: #311B92; color: #fff; }
+        .t-werewolf-2 .fac-badge { background: #FF6D00; color: #111; }
+        .t-werewolf-2 .title-box { transform: rotate(-5deg); }
+        .t-werewolf-2 .title-id { text-shadow: 3px 3px 0 #311B92, -2px -2px 0 #FF6D00; }
+        .t-werewolf-2 .title-en { color: #311B92; text-shadow: 1px 1px 0 #111; }
+        .t-werewolf-2 .art-box { transform: rotate(6deg); }
+        .t-werewolf-2 .text-wrapper { transform: rotate(-2deg); box-shadow: -5px 5px 0 #311B92; }
+        .t-werewolf-2 .ability { color: #FF6D00; }
+        .t-werewolf-2 .quote { border-bottom: 2px dotted #311B92; }
+
+        /* =========================================================
+           21. LONE WOLF - Tema Eclipse Purple & Sickly Lime (THE CURSED)
+        ========================================================= */
+        .t-lonewolf .bg-pattern { background-image: repeating-radial-gradient(circle at center, #4A148C 0, #4A148C 3px, transparent 3px, transparent 10px); }
+        .t-lonewolf .header { transform: rotate(-3deg); }
+        .t-lonewolf .code-badge { background: #C6FF00; color: #111; }
+        .t-lonewolf .fac-badge { background: #4A148C; color: #fff; }
+        .t-lonewolf .title-box { transform: rotate(2deg); }
+        .t-lonewolf .title-id { text-shadow: -2px 2px 0 #C6FF00, 2px -2px 0 #4A148C; }
+        .t-lonewolf .title-en { color: #C6FF00; text-shadow: 1px 1px 0 #111; }
+        .t-lonewolf .art-box { transform: rotate(-4deg); }
+        .t-lonewolf .text-wrapper { transform: rotate(-1deg); box-shadow: 4px -4px 0 #4A148C; }
+        .t-lonewolf .ability { color: #4A148C; }
+        .t-lonewolf .quote { border-bottom: 2px dotted #C6FF00; }
+
+        /* =========================================================
+           22. DOPPELGANGER - Tema Electric Pink & Shadow Cyan (THE MIMIC)
+        ========================================================= */
+        .t-doppelganger .bg-pattern { background-image: repeating-linear-gradient(0deg, #FF4081 0, #FF4081 2px, transparent 2px, transparent 8px), repeating-linear-gradient(90deg, #00ACC1 0, #00ACC1 2px, transparent 2px, transparent 8px); opacity: 0.15; }
+        .t-doppelganger .header { transform: rotate(3deg); }
+        .t-doppelganger .code-badge { background: #FF4081; color: #fff; }
+        .t-doppelganger .fac-badge { background: #00ACC1; color: #111; }
+        .t-doppelganger .title-box { transform: rotate(-2deg); }
+        .t-doppelganger .title-id { text-shadow: 3px 3px 0 #00ACC1, -2px -2px 0 #FF4081; }
+        .t-doppelganger .title-en { color: #00ACC1; text-shadow: 1px 1px 0 #111; }
+        .t-doppelganger .art-box { transform: rotate(4deg); }
+        .t-doppelganger .text-wrapper { transform: rotate(2deg); box-shadow: -4px -4px 0 #FF4081; }
+        .t-doppelganger .ability { color: #FF4081; text-shadow: 1px 1px 0 #111; }
+        .t-doppelganger .quote { border-bottom: 2px dotted #00ACC1; }
+
+        /* =========================================================
+           23. SERIAL KILLER - Tema Killer Red & Caution Yellow (THE MANIAC)
+        ========================================================= */
+        .t-serialkiller .bg-pattern { background-image: repeating-linear-gradient(45deg, #111 0, #111 10px, #FFEA00 10px, #FFEA00 20px); opacity: 0.2; }
+        .t-serialkiller .header { transform: rotate(-4deg); }
+        .t-serialkiller .code-badge { background: #C62828; color: #fff; }
+        .t-serialkiller .fac-badge { background: #FFEA00; color: #111; }
+        .t-serialkiller .title-box { transform: rotate(3deg); }
+        .t-serialkiller .title-id { text-shadow: -3px 3px 0 #C62828, 3px -3px 0 #FFEA00; }
+        .t-serialkiller .title-en { color: #C62828; text-shadow: 1px 1px 0 #FFEA00; }
+        .t-serialkiller .art-box { transform: rotate(-5deg); }
+        .t-serialkiller .text-wrapper { transform: rotate(-2deg); box-shadow: 5px 5px 0 #C62828; }
+        .t-serialkiller .ability { color: #C62828; }
+        .t-serialkiller .quote { border-bottom: 2px dotted #FFEA00; }
+
+        /* =========================================================
+           24. IDIOT - Tema Loud Yellow & Bright Purple (SANG PANDIR)
+        ========================================================= */
+        .t-idiot .bg-pattern { background-image: repeating-conic-gradient(#FFEA00 0% 15%, transparent 15% 30%); opacity: 0.3; }
+        .t-idiot .header { transform: rotate(5deg); }
+        .t-idiot .code-badge { background: #D500F9; color: #fff; }
+        .t-idiot .fac-badge { background: #FFEA00; color: #111; }
+        .t-idiot .title-box { transform: rotate(-4deg); }
+        .t-idiot .title-id { text-shadow: 2px 2px 0 #D500F9, -2px -2px 0 #FFEA00; }
+        .t-idiot .title-en { color: #D500F9; text-shadow: 1px 1px 0 #111; }
+        .t-idiot .art-box { transform: rotate(-8deg); }
+        .t-idiot .text-wrapper { transform: rotate(3deg); box-shadow: -4px 4px 0 #D500F9; }
+        .t-idiot .ability { color: #D500F9; text-shadow: 1px 1px 0 #111; }
+        .t-idiot .quote { border-bottom: 2px dotted #FFEA00; }
+
+        /* =========================================================
+           25. PRINCE - Tema Sapphire Blue & Crown Gold (HAK ISTIMEWA)
+        ========================================================= */
+        .t-prince .bg-pattern { background-image: repeating-linear-gradient(45deg, #2962FF 0, #2962FF 5px, transparent 5px, transparent 15px); opacity: 0.2; }
+        .t-prince .header { transform: rotate(-2deg); }
+        .t-prince .code-badge { background: #FFC107; color: #111; }
+        .t-prince .fac-badge { background: #2962FF; color: #fff; }
+        .t-prince .title-box { transform: rotate(2deg); }
+        .t-prince .title-id { text-shadow: -3px 3px 0 #FFC107, 3px -3px 0 #2962FF; }
+        .t-prince .title-en { color: #FFC107; text-shadow: 1px 1px 0 #111; }
+        .t-prince .art-box { transform: rotate(-3deg); }
+        .t-prince .text-wrapper { transform: rotate(1deg); box-shadow: 5px 5px 0 #2962FF; }
+        .t-prince .ability { color: #2962FF; }
+        .t-prince .quote { border-bottom: 2px dotted #FFC107; }
+
+        /* =========================================================
+           26. LITTLE GIRL - Tema Ghostly Mint & Nightmare Violet (THE PEEPER)
+        ========================================================= */
+        .t-littlegirl .bg-pattern { background-image: repeating-linear-gradient(135deg, #64FFDA 0, #64FFDA 4px, transparent 4px, transparent 12px); opacity: 0.15; }
+        .t-littlegirl .header { transform: rotate(4deg); }
+        .t-littlegirl .code-badge { background: #6200EA; color: #fff; }
+        .t-littlegirl .fac-badge { background: #64FFDA; color: #111; }
+        .t-littlegirl .title-box { transform: rotate(-3deg); }
+        .t-littlegirl .title-id { text-shadow: 2px 2px 0 #6200EA, -2px -2px 0 #64FFDA; }
+        .t-littlegirl .title-en { color: #6200EA; text-shadow: 1px 1px 0 #111; }
+        .t-littlegirl .art-box { transform: rotate(2deg); background: #111; }
+        .t-littlegirl .text-wrapper { transform: rotate(-2deg); box-shadow: -4px -4px 0 #6200EA; }
+        .t-littlegirl .ability { color: #6200EA; }
+        .t-littlegirl .quote { border-bottom: 2px dotted #64FFDA; }
+        @media print {
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body {
+                display: block !important;
+            }
+            #pages-container {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .page {
+                break-after: page;
+            }
+            .page:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="showcase-header screen-only">
+        <h1>POP-ART CHAOS DECK</h1>
+        <p>1 Unified Layout. 5 Explosive Color Palettes. 100% Attitude.</p>
+    </div>
+
+    <!-- CONTROL PANEL FOR PRINT/DOWNLOAD -->
+    <div class="control-panel screen-only">
+        <div style="width: 100%; text-align: center; margin-bottom: 12px; border-bottom: 2px dashed #D500F9; padding-bottom: 10px;">
+            <p style="margin: 0; font-size: 13px; color: #fff; font-weight: 700;">
+                <span style="color: #00E5FF;">PANDUAN CETAK POP-ART:</span> Tekan <kbd>Ctrl+P</kbd> dan pastikan:
+                <strong>1.</strong> Format Kertas <strong style="color:#FFEA00">Sesuai Pilihan</strong> &nbsp;&nbsp;
+                <strong>2.</strong> Scale <strong style="color:#FFEA00">100%</strong> &nbsp;&nbsp;
+                <strong>3.</strong> Margins <strong style="color:#FFEA00">None</strong> &nbsp;&nbsp;
+                <strong>4.</strong> Centang <strong style="color:#FFEA00">Background graphics</strong>.
+            </p>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; width: 100%;">
+            <div class="control-group">
+                <label for="paper-size">KERTAS</label>
+                <select id="paper-size" onchange="changePaperSize()">
+                    <option value="a4">A4 (9 Kartu)</option>
+                    <option value="f4">F4 / Folio (9 Kartu)</option>
+                    <option value="a3">A3 (20 Kartu)</option>
+                    <option value="a3plus">A3+ (25 Kartu)</option>
+                    <option value="single">Single (Per Kartu)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="export-dpi">DPI PDF</label>
+                <select id="export-dpi" onchange="changePaperSize()">
+                    <option value="1">Standar (96 DPI)</option>
+                    <option value="2">Tajam (192 DPI)</option>
+                    <option value="4" selected>Ekstrem (384 DPI)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="back-mode">Balik:</label>
+                <select id="back-mode" onchange="changePaperSize()">
+                    <option value="duplex">Duplex / Otomatis</option>
+                    <option value="manual-long">Manual (Sisi Panjang)</option>
+                    <option value="manual-short">Manual (Sisi Pendek)</option>
+                </select>
+            </div>
+
+            <button class="control-btn btn-red" onclick="window.print()" title="Simpan sebagai PDF (Ctrl+P)">
+                🖨️ PDF EXPORT
+            </button>
+
+            <div class="control-group">
+                <label for="export-format">FORMAT ZIP</label>
+                <select id="export-format">
+                    <option value="png">PNG</option>
+                    <option value="jpg">JPG</option>
+                </select>
+            </div>
+            
+            <button id="btn-download-all" class="control-btn btn-gold" onclick="downloadAllCardsDomToImage('PopArtChaos', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})">
+                ⬇ DOWNLOAD DECK (.ZIP)
+            </button>
+        </div>
+    </div>
+
+    <!-- DYNAMIC CONTAINER -->
+    <div id="pages-container"></div>
+
+    <!-- SCRIPTS -->
+    <script src="popartcha_data.js"></script>
+    <script src="svg_popartcha.js"></script>
+
+    <script>
+
+        function generatePopArtCard(card) {
+            if (card.id === 'card_back') {
+                return `
+                <div class="card ${card.themeClass} c-code-hook" data-id="${card.id}">
+                    <div class="bg-pattern"></div>
+                    <div class="content">
+                        <div class="header" style="${card.themeClass === 't-back' ? 'justify-content: center; transform: rotate(-2deg); margin-top: 5mm;' : ''}">
+                            <div class="badge code-badge c-code">${card.codeBadge}</div>
+                        </div>
+                        <div class="art-box">
+                            ${popArtSvg[card.id] || ''}
+                        </div>
+                        <div class="title-box">
+                            <div class="title-id">${card.titleId}</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            return `
+            <div class="card ${card.themeClass} c-code-hook" data-id="${card.id}">
+                <div class="bg-pattern"></div>
+                <div class="content">
+                    <div class="header">
+                        ${card.facBadge ? `<div class="badge fac-badge">${card.facBadge}</div>` : ''}
+                        <div class="badge code-badge c-code">${card.codeBadge}</div>
+                    </div>
+                    <div class="title-box">
+                        <div class="title-id">${card.titleId}</div>
+                        <div class="title-en">${card.titleEn}</div>
+                    </div>
+                    <div class="art-box">
+                        ${popArtSvg[card.id] || ''}
+                    </div>
+                    <div class="text-wrapper">
+                        <div class="ability">${card.ability}</div>
+                        <div class="quote">${card.quote}</div>
+                        <div class="desc">${card.desc}</div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+                function mapBackSlotIndex(slotIndex, cols, rows, backMode) {
+            var row = Math.floor(slotIndex / cols);
+            var col = slotIndex % cols;
+            if (backMode === 'manual-long') {
+                col = (cols - 1) - col;
+            } else if (backMode === 'manual-short') {
+                row = (rows - 1) - row;
+            }
+            return (row * cols) + col;
+        }
+
+        function renderPageFromSlots(slotCards, isBackPage, renderCardFn, placeholderClass) {
+            var html = "<div class=\"page" + (isBackPage ? " page-back" : "") + "\">";
+            var placeholder = "<div class=\"" + placeholderClass + " card-placeholder\" style=\"visibility:hidden;border:0 !important;box-shadow:none !important;background:transparent !important;pointer-events:none !important;\" aria-hidden=\"true\"></div>";
+            for (var i = 0; i < slotCards.length; i++) {
+                if (slotCards[i]) html += renderCardFn(slotCards[i]);
+                else html += placeholder;
+            }
+            html += "</div>";
+            return html;
+        }
+
+        function changePaperSize() {
+            var paperSelect = document.getElementById('paper-size');
+            var dpiSelect = document.getElementById('export-dpi') || document.getElementById('pdf-dpi');
+            var backModeSelect = document.getElementById('back-mode');
+            var paperId = paperSelect ? paperSelect.value : 'a4';
+            var dpiScale = parseFloat(dpiSelect ? dpiSelect.value : '1');
+            var backMode = backModeSelect ? backModeSelect.value : 'duplex';
+            var container = document.getElementById('pages-container') || document.querySelector('.pages-container');
+            if (!container) return;
+            container.innerHTML = "";
+
+            var config = window.CardPrintLayout ? window.CardPrintLayout.applyCSS(paperId, dpiScale) : { cardsPerPage: 9, cols: 3, rows: 3 };
+            var cardsPerPage = config.cardsPerPage || (config.cols * config.rows);
+            var cols = config.cols || 3;
+            var rows = config.rows || 3;
+            var renderCardFn = generatePopArtCard;
+            var placeholderClass = 'card';
+
+            var htmlContent = "";
+            var frontCards = popartDeckData.filter(function(c) { return c.id !== 'card_back'; });
+            var backCardData = null;
+            for (var k = 0; k < popartDeckData.length; k++) {
+                if (popartDeckData[k].id === 'card_back') { backCardData = popartDeckData[k]; break; }
+            }
+
+            if (paperId === 'single') {
+                for (var s = 0; s < frontCards.length; s++) {
+                    htmlContent += renderPageFromSlots([frontCards[s]], false, renderCardFn, placeholderClass);
+                    if (backCardData) {
+                        htmlContent += renderPageFromSlots([backCardData], true, renderCardFn, placeholderClass);
+                    }
+                }
+            } else {
+                for (var i = 0; i < frontCards.length; i += cardsPerPage) {
+                    var pageCards = frontCards.slice(i, i + cardsPerPage);
+                    var frontSlots = new Array(cardsPerPage).fill(null);
+                    for (var j = 0; j < pageCards.length; j++) {
+                        frontSlots[j] = pageCards[j];
+                    }
+                    htmlContent += renderPageFromSlots(frontSlots, false, renderCardFn, placeholderClass);
+
+                    if (backCardData) {
+                        var backSlots = new Array(cardsPerPage).fill(null);
+                        for (var b = 0; b < pageCards.length; b++) {
+                            var mappedIndex = mapBackSlotIndex(b, cols, rows, backMode);
+                            backSlots[mappedIndex] = backCardData;
+                        }
+                        htmlContent += renderPageFromSlots(backSlots, true, renderCardFn, placeholderClass);
+                    }
+                }
+            }
+
+            container.innerHTML = htmlContent;
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            if(typeof popartDeckData !== 'undefined' && typeof popArtSvg !== 'undefined') {
+                changePaperSize();
+            } else {
+                console.error("Data files not loaded correctly!");
+            }
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+    <script src="download_helper.js?v=3"></script>
+
+</body>
+</html>

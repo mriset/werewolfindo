@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Glitch Horror Lite: Unified ID System</title>
+    <!-- Font modern dan monospace untuk nuansa Tech/Glitch/Horror -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;700;900&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+
+            /* Base Colors */
+            --paper-white: #fdfdfd;
+            --ink-black: #0a0a0a;
+            
+            /* Faction: Moderator */
+            --mod-main: #00ffff;
+            --mod-sec: #ff00ff;
+            
+            /* Faction: Warga */
+            --vil-main: #0044ff;
+            --vil-sec: #ff5500;
+            
+            /* Faction: Werewolf */
+            --ww-main: #cc0000;
+            --ww-sec: #555555;
+            
+            /* Faction: Jester */
+            --jest-main: #39ff14;
+            --jest-sec: #9d00ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px;
+            color: white;
+        }
+
+        .deck-title {
+            width: 100%;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 24px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 2px 0 red, -2px 0 cyan;
+        }
+
+        /* =========================================
+           UNIFIED CARD LAYOUT (ID SYSTEM)
+           ========================================= */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background-color: var(--paper-white);
+            color: var(--ink-black);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            /* Base scanline texture */
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.02) 2px,
+                rgba(0,0,0,0.02) 4px
+            );
+            border-radius: 3mm;
+            flex-shrink: 0;
+            
+            /* Grid Template - ID Layout */
+            display: grid;
+            grid-template-columns: 8.5mm 1fr;
+        }
+
+        /* SIDEBAR STYLING */
+        .sidebar {
+            background-color: var(--ink-black);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 3mm 0;
+            border-right: 2.5px solid var(--faction-color, #000);
+            position: relative;
+        }
+        
+        .vert-code {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-family: 'Space Mono', monospace;
+            font-size: 5pt;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+        
+        .vert-faction {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-family: 'Space Mono', monospace;
+            font-size: 6.5pt;
+            letter-spacing: 2.5px;
+            font-weight: 700;
+        }
+
+        .barcode {
+            width: 4mm;
+            height: 25mm;
+            /* Default barcode pattern overridden by inline styles per faction */
+            background: repeating-linear-gradient(90deg, #fff, #fff 1px, transparent 1px, transparent 2px, #fff 2px, #fff 4px, transparent 4px, transparent 5px);
+        }
+
+        /* CONTENT AREA STYLING */
+        .content-area {
+            padding: 3.5mm;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1.5mm;
+        }
+
+        .serial-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 4.5pt;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+            font-weight: 700;
+        }
+
+        .art-container {
+            width: 100%;
+            height: 32mm;
+            position: relative;
+            margin-bottom: 2mm;
+            border-bottom: 2px solid var(--ink-black);
+            background: rgba(0,0,0,0.02);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .role-title {
+            font-size: 15pt;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            line-height: 1;
+            margin-top: 1mm;
+        }
+
+        .role-en {
+            font-family: 'Space Mono', monospace;
+            font-size: 5.5pt;
+            opacity: 0.6;
+            margin-bottom: 2.5mm;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .quote {
+            font-family: 'Space Mono', monospace;
+            font-size: 5.5pt;
+            font-style: italic;
+            border-left: 2px solid var(--faction-color, #000);
+            padding-left: 1.5mm;
+            margin-bottom: 2.5mm;
+            line-height: 1.3;
+            color: #333;
+        }
+
+        .desc {
+            font-size: 6pt;
+            line-height: 1.4;
+            font-weight: 400;
+            text-align: justify;
+            flex-grow: 1;
+            color: #111;
+        }
+
+        /* =========================================
+           GLITCH TEXT UTILITIES (Using CSS Variables)
+           ========================================= */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        
+        /* White bg glitch (Multiply) */
+        .glitch-light::before { left: -1px; color: var(--c1); mix-blend-mode: multiply; z-index: -1; }
+        .glitch-light::after { left: 1.5px; color: var(--c2); mix-blend-mode: multiply; z-index: -1; }
+
+        /* Dark bg glitch (Screen/Normal) */
+        .glitch-dark::before { left: -1px; color: var(--c1); mix-blend-mode: screen; z-index: 1; }
+        .glitch-dark::after { left: 1.5px; color: var(--c2); mix-blend-mode: screen; z-index: 1; }
+
+        /* =========================================
+           CARD SPECIFIC THEMES
+           ========================================= */
+        
+        /* 1. MODERATOR */
+        .theme-mod { --faction-color: var(--mod-main); --c1: var(--mod-main); --c2: var(--mod-sec); }
+        .theme-mod .barcode { background: repeating-linear-gradient(90deg, #fff, #fff 2px, transparent 2px, transparent 3px, #fff 3px, #fff 6px, transparent 6px, transparent 7px); }
+        
+        /* 2. WARGA */
+        .theme-vil { --faction-color: var(--vil-main); --c1: var(--vil-main); --c2: var(--vil-sec); }
+        .theme-vil .barcode { background: repeating-linear-gradient(90deg, #fff, #fff 1px, transparent 1px, transparent 2px, #fff 2px, #fff 4px, transparent 4px, transparent 5px); }
+        
+        /* 3. WEREWOLF */
+        .theme-ww { --faction-color: var(--ww-main); --c1: var(--ww-main); --c2: var(--ww-sec); }
+        .theme-ww .art-container { border-bottom: 2px dashed var(--ww-main); }
+        .theme-ww .barcode { background: repeating-linear-gradient(90deg, #fff, transparent 1px, transparent 3px, #fff 3px, #fff 4px, transparent 4px, transparent 7px); opacity: 0.8; transform: skewX(-5deg); }
+        
+        /* 4. JESTER */
+        .theme-jest { --faction-color: var(--jest-main); --c1: var(--jest-main); --c2: var(--jest-sec); }
+        .theme-jest .sidebar { border-right: 2.5px dotted var(--jest-main); }
+        .theme-jest .barcode { background: repeating-linear-gradient(90deg, #fff, #fff 1px, transparent 2px, #fff 3px, transparent 5px, #fff 6px); transform: translateY(2px); }
+        .theme-jest .role-title { transform: rotate(-1deg); }
+
+        /* 5. BACK CARD (Inverted Theme) */
+        .theme-back {
+            background-color: var(--ink-black);
+            color: var(--paper-white);
+            --faction-color: #444; /* Dark grey sidebar line */
+            --c1: #ff0044; /* Red glitch */
+            --c2: #00ffff; /* Cyan glitch */
+        }
+        .theme-back .sidebar {
+            background-color: #1a1a1a;
+            border-right: 2.5px solid var(--faction-color);
+        }
+        .theme-back .art-container {
+            border-bottom: 2px solid #333;
+            background: transparent;
+        }
+        .theme-back .quote { color: #aaa; border-color: #555; }
+        .theme-back .desc { color: #ddd; }
+        .theme-back .barcode { opacity: 0.5; }
+
+    </style>
+</head>
+<body>
+
+    <div class="deck-title">GLITCH HORROR: UNIFIED ID DECK</div>
+
+    <!-- =========================================
+         CARD 1: MODERATOR (SYSTEM)
+         ========================================= -->
+    <div class="card theme-mod">
+        <div class="sidebar">
+            <div class="vert-code">SYS.ADMIN_00</div>
+            <div class="barcode"></div>
+            <div class="vert-faction glitch glitch-dark" data-text="FAKSI: SISTEM">FAKSI: SISTEM</div>
+        </div>
+        <div class="content-area">
+            <div class="header-info">
+                <div class="serial-num">LVL: OVERSEER</div>
+            </div>
+            
+            <div class="art-container">
+                <!-- SVG: Geometric CCTV/Eye Grid -->
+                <svg viewBox="0 0 100 60" width="100%" height="100%">
+                    <!-- Background Grid -->
+                    <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                        <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#00ffff" stroke-width="0.5" opacity="0.2"/>
+                    </pattern>
+                    <rect width="100" height="60" fill="url(#grid)" />
+                    
+                    <!-- Glitch offsets -->
+                    <g fill="none" stroke="#ff00ff" stroke-width="1" transform="translate(2,0)" opacity="0.6">
+                        <ellipse cx="50" cy="30" rx="35" ry="15" />
+                        <circle cx="50" cy="30" r="8" />
+                    </g>
+                    <g fill="none" stroke="#00ffff" stroke-width="1" transform="translate(-2,0)" opacity="0.6">
+                        <ellipse cx="50" cy="30" rx="35" ry="15" />
+                        <circle cx="50" cy="30" r="8" />
+                    </g>
+                    
+                    <!-- Main Eye Geometry -->
+                    <ellipse cx="50" cy="30" rx="35" ry="15" fill="none" stroke="#0a0a0a" stroke-width="2" />
+                    <circle cx="50" cy="30" r="8" fill="none" stroke="#0a0a0a" stroke-width="2" />
+                    <circle cx="50" cy="30" r="3" fill="#0a0a0a" />
+                    
+                    <!-- Crosshair / Tracking lines -->
+                    <line x1="50" y1="5" x2="50" y2="55" stroke="#0a0a0a" stroke-width="1.5" stroke-dasharray="2,2" />
+                    <line x1="10" y1="30" x2="90" y2="30" stroke="#0a0a0a" stroke-width="1.5" stroke-dasharray="2,2" />
+                    
+                    <!-- Focus Corners -->
+                    <path d="M 20,15 L 15,15 L 15,20" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+                    <path d="M 80,15 L 85,15 L 85,20" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+                    <path d="M 20,45 L 15,45 L 15,40" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+                    <path d="M 80,45 L 85,45 L 85,40" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+                </svg>
+            </div>
+            
+            <div class="role-title glitch glitch-light" data-text="MODERATOR">MODERATOR</div>
+            <div class="role-en">THE OVERSEER</div>
+            
+            <div class="quote">"Sistem memantau setiap detak jantung. Kalian adalah variabel yang harus dikontrol."</div>
+            <div class="desc">
+                <strong>KEMAMPUAN:</strong> Entitas netral yang mengatur jalannya simulasi. Mengetahui seluruh role dan identitas pemain. Tidak berpartisipasi dalam diskusi siang dan tidak memiliki hak eksekusi (vote). Jaga stabilitas sistem.
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         CARD 2: WARGA (ALLIANCE / SUBJECT)
+         ========================================= -->
+    <div class="card theme-vil">
+        <div class="sidebar">
+            <div class="vert-code">ID: 994-VIL</div>
+            <div class="barcode"></div>
+            <div class="vert-faction glitch glitch-dark" data-text="FAKSI: ALIANSI">FAKSI: ALIANSI</div>
+        </div>
+        <div class="content-area">
+            <div class="header-info">
+                <div class="serial-num">LVL: STANDARD</div>
+            </div>
+            
+            <div class="art-container">
+                <!-- SVG: Faceless Pixelated Portrait -->
+                <svg viewBox="0 0 100 60" width="100%" height="100%">
+                    <!-- Scanlines -->
+                    <line x1="0" y1="15" x2="100" y2="15" stroke="#0044ff" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="0" y1="35" x2="100" y2="35" stroke="#ff5500" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="0" y1="55" x2="100" y2="55" stroke="#0044ff" stroke-width="0.5" opacity="0.3"/>
+                    
+                    <!-- Subject Silhouette -->
+                    <path d="M 30,60 C 30,40 40,30 50,30 C 60,30 70,40 70,60" fill="#0a0a0a" />
+                    <circle cx="50" cy="15" r="14" fill="#0a0a0a" />
+                    
+                    <!-- Glitch Censor Bars -->
+                    <rect x="35" y="8" width="30" height="6" fill="var(--paper-white)" />
+                    <rect x="40" y="16" width="25" height="4" fill="#0044ff" opacity="0.8" mix-blend-mode="multiply"/>
+                    <rect x="25" y="22" width="45" height="5" fill="#ff5500" opacity="0.8" mix-blend-mode="multiply"/>
+                    <rect x="45" y="4" width="15" height="3" fill="var(--paper-white)" />
+                    
+                    <!-- Technical UI Elements -->
+                    <text x="5" y="10" font-family="monospace" font-size="6" fill="#0a0a0a">OBJ_UNKNWN</text>
+                    <text x="5" y="18" font-family="monospace" font-size="4" fill="#0044ff">STAT: ACTIVE</text>
+                    <rect x="85" y="5" width="10" height="10" fill="none" stroke="#0a0a0a" stroke-width="1" />
+                    <circle cx="90" cy="10" r="2" fill="#0044ff" />
+                </svg>
+            </div>
+            
+            <div class="role-title glitch glitch-light" data-text="WARGA">WARGA</div>
+            <div class="role-en">THE SUBJECT</div>
+            
+            <div class="quote">"Ketidaktahuan adalah rutinitas yang aman, hingga bayangan meretas sistem."</div>
+            <div class="desc">
+                <strong>KEMAMPUAN:</strong> Entitas standar tanpa kemampuan khusus di malam hari. Mengandalkan insting, analisis perilaku, dan hak suara bulat (vote) di siang hari untuk menemukan Anomali (Serigala) di dalam sistem.
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         CARD 3: WEREWOLF (SHADOWS / ANOMALY)
+         ========================================= -->
+    <div class="card theme-ww">
+        <div class="sidebar">
+            <div class="vert-code">ERR: ANOMALY</div>
+            <div class="barcode"></div>
+            <div class="vert-faction glitch glitch-dark" data-text="FAKSI: BAYANGAN">FAKSI: BAYANGAN</div>
+        </div>
+        <div class="content-area">
+            <div class="header-info">
+                <div class="serial-num" style="color: var(--ww-main);">LVL: PREDATOR</div>
+            </div>
+            
+            <div class="art-container">
+                <!-- SVG: Jagged Jaws/Data Corruption -->
+                <svg viewBox="0 0 100 60" width="100%" height="100%">
+                    <defs>
+                        <clipPath id="jaw-clip"><rect x="0" y="0" width="100" height="60" /></clipPath>
+                    </defs>
+                    <g clip-path="url(#jaw-clip)">
+                        <!-- Background Static -->
+                        <path d="M 10,10 L 15,15 M 80,50 L 90,45 M 20,40 L 25,40" stroke="#cc0000" stroke-width="1" opacity="0.5"/>
+                        
+                        <!-- Lower Jaw (Dark) -->
+                        <polygon points="10,60 30,35 40,45 60,30 70,50 90,35 95,60" fill="#111" />
+                        
+                        <!-- Upper Jaw (Red Glitch) -->
+                        <polygon points="5,0 25,25 35,15 55,30 70,10 95,25 100,0" fill="#cc0000" />
+                        
+                        <!-- White Teeth Cutouts (Negative Space) -->
+                        <polygon points="25,25 35,15 45,28" fill="var(--paper-white)" />
+                        <polygon points="55,30 70,10 80,26" fill="var(--paper-white)" />
+                        <polygon points="30,35 40,45 50,38" fill="var(--paper-white)" />
+                        
+                        <!-- Red Glowing Eye -->
+                        <circle cx="75" cy="12" r="3.5" fill="var(--paper-white)" />
+                        <circle cx="75" cy="12" r="1.5" fill="#cc0000" />
+                        
+                        <!-- Horizontal Glitch Tear -->
+                        <line x1="0" y1="28" x2="100" y2="28" stroke="var(--paper-white)" stroke-width="2" />
+                        <line x1="10" y1="31" x2="90" y2="31" stroke="#cc0000" stroke-width="1" stroke-dasharray="5,2" />
+                    </g>
+                </svg>
+            </div>
+            
+            <div class="role-title glitch glitch-light" data-text="WEREWOLF">WEREWOLF</div>
+            <div class="role-en">THE ANOMALY</div>
+            
+            <div class="quote">"Identitas ini hanya topeng daging. Saat gelap, kode kita menulis ulang takdir mereka."</div>
+            <div class="desc">
+                <strong>KEMAMPUAN:</strong> Anomali sistem. Bangun setiap malam untuk mengeliminasi (membunuh) satu entitas Warga. Menyamar secara sempurna di siang hari. Manipulasi data dan jangan sampai terdeteksi saat eksekusi.
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         CARD 4: JESTER (CHAOS / FATAL ERROR)
+         ========================================= -->
+    <div class="card theme-jest">
+        <div class="sidebar">
+            <div class="vert-code">?#@!%-JST</div>
+            <div class="barcode"></div>
+            <div class="vert-faction glitch glitch-dark" data-text="FAKSI: KEKACAUAN">FAKSI: KEKACAUAN</div>
+        </div>
+        <div class="content-area">
+            <div class="header-info">
+                <div class="serial-num" style="background: var(--ink-black); color: #fff; padding: 0 1mm;">LVL: 404_HA_HA</div>
+            </div>
+            
+            <div class="art-container">
+                <!-- SVG: Melting Comedy Mask -->
+                <svg viewBox="0 0 100 60" width="100%" height="100%">
+                    <!-- Green/Purple shadow offsets -->
+                    <path d="M 25,30 C 25,10 75,10 75,30 C 75,50 50,60 25,30" fill="none" stroke="#39ff14" stroke-width="2" transform="translate(-2, 1)"/>
+                    <path d="M 25,30 C 25,10 75,10 75,30 C 75,50 50,60 25,30" fill="none" stroke="#9d00ff" stroke-width="2" transform="translate(2, -1)"/>
+                    
+                    <!-- Base Mask -->
+                    <path d="M 25,30 C 25,10 75,10 75,30 C 75,50 50,60 25,30" fill="var(--paper-white)" stroke="#0a0a0a" stroke-width="2"/>
+                    
+                    <!-- Asymmetrical Eyes -->
+                    <path d="M 38,22 Q 42,18 46,22" fill="none" stroke="#0a0a0a" stroke-width="2"/> <!-- Happy squint -->
+                    <circle cx="62" cy="22" r="4" fill="none" stroke="#0a0a0a" stroke-width="1.5" /> <!-- Wide eye -->
+                    <circle cx="62" cy="22" r="1.5" fill="#0a0a0a" />
+                    
+                    <!-- Twisted Smile -->
+                    <path d="M 35,35 C 45,50 65,40 65,35 C 55,42 45,42 35,35" fill="#0a0a0a" />
+                    
+                    <!-- Melting/Glitch drips -->
+                    <rect x="42" y="42" width="2" height="12" fill="#0a0a0a" />
+                    <rect x="46" y="44" width="2" height="6" fill="#0a0a0a" />
+                    <rect x="58" y="38" width="2.5" height="10" fill="#0a0a0a" />
+                    
+                    <!-- Chaotic floating bits -->
+                    <polygon points="15,10 20,5 10,8" fill="#0a0a0a" />
+                    <polygon points="85,50 90,45 80,48" fill="#0a0a0a" />
+                    <text x="5" y="55" font-family="monospace" font-size="8" font-weight="900" fill="#0a0a0a" opacity="0.2">HA.</text>
+                </svg>
+            </div>
+            
+            <div class="role-title glitch glitch-light" data-text="JESTER">JESTER</div>
+            <div class="role-en">THE MAD TRICKSTER</div>
+            
+            <div class="quote">"Kenapa lari dari eksekusi kalau tiang gantung adalah panggung utamaku?"</div>
+            <div class="desc">
+                <strong>KEMAMPUAN:</strong> Target utama sistemmu adalah <strong>mati</strong> digantung (divote) oleh Warga pada siang hari. Jika kamu berhasil membuat mereka memilihmu, simulasi hancur dan <strong>kamu menang sendirian.</strong> Manipulasi diskusi!
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         CARD 5: BACK CARD (THE VOID)
+         ========================================= -->
+    <div class="card theme-back">
+        <div class="sidebar">
+            <div class="vert-code" style="color: #666;">SYS_INIT_SEQUENCE</div>
+            <div class="barcode"></div>
+            <div class="vert-faction glitch glitch-dark" data-text="GLITCH HORROR DECK">GLITCH HORROR DECK</div>
+        </div>
+        <div class="content-area">
+            <div class="header-info">
+                <div class="serial-num" style="color: #888;">STATUS: CLASSIFIED</div>
+            </div>
+            
+            <div class="art-container">
+                <!-- SVG: Wireframe Glitch Skull -->
+                <svg viewBox="0 0 100 60" width="100%" height="100%">
+                    <defs>
+                        <clipPath id="skull-split"><rect x="0" y="25" width="100" height="10" /></clipPath>
+                    </defs>
+                    
+                    <!-- Cyan / Red Aura Offsets -->
+                    <polygon points="50,5 25,25 30,50 50,58 70,50 75,25" fill="none" stroke="cyan" stroke-width="1.5" transform="translate(-2, 0)" opacity="0.6"/>
+                    <polygon points="50,5 25,25 30,50 50,58 70,50 75,25" fill="none" stroke="#ff0044" stroke-width="1.5" transform="translate(2, 0)" opacity="0.6"/>
+                    
+                    <!-- Base Wireframe Skull -->
+                    <g fill="none" stroke="#fff" stroke-width="1">
+                        <polygon points="50,5 25,25 30,50 50,58 70,50 75,25" />
+                        <!-- Eye Sockets -->
+                        <polygon points="35,30 45,35 38,40" fill="#fff" />
+                        <polygon points="65,30 55,35 62,40" fill="#fff" />
+                        <!-- Nose -->
+                        <polygon points="50,42 47,50 53,50" />
+                        <!-- Center Line -->
+                        <line x1="50" y1="5" x2="50" y2="25" />
+                    </g>
+
+                    <!-- Horizontal Corrupted Slice -->
+                    <g clip-path="url(#skull-split)" transform="translate(4, 0)">
+                        <polygon points="50,5 25,25 30,50 50,58 70,50 75,25" fill="none" stroke="#fff" stroke-width="1.5" />
+                        <polygon points="35,30 45,35 38,40" fill="#ff0044" />
+                        <polygon points="65,30 55,35 62,40" fill="cyan" />
+                        <line x1="0" y1="30" x2="100" y2="30" stroke="#fff" stroke-width="1" stroke-dasharray="4,2" />
+                    </g>
+                </svg>
+            </div>
+            
+            <div class="role-title glitch glitch-dark" style="text-align: center; margin-top: 3mm; letter-spacing: 2px;" data-text="UNIDENTIFIED">UNIDENTIFIED</div>
+            <div class="role-en" style="text-align: center;">ENTITY DATA CORRUPTED</div>
+            
+            <div class="desc" style="text-align: center; display: flex; align-items: center; justify-content: center; opacity: 0.5;">
+                [ DO_NOT_TRUST_YOUR_EYES ]<br>
+                WAITING FOR SIMULATION...
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

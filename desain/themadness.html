@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nightmare Asylum - The Madness Deck</title>
+    <!-- Import Font Beragam untuk Tema Kegilaan -->
+    <link href="https://fonts.googleapis.com/css2?family=Jolly+Lodger&family=Creepster&family=Special+Elite&family=Permanent+Marker&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Oswald:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+        }
+
+        body {
+            background-color: #111;
+            color: #fff;
+            font-family: 'Oswald', sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 40px 20px;
+            margin: 0;
+            background-image: radial-gradient(circle at 50% 50%, #222 0%, #000 100%);
+        }
+
+        .header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #00ff41;
+            font-family: 'Jolly Lodger', cursive;
+            font-size: 3rem;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 0px #ff00ff;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #aaa;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* --- BASE CARD SHELL --- */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            border-radius: 4mm;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-sizing: border-box;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05) rotate(2deg);
+            z-index: 10;
+        }
+
+        /* --- UNIVERSAL CHAOS ELEMENTS --- */
+        .c-tape {
+            position: absolute;
+            font-family: 'Courier Prime', monospace;
+            font-size: 4.5pt;
+            font-weight: bold;
+            padding: 0.5mm 6mm;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+            z-index: 10;
+            text-transform: uppercase;
+        }
+        
+        .c-title-box {
+            position: absolute;
+            z-index: 8;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .c-title-id {
+            font-family: 'Oswald', sans-serif;
+            font-size: 6pt;
+            display: inline-block;
+            padding: 0.5mm 1.5mm;
+            align-self: flex-start;
+        }
+
+        .c-art {
+            position: absolute;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .c-art svg {
+            width: 85%;
+            height: 85%;
+        }
+
+        .c-text-box {
+            position: absolute;
+            bottom: 2mm;
+            left: 2mm;
+            right: 2mm;
+            background: rgba(0, 0, 0, 0.88);
+            padding: 2mm;
+            z-index: 8;
+            display: flex;
+            flex-direction: column;
+            gap: 1mm;
+        }
+
+        .c-quote {
+            font-size: 7.5pt;
+            line-height: 1.2;
+        }
+
+        .c-ability {
+            font-family: 'Courier Prime', monospace;
+            font-size: 5pt;
+            font-weight: bold;
+            border-top: 0.5mm dashed;
+            padding-top: 1mm;
+        }
+
+        /* =========================================
+           1. JESTER (The Original Chaos)
+           ========================================= */
+        .card-jester {
+            background: repeating-linear-gradient(45deg, #1a0024, #1a0024 4mm, #280036 4mm, #280036 8mm);
+            border: 1.5mm solid #00ff41;
+        }
+        .card-jester .c-tape {
+            top: 3mm; right: -5mm; transform: rotate(35deg);
+            background: #ff00ff; color: #fff;
+        }
+        .card-jester .c-title-box {
+            top: 5mm; left: 2mm; transform: rotate(-8deg);
+        }
+        .card-jester .c-title-en {
+            font-family: 'Jolly Lodger', cursive; font-size: 24pt;
+            color: #00ff41; text-shadow: 2px 2px 0px #ff00ff, -1px -1px 0px #000;
+            line-height: 0.8;
+        }
+        .card-jester .c-title-id {
+            background: #000; color: #fff; transform: rotate(2deg); margin-top: 1mm;
+        }
+        .card-jester .c-art svg {
+            filter: drop-shadow(0 0 3mm rgba(0,255,65,0.6));
+            transform: translateY(-5mm);
+        }
+        .card-jester .c-text-box {
+            border: 0.5mm dashed #ff00ff; border-radius: 3mm;
+            transform: rotate(1.5deg);
+        }
+        .card-jester .c-quote {
+            font-family: 'Jolly Lodger', cursive; font-size: 9.5pt; color: #fff; letter-spacing: 1px;
+        }
+        .card-jester .c-quote span { color: #00ff41; font-size: 11pt; }
+        .card-jester .c-ability {
+            color: #ffb3ff; border-color: #ff00ff;
+        }
+
+        /* =========================================
+           2. MODERATOR (The Glitched Mastermind)
+           ========================================= */
+        .card-moderator {
+            background: repeating-linear-gradient(-45deg, #001122, #001122 3mm, #002233 3mm, #002233 6mm);
+            border: 1.5mm solid #ffd700;
+        }
+        .card-moderator .c-tape {
+            bottom: 3mm; left: -6mm; transform: rotate(-25deg);
+            background: #ff0033; color: #fff;
+        }
+        .card-moderator .c-title-box {
+            top: 4mm; right: 2mm; transform: rotate(5deg);
+            align-items: flex-end;
+        }
+        .card-moderator .c-title-en {
+            font-family: 'Permanent Marker', cursive; font-size: 16pt;
+            color: #ffd700; text-shadow: 3px 3px 0px #ff0033;
+            line-height: 1; text-align: right;
+        }
+        .card-moderator .c-title-id {
+            background: #ff0033; color: #fff; transform: rotate(-3deg); margin-top: 1mm;
+        }
+        .card-moderator .c-art svg {
+            filter: drop-shadow(0 0 4mm rgba(255, 0, 51, 0.8));
+            transform: translateY(-8mm) scale(1.1);
+        }
+        .card-moderator .c-text-box {
+            border: 0.5mm solid #ffd700; border-radius: 0;
+            transform: rotate(-2deg);
+            bottom: 12mm; /* Lifted up because of tape */
+        }
+        .card-moderator .c-quote {
+            font-family: 'Special Elite', monospace; font-size: 6.5pt; color: #ccc;
+        }
+        .card-moderator .c-quote span { color: #ffd700; font-weight: bold; font-size: 7.5pt;}
+        .card-moderator .c-ability {
+            color: #ff9999; border-color: #ff0033;
+        }
+
+        /* =========================================
+           3. VILLAGER (The Paranoid Survivor)
+           ========================================= */
+        .card-villager {
+            background: repeating-linear-gradient(90deg, #1f1f1f, #1f1f1f 2mm, #2b1b0a 2mm, #2b1b0a 4mm);
+            border: 1.5mm solid #d95319;
+        }
+        .card-villager .c-tape {
+            top: 40mm; right: -8mm; transform: rotate(-75deg);
+            background: #e6db74; color: #111;
+        }
+        .card-villager .c-title-box {
+            top: 6mm; left: 3mm; transform: rotate(-12deg);
+        }
+        .card-villager .c-title-en {
+            font-family: 'Special Elite', monospace; font-size: 18pt; font-weight: bold;
+            color: #e6db74; text-shadow: 2px 2px 0px #d95319;
+            line-height: 1; text-decoration: underline wavy #d95319;
+        }
+        .card-villager .c-title-id {
+            background: #d95319; color: #fff; transform: rotate(5deg); margin-top: 2mm; font-size: 5pt;
+        }
+        .card-villager .c-art svg {
+            filter: drop-shadow(0 0 2mm rgba(217, 83, 25, 0.5));
+            transform: translate(2mm, -5mm);
+        }
+        .card-villager .c-text-box {
+            border: 0.5mm dotted #e6db74; border-radius: 1mm;
+            transform: rotate(3deg); background: rgba(20, 10, 5, 0.9);
+        }
+        .card-villager .c-quote {
+            font-family: 'Permanent Marker', cursive; font-size: 7pt; color: #fff;
+        }
+        .card-villager .c-quote span { color: #d95319; }
+        .card-villager .c-ability {
+            color: #e6db74; border-color: #d95319;
+        }
+
+        /* =========================================
+           4. WEREWOLF (The Feral Bloodlust)
+           ========================================= */
+        .card-werewolf {
+            background: #050505;
+            border: 1.5mm solid #cc0000;
+        }
+        /* Extra scratch background */
+        .card-werewolf::after {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+            background: repeating-linear-gradient(135deg, transparent, transparent 5mm, rgba(204,0,0,0.1) 5mm, rgba(204,0,0,0.1) 6mm);
+            pointer-events: none;
+        }
+        .card-werewolf .c-tape {
+            top: 5mm; left: -5mm; transform: rotate(-30deg);
+            background: #f0f0f0; color: #aa0000;
+        }
+        .card-werewolf .c-title-box {
+            top: 2mm; right: 2mm; transform: rotate(10deg); align-items: flex-end;
+        }
+        .card-werewolf .c-title-en {
+            font-family: 'Creepster', cursive; font-size: 20pt;
+            color: #cc0000; text-shadow: 2px 2px 0px #fff;
+            line-height: 1;
+        }
+        .card-werewolf .c-title-id {
+            background: #fff; color: #cc0000; transform: rotate(-5deg);
+        }
+        .card-werewolf .c-art svg {
+            filter: drop-shadow(0 0 5mm rgba(204, 0, 0, 0.7));
+            transform: scale(1.1) translateY(2mm);
+        }
+        .card-werewolf .c-text-box {
+            border-left: 1.5mm solid #cc0000; border-radius: 0;
+            transform: rotate(-3deg) scale(0.95); background: rgba(10, 0, 0, 0.9);
+        }
+        .card-werewolf .c-quote {
+            font-family: 'Oswald', sans-serif; font-style: italic; font-size: 7pt; color: #ccc;
+        }
+        .card-werewolf .c-quote span { color: #ff3333; font-weight: bold; text-transform: uppercase; font-size: 8pt; }
+        .card-werewolf .c-ability {
+            color: #ff9999; border-color: #cc0000;
+        }
+
+        /* =========================================
+           5. CARD BACK (The Asylum Abyss)
+           ========================================= */
+        .card-back {
+            background: #000;
+            border: 1.5mm solid #333;
+            justify-content: center; align-items: center;
+        }
+        .card-back .c-tape-top {
+            position: absolute; top: 4mm; left: -8mm; transform: rotate(-15deg);
+            background: #00ffff; color: #000; font-family: 'Courier Prime', monospace;
+            font-size: 6pt; font-weight: 900; padding: 0.5mm 10mm; z-index: 10; letter-spacing: 2px;
+        }
+        .card-back .c-tape-bottom {
+            position: absolute; bottom: 4mm; right: -8mm; transform: rotate(-15deg);
+            background: #ff00ff; color: #000; font-family: 'Courier Prime', monospace;
+            font-size: 6pt; font-weight: 900; padding: 0.5mm 10mm; z-index: 10; letter-spacing: 2px;
+        }
+        .card-back .c-art {
+            width: 80%; height: 80%;
+        }
+        .card-back .c-art svg {
+            width: 100%; height: 100%;
+        }
+        .cb-warning {
+            position: absolute; bottom: 15mm; width: 100%; text-align: center;
+            font-family: 'Special Elite', monospace; font-size: 5.5pt; color: #ff0000;
+            letter-spacing: 1px; z-index: 10; text-shadow: 1px 1px 0 #000;
+            transform: rotate(2deg);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>THE MADNESS DECK</h1>
+        <p>5 Tema Kegilaan Berbeda (54.5mm x 85.5mm)</p>
+    </div>
+
+    <!-- 1. JESTER CARD (Original Chaos) -->
+    <div class="card card-jester">
+        <div class="c-tape">CHS-01 // CHAOS</div>
+        <div class="c-title-box">
+            <div class="c-title-en">JESTER</div>
+            <div class="c-title-id">SANG BADUT</div>
+        </div>
+        <div class="c-art">
+            <svg viewBox="0 0 100 100">
+                <!-- Hypnotic Spiral -->
+                <path d="M 50 50 m -35 0 a 35 35 0 1 0 70 0 a 35 35 0 1 0 -70 0" fill="none" stroke="#ff00ff" stroke-width="2" stroke-dasharray="8, 4" opacity="0.6"/>
+                <path d="M 50 50 m -20 0 a 20 20 0 1 0 40 0 a 20 20 0 1 0 -40 0" fill="none" stroke="#00ff41" stroke-width="3" stroke-dasharray="4, 8" opacity="0.8"/>
+                <!-- Split Mask -->
+                <path d="M 50 15 C 25 15 25 85 50 95 C 75 85 75 15 50 15 Z" fill="#111" stroke="#00ff41" stroke-width="2.5"/>
+                <path d="M 50 15 C 25 15 25 85 50 95 Z" fill="#280036"/>
+                <path d="M 50 15 C 75 15 75 85 50 95 Z" fill="#000"/>
+                <line x1="50" y1="15" x2="50" y2="95" stroke="#ff00ff" stroke-width="2.5"/>
+                <!-- Sad Eye -->
+                <path d="M 32 42 Q 40 38 45 45" fill="none" stroke="#00ff41" stroke-width="2"/>
+                <circle cx="38" cy="46" r="3" fill="#ff00ff"/>
+                <circle cx="38" cy="56" r="2" fill="#00ff41"/>
+                <!-- Crazy Eye -->
+                <path d="M 68 38 Q 60 48 55 42" fill="none" stroke="#00ff41" stroke-width="3"/>
+                <circle cx="62" cy="44" r="4.5" fill="#00ff41"/>
+                <circle cx="62" cy="44" r="1.5" fill="#fff"/>
+                <!-- Mouths -->
+                <path d="M 32 72 Q 40 64 48 74" fill="none" stroke="#ff00ff" stroke-width="2.5"/> 
+                <path d="M 52 74 Q 68 85 72 62" fill="none" stroke="#00ff41" stroke-width="3.5"/> 
+                <path d="M 56 71 L 68 67" stroke="#fff" stroke-width="1.5"/>
+            </svg>
+        </div>
+        <div class="c-text-box">
+            <div class="c-quote">"Seret tubuh gilaku ke tiang gantungan.<br><span>Di ujung tali itulah</span> letak kejayaan mutlak kemenanganku!"</div>
+            <div class="c-ability">KEMAMPUAN:<br>Faksi Independen. Kamu MENANG MUTLAK jika berhasil memanipulasi warga agar memvonis gantung dirimu.</div>
+        </div>
+    </div>
+
+    <!-- 2. MODERATOR CARD (Glitched Mastermind) -->
+    <div class="card card-moderator">
+        <div class="c-tape">SUP-00 // SUPREME</div>
+        <div class="c-title-box">
+            <div class="c-title-en">MODERATOR</div>
+            <div class="c-title-id">SANG NARATOR</div>
+        </div>
+        <div class="c-art">
+            <svg viewBox="0 0 100 100">
+                <!-- Glitched Web/Strings -->
+                <path d="M 10 10 L 50 40 L 90 20 M 20 90 L 50 60 L 80 95 M 50 0 L 50 100 M 0 50 L 100 50" stroke="#ff0033" stroke-width="1.5" opacity="0.6" stroke-dasharray="5,2,2,2"/>
+                <!-- Broken Halo -->
+                <circle cx="50" cy="50" r="30" fill="none" stroke="#ffd700" stroke-width="2" stroke-dasharray="20, 10, 5, 5"/>
+                <!-- Central Cyber Eye -->
+                <polygon points="25,50 50,30 75,50 50,70" fill="#001122" stroke="#ffd700" stroke-width="3"/>
+                <circle cx="50" cy="50" r="12" fill="#ffd700"/>
+                <circle cx="50" cy="50" r="5" fill="#ff0033"/>
+                <!-- Glitch lines -->
+                <rect x="40" y="48" width="20" height="2" fill="#fff"/>
+                <rect x="30" y="52" width="15" height="1" fill="#00ffff"/>
+                <rect x="60" y="46" width="10" height="1" fill="#ff00ff"/>
+                <!-- Dripping blood from eye -->
+                <path d="M 45 65 L 45 85 A 2 2 0 0 1 41 85 Z" fill="#ff0033"/>
+                <path d="M 55 65 L 56 78 A 1.5 1.5 0 0 1 53 78 Z" fill="#ff0033"/>
+            </svg>
+        </div>
+        <div class="c-text-box">
+            <div class="c-quote">"Aturan? Keadilan? Haha! Aku yang merajut mimpi buruk ini, dan <span>kalian akan menari sampai utasnya putus!</span>"</div>
+            <div class="c-ability">KEMAMPUAN:<br>Bertindak sebagai dewa glitch mutlak. Mengontrol seluruh narasi, membengkokkan fase siang dan malam sesuka hati.</div>
+        </div>
+    </div>
+
+    <!-- 3. VILLAGER CARD (Paranoid Survivor) -->
+    <div class="card card-villager">
+        <div class="c-tape">ALL-14 // ALLIANCE</div>
+        <div class="c-title-box">
+            <div class="c-title-en">VILLAGER</div>
+            <div class="c-title-id">WARGA DESA</div>
+        </div>
+        <div class="c-art">
+            <svg viewBox="0 0 100 100">
+                <!-- Frantic Scribbles Background -->
+                <path d="M 10 20 Q 30 10 50 30 T 90 20 M 15 80 Q 40 90 60 70 T 85 85" fill="none" stroke="#e6db74" stroke-width="1" opacity="0.3"/>
+                <!-- Uneven Wooden Boards -->
+                <polygon points="10,35 95,25 90,45 5,55" fill="#2b1b0a" stroke="#d95319" stroke-width="2"/>
+                <polygon points="15,55 90,50 95,70 10,75" fill="#2a1005" stroke="#d95319" stroke-width="2"/>
+                <!-- Nails -->
+                <circle cx="15" cy="45" r="2" fill="#e6db74"/> <circle cx="85" cy="35" r="2" fill="#e6db74"/>
+                <circle cx="20" cy="65" r="2" fill="#e6db74"/> <circle cx="85" cy="60" r="2" fill="#e6db74"/>
+                <!-- Wide Paranoid Eye Peeking Between Boards -->
+                <path d="M 35 48 Q 50 35 65 52 Q 50 60 35 48 Z" fill="#fff" stroke="#000" stroke-width="2"/>
+                <circle cx="50" cy="49" r="6" fill="#d95319"/>
+                <circle cx="50" cy="49" r="2" fill="#000"/>
+                <!-- Bloodshot eye veins -->
+                <path d="M 38 48 Q 42 45 44 49 M 62 50 Q 58 46 56 49" fill="none" stroke="#ff0000" stroke-width="0.8"/>
+                <!-- Broken Pitchfork Silhouette over the eye -->
+                <line x1="70" y1="90" x2="40" y2="10" stroke="#000" stroke-width="4" opacity="0.8"/>
+                <path d="M 35 15 L 45 5 M 40 10 L 50 15" stroke="#000" stroke-width="3" opacity="0.8"/>
+            </svg>
+        </div>
+        <div class="c-text-box">
+            <div class="c-quote">"Kalian pikir aku gila?! Mereka ada di antara kita! <span>Aku melihat taring itu di balik senyum tetanggaku!</span>"</div>
+            <div class="c-ability">KEMAMPUAN:<br>Hanya bermodal kepanikan & insting murni. Berteriaklah dalam diskusi siang untuk menggantung para monster!</div>
+        </div>
+    </div>
+
+    <!-- 4. WEREWOLF CARD (Feral Bloodlust) -->
+    <div class="card card-werewolf">
+        <div class="c-tape">SHD-01 // SHADOW</div>
+        <div class="c-title-box">
+            <div class="c-title-en">WEREWOLF</div>
+            <div class="c-title-id">SERIGALA</div>
+        </div>
+        <div class="c-art">
+            <svg viewBox="0 0 100 100">
+                <!-- Massive Claw Slashes cutting through the card -->
+                <!-- Slash 1 -->
+                <path d="M 20 10 Q 15 50 30 90 Q 20 50 10 10 Z" fill="#cc0000"/>
+                <!-- Slash 2 (Center, largest) -->
+                <path d="M 45 5 Q 35 50 55 95 Q 45 50 35 5 Z" fill="#ff0000"/>
+                <!-- Slash 3 -->
+                <path d="M 70 15 Q 60 50 80 85 Q 70 50 60 15 Z" fill="#cc0000"/>
+                
+                <!-- Horror Elements inside the middle slash -->
+                <!-- Glowing Red Eye -->
+                <circle cx="45" cy="40" r="5" fill="#fff"/>
+                <circle cx="45" cy="40" r="2" fill="#000"/>
+                <path d="M 40 38 L 50 42" stroke="#000" stroke-width="2"/> <!-- Angry brow -->
+                <!-- Jagged Teeth -->
+                <polygon points="40,60 45,55 42,65" fill="#fff"/>
+                <polygon points="45,62 50,55 48,68" fill="#fff"/>
+                <polygon points="50,60 55,50 52,65" fill="#fff"/>
+                <!-- Blood Spatter -->
+                <circle cx="25" cy="70" r="2" fill="#ff0000"/>
+                <circle cx="75" cy="60" r="1.5" fill="#cc0000"/>
+                <circle cx="85" cy="40" r="3" fill="#ff0000"/>
+                <circle cx="15" cy="30" r="2" fill="#cc0000"/>
+            </svg>
+        </div>
+        <div class="c-text-box">
+            <div class="c-quote">"Jeritan kalian adalah melodi yang sangat manis. <span>Malam ini, kewarasan berakhir dan pembantaian dimulai!</span>"</div>
+            <div class="c-ability">KEMAMPUAN:<br>Bangun di malam hari. Kawanan haus darah berdiskusi liar untuk mencabik 1 mangsa tanpa sisa.</div>
+        </div>
+    </div>
+
+    <!-- 5. CARD BACK (The Asylum Abyss) -->
+    <div class="card card-back">
+        <div class="c-tape-top">NIGHTMARE</div>
+        
+        <div class="c-art">
+            <svg viewBox="0 0 100 100">
+                <!-- Glitch Geometry Background -->
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#333" stroke-width="2"/>
+                <polygon points="50,5 95,75 5,75" fill="none" stroke="#222" stroke-width="3"/>
+                <polygon points="50,95 95,25 5,25" fill="none" stroke="#222" stroke-width="3"/>
+                
+                <!-- Glitched Geometric Wolf Skull -->
+                <!-- Base Skull (White/Grey) -->
+                <g fill="none" stroke="#fff" stroke-width="2">
+                    <polygon points="50,25 70,40 60,70 50,85 40,70 30,40"/>
+                    <!-- Ears -->
+                    <polygon points="30,40 20,20 40,30"/>
+                    <polygon points="70,40 80,20 60,30"/>
+                    <!-- Eyes -->
+                    <polygon points="35,45 45,55 35,55"/>
+                    <polygon points="65,45 55,55 65,55"/>
+                    <line x1="50" y1="55" x2="50" y2="85"/>
+                </g>
+
+                <!-- Cyan Glitch Offset (Left) -->
+                <g fill="none" stroke="#00ffff" stroke-width="1" transform="translate(-2, 1) scale(0.98)">
+                    <polygon points="50,25 70,40 60,70 50,85 40,70 30,40"/>
+                    <polygon points="35,45 45,55 35,55"/>
+                    <polygon points="65,45 55,55 65,55"/>
+                </g>
+
+                <!-- Magenta Glitch Offset (Right) -->
+                <g fill="none" stroke="#ff00ff" stroke-width="1" transform="translate(2, -1) scale(1.02)">
+                    <polygon points="50,25 70,40 60,70 50,85 40,70 30,40"/>
+                    <polygon points="35,45 45,55 35,55"/>
+                    <polygon points="65,45 55,55 65,55"/>
+                </g>
+
+                <!-- Distorted Horizontal Lines (VHS Effect) -->
+                <line x1="10" y1="35" x2="90" y2="35" stroke="#fff" stroke-width="0.5" opacity="0.5"/>
+                <line x1="20" y1="65" x2="80" y2="65" stroke="#00ffff" stroke-width="0.5" opacity="0.7"/>
+                <line x1="15" y1="50" x2="85" y2="50" stroke="#ff00ff" stroke-width="0.5" opacity="0.7"/>
+            </svg>
+        </div>
+
+        <div class="c-tape-bottom">ASYLUM</div>
+        <div class="cb-warning">ENTER THE MADNESS // TRUST NO ONE // SURVIVE</div>
+    </div>
+
+</body>
+</html>

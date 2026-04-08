@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf - Sacred Symmetry White Deck</title>
+
+    <!-- Premium Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Montserrat:ital,wght@0,400;0,700;0,900;1,500&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            /* Dimensi Presisi Kartu Eropa (85.6mm x 54mm) */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+            --scale: 1.3;
+            /* Skala preview di layar agar mudah dibaca */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0f1115;
+            /* Latar belakang gelap agar kartu putih menonjol */
+            background-image: radial-gradient(circle at center, #1a1d24 0%, #0f1115 100%);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            letter-spacing: 6px;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #888;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        .deck-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 35px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        /* =========================================
+           BASE CARD (THE SACRED SYMMETRY LAYOUT)
+        ========================================= */
+        .card {
+            width: calc(var(--card-w) * var(--scale));
+            height: calc(var(--card-h) * var(--scale));
+            border-radius: 4mm;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 0 0 1px #e0e0e0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            background: #ffffff;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-20px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(255, 255, 255, 0.15), inset 0 0 0 1px #fff;
+            z-index: 10;
+        }
+
+        .card-bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            padding: 4mm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            margin: 2mm;
+            border-radius: 2mm;
+            /* Border and Bg color adapted from Theme Vars */
+            border: 1px solid var(--border-alpha);
+            background: rgba(255, 255, 255, 0.85);
+            /* Frost effect on bg */
+            backdrop-filter: blur(2px);
+        }
+
+        .c-top-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Space Mono', monospace;
+            font-size: 6.5pt;
+            font-weight: 700;
+            color: var(--accent-main);
+            letter-spacing: 0.5px;
+        }
+
+        .c-title-box {
+            text-align: center;
+            margin-top: 1mm;
+        }
+
+        .c-title-box h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 15.5pt;
+            color: #111;
+            letter-spacing: 2.5px;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+
+        .c-title-box h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 7pt;
+            color: var(--accent-sub);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-top: 0.5mm;
+        }
+
+        .c-art-box {
+            width: 31mm;
+            height: 31mm;
+            margin: 1.5mm 0;
+            filter: drop-shadow(0 5px 12px var(--shadow-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .c-art-box {
+            transform: scale(1.08);
+        }
+
+        .c-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 7pt;
+            font-style: italic;
+            color: #444;
+            text-align: center;
+            margin-bottom: 1.5mm;
+            line-height: 1.3;
+            padding: 0 1mm;
+        }
+
+        .c-desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6.5pt;
+            color: #222;
+            text-align: justify;
+            text-align-last: center;
+            line-height: 1.35;
+            border-top: 1px solid var(--accent-sub);
+            padding-top: 1.5mm;
+            width: 100%;
+        }
+
+        /* =========================================
+           THEME VARIABLES
+        ========================================= */
+
+        /* 1. SEER (Cyan & Gold) */
+        .theme-seer {
+            --accent-main: #00BCD4;
+            --accent-sub: #d4af37;
+            --border-alpha: rgba(0, 188, 212, 0.3);
+            --shadow-color: rgba(0, 188, 212, 0.4);
+        }
+
+        /* 2. HUNTER (Forest Green & Copper) */
+        .theme-hunter {
+            --accent-main: #2E7D32;
+            --accent-sub: #E65100;
+            --border-alpha: rgba(46, 125, 50, 0.3);
+            --shadow-color: rgba(46, 125, 50, 0.4);
+        }
+
+        /* 3. WEREWOLF (Crimson Red & Deep Charcoal) */
+        .theme-wolf {
+            --accent-main: #B71C1C;
+            --accent-sub: #424242;
+            --border-alpha: rgba(183, 28, 28, 0.3);
+            --shadow-color: rgba(183, 28, 28, 0.4);
+        }
+
+        /* 4. JESTER (Magenta & Lime Green) */
+        .theme-jester {
+            --accent-main: #D500F9;
+            --accent-sub: #00E676;
+            --border-alpha: rgba(213, 0, 249, 0.3);
+            --shadow-color: rgba(213, 0, 249, 0.4);
+        }
+
+        /* 5. GUARDIAN (Navy Blue & Silver/Sky) */
+        .theme-guardian {
+            --accent-main: #1565C0;
+            --accent-sub: #78909C;
+            --border-alpha: rgba(21, 101, 192, 0.3);
+            --shadow-color: rgba(21, 101, 192, 0.4);
+        }
+
+        /* 6. CARD BACK (Dark Purple & Platinum) */
+        .theme-back {
+            --accent-main: #4A148C;
+            --accent-sub: #9E9E9E;
+            --border-alpha: rgba(74, 20, 140, 0.4);
+            --shadow-color: rgba(74, 20, 140, 0.5);
+            background: #FAFAFA;
+            /* Sedikit lebih abu-abu dari sisi depan */
+        }
+
+        .theme-back .c-desc {
+            border: none;
+            font-weight: 700;
+            font-size: 8pt;
+            letter-spacing: 2px;
+            color: var(--accent-main);
+            text-transform: uppercase;
+        }
+
+        .theme-back .c-quote {
+            margin-top: auto;
+            font-size: 7.5pt;
+            color: #111;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>THE SACRED SYMMETRY</h1>
+        <p>Koleksi Lengkap 6 Kartu - Tata Letak Eksklusif "Seer"</p>
+    </div>
+
+    <div class="deck-showcase">
+
+        <!-- KARTU 1: SEER -->
+        <div class="card theme-seer">
+            <div class="card-bg-layer">
+                <svg width="100%" height="100%">
+                    <circle cx="50%" cy="50%" r="40%" fill="none" stroke="#e8e8e8" stroke-width="1.5" />
+                    <circle cx="50%" cy="50%" r="36%" fill="none" stroke="#f0f0f0" stroke-width="0.5"
+                        stroke-dasharray="3 3" />
+                    <circle cx="50%" cy="50%" r="32%" fill="none" stroke="#f5f5f5" stroke-width="1" />
+                </svg>
+            </div>
+            <div class="content-layer">
+                <div class="c-top-bar">
+                    <span>FAKSI: ALIANSI</span>
+                    <span>SER-02</span>
+                </div>
+                <div class="c-title-box">
+                    <h2>SANG PENERAWANG</h2>
+                    <h3>The Oracle</h3>
+                </div>
+                <div class="c-art-box">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Geometric Lotus/Eye -->
+                        <path d="M 50 10 C 70 30 90 50 50 90 C 10 50 30 30 50 10 Z" fill="none"
+                            stroke="var(--accent-sub)" stroke-width="1.5" />
+                        <path d="M 10 50 C 30 30 70 30 90 50 C 70 70 30 70 10 50 Z" fill="none"
+                            stroke="var(--accent-main)" stroke-width="2" />
+                        <circle cx="50" cy="50" r="16" fill="none" stroke="var(--accent-sub)" stroke-width="2" />
+                        <circle cx="50" cy="50" r="7" fill="var(--accent-main)" />
+                        <circle cx="52" cy="48" r="2" fill="#fff" />
+                        <!-- Mystic dots & lines -->
+                        <line x1="50" y1="10" x2="50" y2="25" stroke="var(--accent-sub)" stroke-width="1" />
+                        <line x1="50" y1="90" x2="50" y2="75" stroke="var(--accent-sub)" stroke-width="1" />
+                        <circle cx="50" cy="5" r="1.5" fill="var(--accent-sub)" />
+                        <circle cx="50" cy="95" r="1.5" fill="var(--accent-sub)" />
+                        <circle cx="5" cy="50" r="1.5" fill="var(--accent-main)" />
+                        <circle cx="95" cy="50" r="1.5" fill="var(--accent-main)" />
+                    </svg>
+                </div>
+                <div class="c-quote">
+                    "Kebohongan terdalammu memudar dan tembus pandang di bawah tatapan sang waktu."
+                </div>
+                <div class="c-desc">
+                    <b>MATA BATIN:</b> Setiap malam, kamu dapat memilih 1 pemain untuk diterawang. Moderator akan
+                    membocorkan identitas aslinya kepadamu (Serigala / Bukan).
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 2: HUNTER -->
+        <div class="card theme-hunter">
+            <div class="card-bg-layer">
+                <svg width="100%" height="100%">
+                    <!-- Octagon background -->
+                    <polygon points="30%,15% 70%,15% 85%,30% 85%,70% 70%,85% 30%,85% 15%,70% 15%,30%" fill="none"
+                        stroke="#e8e8e8" stroke-width="1.5" />
+                    <polygon points="35%,20% 65%,20% 80%,35% 80%,65% 65%,80% 35%,80% 20%,65% 20%,35%" fill="none"
+                        stroke="#f0f0f0" stroke-width="1" stroke-dasharray="4 4" />
+                </svg>
+            </div>
+            <div class="content-layer">
+                <div class="c-top-bar">
+                    <span>FAKSI: ALIANSI</span>
+                    <span>HNT-99</span>
+                </div>
+                <div class="c-title-box">
+                    <h2>SANG PEMBURU</h2>
+                    <h3>The Marksman</h3>
+                </div>
+                <div class="c-art-box">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Symmetrical Crossbow / Target -->
+                        <circle cx="50" cy="50" r="30" fill="none" stroke="var(--accent-sub)" stroke-width="1.5"
+                            stroke-dasharray="8 4" />
+                        <circle cx="50" cy="50" r="22" fill="none" stroke="var(--accent-main)" stroke-width="2" />
+                        <circle cx="50" cy="50" r="4" fill="var(--accent-sub)" />
+
+                        <!-- Crosshairs -->
+                        <line x1="50" y1="5" x2="50" y2="40" stroke="var(--accent-main)" stroke-width="2" />
+                        <line x1="50" y1="95" x2="50" y2="60" stroke="var(--accent-main)" stroke-width="2" />
+                        <line x1="5" y1="50" x2="40" y2="50" stroke="var(--accent-main)" stroke-width="2" />
+                        <line x1="95" y1="50" x2="60" y2="50" stroke="var(--accent-main)" stroke-width="2" />
+
+                        <!-- Arrow tips geometric -->
+                        <polygon points="46,15 54,15 50,5" fill="var(--accent-sub)" />
+                        <polygon points="46,85 54,85 50,95" fill="var(--accent-sub)" />
+                        <polygon points="15,46 15,54 5,50" fill="var(--accent-sub)" />
+                        <polygon points="85,46 85,54 95,50" fill="var(--accent-sub)" />
+
+                        <!-- Bow curve -->
+                        <path d="M 20 20 Q 50 40 80 20" fill="none" stroke="var(--accent-main)" stroke-width="2" />
+                        <path d="M 20 80 Q 50 60 80 80" fill="none" stroke="var(--accent-main)" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="c-quote">
+                    "Bahkan dalam kematian, busurku tak pernah meleset dari detak jantungmu."
+                </div>
+                <div class="c-desc">
+                    <b>TEMBAKAN PAMUNGKAS:</b> Jika kamu terbunuh di malam hari atau dieksekusi warga, kamu berhak
+                    menembak mati 1 pemain lain sebelum kamu gugur.
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 3: WEREWOLF -->
+        <div class="card theme-wolf">
+            <div class="card-bg-layer">
+                <svg width="100%" height="100%">
+                    <!-- Jagged aggressive circles -->
+                    <path
+                        d="M 50% 10% A 40% 40% 0 0 1 90% 50% A 40% 40% 0 0 1 50% 90% A 40% 40% 0 0 1 10% 50% A 40% 40% 0 0 1 50% 10%"
+                        fill="none" stroke="#e8e8e8" stroke-width="1.5" stroke-dasharray="10 5" />
+                    <path
+                        d="M 50% 15% A 35% 35% 0 0 1 85% 50% A 35% 35% 0 0 1 50% 85% A 35% 35% 0 0 1 15% 50% A 35% 35% 0 0 1 50% 15%"
+                        fill="none" stroke="#f0f0f0" stroke-width="0.5" />
+                    <!-- Scratch lines crossing BG -->
+                    <line x1="20%" y1="20%" x2="40%" y2="40%" stroke="#f0f0f0" stroke-width="1" />
+                    <line x1="80%" y1="20%" x2="60%" y2="40%" stroke="#f0f0f0" stroke-width="1" />
+                </svg>
+            </div>
+            <div class="content-layer">
+                <div class="c-top-bar">
+                    <span>FAKSI: BAYANGAN</span>
+                    <span>WLF-00</span>
+                </div>
+                <div class="c-title-box">
+                    <h2>SERIGALA</h2>
+                    <h3>The Night Beast</h3>
+                </div>
+                <div class="c-art-box">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Symmetrical Geometric Wolf Head -->
+                        <polygon points="50,85 20,40 30,25 50,45 70,25 80,40" fill="none" stroke="var(--accent-sub)"
+                            stroke-width="2" stroke-linejoin="round" />
+                        <polygon points="50,85 35,60 50,45 65,60" fill="none" stroke="var(--accent-main)"
+                            stroke-width="1.5" />
+
+                        <!-- Ears -->
+                        <polygon points="30,25 25,5 40,20" fill="none" stroke="var(--accent-main)" stroke-width="2"
+                            stroke-linejoin="round" />
+                        <polygon points="70,25 75,5 60,20" fill="none" stroke="var(--accent-main)" stroke-width="2"
+                            stroke-linejoin="round" />
+
+                        <!-- Eyes (Glowing Red) -->
+                        <polygon points="38,40 45,45 38,50" fill="var(--accent-main)" />
+                        <polygon points="62,40 55,45 62,50" fill="var(--accent-main)" />
+
+                        <!-- Nose/Snout -->
+                        <polygon points="45,75 55,75 50,85" fill="var(--accent-sub)" />
+                        <line x1="50" y1="45" x2="50" y2="75" stroke="var(--accent-sub)" stroke-width="1.5" />
+
+                        <!-- Diamond accent -->
+                        <polygon points="50,10 55,20 50,30 45,20" fill="var(--accent-main)" />
+                    </svg>
+                </div>
+                <div class="c-quote">
+                    "Putihnya kepolosan malam ini, adalah kanvas terbaik untuk dosa-dosa merah kita."
+                </div>
+                <div class="c-desc">
+                    <b>PEMANGSA:</b> Bangun setiap malam bersama kawananmu untuk melahap satu korban. Menyamarlah dengan
+                    baik di siang hari agar terhindar dari tiang gantungan warga.
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 4: JESTER -->
+        <div class="card theme-jester">
+            <div class="card-bg-layer">
+                <svg width="100%" height="100%">
+                    <!-- Spiral / Dotted chaos -->
+                    <circle cx="50%" cy="50%" r="35%" fill="none" stroke="#e8e8e8" stroke-width="2"
+                        stroke-dasharray="2 6" stroke-linecap="round" />
+                    <circle cx="50%" cy="50%" r="28%" fill="none" stroke="#f0f0f0" stroke-width="2"
+                        stroke-dasharray="2 6" stroke-linecap="round" />
+                    <path d="M 10 50 Q 50 10 90 50" fill="none" stroke="#f5f5f5" stroke-width="1" />
+                    <path d="M 10 50 Q 50 90 90 50" fill="none" stroke="#f5f5f5" stroke-width="1" />
+                </svg>
+            </div>
+            <div class="content-layer">
+                <div class="c-top-bar">
+                    <span>FAKSI: KEKACAUAN</span>
+                    <span>JST-77</span>
+                </div>
+                <div class="c-title-box">
+                    <h2>SANG BADUT</h2>
+                    <h3>The Fool</h3>
+                </div>
+                <div class="c-art-box">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Symmetrical Split Mask (Harlequin) -->
+                        <path d="M 50 90 C 10 90 10 30 50 10 C 90 30 90 90 50 90 Z" fill="none"
+                            stroke="var(--accent-main)" stroke-width="2" />
+                        <line x1="50" y1="10" x2="50" y2="90" stroke="var(--accent-main)" stroke-width="2" />
+
+                        <!-- Left Side (Sad/Mad) -->
+                        <path d="M 30 35 C 35 30 40 30 45 35" fill="none" stroke="var(--accent-sub)" stroke-width="2" />
+                        <circle cx="35" cy="45" r="4" fill="var(--accent-main)" />
+                        <polygon points="35,52 32,60 38,60" fill="var(--accent-sub)" /> <!-- Tear -->
+                        <path d="M 25 75 Q 35 65 45 75" fill="none" stroke="var(--accent-main)" stroke-width="2" />
+
+                        <!-- Right Side (Happy) -->
+                        <path d="M 55 35 C 60 40 65 40 70 35" fill="none" stroke="var(--accent-sub)" stroke-width="2" />
+                        <polygon points="61,45 69,45 65,39" fill="var(--accent-main)" /> <!-- Star eye -->
+                        <path d="M 55 70 Q 65 80 75 70" fill="none" stroke="var(--accent-main)" stroke-width="2" />
+                        <line x1="55" y1="70" x2="75" y2="70" stroke="var(--accent-main)" stroke-width="1" />
+
+                        <!-- Jester Hat Accents Top -->
+                        <circle cx="15" cy="15" r="4" fill="var(--accent-sub)" />
+                        <path d="M 15 15 Q 30 15 35 20" fill="none" stroke="var(--accent-sub)" stroke-width="2" />
+                        <circle cx="85" cy="15" r="4" fill="var(--accent-sub)" />
+                        <path d="M 85 15 Q 70 15 65 20" fill="none" stroke="var(--accent-sub)" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="c-quote">
+                    "Kewarasan adalah sebuah lelucon, dan penderitaanku adalah puncak komedinya!"
+                </div>
+                <div class="c-desc">
+                    <b>TAWA KEMATIAN:</b> Bertingkahlah gila! Kamu akan MEMENANGKAN PERMAINAN secara mutlak jika
+                    berhasil memanipulasi warga desa untuk mengeksekusimu di siang hari.
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 5: GUARDIAN -->
+        <div class="card theme-guardian">
+            <div class="card-bg-layer">
+                <svg width="100%" height="100%">
+                    <!-- Shield protective rings -->
+                    <circle cx="50%" cy="50%" r="38%" fill="none" stroke="#e8e8e8" stroke-width="3" />
+                    <circle cx="50%" cy="50%" r="34%" fill="none" stroke="#f0f0f0" stroke-width="1" />
+                    <!-- Cross lines behind -->
+                    <line x1="50%" y1="0%" x2="50%" y2="100%" stroke="#f5f5f5" stroke-width="2" />
+                    <line x1="0%" y1="50%" x2="100%" y2="50%" stroke="#f5f5f5" stroke-width="2" />
+                </svg>
+            </div>
+            <div class="content-layer">
+                <div class="c-top-bar">
+                    <span>FAKSI: ALIANSI</span>
+                    <span>GRD-SH</span>
+                </div>
+                <div class="c-title-box">
+                    <h2>SANG PELINDUNG</h2>
+                    <h3>The Guardian</h3>
+                </div>
+                <div class="c-art-box">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Symmetrical Shield and Wings -->
+                        <!-- Wings -->
+                        <path d="M 40 40 Q 20 20 5 45 Q 20 60 40 60 Z" fill="none" stroke="var(--accent-sub)"
+                            stroke-width="1.5" />
+                        <path d="M 35 50 Q 15 40 10 65 Q 25 70 40 70 Z" fill="none" stroke="var(--accent-sub)"
+                            stroke-width="1.5" />
+                        <path d="M 60 40 Q 80 20 95 45 Q 80 60 60 60 Z" fill="none" stroke="var(--accent-sub)"
+                            stroke-width="1.5" />
+                        <path d="M 65 50 Q 85 40 90 65 Q 75 70 60 70 Z" fill="none" stroke="var(--accent-sub)"
+                            stroke-width="1.5" />
+
+                        <!-- Main Shield -->
+                        <path d="M 25 20 L 75 20 L 75 50 C 75 80 50 95 50 95 C 50 95 25 80 25 50 Z" fill="#fff"
+                            stroke="var(--accent-main)" stroke-width="2.5" stroke-linejoin="round" />
+                        <path d="M 33 28 L 67 28 L 67 50 C 67 72 50 85 50 85 C 50 85 33 72 33 50 Z" fill="none"
+                            stroke="var(--accent-sub)" stroke-width="1" />
+
+                        <!-- Center Crest -->
+                        <polygon points="50,35 60,45 50,55 40,45" fill="var(--accent-main)" />
+                        <line x1="50" y1="20" x2="50" y2="95" stroke="var(--accent-main)" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="c-quote">
+                    "Selama aku masih berdiri tegak, takkan ada darah tak berdosa yang tumpah malam ini."
+                </div>
+                <div class="c-desc">
+                    <b>PERISAI ILAHI:</b> Lindungi 1 pemain setiap malam dari serangan fatal Serigala. Kamu tidak
+                    diizinkan untuk melindungi pemain yang sama selama dua malam berturut-turut.
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU 6: CARD BACK (COVER) -->
+        <div class="card theme-back">
+            <div class="card-bg-layer">
+                <svg width="100%" height="100%">
+                    <!-- Intricate Mandala Web -->
+                    <circle cx="50%" cy="50%" r="42%" fill="none" stroke="#e0e0e0" stroke-width="1" />
+                    <circle cx="50%" cy="50%" r="38%" fill="none" stroke="#e8e8e8" stroke-width="0.5"
+                        stroke-dasharray="2 4" />
+
+                    <!-- Starburst lines -->
+                    <line x1="50%" y1="8%" x2="50%" y2="92%" stroke="#e8e8e8" stroke-width="1" />
+                    <line x1="8%" y1="50%" x2="92%" y2="50%" stroke="#e8e8e8" stroke-width="1" />
+                    <line x1="20%" y1="20%" x2="80%" y2="80%" stroke="#e8e8e8" stroke-width="1" />
+                    <line x1="20%" y1="80%" x2="80%" y2="20%" stroke="#e8e8e8" stroke-width="1" />
+
+                    <polygon points="50%,15% 85%,50% 50%,85% 15%,50%" fill="none" stroke="#f0f0f0" stroke-width="1" />
+                </svg>
+            </div>
+            <div class="content-layer">
+                <div class="c-top-bar">
+                    <span>THE WHITE EDITION</span>
+                    <span>2026 DECK</span>
+                </div>
+                <div class="c-title-box">
+                    <h2>WEREWOLF</h2>
+                    <h3>Pure White Series</h3>
+                </div>
+                <div class="c-art-box" style="width: 36mm; height: 36mm; margin-top: 4mm;">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <!-- Symmetrical Day & Night Emblem -->
+                        <circle cx="50" cy="50" r="25" fill="none" stroke="var(--accent-sub)" stroke-width="1" />
+
+                        <!-- Crescent Moon (Night) - Right Side -->
+                        <path d="M 50 15 A 35 35 0 0 1 50 85 A 25 25 0 0 0 50 15 Z" fill="var(--accent-main)" />
+
+                        <!-- Sun Rays (Day) - Left Side -->
+                        <line x1="50" y1="50" x2="10" y2="50" stroke="var(--accent-main)" stroke-width="2" />
+                        <line x1="50" y1="50" x2="18" y2="25" stroke="var(--accent-main)" stroke-width="2" />
+                        <line x1="50" y1="50" x2="18" y2="75" stroke="var(--accent-main)" stroke-width="2" />
+                        <line x1="50" y1="50" x2="35" y2="10" stroke="var(--accent-main)" stroke-width="2" />
+                        <line x1="50" y1="50" x2="35" y2="90" stroke="var(--accent-main)" stroke-width="2" />
+
+                        <!-- Central Star -->
+                        <polygon points="50,40 53,47 60,50 53,53 50,60 47,53 40,50 47,47" fill="#fff"
+                            stroke="var(--accent-main)" stroke-width="1" />
+
+                        <!-- Orbiting small stars -->
+                        <circle cx="20" cy="50" r="2" fill="var(--accent-sub)" />
+                        <circle cx="80" cy="50" r="2" fill="var(--accent-sub)" />
+                        <circle cx="50" cy="20" r="2" fill="var(--accent-sub)" />
+                        <circle cx="50" cy="80" r="2" fill="var(--accent-sub)" />
+                    </svg>
+                </div>
+
+                <div class="c-quote">
+                    "Siapakah yang bersembunyi di balik putihnya kepolosan?"
+                </div>
+
+                <!-- On the back card, desc becomes a bottom signature -->
+                <div class="c-desc">
+                    OFFICIAL TOURNAMENT DECK
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
