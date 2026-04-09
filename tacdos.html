@@ -133,6 +133,31 @@
             z-index: 10;
         }
 
+        .card.back {
+            border-color: transparent !important;
+            border-radius: 0 !important;
+            overflow: visible !important;
+            background: transparent !important;
+        }
+
+        .card.back::before {
+            content: '';
+            position: absolute;
+            inset: -2.25mm;
+            background-color: var(--t-light);
+            background-image: radial-gradient(var(--t-dark) 0.5px, transparent 0.5px);
+            background-size: 4mm 4mm;
+            z-index: 0;
+        }
+
+        .card.back .tac-header {
+            margin: -2.25mm -2.25mm 0 -2.25mm !important;
+            width: calc(100% + 4.5mm) !important;
+            height: calc(28mm + 2.25mm) !important;
+            padding: 5.25mm 6.25mm 3mm 6.25mm !important;
+            clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%) !important;
+        }
+
         .tac-header {
             background: var(--t-dark);
             height: calc(28mm + 2px);
@@ -339,7 +364,7 @@
                 : '<div class="tac-ability">' + card.ability + '</div>';
 
             var html = '';
-            html += '<div class="card" id="' + card.id + '" data-id="' + card.id + '" style="' + card.cssVars + '">';
+            html += '<div class="card' + (card.isBack ? ' back' : '') + '" id="' + card.id + '" data-id="' + card.id + '" style="' + card.cssVars + '">';
             html += '  <div class="tac-header">';
             html += '    <div class="tac-code c-code">' + card.code + '</div>';
             html += '    <div class="tac-title-en">' + card.titleEn + '</div>';

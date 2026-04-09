@@ -344,6 +344,50 @@
             border-top: 0.3mm dotted var(--f-color);
             padding-top: 1.2mm;
         }
+
+        /* =========================================
+           KARTU BELAKANG (BLEED SETUP)
+           ========================================= */
+        .card.id-card_back {
+            border: none !important;
+            overflow: visible !important;
+            background: transparent !important;
+        }
+
+        .card.id-card_back .theme-twisted {
+            background-color: transparent !important;
+        }
+
+        .card.id-card_back .theme-twisted::before {
+            display: none !important;
+        }
+
+        .card.id-card_back::before {
+            content: '';
+            position: absolute;
+            inset: -8mm;
+            background-color: #0f1115; /* Sesuaikan dgn bg-color card_back */
+            z-index: -10;
+        }
+
+        .card.id-card_back::after {
+            content: '';
+            position: absolute;
+            inset: -8mm;
+            background-image: radial-gradient(circle at 2mm 2mm, #d4af37 0.4mm, transparent 0.6mm);
+            background-size: 4mm 4mm;
+            opacity: 0.05;
+            z-index: -9;
+            pointer-events: none;
+        }
+
+        @media print {
+            .card.id-card_back {
+                border: none !important;
+                overflow: visible !important;
+            }
+        }
+
         @media print {
             html, body {
                 margin: 0 !important;

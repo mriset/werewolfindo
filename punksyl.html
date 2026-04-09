@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Werewolf: The Urban Punk Deck</title>
+    <title>Werewolf: The Urban Punk Deck - Print Layout</title>
     
     <!-- Font Punk & Ransom Note Vibe -->
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -44,12 +44,27 @@
         .header h1 { font-family: 'Anton', sans-serif; font-size: 3rem; letter-spacing: 2px; color: var(--c-yellow); text-shadow: 3px 3px 0 var(--c-magenta); transform: rotate(-1deg);}
         .header p { font-family: 'Courier Prime', monospace; color: #ccc; margin-top: 5px; font-weight: bold; }
 
-        .deck {
+        /* --- PAGES --- */
+        .page {
+            background: #ffffff; /* Kertas print warna putih */
+            box-shadow: none; /* Tanpa shadow pada layout kertas */
+            margin: 0 auto 40px;
             display: flex;
             flex-wrap: wrap;
-            gap: 30px;
-            justify-content: center;
-            max-width: 1400px;
+            align-content: flex-start;
+            justify-content: flex-start;
+            box-sizing: border-box;
+        }
+
+        @media print {
+            .screen-only, .control-panel, .header { display: none !important; }
+            html, body { margin: 0 !important; padding: 0 !important; }
+            body { background: none !important; padding: 0 !important; display: block !important; }
+            #pages-container { margin: 0 !important; padding: 0 !important; }
+            .page { box-shadow: none !important; margin: 0 !important; page-break-after: always; page-break-inside: avoid; break-after: page; background: none !important; }
+            .card { box-shadow: none !important; border: 1px solid #b0b0b0 !important; transform: none !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; page-break-inside: avoid; }
+            .card-placeholder { visibility: hidden !important; border: 0 !important; }
+            .page:last-child { page-break-after: auto !important; break-after: auto !important; }
         }
 
         /* =========================================
@@ -60,12 +75,15 @@
             height: var(--h);
             background-color: var(--c-white);
             position: relative;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8);
+            box-shadow: none; /* Dihapus shadow agar rapi dan datar */
+            border-radius: 3.5mm; /* Pojok kartu rounded */
+            border: 1px solid #e0e0e0; /* Garis tepi abu-abu tipis */
             overflow: hidden;
             flex-shrink: 0;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             padding: 0;
+            pointer-events: none; /* Mencegah hover effect sesuai permintaan */
         }
 
         /* Slash Background Layer */
@@ -99,9 +117,12 @@
 
         /* Header (Title & Subtitle) */
         .pk-header {
-            padding: 4mm 3mm;
+            padding: 4mm 3mm 2mm 3mm;
             transform: rotate(var(--rot-header, -2deg));
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 2mm;
         }
         .pk-title {
             font-family: 'Anton', sans-serif;
@@ -112,7 +133,8 @@
             /* Heavy black stroke & shadow for max visibility */
             text-shadow: 2px 2px 0 var(--c-black), -1px -1px 0 var(--c-black), 1px -1px 0 var(--c-black), -1px 1px 0 var(--c-black), 1px 1px 0 var(--c-black);
             letter-spacing: 1px;
-            margin-bottom: 0.5mm;
+            margin-bottom: 0;
+            flex-shrink: 0;
         }
         .pk-subtitle {
             font-family: 'Courier Prime', monospace;
@@ -124,6 +146,7 @@
             display: inline-block;
             transform: rotate(var(--rot-sub, 2deg));
             box-shadow: 1px 1px 0 var(--accent);
+            white-space: nowrap;
         }
 
         /* Art / SVG Area */
@@ -133,23 +156,25 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            margin-top: -3mm;
+            margin-top: -6mm; /* Ditarik lebih ke atas */
             padding: 0 4mm;
         }
 
         /* Bottom Section (Quote & Desc) */
         .pk-bottom {
-            padding: 3mm;
-            padding-top: 4mm;
+            padding: 3mm 3mm 5mm 3mm; /* Tambah padding bawah agar tulisan naik */
+            padding-top: 2mm; /* Kurangi padding atas */
+            margin-top: -4mm; /* Tarik kotak deskripsi lebih ke atas menimpa art */
             background: linear-gradient(transparent, var(--c-white) 15%, var(--c-white));
             position: relative;
+            z-index: 5;
         }
         .pk-quote {
             font-family: 'Anton', sans-serif;
-            font-size: 7.5pt;
+            font-size: 7pt; /* Sedikit dikecilkan agar lebih muat */
             color: var(--accent);
             line-height: 1.1;
-            margin-bottom: 2mm;
+            margin-bottom: 1.5mm; /* Rapatkan dengan teks deskripsi */
             transform: rotate(var(--rot-quote, 1deg));
             letter-spacing: 0.5px;
         }
@@ -158,7 +183,7 @@
             font-weight: 800;
             font-size: 4.8pt;
             color: var(--c-black);
-            line-height: 1.3;
+            line-height: 1.25; /* Rapatkan sedikit antar baris */
             text-align: left;
         }
         .pk-desc strong { color: var(--accent); font-weight: 900; }
@@ -172,8 +197,6 @@
             font-size: 6.5pt;
             color: var(--c-black);
             z-index: 3;
-            transform: rotate(90deg);
-            transform-origin: top right;
             letter-spacing: 1px;
         }
         .pk-code {
@@ -191,6 +214,38 @@
             transform: rotate(var(--rot-code, -2deg));
         }
 
+        /* =========================================
+           CARD BACK - PRINT BLEED SYSTEM
+           Menghilangkan border & memberikan bleed (margin negatif & stretch)
+           sehingga lebih aman dipotong dari posisi kartu depan
+           ========================================= */
+        .card[data-id="card_back"] {
+            border: none !important;
+            border-radius: 0 !important;
+            width: calc(var(--w) + 4mm) !important;
+            height: calc(var(--h) + 4mm) !important;
+            margin: -2mm !important;
+            z-index: 10;
+        }
+        .card[data-id="card_back"] .pk-faction {
+            top: 4.5mm !important; 
+            right: 4.5mm !important;
+        }
+        .card[data-id="card_back"] .pk-code {
+            bottom: 4mm !important; 
+            right: 4mm !important;
+        }
+        .card[data-id="card_back"] .pk-header {
+            padding: 6mm 5mm 2mm 5mm !important; 
+        }
+        .card[data-id="card_back"] .pk-art {
+            padding: 0 6mm !important;
+        }
+        .card[data-id="card_back"] .pk-bottom {
+            padding: 1mm 5mm 7mm 5mm !important; 
+            background: none !important;
+        }
+
         /* Specifically for Card Back text adjustments */
         .back-desc-area { text-align: center; border-top: 2px dashed var(--c-black); padding-top: 2mm; margin-top: 1mm;}
         .barcode { font-family: 'Space Mono', monospace; font-size: 14pt; letter-spacing: -2px; color: var(--c-black); font-weight: 900;}
@@ -199,236 +254,187 @@
 </head>
 <body>
 
-    <div class="header">
+    <div class="header screen-only">
         <h1>THE PUNK ASYLUM</h1>
-        <p>1 Design System. 6 Mahakarya Brutal. (85.6mm x 54mm)</p>
+        <p>1 Design System. 6 Mahakarya Brutal. Layout Website Mode</p>
     </div>
 
-    <div class="deck">
-
-        <!-- KARTU 1: WEREWOLF (The Original Inspiration) -->
-        <div class="card" style="--accent: var(--c-magenta); --title-color: var(--c-yellow); --rot-slash: -5deg; --rot-header: -3deg; --rot-sub: 2deg; --rot-quote: 1deg; --rot-code: -2deg;">
-            <div class="pk-bg-slash"></div>
-            <div class="pk-faction">SHADOWS</div>
-            <div class="pk-content">
-                <div class="pk-header">
-                    <div class="pk-title">WERE<br>WOLF</div>
-                    <div class="pk-subtitle">SANG SERIGALA</div>
-                </div>
-                <div class="pk-art">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%">
-                        <!-- Aggressive Wolf Jaw Stencil -->
-                        <path d="M 10 90 L 25 50 L 15 35 L 40 45 L 45 10 L 60 35 L 85 15 L 75 50 L 95 65 L 65 75 L 80 95 L 50 80 Z" fill="var(--c-black)" />
-                        <!-- Teeth -->
-                        <path d="M 30 80 L 40 60 L 45 70 L 50 50 L 60 65 L 70 80 Z" fill="var(--c-white)" />
-                        <!-- Eyes -->
-                        <circle cx="35" cy="40" r="4" fill="var(--c-white)" />
-                        <circle cx="35" cy="40" r="1.5" fill="var(--accent)" />
-                        <circle cx="60" cy="40" r="4" fill="var(--c-white)" />
-                        <circle cx="60" cy="40" r="1.5" fill="var(--accent)" />
-                        <!-- Blood spray splatters -->
-                        <circle cx="20" cy="20" r="2.5" fill="var(--accent)" />
-                        <circle cx="25" cy="15" r="1.5" fill="var(--accent)" />
-                        <circle cx="80" cy="80" r="3.5" fill="var(--accent)" />
-                        <circle cx="85" cy="72" r="1.5" fill="var(--accent)" />
-                        <circle cx="70" cy="15" r="2" fill="var(--accent)" />
-                    </svg>
-                </div>
-                <div class="pk-bottom">
-                    <div class="pk-quote">"KAMI LAPAR. DAN KALIAN TERLIHAT SANGAT LEZAT."</div>
-                    <div class="pk-desc">
-                        <strong>INSTING PEMANGSA:</strong> Bangun setiap malam bersama kawanan. Pilih 1 mangsa untuk dihabisi tanpa ampun. Di siang hari, berbaurlah seperti domba bodoh.
-                    </div>
-                </div>
-            </div>
-            <div class="pk-code">WLF-00</div>
+    <!-- CONTROL PANEL FOR PRINT/DOWNLOAD -->
+    <div class="control-panel screen-only" style="background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0; border-left: 5px solid var(--c-magenta); padding: 15px 25px; margin: 0 auto 30px; max-width: 900px; box-shadow: 5px 5px 0 var(--c-cyan); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; position: relative; z-index: 10;">
+        <div style="width: 100%; text-align: center; margin-bottom: 12px; border-bottom: 2px dashed var(--c-yellow); padding-bottom: 10px;">
+            <p style="margin: 0; font-size: 13px; color: #fff; font-weight: 900; font-family: 'Space Mono', monospace; letter-spacing: -0.5px;">
+                <span style="color: var(--c-yellow); font-weight: 700; background: var(--c-black); padding: 0 5px;">PRINT SYSTEM ACTIVE.</span> Hit <kbd style="background: var(--c-magenta); border-radius: 0; border: none; padding: 2px 4px; color:#fff;">Ctrl+P</kbd> & set:
+                1. FORMAT: <span style="color:var(--c-cyan)">A4</span> | 
+                2. SCALE: <span style="color:var(--c-cyan)">100%</span> | 
+                3. MARGINS: <span style="color:var(--c-cyan)">NONE</span> | 
+                4. <span style="color:var(--c-cyan)">BACKGROUND GRAPHICS</span>
+            </p>
         </div>
 
-        <!-- KARTU 2: SEER (Cyan Punk) -->
-        <div class="card" style="--accent: var(--c-cyan); --title-color: var(--c-white); --slash-top: -15mm; --rot-slash: 4deg; --rot-header: 2deg; --rot-sub: -3deg; --rot-quote: -1.5deg; --rot-code: 2deg;">
-            <div class="pk-bg-slash"></div>
-            <div class="pk-faction">ALLIANCE</div>
-            <div class="pk-content">
-                <div class="pk-header">
-                    <div class="pk-title">THE<br>SEER</div>
-                    <div class="pk-subtitle">SANG PERAMAL</div>
-                </div>
-                <div class="pk-art">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%">
-                        <!-- Crying Eye Stencil -->
-                        <path d="M 5 50 Q 50 10 95 50 Q 50 90 5 50 Z" fill="none" stroke="var(--c-black)" stroke-width="6" stroke-linecap="round"/>
-                        <circle cx="50" cy="50" r="18" fill="var(--c-black)" />
-                        <!-- Jagged Iris inside -->
-                        <polygon points="50,35 60,45 55,65 45,65 40,45" fill="var(--accent)" />
-                        <circle cx="50" cy="50" r="4" fill="var(--c-black)" />
-                        <!-- Paint Drips (Tears) -->
-                        <path d="M 35 70 L 35 90" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
-                        <circle cx="35" cy="95" r="2" fill="var(--accent)" />
-                        <path d="M 65 70 L 65 85" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
-                        <!-- Crossed Out X marks -->
-                        <path d="M 75 15 L 85 25 M 85 15 L 75 25" stroke="var(--c-black)" stroke-width="4" stroke-linecap="round"/>
-                        <path d="M 15 20 L 25 30 M 25 20 L 15 30" stroke="var(--c-black)" stroke-width="4" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <div class="pk-bottom">
-                    <div class="pk-quote">"AKU BISA MELIHAT DOSA-DOSAMU SAAT KAU TERLELAP."</div>
-                    <div class="pk-desc">
-                        <strong>MATA BATIN:</strong> Setiap malam, pilih 1 pemain untuk mengintip wujud aslinya. Bimbing warga menuju kebenaran di siang hari, tanpa membuka kedokmu!
-                    </div>
-                </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; width: 100%;">
+            <div class="control-group" style="display: flex; align-items: center; gap: 8px; background: #000; padding: 8px 14px; border: 1px solid #333;">
+                <label for="paper-size" style="font-size: 11px; font-weight: 900; color: var(--c-magenta); text-transform: uppercase;">Paper:</label>
+                <select id="paper-size" onchange="changePaperSize()" style="font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 600; padding: 4px 8px; border: 1px solid var(--c-magenta); background: #222; color: #fff; cursor: pointer; outline: none;">
+                    <option value="a4">A4 (9 Cards)</option>
+                    <option value="f4">F4 / Folio (9 Cards)</option>
+                    <option value="a3">A3 (20 Cards)</option>
+                    <option value="a3plus">A3+ (25 Cards)</option>
+                    <option value="single">Single Layout</option>
+                </select>
             </div>
-            <div class="pk-code">SER-EYE</div>
-        </div>
 
-        <!-- KARTU 3: HUNTER (Toxic Green Punk) -->
-        <div class="card" style="--accent: var(--c-green); --title-color: var(--c-yellow); --rot-slash: -7deg; --rot-header: -4deg; --rot-sub: 1deg; --rot-quote: 2deg; --title-size: 24pt;">
-            <div class="pk-bg-slash"></div>
-            <div class="pk-faction">VANGUARD</div>
-            <div class="pk-content">
-                <div class="pk-header">
-                    <div class="pk-title">HUNT<br>ER</div>
-                    <div class="pk-subtitle">SANG PEMBURU</div>
-                </div>
-                <div class="pk-art">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%">
-                        <!-- Skull Base -->
-                        <path d="M 30 25 C 30 5 70 5 70 25 C 70 45 65 55 65 75 L 55 75 L 55 70 L 45 70 L 45 75 L 35 75 C 35 55 30 45 30 25 Z" fill="var(--c-black)" />
-                        <!-- Skull Eyes -->
-                        <path d="M 35 35 L 45 40 L 40 30 Z" fill="var(--accent)" />
-                        <path d="M 65 35 L 55 40 L 60 30 Z" fill="var(--accent)" />
-                        <!-- Nose -->
-                        <polygon points="50,45 53,52 47,52" fill="var(--accent)" />
-                        <!-- Crosshair Target Overlay -->
-                        <circle cx="50" cy="50" r="35" fill="none" stroke="var(--c-black)" stroke-width="4" stroke-dasharray="15 10"/>
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 5"/>
-                        <!-- Target lines -->
-                        <line x1="0" y1="50" x2="30" y2="50" stroke="var(--c-black)" stroke-width="4" />
-                        <line x1="70" y1="50" x2="100" y2="50" stroke="var(--c-black)" stroke-width="4" />
-                        <line x1="50" y1="0" x2="50" y2="20" stroke="var(--c-black)" stroke-width="4" />
-                        <line x1="50" y1="80" x2="50" y2="100" stroke="var(--c-black)" stroke-width="4" />
-                        <!-- Bullet hole impact -->
-                        <circle cx="25" cy="70" r="4" fill="var(--c-black)" />
-                        <path d="M 25 70 L 15 65 M 25 70 L 20 80 M 25 70 L 35 75" stroke="var(--c-black)" stroke-width="2" />
-                    </svg>
-                </div>
-                <div class="pk-bottom">
-                    <div class="pk-quote">"KAU MENGGIGITKU? KUPASTIKAN KEPALAMU MELEDAK."</div>
-                    <div class="pk-desc">
-                        <strong>PELATUK TERAKHIR:</strong> Jika kamu terbunuh (diterkam atau dieksekusi warga), gunakan nafas terakhirmu untuk menarik pelatuk dan menembak mati 1 pemain secara instan.
-                    </div>
-                </div>
+            <div style="width: 2px; background: #444; margin: 0 5px;"></div>
+
+            <div class="control-group" style="display: flex; align-items: center; gap: 8px; background: #000; padding: 8px 14px; border: 1px solid #333;">
+                <label for="export-dpi" style="font-size: 11px; font-weight: 900; color: var(--c-cyan); text-transform: uppercase;">DPI Render:</label>
+                <select id="export-dpi" onchange="changePaperSize()" style="font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 600; padding: 4px 8px; border: 1px solid var(--c-cyan); background: #222; color: #fff; cursor: pointer; outline: none;">
+                    <option value="1">Standard (96)</option>
+                    <option value="2">Sharp (192)</option>
+                    <option value="4" selected>Extreme (384)</option>
+                </select>
             </div>
-            <div class="pk-code">HNT-X9</div>
-        </div>
 
-        <!-- KARTU 4: JESTER (Yellow Hazard Punk) -->
-        <!-- Note: We use pure yellow for background slash, but magenta for the quote to ensure readability on white bottom section -->
-        <div class="card" style="--accent: var(--c-yellow); --title-color: var(--c-magenta); --rot-slash: 6deg; --rot-header: 3deg; --rot-sub: -4deg; --rot-quote: -2deg; --rot-code: 3deg;">
-            <div class="pk-bg-slash"></div>
-            <div class="pk-faction">CHAOS</div>
-            <div class="pk-content">
-                <div class="pk-header">
-                    <div class="pk-title">JES<br>TER</div>
-                    <div class="pk-subtitle">SI BADUT GILA</div>
-                </div>
-                <div class="pk-art">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%">
-                        <!-- Grinning jagged mouth -->
-                        <path d="M 5 50 Q 50 100 95 50 L 80 65 Q 50 85 20 65 Z" fill="var(--c-black)" />
-                        <!-- Teeth grid -->
-                        <path d="M 15 58 L 25 50 L 35 62 L 45 52 L 55 64 L 65 52 L 75 62 L 85 55" fill="none" stroke="var(--c-white)" stroke-width="3" stroke-linejoin="miter"/>
-                        <!-- X Eyes painted aggressively -->
-                        <path d="M 20 15 L 45 40 M 45 15 L 20 40" stroke="var(--c-black)" stroke-width="8" stroke-linecap="square"/>
-                        <path d="M 55 10 L 85 45 M 85 10 L 55 45" stroke="var(--c-black)" stroke-width="9" stroke-linecap="square"/>
-                        <!-- HAHA text stamped in background -->
-                        <text x="5" y="30" fill="none" stroke="var(--c-magenta)" stroke-width="1.5" font-family="Anton" font-size="20" transform="rotate(-15)">HA!</text>
-                        <text x="65" y="85" fill="none" stroke="var(--c-magenta)" stroke-width="1.5" font-family="Anton" font-size="22" transform="rotate(10)">HA!</text>
-                        <text x="10" y="80" fill="var(--c-magenta)" font-family="Anton" font-size="14" transform="rotate(-25)">HA!</text>
-                    </svg>
-                </div>
-                <div class="pk-bottom">
-                    <!-- Overriding accent to magenta purely for text contrast at the bottom -->
-                    <div class="pk-quote" style="color: var(--c-magenta);">"AYO GANTUNG AKU! INI AKAN JADI LELUCON TERBAIK!"</div>
-                    <div class="pk-desc">
-                        <strong style="color: var(--c-magenta);">KEMENANGAN GILA:</strong> Tujuanmu satu: memanipulasi warga agar mem-voting mati dirimu di siang hari. Jika kamu berhasil digantung, kamu menang mutlak sendirian!
-                    </div>
-                </div>
+            <div class="control-group" style="display: flex; align-items: center; gap: 8px; background: #000; padding: 8px 14px; border: 1px solid #333;">
+                <label for="back-mode" style="font-size: 11px; font-weight: 900; color: var(--c-yellow); text-transform: uppercase;">Back Mode:</label>
+                <select id="back-mode" onchange="changePaperSize()" style="font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 600; padding: 4px 8px; border: 1px solid var(--c-yellow); background: #222; color: #fff; cursor: pointer; outline: none;">
+                    <option value="duplex">Duplex Auto</option>
+                    <option value="manual-long">Manual: Long Edge</option>
+                    <option value="manual-short">Manual: Short Edge</option>
+                </select>
             </div>
-            <div class="pk-code" style="background: var(--c-magenta); color: var(--c-white);">JST-HAHA</div>
-        </div>
 
-        <!-- KARTU 5: GUARDIAN (Orange Rust Punk) -->
-        <div class="card" style="--accent: var(--c-orange); --title-color: var(--c-black); --rot-slash: 3deg; --slash-bot: 38mm; --rot-header: -2deg; --rot-sub: 2deg; --rot-quote: 1.5deg; --rot-code: -1deg; --title-size: 21pt;">
-            <div class="pk-bg-slash" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.2) 5px, rgba(0,0,0,0.2) 10px);"></div>
-            <div class="pk-faction">ALLIANCE</div>
-            <div class="pk-content">
-                <div class="pk-header">
-                    <div class="pk-title" style="color: var(--c-white);">GUAR<br>DIAN</div>
-                    <div class="pk-subtitle">SANG PELINDUNG</div>
-                </div>
-                <div class="pk-art">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%">
-                        <!-- Street Sign / Barrier Shield Base -->
-                        <polygon points="15,10 85,10 90,55 50,95 10,55" fill="var(--c-black)" />
-                        <polygon points="25,20 75,20 78,50 50,80 22,50" fill="var(--c-white)" />
-                        <!-- Anarchy / Protection Spray Paint Symbol -->
-                        <circle cx="50" cy="45" r="18" fill="none" stroke="var(--accent)" stroke-width="5" />
-                        <path d="M 50 20 L 50 70 M 35 55 L 65 55 M 38 32 L 62 58 M 62 32 L 38 58" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
-                        <!-- Rivets / Screws -->
-                        <circle cx="22" cy="16" r="2" fill="var(--c-white)" />
-                        <circle cx="78" cy="16" r="2" fill="var(--c-white)" />
-                        <circle cx="50" cy="85" r="2" fill="var(--c-white)" />
-                    </svg>
-                </div>
-                <div class="pk-bottom">
-                    <div class="pk-quote">"BERLINDUNGLAH DI BELAKANGKU, ATAU MATI DI LUAR SANA."</div>
-                    <div class="pk-desc">
-                        <strong>PERISAI ABSOLUT:</strong> Pilih 1 pemain setiap malam. Jika targetmu diserang serigala, dinding perlindunganmu memblokir serangan tersebut total.
-                    </div>
-                </div>
+            <button class="control-btn" onclick="window.print()" title="Ctrl+P" style="font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1px; padding: 10px 18px; cursor: pointer; border: none; background: var(--c-yellow); color: var(--c-black); box-shadow: 3px 3px 0 var(--c-cyan);">
+                >> PRINT / PDF
+            </button>
+
+            <div style="width: 2px; background: #444; margin: 0 5px;"></div>
+
+            <div class="control-group" style="display: flex; align-items: center; gap: 8px; background: #000; padding: 8px 14px; border: 1px solid #333;">
+                <label for="export-format" style="font-size: 11px; font-weight: 900; color: var(--c-green); text-transform: uppercase;">Arch:</label>
+                <select id="export-format" style="font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 600; padding: 4px 8px; border: 1px solid var(--c-green); background: #222; color: #fff; cursor: pointer; outline: none;">
+                    <option value="png">PNG</option>
+                    <option value="jpg">JPG</option>
+                </select>
             </div>
-            <div class="pk-code">GRD-DEF</div>
+            <button id="btn-download-all" class="control-btn" onclick="downloadAllCardsDomToImage('Punksyl', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})" style="font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1px; padding: 10px 18px; cursor: pointer; border: none; background: var(--c-magenta); color: var(--c-white); box-shadow: 3px 3px 0 var(--c-yellow);">
+                [ ZIP ARCHIVE ]
+            </button>
         </div>
-
-        <!-- KARTU 6: CARD BACK (Blood Red / Black Ops) -->
-        <div class="card" style="--accent: var(--c-red); --title-color: var(--c-white); --slash-top: -5mm; --slash-bot: 25mm; --rot-slash: -8deg; --rot-header: 3deg; --rot-sub: -2deg; --title-size: 20pt;">
-            <div class="pk-bg-slash" style="background: var(--c-black);"></div>
-            <div class="pk-faction" style="color: var(--c-white);">CLASSIFIED</div>
-            <div class="pk-content">
-                <div class="pk-header">
-                    <div class="pk-title" style="color: var(--c-white); text-shadow: 2px 2px 0 var(--accent), -1px -1px 0 var(--accent);">WHO<br>ARE<br>YOU?</div>
-                    <div class="pk-subtitle" style="background: var(--accent);">NIGHTMARE ASYLUM</div>
-                </div>
-                <div class="pk-art" style="margin-top: -10mm;">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%">
-                        <!-- Massive dripping question mark mixed with a skull -->
-                        <path d="M 30 30 C 30 5 70 5 70 30 C 70 50 50 50 50 65" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="square"/>
-                        <!-- The dot is a distorted skull -->
-                        <path d="M 40 85 C 40 75 60 75 60 85 L 55 95 L 45 95 Z" fill="var(--accent)" />
-                        <circle cx="46" cy="85" r="2" fill="var(--c-black)" />
-                        <circle cx="54" cy="85" r="2" fill="var(--c-black)" />
-                        
-                        <!-- Extra abstract ink splatters -->
-                        <circle cx="20" cy="20" r="3.5" fill="var(--c-black)" />
-                        <circle cx="25" cy="28" r="1.5" fill="var(--c-black)" />
-                        <circle cx="85" cy="50" r="4.5" fill="var(--accent)" />
-                        <path d="M 85 50 L 82 65 M 85 50 L 88 60" stroke="var(--accent)" stroke-width="2" />
-                        <!-- Caution tape lines -->
-                        <line x1="-10" y1="40" x2="30" y2="40" stroke="var(--c-black)" stroke-width="3" stroke-dasharray="8 4" transform="rotate(-20)"/>
-                    </svg>
-                </div>
-                <div class="pk-bottom" style="padding-top: 1mm;">
-                    <div class="pk-quote" style="text-align: center; font-size: 8.5pt;">"JANGAN PERCAYA SIAPAPUN.<br>BAHKAN DIRIMU SENDIRI."</div>
-                    <div class="back-desc-area">
-                        <div class="barcode">|| | ||| | || |||</div>
-                        <div style="font-family: 'Space Mono', monospace; font-size: 4pt; color: var(--c-black); font-weight: bold; margin-top: 1mm;">TOP SECRET // DO NOT OPEN</div>
-                    </div>
-                </div>
-            </div>
-            <div class="pk-code" style="background: var(--c-black); color: var(--c-white);">DECK-XX</div>
-        </div>
-
     </div>
 
+    <!-- DYNAMIC CONTAINER -->
+    <div id="pages-container"></div>
+
+    <script src="punksyl_data.js"></script>
+    <script src="svg_punksyl.js"></script>
+
+    <script>
+        function generatePunksylCard(card) {
+            return `
+            <div class="card ${card.className || ''} c-code-wrapper" data-id="${card.id}" style="${card.style}">
+                <div class="pk-bg-slash" style="${card.slashStyle || ''}"></div>
+                <div class="pk-faction" style="${card.factionStyle || ''}">${card.faction}</div>
+                <div class="pk-content">
+                    <div class="pk-header">
+                        <div class="pk-title" style="${card.titleStyle || ''}">${card.title}</div>
+                        <div class="pk-subtitle" style="${card.subtitleStyle || ''}">${card.subtitle}</div>
+                    </div>
+                    <div class="pk-art" style="${card.artStyle || ''}">
+                        ${punksylArt[card.id] || ''}
+                    </div>
+                    <div class="pk-bottom" style="${card.bottomStyle || ''}">
+                        <div class="pk-quote" style="${card.quoteStyle || ''}">${card.quote}</div>
+                        <div class="pk-desc">
+                            ${card.descHtml}
+                        </div>
+                    </div>
+                </div>
+                <div class="pk-code" style="${card.codeStyle || ''}">${card.code}</div>
+            </div>`;
+        }
+
+        function mapBackSlotIndex(slotIndex, cols, rows, backMode) {
+            var row = Math.floor(slotIndex / cols);
+            var col = slotIndex % cols;
+            if (backMode === 'manual-long') {
+                col = (cols - 1) - col;
+            } else if (backMode === 'manual-short') {
+                row = (rows - 1) - row;
+            }
+            return (row * cols) + col;
+        }
+
+        function renderPageFromSlots(slotCards, isBackPage) {
+            var html = '<div class="page' + (isBackPage ? ' page-back' : '') + '">';
+            var placeholder = '<div class="card card-placeholder" style="visibility:hidden;border:0 !important;box-shadow:none !important;background:transparent !important;pointer-events:none !important;" aria-hidden="true"></div>';
+            for (var i = 0; i < slotCards.length; i++) {
+                if (slotCards[i]) html += generatePunksylCard(slotCards[i]);
+                else html += placeholder;
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function changePaperSize() {
+            var paperSelect = document.getElementById('paper-size');
+            var dpiSelect = document.getElementById('export-dpi') || document.getElementById('pdf-dpi');
+            var backModeSelect = document.getElementById('back-mode');
+            var paperId = paperSelect ? paperSelect.value : 'a4';
+            var dpiScale = parseFloat(dpiSelect ? dpiSelect.value : '1');
+            var backMode = backModeSelect ? backModeSelect.value : 'duplex';
+            var container = document.getElementById('pages-container') || document.querySelector('.pages-container');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            var config = window.CardPrintLayout ? window.CardPrintLayout.applyCSS(paperId, dpiScale) : { cardsPerPage: 9, cols: 3, rows: 3 };
+            var cardsPerPage = config.cardsPerPage || (config.cols * config.rows);
+            var cols = config.cols || 3;
+            var rows = config.rows || 3;
+            
+            var htmlContent = '';
+            var frontCards = punksylDeckData.filter(function(c) { return c.id !== 'card_back'; });
+            var backCardData = null;
+            for (var k = 0; k < punksylDeckData.length; k++) {
+                if (punksylDeckData[k].id === 'card_back') { backCardData = punksylDeckData[k]; break; }
+            }
+
+            if (paperId === 'single') {
+                for (var s = 0; s < frontCards.length; s++) {
+                    htmlContent += renderPageFromSlots([frontCards[s]], false);
+                    if (backCardData) {
+                        htmlContent += renderPageFromSlots([backCardData], true);
+                    }
+                }
+            } else {
+                for (var i = 0; i < frontCards.length; i += cardsPerPage) {
+                    var pageCards = frontCards.slice(i, i + cardsPerPage);
+                    var frontSlots = new Array(cardsPerPage).fill(null);
+                    for (var j = 0; j < pageCards.length; j++) {
+                        frontSlots[j] = pageCards[j];
+                    }
+                    htmlContent += renderPageFromSlots(frontSlots, false);
+
+                    if (backCardData) {
+                        var backSlots = new Array(cardsPerPage).fill(null);
+                        for (var b = 0; b < pageCards.length; b++) {
+                            var mappedIndex = mapBackSlotIndex(b, cols, rows, backMode);
+                            backSlots[mappedIndex] = backCardData;
+                        }
+                        htmlContent += renderPageFromSlots(backSlots, true);
+                    }
+                }
+            }
+
+            container.innerHTML = htmlContent;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            changePaperSize();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+    <script src="download_helper.js?v=2"></script>
 </body>
 </html>

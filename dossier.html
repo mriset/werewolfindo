@@ -130,6 +130,11 @@
                 print-color-adjust: exact !important;
                 page-break-inside: avoid;
             }
+
+            .card.card-back {
+                border: none !important;
+                overflow: visible !important;
+            }
         }
 
         /* BASE CARD STYLE (Gaya Dokumen Arsip) */
@@ -281,13 +286,28 @@
            KARTU BELAKANG (BLACK DOSSIER)
            ========================================= */
         .card-back {
-            background-color: #111 !important;
-            background-image: radial-gradient(#222 1px, transparent 1px) !important;
-            background-size: 3px 3px !important;
+            background-color: transparent !important;
+            background-image: none !important;
+            border: none !important;
             color: #fff;
             padding: 0;
             justify-content: center;
             align-items: center;
+            overflow: visible !important; /* Allow bleed */
+        }
+
+        .card-back::after {
+            content: '';
+            position: absolute;
+            inset: -8mm; /* Bleed area */
+            background-color: #111 !important;
+            background-image: radial-gradient(#222 1px, transparent 1px) !important;
+            background-size: 3px 3px !important;
+            z-index: -10;
+        }
+
+        .card-back.card::before {
+            display: none !important; /* Hide the usual card shadow */
         }
 
         .back-border {

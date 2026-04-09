@@ -732,126 +732,44 @@ const tornarchArt = {
                 </svg>`,
 
     "card-back": `<svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <radialGradient id="bg-grad" cx="50%" cy="50%" r="55%">
-                            <stop offset="0%" stop-color="#1c1608"/>
-                            <stop offset="60%" stop-color="#0d0b04"/>
-                            <stop offset="100%" stop-color="#050502"/>
-                        </radialGradient>
-                        <radialGradient id="moon-glow" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" stop-color="#fffde0"/>
-                            <stop offset="60%" stop-color="#f5e090"/>
-                            <stop offset="100%" stop-color="#d4af37"/>
-                        </radialGradient>
-                        <filter id="glow-gold">
-                            <feGaussianBlur stdDeviation="1.5" result="blur"/>
-                            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                        </filter>
-                        <filter id="glow-soft">
-                            <feGaussianBlur stdDeviation="2.5" result="blur"/>
-                            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                        </filter>
-                        <clipPath id="card-clip">
-                            <rect x="0" y="0" width="100" height="100"/>
-                        </clipPath>
-                    </defs>
+                    <!-- White background -->
+                    <rect x="0" y="0" width="100" height="100" fill="#ffffff"/>
 
-                    <!-- Deep background -->
-                    <rect x="0" y="0" width="100" height="100" fill="url(#bg-grad)"/>
+                    <!-- === CENTRAL GEOMETRIC MEDALLION === -->
+                    <!-- Outer ring -->
+                    <circle cx="50" cy="47" r="27" fill="none" stroke="#1a1a1a" stroke-width="0.7"/>
+                    <!-- Dashed ring -->
+                    <circle cx="50" cy="47" r="24" fill="none" stroke="#1a1a1a" stroke-width="0.4" stroke-dasharray="1.5 2.5" opacity="0.6"/>
+                    <!-- Mid ring -->
+                    <circle cx="50" cy="47" r="20" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+                    <!-- Inner ring -->
+                    <circle cx="50" cy="47" r="15" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.75"/>
 
-                    <!-- === OUTER BORDER FRAME === -->
-                    <!-- Outermost thin gold line -->
-                    <rect x="2.5" y="2.5" width="95" height="95" rx="1" fill="none" stroke="#d4af37" stroke-width="0.6" opacity="0.7"/>
-                    <!-- Second border -->
-                    <rect x="4" y="4" width="92" height="92" rx="0.5" fill="none" stroke="#8b7320" stroke-width="0.4" opacity="0.5"/>
-                    <!-- Inner frame with pattern -->
-                    <rect x="6" y="6" width="88" height="88" rx="0.5" fill="none" stroke="#d4af37" stroke-width="1" opacity="0.9"/>
-                    <!-- Innermost thin accent -->
-                    <rect x="8" y="8" width="84" height="84" rx="0.5" fill="none" stroke="#c8a020" stroke-width="0.4" opacity="0.6"/>
+                    <!-- 8-point compass lines -->
+                    <line x1="50" y1="20" x2="50" y2="74" stroke="#1a1a1a" stroke-width="0.4" opacity="0.3"/>
+                    <line x1="23" y1="47" x2="77" y2="47" stroke="#1a1a1a" stroke-width="0.4" opacity="0.3"/>
+                    <line x1="30.9" y1="28" x2="69.1" y2="66" stroke="#1a1a1a" stroke-width="0.3" opacity="0.2"/>
+                    <line x1="69.1" y1="28" x2="30.9" y2="66" stroke="#1a1a1a" stroke-width="0.3" opacity="0.2"/>
 
-                    <!-- === CORNER ORNAMENTS === -->
-                    <!-- Top-left corner -->
-                    <path d="M 6 18 L 6 6 L 18 6" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-linecap="round"/>
-                    <circle cx="6" cy="6" r="1.5" fill="#d4af37"/>
-                    <path d="M 9 15 L 9 9 L 15 9" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.6"/>
-                    <!-- Top-right corner -->
-                    <path d="M 94 18 L 94 6 L 82 6" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-linecap="round"/>
-                    <circle cx="94" cy="6" r="1.5" fill="#d4af37"/>
-                    <path d="M 91 15 L 91 9 L 85 9" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.6"/>
-                    <!-- Bottom-left corner -->
-                    <path d="M 6 82 L 6 94 L 18 94" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-linecap="round"/>
-                    <circle cx="6" cy="94" r="1.5" fill="#d4af37"/>
-                    <path d="M 9 85 L 9 91 L 15 91" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.6"/>
-                    <!-- Bottom-right corner -->
-                    <path d="M 94 82 L 94 94 L 82 94" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-linecap="round"/>
-                    <circle cx="94" cy="94" r="1.5" fill="#d4af37"/>
-                    <path d="M 91 85 L 91 91 L 85 91" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.6"/>
+                    <!-- Cardinal tick marks -->
+                    <line x1="50" y1="20.4" x2="50" y2="23" stroke="#1a1a1a" stroke-width="1"/>
+                    <line x1="50" y1="71" x2="50" y2="73.6" stroke="#1a1a1a" stroke-width="1"/>
+                    <line x1="23.4" y1="47" x2="26" y2="47" stroke="#1a1a1a" stroke-width="1"/>
+                    <line x1="74" y1="47" x2="76.6" y2="47" stroke="#1a1a1a" stroke-width="1"/>
 
-                    <!-- === TOP HEADER SECTION === -->
-                    <!-- Top divider line with flourish -->
-                    <line x1="12" y1="20" x2="40" y2="20" stroke="#d4af37" stroke-width="0.7" opacity="0.8"/>
-                    <line x1="60" y1="20" x2="88" y2="20" stroke="#d4af37" stroke-width="0.7" opacity="0.8"/>
-                    <circle cx="50" cy="20" r="2" fill="#d4af37" opacity="0.9"/>
-                    <circle cx="41" cy="20" r="1" fill="#d4af37" opacity="0.6"/>
-                    <circle cx="59" cy="20" r="1" fill="#d4af37" opacity="0.6"/>
+                    <!-- 8-point star -->
+                    <polygon points="50,32 52.5,44.5 65,47 52.5,49.5 50,62 47.5,49.5 35,47 47.5,44.5" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+                    <!-- Center circle + dot -->
+                    <circle cx="50" cy="47" r="4" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+                    <circle cx="50" cy="47" r="1.5" fill="#1a1a1a"/>
 
-                    <!-- === MOON IN CENTER === -->
-                    <!-- Outer moon halo -->
-                    <circle cx="50" cy="47" r="24" fill="none" stroke="#d4af37" stroke-width="0.5" opacity="0.3"/>
-                    <circle cx="50" cy="47" r="21" fill="none" stroke="#d4af37" stroke-width="0.4" opacity="0.4" stroke-dasharray="2 3"/>
-                    <!-- Moon glow bloom -->
-                    <circle cx="50" cy="47" r="18" fill="#d4af37" opacity="0.08" filter="url(#glow-soft)"/>
-                    <!-- Moon body -->
-                    <circle cx="50" cy="47" r="15" fill="url(#moon-glow)" filter="url(#glow-gold)"/>
-                    <!-- Moon surface craters -->
-                    <circle cx="45" cy="43" r="2.5" fill="#c49b28" opacity="0.5"/>
-                    <circle cx="54" cy="50" r="3" fill="#b88f20" opacity="0.4"/>
-                    <circle cx="47" cy="54" r="1.8" fill="#c49b28" opacity="0.35"/>
-                    <circle cx="53" cy="42" r="1.2" fill="#b88f20" opacity="0.45"/>
-                    <!-- Moon sheen (highlight) -->
-                    <ellipse cx="44" cy="41" rx="4" ry="2.5" fill="#fffde0" opacity="0.35" transform="rotate(-20 44 41)"/>
+                    <!-- Cardinal dots on inner ring -->
+                    <circle cx="50" cy="32" r="1" fill="#1a1a1a"/>
+                    <circle cx="50" cy="62" r="1" fill="#1a1a1a"/>
+                    <circle cx="35" cy="47" r="1" fill="#1a1a1a"/>
+                    <circle cx="65" cy="47" r="1" fill="#1a1a1a"/>
 
-
-
-
-                    <!-- === CONSTELLATION / STARS === -->
-                    <!-- Orion-like pattern top-left -->
-                    <circle cx="15" cy="30" r="0.9" fill="#d4af37" opacity="0.85"/>
-                    <circle cx="19" cy="25" r="1.2" fill="#d4af37" opacity="0.9"/>
-                    <circle cx="23" cy="28" r="0.8" fill="#d4af37" opacity="0.7"/>
-                    <line x1="15" y1="30" x2="19" y2="25" stroke="#d4af37" stroke-width="0.4" opacity="0.4"/>
-                    <line x1="19" y1="25" x2="23" y2="28" stroke="#d4af37" stroke-width="0.4" opacity="0.4"/>
-                    <!-- Stars top-right -->
-                    <circle cx="78" cy="22" r="1.1" fill="#d4af37" opacity="0.9"/>
-                    <circle cx="83" cy="28" r="0.7" fill="#d4af37" opacity="0.7"/>
-                    <circle cx="74" cy="30" r="0.9" fill="#d4af37" opacity="0.8"/>
-                    <line x1="78" y1="22" x2="83" y2="28" stroke="#d4af37" stroke-width="0.4" opacity="0.4"/>
-                    <line x1="78" y1="22" x2="74" y2="30" stroke="#d4af37" stroke-width="0.4" opacity="0.4"/>
-                    <!-- Scattered stars -->
-                    <circle cx="13" cy="50" r="0.8" fill="#d4af37" opacity="0.6"/>
-                    <circle cx="87" cy="45" r="1" fill="#d4af37" opacity="0.7"/>
-                    <circle cx="16" cy="60" r="0.7" fill="#c8a020" opacity="0.5"/>
-                    <circle cx="85" cy="60" r="0.7" fill="#c8a020" opacity="0.5"/>
-                    <circle cx="30" cy="15" r="0.9" fill="#d4af37" opacity="0.65"/>
-                    <circle cx="70" cy="14" r="0.8" fill="#d4af37" opacity="0.6"/>
-
-                    <!-- === BOTTOM DIVIDER === -->
-                    <line x1="12" y1="75" x2="37" y2="75" stroke="#d4af37" stroke-width="0.7" opacity="0.7"/>
-                    <line x1="63" y1="75" x2="88" y2="75" stroke="#d4af37" stroke-width="0.7" opacity="0.7"/>
-                    <!-- Small diamond center -->
-                    <path d="M 50 72 L 52 75 L 50 78 L 48 75 Z" fill="#d4af37" opacity="0.8"/>
-
-                    <!-- === OWNER NAME: MRSETIAWAN === -->
-                    <text x="50" y="86" font-family="Cinzel, Georgia, serif" font-size="5.2" font-weight="700" fill="#d4af37" text-anchor="middle" letter-spacing="2.5" opacity="0.95" filter="url(#glow-gold)">MRSETIAWAN</text>
-
-
-
-                    <!-- === SIDE TICK MARKS === -->
-                    <line x1="6" y1="40" x2="8" y2="40" stroke="#d4af37" stroke-width="1" opacity="0.6"/>
-                    <line x1="6" y1="50" x2="8" y2="50" stroke="#d4af37" stroke-width="0.8" opacity="0.4"/>
-                    <line x1="6" y1="60" x2="8" y2="60" stroke="#d4af37" stroke-width="1" opacity="0.6"/>
-                    <line x1="94" y1="40" x2="92" y2="40" stroke="#d4af37" stroke-width="1" opacity="0.6"/>
-                    <line x1="94" y1="50" x2="92" y2="50" stroke="#d4af37" stroke-width="0.8" opacity="0.4"/>
-                    <line x1="94" y1="60" x2="92" y2="60" stroke="#d4af37" stroke-width="1" opacity="0.6"/>
+                    <!-- === OWNER NAME === -->
+                    <text x="50" y="88" font-family="Cinzel, Georgia, serif" font-size="5" font-weight="700" fill="#1a1a1a" text-anchor="middle" letter-spacing="2.8" opacity="0.7">MRSETIAWAN</text>
                 </svg>`
 };

@@ -350,7 +350,11 @@
             --c1: #D4AF37;
             --c2: #FFF;
             --bg-ticket: #1A1A1A;
-            border: 2px solid #D4AF37;
+            border: none !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+            overflow: visible !important;
+            z-index: 1;
         }
 
         /* 7. ALPHA WOLF */
@@ -478,13 +482,18 @@
             --bg-ticket: #fff8fb;
         }
 
-        .role-back {
-            background-image:
-                radial-gradient(circle at 0 20mm, transparent 2mm, var(--bg-ticket) 2.2mm),
-                radial-gradient(circle at 100% 20mm, transparent 2mm, var(--bg-ticket) 2.2mm),
-                radial-gradient(circle at 0 65mm, transparent 2mm, var(--bg-ticket) 2.2mm),
-                radial-gradient(circle at 100% 65mm, transparent 2mm, var(--bg-ticket) 2.2mm),
-                var(--paper-texture);
+        .role-back::before {
+            content: '';
+            position: absolute;
+            top: -2.5mm !important;
+            bottom: -2.5mm !important;
+            left: -2.5mm !important;
+            right: -2.5mm !important;
+            width: auto !important;
+            background: var(--bg-ticket) !important;
+            background-image: var(--paper-texture) !important;
+            z-index: -1;
+            opacity: 1 !important;
         }
 
         .role-back .t-art svg {

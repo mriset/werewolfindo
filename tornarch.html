@@ -118,6 +118,9 @@
                 print-color-adjust: exact !important;
                 page-break-inside: avoid;
             }
+            .page-back .card {
+                border-color: transparent !important;
+            }
             .card::after {
                 display: none !important;
             }
@@ -139,6 +142,11 @@
             flex-direction: column;
             padding: 3mm;
             border: 1px solid #ddd; /* Light border in UI to show the card limits */
+        }
+
+        /* Sembunyikan border di kartu belakang untuk toleransi potong (bleed aman) */
+        .page-back .card {
+            border-color: transparent !important;
         }
 
         /* We completely removed hover floating and shadows to ensure simple solid white output */

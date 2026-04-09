@@ -464,8 +464,31 @@
         .role-littlegirl { --c-dark: #101620; --c-neon: #a1c8e6; --c-alt: #e6678a; }
         .role-littlegirl .madness-bg { background-image: radial-gradient(ellipse at 50% 50%, rgba(161, 200, 230, 0.1) 0, rgba(161, 200, 230, 0.1) 2mm, transparent 2mm, transparent 6mm), repeating-linear-gradient(45deg, transparent 0, transparent 10mm, rgba(230, 103, 138, 0.05) 10mm, rgba(230, 103, 138, 0.05) 12mm); background-size: 15mm 15mm; background-color: #101620; opacity: 0.7; }
 
-        .role-card_back { --c-dark: #111111; --c-neon: #c5a059; --c-alt: #8b0021; border-width: 2mm; }
-        .role-card_back .madness-bg { background-image: repeating-linear-gradient(0deg, #1a1a1a, #1a1a1a 4mm, #2a080d 4mm, #2a080d 8mm); transform: rotate(3deg) scale(1.2); opacity: 0.5; }
+        .role-card_back { 
+            --c-dark: #111111; 
+            --c-neon: #c5a059; 
+            --c-alt: #8b0021; 
+            border-width: 2mm; 
+            border-color: transparent !important;
+            background: transparent !important;
+            overflow: visible !important;
+            border-radius: 0 !important;
+        }
+        .role-card_back::before {
+            content: '';
+            position: absolute;
+            top: -6mm;
+            left: -6mm;
+            right: -6mm;
+            bottom: -6mm;
+            background: var(--c-dark);
+            z-index: -2;
+        }
+        .role-card_back .madness-bg { 
+            background-image: repeating-linear-gradient(0deg, #1a1a1a, #1a1a1a 4mm, #2a080d 4mm, #2a080d 8mm); 
+            transform: rotate(3deg) scale(1.2); 
+            opacity: 0.5; 
+        }
         @media print {
             html, body {
                 margin: 0 !important;

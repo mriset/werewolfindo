@@ -269,12 +269,27 @@
         }
 
         /* Specific style for Card Back */
-        .card-back {
-            background-color: #161616;
-            background-image: radial-gradient(circle at center, #2a0000 0%, #161616 100%);
+        .card.card-back {
             display: flex;
             justify-content: center;
             align-items: center;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0 !important;
+            overflow: visible !important;
+            z-index: 1;
+        }
+
+        .card.card-back::before {
+            content: '';
+            position: absolute;
+            top: -2.5mm;
+            bottom: -2.5mm;
+            left: -2.5mm;
+            right: -2.5mm;
+            background-color: #161616;
+            background-image: radial-gradient(circle at center, #2a0000 0%, #161616 100%);
+            z-index: -1;
         }
 
         .back-frame {

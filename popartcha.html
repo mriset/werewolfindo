@@ -881,13 +881,23 @@
         ========================================================= */
         .t-back {
             background: #111;
-            border-color: #fff;
+            border-color: transparent !important;
+            border-radius: 0 !important;
+            overflow: visible !important;
+        }
+
+        .t-back::before {
+            content: '';
+            position: absolute;
+            inset: -4mm; /* dikurangi ke 4mm agar menutupi gap tapi tidak terlalu jauh menerobos kartu lain */
+            background-color: #111;
+            background-image: radial-gradient(rgba(255, 234, 0, 0.2) 2px, transparent 2px);
+            background-size: 8px 8px;
+            z-index: 0;
         }
 
         .t-back .bg-pattern {
-            background-image: radial-gradient(#FFEA00 2px, transparent 2px);
-            background-size: 8px 8px;
-            opacity: 0.2;
+            display: none !important;
         }
 
         .t-back .header {
