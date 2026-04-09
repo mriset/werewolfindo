@@ -270,7 +270,7 @@ const punksylDeckData = [
         subtitleStyle: 'background: #0d0d0d; color: #aaa;',
         quote: '"KAWANAN MEMBUANGKU. SEKARANG AKU BERBURU SENDIRIAN."',
         quoteStyle: 'color: #aaa;',
-        descHtml: `<strong>PENYENDIRI MEMATIKAN:</strong> Kamu bukan bagian kawanan. Mainkan sendiri. Menangkan sendiri. <strong>Kondisi menang:</strong> jadilah satu-satunya pemain hidup \u2014 atau bunuh semua serigala lain sebelum kamu dieksekusi.`,
+        descHtml: `<strong style="color: #555;">PENYENDIRI MEMATIKAN:</strong> Kamu bukan bagian kawanan. Mainkan sendiri. Menangkan sendiri. <strong style="color: #555;">Kondisi menang:</strong> jadilah satu-satunya pemain hidup \\u2014 atau bunuh semua serigala lain sebelum kamu dieksekusi.`,
         code: 'LWF-SOL',
         codeStyle: 'background: #0d0d0d; color: #aaa; border-color: #555;'
     },
