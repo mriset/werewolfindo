@@ -2806,12 +2806,12 @@ ${p.alive ? '💀' : '✅'}
             document.getElementById('setupPlayerCount').textContent = gameState.players.length;
 
             const categories = [
-                { name: '🐺 Werewolf', roles: ['Werewolf', 'Alpha Wolf'] },
+                { name: '🐺 Werewolf', roles: ['Werewolf', 'Alpha Wolf', 'Lone Wolf'] },
                 { name: '🔮 Investigasi', roles: ['Seer', 'Sheriff', 'Priest'] },
                 { name: '🛡️ Pertahanan', roles: ['Guardian', 'Bodyguard', 'Veteran', 'Witch', 'Wizard'] },
                 { name: '🏛️ Kepemimpinan', roles: ['Mayor', 'Hunter'] },
                 { name: '🎭 Spesial/Netral', roles: ['Jester', 'Cupid', 'Doppelganger', 'Serial Killer', 'Idiot', 'Prince', 'Little Girl'] },
-                { name: '👥 Villager', roles: ['Villager', 'Lone Wolf'] }
+                { name: '👥 Villager', roles: ['Villager'] }
             ];
 
             let html = '';
@@ -2821,19 +2821,32 @@ ${p.alive ? '💀' : '✅'}
                 cat.roles.forEach(role => {
                     const def = ROLE_DEFINITIONS[role];
                     const count = gameState.roles[role] || 0;
+                    
                     html += `
 <div class="role-dist-item">
 <div class="role-info">
 <span class="role-emoji">${def.icon}</span>
 <span class="role-label">${role}</span>
 </div>
+`;
+
+                    if (role === 'Villager' || role === 'Werewolf') {
+                        html += `
 <div class="role-counter">
 <button class="counter-btn" onclick="changeRoleCount('${role}', -1)">−</button>
 <span class="counter-value" id="rc-${role.replace(/[^a-zA-Z]/g, '')}">${count}</span>
 <button class="counter-btn" onclick="changeRoleCount('${role}', 1)">+</button>
 </div>
+`;
+                    } else {
+                        html += `
+<div class="role-counter toggle-container" onclick="toggleRole('${role}')" style="cursor:pointer; background:transparent;">
+<div class="toggle ${count > 0 ? 'active' : ''}" id="toggle-${role.replace(/[^a-zA-Z]/g, '')}"></div>
 </div>
 `;
+                    }
+                    
+                    html += `</div>\n`;
                 });
                 html += '</div></div>';
             });
@@ -2855,6 +2868,29 @@ ${p.alive ? '💀' : '✅'}
             const key = role.replace(/[^a-zA-Z]/g, '');
             const el = document.getElementById('rc-' + key);
             if (el) el.textContent = gameState.roles[role];
+
+            const total = Object.values(gameState.roles).reduce((a, b) => a + b, 0);
+            document.getElementById('btnStartGame').disabled = total < 5;
+        }
+
+        function toggleRole(role) {
+            if (!gameState.roles[role]) gameState.roles[role] = 0;
+            
+            if (gameState.roles[role] > 0) {
+                gameState.roles[role] = 0;
+            } else {
+                gameState.roles[role] = 1;
+            }
+
+            const key = role.replace(/[^a-zA-Z]/g, '');
+            const el = document.getElementById('toggle-' + key);
+            if (el) {
+                if (gameState.roles[role] > 0) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            }
 
             const total = Object.values(gameState.roles).reduce((a, b) => a + b, 0);
             document.getElementById('btnStartGame').disabled = total < 5;
@@ -4597,7 +4633,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             const container = document.getElementById('roleReference');
 
             const grouped = {
-                '🐺 Tim Werewolf': ['Werewolf', 'Alpha Wolf'],
+                '🐺 Tim Werewolf': ['Werewolf', 'Alpha Wolf', 'Lone Wolf'],
                 '🔮 Investigasi & Deteksi': ['Seer', 'Sheriff', 'Priest', 'Little Girl'],
                 '🛡️ Pertahanan & Penyembuhan': ['Guardian', 'Bodyguard', 'Veteran', 'Witch', 'Wizard'],
                 '🏛️ Kepemimpinan & Kekuatan': ['Mayor', 'Hunter'],
