@@ -2342,7 +2342,8 @@
             <div class="form-group">
                 <select class="form-select" id="selectWolfSacrifice"></select>
             </div>
-            <div style="display:flex;justify-content:flex-end;">
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button class="btn btn-outline" onclick="cancelWolfSacrifice()">Batal</button>
                 <button class="btn btn-danger" onclick="processWolfSacrifice()">🔪 Eksekusi</button>
             </div>
         </div>
@@ -2651,6 +2652,11 @@
                 notes: ''
             });
 
+            if (role) {
+                if (!gameState.roles[role]) gameState.roles[role] = 0;
+                gameState.roles[role]++;
+            }
+
             closeModal('modalAddPlayer');
             document.getElementById('modalPlayerName').value = '';
             renderPlayers();
@@ -2732,7 +2738,7 @@ ${player.alive ? '✅ Hidup' : '💀 Mati'}
 
 <div class="form-group">
 <label class="form-label">Ubah Role</label>
-<select class="form-select" id="detailRoleSelect" onchange="changePlayerRole(${id}, this.value)">
+<select class="form-select" id="detailRoleSelect" onchange="changePlayerRole('${id}', this.value)">
 <option value="">-- Tanpa Role --</option>
 ${Object.keys(ROLE_DEFINITIONS).map(r => `<option value="${r}" ${player.role === r ? 'selected' : ''}>${ROLE_DEFINITIONS[r].icon} ${r}</option>`).join('')}
 </select>
@@ -2740,14 +2746,14 @@ ${Object.keys(ROLE_DEFINITIONS).map(r => `<option value="${r}" ${player.role ===
 
 <div class="form-group">
 <label class="form-label">Catatan Moderator</label>
-<textarea class="form-textarea" id="detailNotes" placeholder="Catatan tentang pemain ini..." onchange="updatePlayerNotes(${id}, this.value)">${safeNotes}</textarea>
+<textarea class="form-textarea" id="detailNotes" placeholder="Catatan tentang pemain ini..." onchange="updatePlayerNotes('${id}', this.value)">${safeNotes}</textarea>
 </div>
 
 <div style="display:flex;gap:8px;flex-wrap:wrap;">
-<button class="btn ${player.alive ? 'btn-danger' : 'btn-success'} btn-block" onclick="togglePlayerAlive(${id});closeModal('modalPlayerDetail');">
+<button class="btn ${player.alive ? 'btn-danger' : 'btn-success'} btn-block" onclick="togglePlayerAlive('${id}');closeModal('modalPlayerDetail');">
 ${player.alive ? '💀 Tandai Mati' : '✅ Tandai Hidup'}
 </button>
-<button class="btn btn-outline btn-block" onclick="removePlayer(${id});closeModal('modalPlayerDetail');">
+<button class="btn btn-outline btn-block" onclick="removePlayer('${id}');closeModal('modalPlayerDetail');">
 🗑️ Hapus Pemain
 </button>
 </div>
@@ -2759,7 +2765,20 @@ ${player.alive ? '💀 Tandai Mati' : '✅ Tandai Hidup'}
         function changePlayerRole(id, role) {
             const player = gameState.players.find(p => p.id === id);
             if (!player) return;
+            
+            // Kurangi count role lama
+            if (player.role && gameState.roles[player.role]) {
+                gameState.roles[player.role] = Math.max(0, gameState.roles[player.role] - 1);
+            }
+            
             player.role = role || null;
+            
+            // Tambah count role baru
+            if (role) {
+                if (!gameState.roles[role]) gameState.roles[role] = 0;
+                gameState.roles[role]++;
+            }
+            
             initRoleDistribution();
             renderPlayers();
         }
@@ -2804,7 +2823,7 @@ ${player.alive ? '💀 Tandai Mati' : '✅ Tandai Hidup'}
                 const safeName = escapeHtml(p.name);
 
                 return `
-<div class="player-card ${cardClass}" onclick="showPlayerDetail(${p.id})" style="animation-delay:${i * 0.05}s">
+<div class="player-card ${cardClass}" onclick="showPlayerDetail('${p.id}')" style="animation-delay:${i * 0.05}s">
 <div class="player-avatar ${avatarBg}">
 ${roleDef ? roleDef.icon : '👤'}
 ${p.alive ? '<div class="alive-dot"></div>' : ''}
@@ -2814,10 +2833,10 @@ ${p.alive ? '<div class="alive-dot"></div>' : ''}
 ${p.role ? `<span class="player-role-badge ${roleDef ? roleDef.category : 'unknown'} revealed">${roleDef ? roleDef.icon + ' ' + p.role + (p._wasDoppelganger ? ' (Eks-Doppel)' : '') : '❓ ???'}</span>` : '<span class="player-role-badge unknown">❓ Belum ada role</span>'}
 </div>
 <div class="player-actions" onclick="event.stopPropagation()">
-<button class="player-action-btn ${p.alive ? 'danger' : 'success'}" onclick="togglePlayerAlive(${p.id})" title="${p.alive ? 'Tandai Mati' : 'Tandai Hidup'}">
+<button class="player-action-btn ${p.alive ? 'danger' : 'success'}" onclick="togglePlayerAlive('${p.id}')" title="${p.alive ? 'Tandai Mati' : 'Tandai Hidup'}">
 ${p.alive ? '💀' : '✅'}
 </button>
-<button class="player-action-btn" onclick="showPlayerDetail(${p.id})" title="Detail">📝</button>
+<button class="player-action-btn" onclick="showPlayerDetail('${p.id}')" title="Detail">📝</button>
 </div>
 </div>
 `;
@@ -3076,6 +3095,7 @@ ${p.alive ? '💀' : '✅'}
 
             if (gameState.phase === 'day') {
                 // Day -> Night
+                resetTimer(); // Pastikan timer siang berhenti saat masuk malam
                 showPhaseTransition('night');
                 gameState.phase = 'night';
                 gameState.nightPhase = 0;
@@ -3303,9 +3323,14 @@ ${def.icon}
 
         function renderTargetButtons(role, showRole) {
             const targets = document.getElementById('nightTargets');
-            const alivePlayers = gameState.players.filter(p => p.alive);
+            let validPlayers = gameState.players.filter(p => p.alive);
+            
+            // Cegah self-target untuk role yang masuk akal
+            if (role === 'Doppelganger' || role === 'Seer' || role === 'Serial Killer') {
+                validPlayers = validPlayers.filter(p => p.role !== role);
+            }
 
-            targets.innerHTML = alivePlayers.map(p => {
+            targets.innerHTML = validPlayers.map(p => {
                 const def = p.role ? ROLE_DEFINITIONS[p.role] : null;
                 const isWolf = def && def.team === 'Werewolf';
                 let disabled = false;
@@ -3370,7 +3395,7 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
 
             // ── Kasus 2: Kemampuan sudah selesai sepenuhnya ──
             if (gameState._alphaAbilityUsed) {
-                targets.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">Kemampuan khusus Alpha Wolf telah digunakan. Alpha ikut diskusi kawanan malam ini. <br><br><i>[STATE: U=${gameState._alphaAbilityUsed}, C=${gameState._alphaChoice}, D=${gameState._alphaRecruitDone}]</i></div>`;
+                targets.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">Kemampuan khusus Alpha Wolf telah digunakan. Alpha ikut diskusi kawanan malam ini.</div>`;
                 return;
             }
 
@@ -3413,6 +3438,11 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
             const wolfKillTarget = gameState.nightState.wolfKillTarget;
             const wolfKillId = gameState.nightState.wolfKillId;
 
+            if (gameState.nightState.witchHealTarget || gameState.nightState.witchPoisonTarget) {
+                targets.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">Satu ramuan telah digunakan malam ini. Witch tidak bisa bertindak lagi.</div>`;
+                return;
+            }
+
             let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;">';
 
             if (gameState.witchPotions.heal) {
@@ -3437,7 +3467,7 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
   <div style="background:rgba(231,76,60,0.05);border:1px solid rgba(231,76,60,0.2);border-radius:var(--radius-md);padding:16px;">
     <div style="font-weight:700;margin-bottom:8px;color:var(--accent-red);">💜 Ramuan Racun</div>
     <div class="night-action-targets" style="margin-bottom:8px;">
-      ${gameState.players.filter(p => p.alive && p.id != wolfKillId).map(p => `
+      ${gameState.players.filter(p => p.alive && p.id != wolfKillId && p.role !== 'Witch').map(p => `
         <button class="target-btn btn-sm" onclick="usePoisonPotion('${p.id}', '${escapeJsString(p.name)}')">${escapeHtml(p.name)}</button>
       `).join('')}
     </div>
@@ -3465,6 +3495,7 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
   <div class="seer-result-text" style="color:var(--accent-green);">Penyembuh Digunakan</div>
   <div class="seer-result-detail">${target} telah diselamatkan.</div>
 </div>`;
+            renderWitchActions();
         }
 
         function usePoisonPotion(id, target) {
@@ -3478,6 +3509,7 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
   <div class="seer-result-text" style="color:var(--accent-red);">Racun Digunakan</div>
   <div class="seer-result-detail">${target} telah diracuni.</div>
 </div>`;
+            renderWitchActions();
         }
 
         // renderWizardAction() lama sudah dihapus
@@ -3523,17 +3555,17 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
 
         function renderCupidAction() {
             const targets = document.getElementById('nightTargets');
-            const alivePlayers = gameState.players.filter(p => p.alive);
+            const validTargets = gameState.players.filter(p => p.alive && p.role !== 'Cupid');
 
             targets.innerHTML = `
 <div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;text-align:center;">
-Pilih pemain pertama, lalu pilih pemain kedua.
+Pilih pemain pertama, lalu pilih pemain kedua. (Cupid tak dapat memilih dirinya sendiri).
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
 <div>
 <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Pemain 1:</div>
 <div class="night-action-targets">
-${alivePlayers.map(p => `
+${validTargets.map(p => `
 <button class="target-btn" onclick="selectCupid1(this, '${p.id}', '${escapeJsString(p.name)}')">${escapeHtml(p.name)}</button>
 `).join('')}
 </div>
@@ -3541,7 +3573,7 @@ ${alivePlayers.map(p => `
 <div>
 <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Pemain 2:</div>
 <div class="night-action-targets">
-${alivePlayers.map(p => `
+${validTargets.map(p => `
 <button class="target-btn" onclick="selectCupid2(this, '${p.id}', '${escapeJsString(p.name)}')">${escapeHtml(p.name)}</button>
 `).join('')}
 </div>
@@ -3618,9 +3650,17 @@ ${alivePlayers.map(p => `
             // Silent/immediate skip roles
             if (currentRole === 'Cupid' || currentRole === 'Little Girl' || (currentRole === 'Doppelganger' && gameState.day > 1)) {
                 if (currentRole === 'Cupid') {
-                    addLog('night', `💕 Cupid mengamati pasangan.`);
-                    if (gameState.couples.length === 0 && gameState._cupidTemp?.p1 && gameState._cupidTemp?.p2) {
+                    if (gameState.couples.length === 0) {
+                        if (!gameState._cupidTemp?.p1 || !gameState._cupidTemp?.p2) {
+                            return showToast('Pilih dua pemain untuk dijodohkan!', 'warning');
+                        }
+                        if (gameState._cupidTemp.p1.id === gameState._cupidTemp.p2.id) {
+                            return showToast('Pilih dua pemain yang berbeda!', 'warning');
+                        }
                         gameState.couples.push([String(gameState._cupidTemp.p1.id), String(gameState._cupidTemp.p2.id)]);
+                        addLog('night', `💕 Cupid telah menjodohkan ${gameState._cupidTemp.p1.name} dengan ${gameState._cupidTemp.p2.name}.`);
+                    } else {
+                        addLog('night', `💕 Cupid memantau pasangannya.`);
                     }
                 }
                 gameState.nightPhase++;
@@ -3848,6 +3888,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
         }
 
         function processNightDeaths() {
+            gameState._pendingWolfSacrifice = false; // Reset state tumbal tiap awal pemrosesan malam
             let deaths = [];
             const ns = gameState.nightState;
             // Evaluasi Sihir Bungkam Wizard (Roleblock parameter)
@@ -3951,31 +3992,34 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 // Veteran Alert Check
                 if (ns.veteranIsAlert && targetPlayer.role === 'Veteran') {
                     if (k.attacker === 'witch') {
-                        addLog('night', `💥 Penyihir melempar ramuan mematikan ke Veteran yang sedang siaga! Penyihir tertembak mati, namun Veteran juga tak tertolong dari racunnya.`);
+                        addLog('night', `💥 Penyihir melempar ramuan mematikan ke Veteran yang sedang siaga! Veteran berhasil menembak mati sang Penyihir, namun tak selamat dari racunnya (Keduanya tewas).`);
                         deaths.push(targetPlayer.id); // Veteran mati karena racun
-                        // Tidak memblokir serangan (Veteran mati terkena racun)
-                    } else {
-                        blocked = true;
-                        addLog('night', `💥 ${k.attacker} menyerang Veteran yang sedang siaga! Penyerang mati dibunuh.`);
-                    }
-                    if (k.attacker === 'wolf') {
-                        const wolves = gameState.players.filter(p => ROLE_DEFINITIONS[p.role]?.team === 'Werewolf' && p.alive && !deaths.includes(p.id));
-                        if (wolves.length === 1) {
-                            deaths.push(wolves[0].id);
-                            addLog('night', `🐺 Serigala ${wolves[0].name} terbunuh saat menyerang Veteran!`);
-                        } else if (wolves.length > 1) {
-                            gameState._pendingWolfSacrifice = true;
-                            gameState._pendingWolfSacrificeReason = 'Veteran';
-                        }
-                    } else if (k.attacker === 'alpha') {
-                        const alpha = gameState.players.find(p => p.role === 'Alpha Wolf' && p.alive);
-                        if (alpha) deaths.push(alpha.id);
-                    } else if (k.attacker === 'sk') {
-                        const sk = gameState.players.find(p => p.role === 'Serial Killer' && p.alive);
-                        if (sk) deaths.push(sk.id);
-                    } else if (k.attacker === 'witch') {
                         const witch = gameState.players.find(p => p.role === 'Witch' && p.alive);
                         if (witch) deaths.push(witch.id);
+                        blocked = true; // Set true agar Guardian/Bodyguard tidak mencoba melindungi Veteran yang sudah diracun
+                    } else {
+                        blocked = true;
+                        let attackerName = k.attacker === 'wolf' ? 'Serigala' : 
+                                           k.attacker === 'alpha' ? 'Alpha Wolf' : 
+                                           k.attacker === 'sk' ? 'Serial Killer' : 'Seseorang';
+                        addLog('night', `💥 ${attackerName} mencoba menyerang Veteran yang sedang siaga! Penyerang mati ditembak sebelum berhasil menyentuh Veteran.`);
+                        
+                        if (k.attacker === 'wolf') {
+                            const wolves = gameState.players.filter(p => ROLE_DEFINITIONS[p.role]?.team === 'Werewolf' && p.alive && !deaths.includes(p.id));
+                            if (wolves.length === 1) {
+                                deaths.push(wolves[0].id);
+                                addLog('night', `🐺 Serigala terakhir (${wolves[0].name}) terbunuh peluru Veteran!`);
+                            } else if (wolves.length > 1) {
+                                gameState._pendingWolfSacrifice = true;
+                                gameState._pendingWolfSacrificeReason = 'Veteran';
+                            }
+                        } else if (k.attacker === 'alpha') {
+                            const alpha = gameState.players.find(p => p.role === 'Alpha Wolf' && p.alive);
+                            if (alpha) deaths.push(alpha.id);
+                        } else if (k.attacker === 'sk') {
+                            const sk = gameState.players.find(p => p.role === 'Serial Killer' && p.alive);
+                            if (sk) deaths.push(sk.id);
+                        }
                     }
                 }
 
@@ -4057,6 +4101,14 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             
             gameState._pendingWolfSacrifice = false;
             closeModal('modalWolfSacrifice');
+            nextPhase();
+        }
+
+        function cancelWolfSacrifice() {
+            gameState._pendingWolfSacrifice = false;
+            closeModal('modalWolfSacrifice');
+            addLog('night', '👑 Moderator membatalkan pengorbanan Serigala (Aksi Override).');
+            showToast('Pengorbanan dibatalkan', 'info');
             nextPhase();
         }
 
@@ -4663,7 +4715,8 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
         // ==================== LOG ====================
         function addLog(phase, message) {
             const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            const logEntry = { phase, message, time, day: gameState.day };
+            const timestamp = Date.now();
+            const logEntry = { phase, message, time, day: gameState.day, timestamp };
 
             if (phase === 'night') gameState.nightLog.push(logEntry);
             else gameState.dayLog.push(logEntry);
@@ -4674,6 +4727,8 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
         function renderLog() {
             const container = document.getElementById('logContainer');
             const allLogs = [...gameState.nightLog, ...gameState.dayLog].sort((a, b) => {
+                // Prioritaskan urutan waktu aktual agar event terurut 100% berdasarkan kronologi terjadinya
+                if (a.timestamp !== undefined && b.timestamp !== undefined) return a.timestamp - b.timestamp;
                 if (a.day !== b.day) return a.day - b.day;
                 if (a.phase !== b.phase) return a.phase === 'night' ? -1 : 1;
                 return 0;
