@@ -1259,7 +1259,7 @@
         .role-dist-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 8px;
+            gap: 10px;
         }
 
         .role-dist-item {
@@ -1270,53 +1270,112 @@
             background: var(--bg-tertiary);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .role-dist-item:hover {
+            border-color: var(--accent-purple);
+            background: rgba(123, 47, 247, 0.05);
         }
 
         .role-dist-item .role-info {
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .role-dist-item .role-emoji {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
 
         .role-dist-item .role-label {
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .role-counter {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
+            background: var(--bg-secondary);
+            padding: 2px;
+            border-radius: 6px;
         }
 
         .counter-btn {
-            width: 24px;
-            height: 24px;
-            border: 1px solid var(--border-color);
+            width: 26px;
+            height: 26px;
+            border: none;
             background: transparent;
             color: var(--text-primary);
             border-radius: 4px;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
-            transition: var(--transition);
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+            transition: all 0.2s ease;
         }
 
         .counter-btn:hover {
-            border-color: var(--accent-purple);
-            background: rgba(123, 47, 247, 0.1);
+            background: var(--accent-purple);
+            color: white;
+        }
+
+        .counter-btn:active {
+            transform: scale(0.92);
         }
 
         .counter-value {
+            font-size: 0.9rem;
             font-weight: 700;
-            min-width: 20px;
+            width: 20px;
             text-align: center;
+        }
+
+        @media (max-width: 500px) {
+            .role-dist-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .role-dist-item {
+                flex-direction: column;
+                justify-content: center;
+                gap: 12px;
+                padding: 14px 10px;
+                text-align: center;
+            }
+            .role-dist-item .role-info {
+                flex-direction: column;
+                gap: 4px;
+                white-space: normal;
+                overflow: visible;
+                width: 100%;
+            }
+            .role-dist-item .role-emoji {
+                font-size: 1.6rem;
+            }
+            .role-dist-item .role-label {
+                font-size: 0.8rem;
+                white-space: normal;
+                line-height: 1.2;
+            }
+            .role-counter {
+                justify-content: center;
+                width: 100%;
+            }
+            .counter-btn {
+                width: 32px;
+                height: 32px;
+            }
         }
 
         /* Player Assignment */
@@ -2258,7 +2317,7 @@
         <div class="modal">
             <div class="modal-header">
                 <div class="modal-title">🏹 Tembakan Kematian Hunter</div>
-                <button class="modal-close" onclick="closeModal('modalHunter')">×</button>
+                <button class="modal-close" onclick="cancelHunterShot()">×</button>
             </div>
             <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">
                 Hunter telah tewas! Sebelum menghembuskan napas terakhir, ia menarik pelatuk. Pilih siapa yang akan ia
@@ -2272,6 +2331,7 @@
                 <button class="btn btn-danger" onclick="processHunterShot()">💥 Tembak Mati</button>
             </div>
         </div>
+    </div>
 
     <!-- Modal: Konfirmasi Generik (menggantikan confirm() browser) -->
     <div class="modal-overlay" id="modalConfirm">
@@ -2393,7 +2453,7 @@
 
         const ROLE_DEFINITIONS = {
             'Werewolf': { name: 'Serigala Biasa', icon: '🐺', category: 'wolf', team: 'Werewolf', description: 'Bangun tiap malam bersama kawanan, sepakat memilih 1 target untuk dicabik-cabik.', count: 0, priority: 1 },
-            'Alpha Wolf': { name: 'Alpha Wolf', icon: '👑', category: 'wolf', team: 'Werewolf', description: 'Sekali seumur permainan, gigitannya tidak bisa ditahan. Jika menggunakan kemampuannya, target akan mati meskipun dilindungi.', count: 0, priority: 2 },
+            'Alpha Wolf': { name: 'Alpha Wolf', icon: '👑', category: 'wolf', team: 'Werewolf', description: 'Sekali seumur permainan, dapat memberikan gigitan maut, ATAU merekrut 1 pemain non-serigala untuk menjadi Werewolf.', count: 0, priority: 2 },
             'Lone Wolf': { name: 'Serigala Liar', icon: '🐺', category: 'villager', team: 'Villager', description: 'Dianggap sebagai Warga Biasa. Namun, jika ia diincar oleh Werewolf di malam hari, ia batal mati dan seketika berubah sepenuhnya menjadi Werewolf.', count: 0, priority: 21 },
             'Seer': { name: 'Sang Peramal', icon: '🔮', category: 'villager', team: 'Villager', description: 'Menunjuk 1 pemain tiap malam. Mengetahui secara pasti apakah targetnya faksi Serigala atau bukan.', count: 0, priority: 5 },
             'Guardian': { name: 'Sang Pelindung', icon: '🛡️', category: 'villager', team: 'Villager', description: 'Melindungi 1 pemain dari kematian di malam hari. Syarat: Tidak bisa melindungi orang yang sama dua malam berturut-turut.', count: 0, priority: 6 },
@@ -2783,6 +2843,13 @@ ${p.alive ? '💀' : '✅'}
 
         function changeRoleCount(role, delta) {
             if (!gameState.roles[role]) gameState.roles[role] = 0;
+            
+            // Aturan jumlah maksimal: Hanya Villager dan Werewolf yang boleh ditambah > 1
+            const isMultipleAllowed = role === 'Villager' || role === 'Werewolf';
+            if (delta > 0 && !isMultipleAllowed && gameState.roles[role] >= 1) {
+                return showToast(`Hanya boleh ada maksimal 1 ${role} dalam game!`, 'warning');
+            }
+
             gameState.roles[role] = Math.max(0, gameState.roles[role] + delta);
 
             const key = role.replace(/[^a-zA-Z]/g, '');
@@ -3155,7 +3222,7 @@ ${def.icon}
                 }
 
                 return `
-<button class="target-btn" onclick="selectTarget(this, '${p.id}', '${p.name}')" data-id="${p.id}" ${disabled ? 'disabled' : ''}>
+<button class="target-btn" onclick="selectTarget(this, '${p.id}', '${p.name}')" data-id="${p.id}" data-name="${p.name}" ${disabled ? 'disabled' : ''}>
 <span class="target-icon">${def ? def.icon : '👤'}</span>
 <span>${p.name}${disabledMsg}</span>
 ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-left:auto;">${p.role}</span>` : ''}
@@ -3750,6 +3817,12 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
                 let blocked = false;
 
+                // Serial Killer immunity to Werewolf attack
+                if (targetPlayer.role === 'Serial Killer' && (k.attacker === 'wolf' || k.attacker === 'alpha')) {
+                    blocked = true;
+                    addLog('night', `🔪 Serial Killer diserang oleh serigala, namun ia kebal!`);
+                }
+
                 // Veteran Alert Check
                 if (ns.veteranIsAlert && targetPlayer.role === 'Veteran') {
                     if (k.attacker === 'witch') {
@@ -3789,6 +3862,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                         // Bodyguard
                         if (k.target == ns.bodyguardProtectId) {
                             blocked = true;
+                            ns.bodyguardProtectId = null; // Bodyguard hanya bisa menahan 1 kali serangan
                             addLog('night', `💂 Bodyguard melindungi ${targetPlayer.name} dari serangan!`);
                             const bg = gameState.players.find(p => p.role === 'Bodyguard' && p.alive);
                             if (bg) deaths.push(bg.id);
@@ -3907,6 +3981,9 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                     checkCouplesDeath(sheriff.name);
                     checkDoppelgangerInheritance(target);
                     checkDoppelgangerInheritance(sheriff);
+                    if (target.role === 'Hunter' && !target._hunterUsed) {
+                        setTimeout(() => openHunterModal(target), 500);
+                    }
                 }
 
                 updateStats();
@@ -4040,6 +4117,16 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 if (dopp && dopp.alive) {
                     dopp.role = deadPlayer.role;
                     dopp._wasDoppelganger = true;
+                    // Reset state global agar Doppelganger bisa menggunakan role barunya seutuhnya (Witch, Veteran, Alpha)
+                    if (dopp.role === 'Veteran') {
+                        gameState.veteranAlertsLeft = 2;
+                    } else if (dopp.role === 'Witch') {
+                        gameState.witchPotions = { heal: true, poison: true };
+                    } else if (dopp.role === 'Alpha Wolf') {
+                        gameState._alphaAbilityUsed = false;
+                        gameState._alphaChoice = null;
+                        gameState._alphaRecruitDone = false;
+                    }
                     addLog('day', `🎭 Doppelganger (${dopp.name}) resmi mewarisi role ${deadPlayer.role} dari ${deadPlayer.name}!`);
                     showToast(`Doppelganger terbangun sebagai ${deadPlayer.role}!`, 'info');
                     gameState.doppelgangerTarget = null;
@@ -4079,6 +4166,25 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 checkCouplesDeath(targetPlayer.name);
                 checkDoppelgangerInheritance(targetPlayer);
             }
+
+            // Resume original elimination queue
+            if (hunter) {
+                finalizeElimination(hunter);
+            } else {
+                updateStats();
+                renderPlayers();
+                renderVoteGrid();
+                checkWinCondition();
+            }
+        }
+
+        function cancelHunterShot() {
+            const hunterId = document.getElementById('hunterSourceId').value;
+            const hunter = gameState.players.find(p => p.id == hunterId);
+            
+            closeModal('modalHunter');
+            addLog('day', `🏹 Hunter ${hunter ? hunter.name : ''} menolak melepas tembakan dan mati dengan tenang.`);
+            showToast('Tembakan Hunter dibatalkan.', 'info');
 
             // Resume original elimination queue
             if (hunter) {
@@ -4205,6 +4311,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 player._idiotRevealed = true;
                 showToast(`${player.name} adalah Idiot! Dia batal dieksekusi dan kehilangan hak vote-nya selamanya.`, 'info');
                 addLog('day', `🃏 ${player.name} adalah Idiot! Dieksekusi tapi selamat. Dia kehilangan hak suaranya dalam rapat.`);
+                resetVotes(); // <-- Fix Zombie Votes
                 renderVoteGrid();
                 return;
             }
@@ -4214,6 +4321,8 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 player._princeUsed = true;
                 showToast(`${player.name} adalah Prince! Tidak mati, tapi role terungkap.`, 'info');
                 addLog('day', `🤴 ${player.name} divote mati tapi karena dia adalah Prince, maka dia tidak mati. Role terungkap.`);
+                resetVotes(); // <-- Fix Zombie Votes
+                renderVoteGrid();
                 return;
             }
 
@@ -4322,6 +4431,28 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             if (jester) {
                 endGame('🃏 JESTER MENANG!', `${jester.name} berhasil diusir lewat voting dan memenangkan permainan!`);
                 return;
+            }
+
+            // Check Draw (Semua mati karena serangan silang/bodyguard/veteran)
+            if (alivePlayers.length === 0) {
+                endGame('👻 SEMUA MATI (DRAW)', 'Tidak ada seorang pun yang selamat di desa ini...');
+                return;
+            }
+
+            // Check Lovers Win (Faksi ketiga)
+            // Syarat: Minimal ada 1 pasangan yang hidup, dan SELURUH pemain sisa adalah bagian dari pasangan atau Cupid.
+            if (gameState.couples && gameState.couples.length > 0) {
+                const loversFactionNames = new Set();
+                gameState.couples.forEach(c => c.forEach(name => loversFactionNames.add(name)));
+                alivePlayers.forEach(p => {
+                    if (p.role === 'Cupid') loversFactionNames.add(p.name);
+                });
+
+                const allAliveAreLovers = alivePlayers.every(p => loversFactionNames.has(p.name));
+                if (allAliveAreLovers) {
+                    endGame('💕 FAKSI LOVERS MENANG!', `Kekuatan abadi cinta mengalahkan segalanya! Cupid beserta pasangannya sukses bertahan hingga akhir.`);
+                    return;
+                }
             }
 
             // Check Serial Killer win
