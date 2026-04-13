@@ -2049,6 +2049,10 @@
                     <span class="qa-icon">💾</span>
                     Simpan Game
                 </button>
+                <button class="quick-action-btn" onclick="restartGameKeepPlayers()">
+                    <span class="qa-icon">🔄</span>
+                    Mulai Ulang
+                </button>
             </div>
 
             <!-- Wolf Team -->
@@ -2069,7 +2073,10 @@
                     <div class="game-over-icon" id="gameOverIcon">🏆</div>
                     <div class="game-over-title" id="gameOverTitle">Permainan Selesai!</div>
                     <div class="game-over-subtitle" id="gameOverSubtitle"></div>
-                    <button class="btn btn-primary btn-lg" onclick="resetGame()">🔄 Game Baru</button>
+                    <div style="display:flex;gap:12px;justify-content:center;margin-top:20px;">
+                        <button class="btn btn-primary btn-lg" onclick="restartGameKeepPlayers()">🔄 Ulangi (Pemain Sama)</button>
+                        <button class="btn btn-outline" onclick="resetGame()">🗑️ Reset Total</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2154,29 +2161,6 @@
                 </div>
             </div>
 
-            <div class="setup-section">
-                <div class="setup-section-title">⚙️ Pengaturan Game</div>
-                <div class="card">
-                    <div class="form-group">
-                        <div class="toggle-container" onclick="toggleSetting('witchSelfHeal')">
-                            <div class="toggle active" id="toggle-witchSelfHeal"></div>
-                            <span class="toggle-label">Witch bisa menyembuhkan diri sendiri</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="toggle-container" onclick="toggleSetting('guardSelfProtect')">
-                            <div class="toggle" id="toggle-guardSelfProtect"></div>
-                            <span class="toggle-label">Guardian bisa melindungi diri sendiri</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="toggle-container" onclick="toggleSetting('wolfDiscussion')">
-                            <div class="toggle active" id="toggle-wolfDiscussion"></div>
-                            <span class="toggle-label">Werewolf diskusi sebelum memilih target</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Tab: Night Actions -->
@@ -2218,7 +2202,7 @@
                 </div>
 
                 <div id="idiotReminderPanel"
-                    style="display:none; padding:12px; border-radius:var(--radius-md); background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:var(--text-light); margin-bottom:16px; font-weight:600; line-height: 1.4;">
+                    style="display:none; padding:12px; border-radius:var(--radius-md); background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:var(--text-primary); margin-bottom:16px; font-weight:600; line-height: 1.4;">
                     <span style="color:var(--accent-red)">⚠️ ALARM SISTEM:</span> Si Pandir (Idiot) <span
                         id="idiotReminderName" style="color:var(--accent-gold)"></span> telah kehilangan SELURUH hak
                     suaranya. Jangan masukkan titik voting untuknya!
@@ -2233,8 +2217,7 @@
                 </div>
 
                 <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-                    <button class="btn btn-gold" onclick="announceDeaths()">📢 Umumkan Kematian</button>
-
+                    <!-- Tombol Umumkan Kematian dihapus, pengumuman otomatis -->
                 </div>
 
                 <div id="discussionTimerCard" class="card"
@@ -2346,6 +2329,23 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal: Wolf Sacrifice -->
+    <div class="modal-overlay" id="modalWolfSacrifice">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">🐺 Pengorbanan Serigala</div>
+            </div>
+            <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;" id="wolfSacrificeMsg">
+                Serangan gagal dan penyerang harus mati! Pilih serigala mana yang akan mati:
+            </div>
+            <div class="form-group">
+                <select class="form-select" id="selectWolfSacrifice"></select>
+            </div>
+            <div style="display:flex;justify-content:flex-end;">
+                <button class="btn btn-danger" onclick="processWolfSacrifice()">🔪 Eksekusi</button>
+            </div>
+        </div>
     </div>
 
     <div class="modal-overlay" id="modalAddPlayer">
@@ -2419,11 +2419,6 @@
             isPaused: false,
             players: [],
             roles: {},
-            settings: {
-                witchSelfHeal: true,
-                guardSelfProtect: false,
-                wolfDiscussion: true,
-            },
             votes: {},
             wolfTeam: [],
             couples: [],
@@ -2446,19 +2441,18 @@
                 witchHealTarget: null,
                 witchPoisonTarget: null,
                 veteranIsAlert: false,
-                wizardSilenced: false,
-                alphaUsed: false
+                wizardSilenceTarget: null
             }
         };
 
         const ROLE_DEFINITIONS = {
             'Werewolf': { name: 'Serigala Biasa', icon: '🐺', category: 'wolf', team: 'Werewolf', description: 'Bangun tiap malam bersama kawanan, sepakat memilih 1 target untuk dicabik-cabik.', count: 0, priority: 1 },
             'Alpha Wolf': { name: 'Alpha Wolf', icon: '👑', category: 'wolf', team: 'Werewolf', description: 'Sekali seumur permainan, dapat memberikan gigitan maut, ATAU merekrut 1 pemain non-serigala untuk menjadi Werewolf.', count: 0, priority: 2 },
-            'Lone Wolf': { name: 'Serigala Liar', icon: '🐺', category: 'villager', team: 'Villager', description: 'Dianggap sebagai Warga Biasa. Namun, jika ia diincar oleh Werewolf di malam hari, ia batal mati dan seketika berubah sepenuhnya menjadi Werewolf.', count: 0, priority: 21 },
+            'Lone Wolf': { name: 'Serigala Liar', icon: '🐺', category: 'villager', team: 'Villager', description: 'Dianggap sebagai Warga Biasa. Namun, jika ia diincar oleh Werewolf di malam hari, ia batal mati dan seketika berubah sepenuhnya menjadi Werewolf.', count: 0, priority: 3 },
             'Seer': { name: 'Sang Peramal', icon: '🔮', category: 'villager', team: 'Villager', description: 'Menunjuk 1 pemain tiap malam. Mengetahui secara pasti apakah targetnya faksi Serigala atau bukan.', count: 0, priority: 5 },
             'Guardian': { name: 'Sang Pelindung', icon: '🛡️', category: 'villager', team: 'Villager', description: 'Melindungi 1 pemain dari kematian di malam hari. Syarat: Tidak bisa melindungi orang yang sama dua malam berturut-turut.', count: 0, priority: 6 },
             'Witch': { name: 'Sang Penyihir', icon: '🧪', category: 'villager', team: 'Villager', description: 'Punya 1 Ramuan Hidup (menyelamatkan korban) dan 1 Ramuan Mati (membunuh). Masing-masing hanya bisa dipakai satu kali.', count: 0, priority: 7 },
-            'Wizard': { name: 'Penyihir Agung', icon: '🧙', category: 'villager', team: 'Villager', description: 'Sekali per permainan, bisa menggunakan sihirnya di malam hari untuk membatalkan semua aksi malam itu.', count: 0, priority: 8 },
+            'Wizard': { name: 'Penyihir Agung', icon: '🧙', category: 'villager', team: 'Villager', description: 'Hingga 3x per permainan, bisa membungkam 1 pemain di malam hari. Target yang dibungkam tidak bisa menggunakan kemampuannya malam itu.', count: 0, priority: 8 },
             'Hunter': { name: 'Sang Pemburu', icon: '🏹', category: 'villager', team: 'Villager', description: 'Jika mati (dibunuh malam/digantung siang), berhak langsung menembak mati 1 pemain lain sebelum keluar.', count: 0, priority: 9 },
             'Veteran': { name: 'Sang Veteran', icon: '⚔️', category: 'villager', team: 'Villager', description: 'Punya jatah 2x "Siaga" di malam hari. Siapapun yang mengunjunginya dengan niat membunuh akan tertembak mati.', count: 0, priority: 10 },
             'Bodyguard': { name: 'Perisai Hidup', icon: '💂', category: 'villager', team: 'Villager', description: 'Melindungi 1 pemain. Jika target diserang, Bodyguard mati menggantikannya, TETAPI sang penyerang ikut mati seketika.', count: 0, priority: 11 },
@@ -2476,7 +2470,8 @@
         };
 
         const NIGHT_ORDER = [
-            'Cupid', 'Doppelganger', 'Werewolf', 'Alpha Wolf', 'Seer', 'Guardian', 'Bodyguard', 'Witch', 'Serial Killer', 'Wizard', 'Little Girl'
+            // Lone Wolf sengaja tidak ada di sini — transformasinya terjadi otomatis via processNightDeaths, bukan aksi malam
+            'Cupid', 'Doppelganger', 'Werewolf', 'Alpha Wolf', 'Seer', 'Guardian', 'Bodyguard', 'Veteran', 'Witch', 'Serial Killer', 'Wizard', 'Little Girl'
         ];
 
         // ==================== INITIALIZATION ====================
@@ -2513,6 +2508,32 @@
             if (tabName === 'players') renderPlayers();
         }
 
+        function sanitizePlayerName(name) {
+            return String(name || '')
+                .replace(/[<>"'`\\]/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function escapeJsString(value) {
+            return String(value ?? '')
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(/\r/g, '\\r')
+                .replace(/\n/g, '\\n')
+                .replace(/</g, '\\x3C')
+                .replace(/>/g, '\\x3E');
+        }
+
         // ==================== PLAYER MANAGEMENT ====================
         function savePlayerGroup() {
             const groupName = document.getElementById('inputGroupName').value.trim();
@@ -2539,7 +2560,7 @@
                 select.disabled = true;
             } else {
                 select.innerHTML = '<option value="">-- Pilih Preset --</option>' +
-                    groupNames.map(g => `<option value="${g}">${g} (${groups[g].length} pemain)</option>`).join('');
+                    groupNames.map(g => `<option value="${escapeHtml(g)}">${escapeHtml(g)} (${groups[g].length} pemain)</option>`).join('');
                 select.disabled = false;
             }
         }
@@ -2577,7 +2598,7 @@
             const raw = nameInput.value.trim();
             if (!raw) return showToast('Masukkan nama pemain!', 'error');
 
-            const names = raw.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0);
+            const names = raw.split(/[\n,]+/).map(n => sanitizePlayerName(n)).filter(n => n.length > 0);
             const added = [];
             const skipped = [];
 
@@ -2586,7 +2607,7 @@
                     skipped.push(name);
                 } else {
                     gameState.players.push({
-                        id: Date.now() + Math.random(),
+                        id: crypto.randomUUID ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).substr(2)),
                         name: name,
                         role: null,
                         alive: true,
@@ -2614,7 +2635,7 @@
         }
 
         function addPlayerFromModal() {
-            const name = document.getElementById('modalPlayerName').value.trim();
+            const name = sanitizePlayerName(document.getElementById('modalPlayerName').value);
             const role = document.getElementById('modalPlayerRole').value;
             if (!name) return showToast('Masukkan nama pemain!', 'error');
             if (gameState.players.find(p => p.name.toLowerCase() === name.toLowerCase())) {
@@ -2622,7 +2643,7 @@
             }
 
             gameState.players.push({
-                id: Date.now(),
+                id: crypto.randomUUID ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).substr(2)),
                 name: name,
                 role: role || null,
                 alive: true,
@@ -2660,7 +2681,7 @@
             player.alive = !player.alive;
             if (!player.alive) {
                 player.eliminated = true;
-                addLog(player.alive ? 'day' : 'night', `${player.name} (${player.role || 'Tanpa Role'}) mati.`);
+                addLog(gameState.phase, `${player.name} (${player.role || 'Tanpa Role'}) mati.`);
                 checkWinCondition();
             }
             renderPlayers();
@@ -2690,13 +2711,15 @@
 
             const content = document.getElementById('detailPlayerContent');
             const roleDef = player.role ? ROLE_DEFINITIONS[player.role] : null;
+            const safeName = escapeHtml(player.name);
+            const safeNotes = escapeHtml(player.notes || '');
 
             content.innerHTML = `
 <div style="text-align:center;margin-bottom:20px;">
 <div style="width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:2rem;${player.alive ? 'background:linear-gradient(135deg,var(--accent-purple),var(--accent-purple-dark));' : 'background:linear-gradient(135deg,#555,#333);'}">
 ${roleDef ? roleDef.icon : '👤'}
 </div>
-<div style="font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;">${player.name}</div>
+<div style="font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;">${safeName}</div>
 <div style="margin-top:4px;">
 ${player.role ? `<span class="badge badge-${roleDef.category}">${roleDef.icon} ${player.role}</span>` : '<span class="badge badge-neutral">Belum ada role</span>'}
 </div>
@@ -2717,7 +2740,7 @@ ${Object.keys(ROLE_DEFINITIONS).map(r => `<option value="${r}" ${player.role ===
 
 <div class="form-group">
 <label class="form-label">Catatan Moderator</label>
-<textarea class="form-textarea" id="detailNotes" placeholder="Catatan tentang pemain ini..." onchange="updatePlayerNotes(${id}, this.value)">${player.notes || ''}</textarea>
+<textarea class="form-textarea" id="detailNotes" placeholder="Catatan tentang pemain ini..." onchange="updatePlayerNotes(${id}, this.value)">${safeNotes}</textarea>
 </div>
 
 <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -2778,6 +2801,7 @@ ${player.alive ? '💀 Tandai Mati' : '✅ Tandai Hidup'}
                 const roleDef = p.role ? ROLE_DEFINITIONS[p.role] : null;
                 const avatarBg = p.alive ? 'alive' : 'dead';
                 const cardClass = p.alive ? '' : 'dead';
+                const safeName = escapeHtml(p.name);
 
                 return `
 <div class="player-card ${cardClass}" onclick="showPlayerDetail(${p.id})" style="animation-delay:${i * 0.05}s">
@@ -2786,7 +2810,7 @@ ${roleDef ? roleDef.icon : '👤'}
 ${p.alive ? '<div class="alive-dot"></div>' : ''}
 </div>
 <div class="player-info">
-<div class="player-name">${p.name}</div>
+<div class="player-name">${safeName}</div>
 ${p.role ? `<span class="player-role-badge ${roleDef ? roleDef.category : 'unknown'} revealed">${roleDef ? roleDef.icon + ' ' + p.role + (p._wasDoppelganger ? ' (Eks-Doppel)' : '') : '❓ ???'}</span>` : '<span class="player-role-badge unknown">❓ Belum ada role</span>'}
 </div>
 <div class="player-actions" onclick="event.stopPropagation()">
@@ -2852,6 +2876,18 @@ ${p.alive ? '💀' : '✅'}
             });
 
             container.innerHTML = html;
+            updateStartGameButtonState();
+        }
+
+        function updateStartGameButtonState() {
+            const btn = document.getElementById('btnStartGame');
+            if (!btn) return;
+
+            const playerCount = gameState.players.length;
+            const totalRoles = Object.values(gameState.roles).reduce((a, b) => a + b, 0);
+            const playersWithoutRole = gameState.players.filter(p => !p.role).length;
+
+            btn.disabled = playerCount < 5 || totalRoles < playerCount || playersWithoutRole > 0;
         }
 
         function changeRoleCount(role, delta) {
@@ -2868,9 +2904,7 @@ ${p.alive ? '💀' : '✅'}
             const key = role.replace(/[^a-zA-Z]/g, '');
             const el = document.getElementById('rc-' + key);
             if (el) el.textContent = gameState.roles[role];
-
-            const total = Object.values(gameState.roles).reduce((a, b) => a + b, 0);
-            document.getElementById('btnStartGame').disabled = total < 5;
+            updateStartGameButtonState();
         }
 
         function toggleRole(role) {
@@ -2891,9 +2925,7 @@ ${p.alive ? '💀' : '✅'}
                     el.classList.remove('active');
                 }
             }
-
-            const total = Object.values(gameState.roles).reduce((a, b) => a + b, 0);
-            document.getElementById('btnStartGame').disabled = total < 5;
+            updateStartGameButtonState();
         }
 
         function clearAllRoles() {
@@ -2976,6 +3008,17 @@ ${p.alive ? '💀' : '✅'}
 
         // ==================== GAME FLOW ====================
         function startGame() {
+            if (gameState.players.length < 5) {
+                return showToast('Minimal 5 pemain untuk memulai game!', 'error');
+            }
+
+            const playersWithoutRole = gameState.players.filter(p => !p.role);
+            if (playersWithoutRole.length > 0) {
+                const preview = playersWithoutRole.slice(0, 3).map(p => p.name).join(', ');
+                const extra = playersWithoutRole.length > 3 ? ` dan ${playersWithoutRole.length - 3} lainnya` : '';
+                return showToast(`Masih ada pemain tanpa role: ${preview}${extra}.`, 'error');
+            }
+
             const totalRoles = Object.values(gameState.roles).reduce((a, b) => a + b, 0);
             if (totalRoles < gameState.players.length) {
                 return showToast('Role belum cukup untuk semua pemain!', 'error');
@@ -3005,7 +3048,7 @@ ${p.alive ? '💀' : '✅'}
                 witchHealTarget: null,
                 witchPoisonTarget: null,
                 veteranIsAlert: false,
-                wizardSilenced: false
+                wizardSilenceTarget: null
             };
             // Alpha Wolf persistent state (survive across nights)
             gameState._alphaAbilityUsed = false;
@@ -3045,16 +3088,20 @@ ${p.alive ? '💀' : '✅'}
                     witchHealTarget: null,
                     witchPoisonTarget: null,
                     veteranIsAlert: false,
-                    wizardSilenced: false,
-                    alphaUsed: false
+                    wizardSilenceTarget: null
                 };
+                gameState.day++;
                 addLog('night', `🌙 Malam #${gameState.day} dimulai.`);
             } else if (gameState.phase === 'night') {
                 // Night -> Day
                 gameState.phase = 'day';
-                gameState.day++;
                 showPhaseTransition('day');
-                addLog('day', `☀️ Hari ke-${gameState.day - 1} dimulai.`);
+                addLog('day', `☀️ Hari ke-${gameState.day} dimulai.`);
+                
+                // Secara otomatis mengumumkan kematian setelah jeda singkat agar overlay transisi berjalan
+                setTimeout(() => {
+                    announceDeaths();
+                }, 1000);
             }
 
             updatePhaseBanner();
@@ -3108,7 +3155,7 @@ ${p.alive ? '💀' : '✅'}
                 icon.textContent = '☀️';
                 text.textContent = 'SIANG HARI';
                 text.className = 'phase-text day';
-                dayCount.textContent = `Hari ke-${gameState.day - 1}`;
+                dayCount.textContent = `Hari ke-${gameState.day}`;
                 btn.innerHTML = '🌙 Ke Malam';
             } else {
                 banner.className = 'phase-banner night';
@@ -3136,6 +3183,14 @@ ${p.alive ? '💀' : '✅'}
 
             document.getElementById('nightNotStarted').style.display = 'none';
             document.getElementById('nightPanel').style.display = 'block';
+
+            // Guard: Pastikan nightPhase tidak melebihi jumlah peran aktif saat ini jika ada modifikasi dadakan
+            const activeRoles = NIGHT_ORDER.filter(role => {
+                return gameState.players.some(p => p.role === role && p.alive);
+            });
+            if (gameState.nightPhase > activeRoles.length) {
+                gameState.nightPhase = activeRoles.length;
+            }
 
             renderNightSequence();
             renderNightAction();
@@ -3189,11 +3244,11 @@ ${def.icon}
                 renderTargetButtons(currentRole, false);
             } else if (currentRole === 'Alpha Wolf') {
                 if (gameState._alphaAbilityUsed && gameState._alphaChoice === 'recruit' && !gameState._alphaRecruitDone) {
-                    subtitle.textContent = `Pilih target rekrut malam ini (U:${gameState._alphaAbilityUsed}, C:${gameState._alphaChoice}, D:${gameState._alphaRecruitDone})`;
+                    subtitle.textContent = `Pilih target rekrut malam ini.`;
                 } else if (gameState._alphaAbilityUsed) {
-                    subtitle.textContent = `Kemampuan khusus telah digunakan — ikut kawanan (U:${gameState._alphaAbilityUsed}, C:${gameState._alphaChoice}, D:${gameState._alphaRecruitDone})`;
+                    subtitle.textContent = `Kemampuan khusus telah digunakan — ikut kawanan.`;
                 } else {
-                    subtitle.textContent = `Pilih: Bunuh malam ini, atau Rekrut (U:${gameState._alphaAbilityUsed}, C:${gameState._alphaChoice}, D:${gameState._alphaRecruitDone})`;
+                    subtitle.textContent = `Pilih: Bunuh malam ini, atau Rekrut target.`;
                 }
                 renderAlphaWolfAction();
             } else if (currentRole === 'Seer') {
@@ -3206,17 +3261,21 @@ ${def.icon}
                 subtitle.textContent = 'Gunakan ramuan (penyembuh/racun)';
                 renderWitchActions();
             } else if (currentRole === 'Wizard') {
-                subtitle.textContent = 'Membatalkan seluruh kematian malam ini (sekali per game).';
-                renderWizardAction();
-            } else if (currentRole === 'Hunter') {
-                subtitle.textContent = 'Hunter: Bersiap menembak (pilihan dicatat moderator).';
-                renderTargetButtons(currentRole, true);
+                const wizard = gameState.players.find(p => p.role === 'Wizard' && p.alive);
+                const usesLeft = 3 - (wizard._wizardUsedCount || 0);
+                if (usesLeft > 0) {
+                    subtitle.textContent = `Pilih target untuk dibungkam (Sisa: ${usesLeft}x). Semua kemampuan membunuhnya malam ini diblokir.`;
+                    renderTargetButtons(currentRole, true);
+                } else {
+                    subtitle.textContent = `Sihir habis.`;
+                    document.getElementById('nightTargets').innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">Sihir bungkam telah habis digunakan (maks 3x). Klik Konfirmasi atau Lewati untuk melanjutkan.</div>`;
+                }
             } else if (currentRole === 'Veteran') {
                 subtitle.textContent = 'Masuk mode siaga? Siapapun yang menyerang akan mati.';
                 renderVeteranAction();
             } else if (currentRole === 'Cupid') {
-                subtitle.textContent = gameState.day === 1 ? 'Pilih dua pemain untuk dijodohkan' : 'Tidak ada aksi (hanya malam pertama)';
-                if (gameState.day === 1 && gameState.couples.length === 0) {
+                subtitle.textContent = gameState.couples.length === 0 ? 'Pilih dua pemain untuk dijodohkan.' : 'Pasangan sudah dibentuk, tidak ada aksi tersisa.';
+                if (gameState.couples.length === 0) {
                     renderCupidAction();
                 } else {
                     targets.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Tidak ada aksi malam ini.</div>';
@@ -3232,7 +3291,7 @@ ${def.icon}
                 subtitle.textContent = 'Pilih target untuk dibunuh';
                 renderTargetButtons(currentRole, false);
             } else if (currentRole === 'Little Girl') {
-                subtitle.textContent = 'Intip werewolf. Jika ketahuan, kamu mati!';
+                subtitle.textContent = 'Apakah Little Girl ketahuan mengintip?';
                 renderLittleGirlAction();
             } else {
                 subtitle.textContent = 'Tidak ada aksi malam ini.';
@@ -3258,9 +3317,9 @@ ${def.icon}
                 }
 
                 return `
-<button class="target-btn" onclick="selectTarget(this, '${p.id}', '${p.name}')" data-id="${p.id}" data-name="${p.name}" ${disabled ? 'disabled' : ''}>
+<button class="target-btn" onclick="selectTarget(this, '${p.id}', '${escapeJsString(p.name)}')" data-id="${p.id}" data-name="${escapeHtml(p.name)}" ${disabled ? 'disabled' : ''}>
 <span class="target-icon">${def ? def.icon : '👤'}</span>
-<span>${p.name}${disabledMsg}</span>
+<span>${escapeHtml(p.name)}${disabledMsg}</span>
 ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-left:auto;">${p.role}</span>` : ''}
 </button>
 `;
@@ -3300,9 +3359,9 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
 </div>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;">`;
                 html += nonWolves.map(p => `
-<button class="target-btn" onclick="selectAlphaTarget(this, '${p.id}', '${p.name}')" data-id="${p.id}" data-name="${p.name}">
+<button class="target-btn" onclick="selectAlphaTarget(this, '${p.id}', '${escapeJsString(p.name)}')" data-id="${p.id}" data-name="${escapeHtml(p.name)}">
   <span class="target-icon">👤</span>
-  <span>${p.name}</span>
+  <span>${escapeHtml(p.name)}</span>
 </button>`).join('');
                 html += `</div>`;
                 targets.innerHTML = html;
@@ -3326,9 +3385,9 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
 <div id="alphaModeHint" style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:var(--radius-sm);"></div>
 <div id="alphaTargetArea" style="display:none;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;">`;
             html += nonWolves.map(p => `
-<button class="target-btn" onclick="selectAlphaTarget(this, '${p.id}', '${p.name}')" data-id="${p.id}" data-name="${p.name}">
+<button class="target-btn" onclick="selectAlphaTarget(this, '${p.id}', '${escapeJsString(p.name)}')" data-id="${p.id}" data-name="${escapeHtml(p.name)}">
   <span class="target-icon">👤</span>
-  <span>${p.name}</span>
+  <span>${escapeHtml(p.name)}</span>
 </button>`).join('');
             html += `</div>`;
             targets.innerHTML = html;
@@ -3379,7 +3438,7 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
     <div style="font-weight:700;margin-bottom:8px;color:var(--accent-red);">💜 Ramuan Racun</div>
     <div class="night-action-targets" style="margin-bottom:8px;">
       ${gameState.players.filter(p => p.alive && p.id != wolfKillId).map(p => `
-        <button class="target-btn btn-sm" onclick="usePoisonPotion('${p.id}', '${p.name}')">${p.name}</button>
+        <button class="target-btn btn-sm" onclick="usePoisonPotion('${p.id}', '${escapeJsString(p.name)}')">${escapeHtml(p.name)}</button>
       `).join('')}
     </div>
   </div>`;
@@ -3421,39 +3480,7 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
 </div>`;
         }
 
-        function renderWizardAction() {
-            const targets = document.getElementById('nightTargets');
-            const wizard = gameState.players.find(p => p.role === 'Wizard' && p.alive);
-            if (wizard && !wizard._wizardUsed) {
-                targets.innerHTML = `
-        <div style="text-align:center;padding:10px;">
-           <button class="btn btn-purple" style="font-size: 1.1rem; padding: 12px 24px;" onclick="useWizardSilence()">✨ Gunakan Sihir Bungkam Total</button>
-           <p style="margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary);">Malam ini siapapun yang dibunuh tidak akan mati.</p>
-        </div>
-        `;
-            } else {
-                targets.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">Sihir bungkam sudah pernah digunakan. Tidak ada aksi tersisa.</div>`;
-            }
-        }
-
-        function useWizardSilence() {
-            const wizard = gameState.players.find(p => p.role === 'Wizard' && p.alive);
-            if (!wizard) return;
-            showConfirm('Sihir Bungkam', 'Yakin menggunakan Sihir Bungkam Total? Hanya bisa sekali!', 'Gunakan', true, () => {
-                wizard._wizardUsed = true;
-                gameState.nightState.wizardSilenced = true;
-
-                addLog('night', `✨ Wizard merapal Sihir Bungkam! Seluruh energi malam ini diserap dan serangan dihentikan.`);
-                showToast('Sihir Bungkam Aktif!', 'success');
-
-                document.getElementById('nightActionResult').innerHTML = `
-        <div class="seer-result">
-          <div class="seer-result-icon">✨</div>
-          <div class="seer-result-text" style="color:var(--accent-purple);">Bungkam Total!</div>
-          <div class="seer-result-detail">Aksi pembunuhan malam dibatalkan sepenuhnya.</div>
-        </div>`;
-            });
-        }
+        // renderWizardAction() lama sudah dihapus
 
         function renderVeteranAction() {
             const targets = document.getElementById('nightTargets');
@@ -3507,7 +3534,7 @@ Pilih pemain pertama, lalu pilih pemain kedua.
 <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Pemain 1:</div>
 <div class="night-action-targets">
 ${alivePlayers.map(p => `
-<button class="target-btn" onclick="selectCupid1(this, '${p.id}', '${p.name}')">${p.name}</button>
+<button class="target-btn" onclick="selectCupid1(this, '${p.id}', '${escapeJsString(p.name)}')">${escapeHtml(p.name)}</button>
 `).join('')}
 </div>
 </div>
@@ -3515,7 +3542,7 @@ ${alivePlayers.map(p => `
 <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Pemain 2:</div>
 <div class="night-action-targets">
 ${alivePlayers.map(p => `
-<button class="target-btn" onclick="selectCupid2(this, '${p.id}', '${p.name}')">${p.name}</button>
+<button class="target-btn" onclick="selectCupid2(this, '${p.id}', '${escapeJsString(p.name)}')">${escapeHtml(p.name)}</button>
 `).join('')}
 </div>
 </div>
@@ -3525,16 +3552,14 @@ ${alivePlayers.map(p => `
         }
 
         function selectCupid1(el, id, name) {
-            document.querySelectorAll('#nightTargets .target-btn').forEach((b, i) => {
-                const idx = Array.from(document.querySelectorAll('#nightTargets .target-btn')).indexOf(b);
-                if (idx < gameState.players.filter(p => p.alive).length) b.classList.remove('selected');
-            });
+            el.parentElement.querySelectorAll('.target-btn').forEach(b => b.classList.remove('selected'));
             el.classList.add('selected');
             if (!gameState._cupidTemp) gameState._cupidTemp = {};
             gameState._cupidTemp.p1 = { id, name };
         }
 
         function selectCupid2(el, id, name) {
+            el.parentElement.querySelectorAll('.target-btn').forEach(b => b.classList.remove('selected'));
             el.classList.add('selected');
             if (!gameState._cupidTemp) gameState._cupidTemp = {};
             gameState._cupidTemp.p2 = { id, name };
@@ -3542,39 +3567,43 @@ ${alivePlayers.map(p => `
 
         function renderLittleGirlAction() {
             const targets = document.getElementById('nightTargets');
-            const wolves = gameState.players.filter(p => {
-                const def = p.role ? ROLE_DEFINITIONS[p.role] : null;
-                return def && def.team === 'Werewolf' && p.alive;
-            });
-
             targets.innerHTML = `
 <div style="text-align:center;padding:20px;">
-<div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px;">
-Little Girl mengintip... Werewolf malam ini:
-</div>
-<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-${wolves.length > 0 ? wolves.map(w => `
-<div style="padding:8px 16px;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);border-radius:var(--radius-sm);font-weight:600;">
-🐺 ${w.name}
-</div>
-`).join('') : '<div style="color:var(--text-muted);">Tidak ada serigala yang terlihat.</div>'}
-</div>
-<div style="margin-top:12px;">
-<button class="btn btn-outline btn-sm" onclick="littleGirlReveal()">✅ Sudah melihat</button>
-</div>
+  <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">
+    Little Girl telah mengintip serigala. Apakah serigala menyadarinya?
+  </div>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <button class="btn btn-danger" onclick="littleGirlCaught()">🔴 Ketahuan! Little Girl mati</button>
+    <button class="btn btn-outline" onclick="littleGirlSafe()">✅ Aman, tidak ketahuan</button>
+  </div>
 </div>
 `;
         }
 
-        function littleGirlReveal() {
-            addLog('night', `👧 Little Girl mengintip werewolf.`);
+        function littleGirlCaught() {
+            const lg = gameState.players.find(p => p.role === 'Little Girl' && p.alive);
+            if (!lg) return;
+            lg.alive = false;
+            lg.eliminated = true;
+            gameState.eliminatedPlayers.push(lg.name);
+            addLog('night', `👧 Little Girl (${lg.name}) ketahuan mengintip oleh Werewolf dan langsung dibunuh!`);
+            showToast(`${lg.name} (Little Girl) ketahuan dan mati!`, 'error');
+            document.getElementById('nightActionResult').innerHTML = `
+<div class="seer-result">
+<div class="seer-result-icon">💀</div>
+<div class="seer-result-text" style="color:var(--accent-red);">Ketahuan!</div>
+<div class="seer-result-detail">${escapeHtml(lg.name)} dieksekusi oleh Werewolf di tempat. Tidak ada yang bisa menyelamatkannya.</div>
+</div>`;
+        }
+
+        function littleGirlSafe() {
+            addLog('night', `👧 Little Girl mengintip dengan aman malam ini.`);
             document.getElementById('nightActionResult').innerHTML = `
 <div class="seer-result">
 <div class="seer-result-icon">👧</div>
-<div class="seer-result-text" style="color:var(--accent-green);">Berhasil Mengintip!</div>
-<div class="seer-result-detail">Little Girl diam-diam melihat tanpa mengganggu. Nanti jika Wolf secara diam-diam memilihnya maka ia akan mati tak tertolong.</div>
-</div>
-`;
+<div class="seer-result-text" style="color:var(--accent-green);">Aman!</div>
+<div class="seer-result-detail">Little Girl berhasil mengintip tanpa diketahui Werewolf.</div>
+</div>`;
         }
 
         function confirmNightAction() {
@@ -3590,8 +3619,8 @@ ${wolves.length > 0 ? wolves.map(w => `
             if (currentRole === 'Cupid' || currentRole === 'Little Girl' || (currentRole === 'Doppelganger' && gameState.day > 1)) {
                 if (currentRole === 'Cupid') {
                     addLog('night', `💕 Cupid mengamati pasangan.`);
-                    if (gameState.day === 1 && gameState._cupidTemp?.p1 && gameState._cupidTemp?.p2) {
-                        gameState.couples.push([gameState._cupidTemp.p1.name, gameState._cupidTemp.p2.name]);
+                    if (gameState.couples.length === 0 && gameState._cupidTemp?.p1 && gameState._cupidTemp?.p2) {
+                        gameState.couples.push([String(gameState._cupidTemp.p1.id), String(gameState._cupidTemp.p2.id)]);
                     }
                 }
                 gameState.nightPhase++;
@@ -3599,11 +3628,22 @@ ${wolves.length > 0 ? wolves.map(w => `
                 renderNightAction();
                 return;
             }
-            if (currentRole === 'Veteran' || currentRole === 'Witch' || currentRole === 'Wizard') {
+            if (currentRole === 'Veteran' || currentRole === 'Witch') {
                 gameState.nightPhase++;
                 renderNightSequence();
                 renderNightAction();
                 return;
+            }
+            if (currentRole === 'Wizard') {
+                const wizard = gameState.players.find(p => p.role === 'Wizard' && p.alive);
+                const usesLeft = 3 - (wizard?._wizardUsedCount || 0);
+                if (usesLeft <= 0) {
+                    addLog('night', `✨ Wizard tidak melakukan tindakan (sihir habis).`);
+                    gameState.nightPhase++;
+                    renderNightSequence();
+                    renderNightAction();
+                    return;
+                }
             }
 
             const selected = document.querySelector('.target-btn.selected');
@@ -3755,6 +3795,17 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 `;
                     addLog('night', `🎭 Doppelganger mengincar ${targetName} untuk ditiru rolenya nanti.`);
                 }
+            } else if (currentRole === 'Wizard') {
+                gameState.nightState.wizardSilenceTarget = targetId;
+                document.getElementById('nightActionResult').innerHTML = `
+<div class="seer-result">
+<div class="seer-result-icon">✨</div>
+<div class="seer-result-text" style="color:var(--accent-purple);">Bungkam Terkunci!</div>
+<div class="seer-result-detail">Kemampuan ${targetName} disegel sepenuhnya malam ini.</div>
+</div>`;
+                addLog('night', `✨ Wizard membungkam ${targetName} malam ini!`);
+                const wizard = gameState.players.find(p => p.role === 'Wizard' && p.alive);
+                if (wizard) wizard._wizardUsedCount = (wizard._wizardUsedCount || 0) + 1;
             } else {
                 addLog('night', `${ROLE_DEFINITIONS[currentRole].icon} ${currentRole} memilih ${targetName}.`);
             }
@@ -3788,16 +3839,54 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
         function endNightPhase() {
             if (!gameState.started || gameState.phase !== 'night') return;
             processNightDeaths();
+            
+            if (gameState._pendingWolfSacrifice) {
+                return openWolfSacrificeModal();
+            }
+            
             nextPhase();
         }
 
         function processNightDeaths() {
             let deaths = [];
             const ns = gameState.nightState;
-            if (ns.wizardSilenced) {
-                addLog('night', '🌙 Semua serangan malam ini dibatalkan oleh sihir Wizard!');
-                gameState.nightKills = [];
-                return;
+            // Evaluasi Sihir Bungkam Wizard (Roleblock parameter)
+            if (ns.wizardSilenceTarget) {
+                const blockedPlayer = gameState.players.find(p => p.id == ns.wizardSilenceTarget);
+                if (blockedPlayer) {
+                    const r = blockedPlayer.role;
+                    const rDef = ROLE_DEFINITIONS[r];
+                    if (r === 'Serial Killer' && ns.skKillId) {
+                        ns.skKillId = null;
+                        addLog('night', `✨ Sihir Wizard berhasil memblokir aksi Serial Killer malam ini!`);
+                    }
+                    if (r === 'Witch') {
+                        if (ns.witchPoisonTarget) {
+                            ns.witchPoisonTarget = null;
+                            addLog('night', `✨ Sihir Wizard menggagalkan racun Witch!`);
+                        }
+                        if (ns.witchHealTarget) {
+                            ns.witchHealTarget = null;
+                            addLog('night', `✨ Sihir Wizard menggagalkan penyembuhan Witch!`);
+                        }
+                    }
+                    if (r === 'Alpha Wolf') {
+                        if (ns.alphaKillId) {
+                            ns.alphaKillId = null;
+                            addLog('night', `✨ Sihir Wizard berhasil memblokir serangan Alpha Wolf!`);
+                        }
+                        if (ns.alphaRecruitId) {
+                            ns.alphaRecruitId = null;
+                            addLog('night', `✨ Sihir Wizard menggagalkan upaya rekrutmen Alpha Wolf!`);
+                        }
+                    }
+                    if (rDef && rDef.team === 'Werewolf') {
+                        if (ns.wolfKillId) {
+                            ns.wolfKillId = null;
+                            addLog('night', `✨ Sihir Wizard membungkam Werewolf (${blockedPlayer.name}), sehingga seluruh kawanan batal menyerang!`);
+                        }
+                    }
+                }
             }
 
             let kills = [];
@@ -3863,14 +3952,21 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 if (ns.veteranIsAlert && targetPlayer.role === 'Veteran') {
                     if (k.attacker === 'witch') {
                         addLog('night', `💥 Penyihir melempar ramuan mematikan ke Veteran yang sedang siaga! Penyihir tertembak mati, namun Veteran juga tak tertolong dari racunnya.`);
+                        deaths.push(targetPlayer.id); // Veteran mati karena racun
                         // Tidak memblokir serangan (Veteran mati terkena racun)
                     } else {
                         blocked = true;
                         addLog('night', `💥 ${k.attacker} menyerang Veteran yang sedang siaga! Penyerang mati dibunuh.`);
                     }
                     if (k.attacker === 'wolf') {
-                        const wolves = gameState.players.filter(p => ROLE_DEFINITIONS[p.role]?.team === 'Werewolf' && p.alive);
-                        if (wolves.length > 0) deaths.push(wolves[Math.floor(Math.random() * wolves.length)].id);
+                        const wolves = gameState.players.filter(p => ROLE_DEFINITIONS[p.role]?.team === 'Werewolf' && p.alive && !deaths.includes(p.id));
+                        if (wolves.length === 1) {
+                            deaths.push(wolves[0].id);
+                            addLog('night', `🐺 Serigala ${wolves[0].name} terbunuh saat menyerang Veteran!`);
+                        } else if (wolves.length > 1) {
+                            gameState._pendingWolfSacrifice = true;
+                            gameState._pendingWolfSacrificeReason = 'Veteran';
+                        }
                     } else if (k.attacker === 'alpha') {
                         const alpha = gameState.players.find(p => p.role === 'Alpha Wolf' && p.alive);
                         if (alpha) deaths.push(alpha.id);
@@ -3904,8 +4000,14 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                             if (bg) deaths.push(bg.id);
                             // Penyerang juga mati
                             if (k.attacker === 'wolf' || k.attacker === 'alpha') {
-                                const wolves = gameState.players.filter(p => ROLE_DEFINITIONS[p.role]?.team === 'Werewolf' && p.alive);
-                                if (wolves.length > 0) deaths.push(wolves[Math.floor(Math.random() * wolves.length)].id);
+                                const wolves = gameState.players.filter(p => ROLE_DEFINITIONS[p.role]?.team === 'Werewolf' && p.alive && !deaths.includes(p.id));
+                                if (wolves.length === 1) {
+                                    deaths.push(wolves[0].id);
+                                    addLog('night', `🐺 Serigala ${wolves[0].name} terbunuh melawan Bodyguard!`);
+                                } else if (wolves.length > 1) {
+                                    gameState._pendingWolfSacrifice = true;
+                                    gameState._pendingWolfSacrificeReason = 'Bodyguard';
+                                }
                             } else if (k.attacker === 'sk') {
                                 const sk = gameState.players.find(p => p.role === 'Serial Killer' && p.alive);
                                 if (sk) deaths.push(sk.id);
@@ -3929,6 +4031,35 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             addLog('night', '🌙 Fase memproses serangan malam selesai.');
         }
 
+        function openWolfSacrificeModal() {
+            const select = document.getElementById('selectWolfSacrifice');
+            const wolves = gameState.players.filter(p => ROLE_DEFINITIONS[p.role]?.team === 'Werewolf' && p.alive && !gameState.nightKills.includes(p.id));
+            
+            select.innerHTML = wolves.map(w => `<option value="${w.id}">${escapeHtml(w.name)} (${w.role})</option>`).join('');
+            
+            const msg = document.getElementById('wolfSacrificeMsg');
+            msg.textContent = gameState._pendingWolfSacrificeReason === 'Veteran' 
+                ? 'Veteran menembak mati penyerangnya! Karena serigala menyerang berkelompok, pilih Serigala mana yang maju dan mati:'
+                : 'Bodyguard terbunuh melindungi targetnya dan membunuh sang penyerang! Pilih Serigala mana yang mati:';
+                
+            openModal('modalWolfSacrifice');
+        }
+
+        function processWolfSacrifice() {
+            const targetId = document.getElementById('selectWolfSacrifice').value;
+            if (!targetId) return showToast('Pilih serigala yang mati!', 'warning');
+            
+            const wolf = gameState.players.find(p => p.id == targetId);
+            if (wolf) {
+                gameState.nightKills.push(wolf.id);
+                addLog('night', `🐺 Serigala ${wolf.name} terbunuh karena menyerang ${gameState._pendingWolfSacrificeReason === 'Veteran' ? 'Veteran' : 'target yang dilindungi Bodyguard'}!`);
+            }
+            
+            gameState._pendingWolfSacrifice = false;
+            closeModal('modalWolfSacrifice');
+            nextPhase();
+        }
+
         // ==================== DAY ACTIONS ====================
         function renderDayActions() {
             const panel = document.getElementById('dayActionsPanel');
@@ -3941,12 +4072,12 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             if (sheriff) {
                 html += `
         <div class="card" style="background:rgba(255,255,255,0.03); border-color:var(--accent-gold); margin-bottom: 12px; padding: 16px; border: 1px dashed var(--accent-gold);">
-            <div style="font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;color:var(--accent-gold);">⭐ Aksi Sheriff (${sheriff.name})</div>
+            <div style="font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;color:var(--accent-gold);">⭐ Aksi Sheriff (${escapeHtml(sheriff.name)})</div>
             <div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:8px;">Bisa menembak 1 pemain siang ini. Jika korban BUKAN serigala, Sheriff akan ikut mati! (1x pakai)</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
                <select id="sheriffTarget" class="form-select" style="max-width: 200px;">
                   <option value="">-- Pilih Target --</option>
-                  ${alivePlayers.filter(p => p.id !== sheriff.id).map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                  ${alivePlayers.filter(p => p.id !== sheriff.id).map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
                </select>
                <button class="btn btn-danger btn-sm" onclick="useSheriffAction('${sheriff.id}')">🔫 Tembak</button>
             </div>
@@ -3959,12 +4090,12 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             if (priest) {
                 html += `
         <div class="card" style="background:rgba(255,255,255,0.03); border-color:var(--accent-cyan); margin-bottom: 12px; padding: 16px; border: 1px dashed var(--accent-cyan);">
-            <div style="font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;color:var(--accent-cyan);">⛪ Perjudian Priest (${priest.name})</div>
+            <div style="font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;color:var(--accent-cyan);">⛪ Perjudian Priest (${escapeHtml(priest.name)})</div>
             <div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:8px;">Menyiram air suci. Jika target Serigala, Serigala mati. Jika baik, Priest yang mati! (1x pakai)</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
                <select id="priestTarget" class="form-select" style="max-width: 200px;">
                   <option value="">-- Pilih Target --</option>
-                  ${alivePlayers.filter(p => p.id !== priest.id).map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                  ${alivePlayers.filter(p => p.id !== priest.id).map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
                </select>
                <button class="btn btn-primary btn-sm" onclick="usePriestAction('${priest.id}')">💧 Siram Air Suci</button>
             </div>
@@ -3977,7 +4108,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             if (mayor) {
                 html += `
         <div class="card" style="background:rgba(255,255,255,0.03); border-color:var(--accent-purple); margin-bottom: 12px; padding: 16px; border: 1px dashed var(--accent-purple);">
-            <div style="font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;color:var(--accent-purple-light);">🏛️ Deklarasi Mayor (${mayor.name})</div>
+            <div style="font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;color:var(--accent-purple-light);">🏛️ Deklarasi Mayor (${escapeHtml(mayor.name)})</div>
             <div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:8px;">Buka identitas. Setelah mengungkap diri, saat di-vote ia akan mendapatkan perlakuan khusus, dan moderator menambah 2 suara di tally-nya jika ia vote orang lain.</div>
             <button class="btn btn-gold btn-sm" onclick="useMayorAction('${mayor.id}')">🏛️ Ungkap Identitas</button>
         </div>
@@ -4145,6 +4276,8 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             renderPlayers();
             renderVoteGrid();
             checkWinCondition();
+            
+            gameState.nightKills = []; // Reset nightKills agar tidak diproses ganda
         }
 
         function checkDoppelgangerInheritance(deadPlayer) {
@@ -4173,7 +4306,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
         function openHunterModal(hunterPlayer) {
             const alivePlayers = gameState.players.filter(p => p.alive && p.id !== hunterPlayer.id);
             const select = document.getElementById('selectHunterTarget');
-            select.innerHTML = '<option value="">-- Pilih Target Tembakan --</option>' + alivePlayers.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+            select.innerHTML = '<option value="">-- Pilih Target Tembakan --</option>' + alivePlayers.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
 
             document.getElementById('hunterSourceId').value = hunterPlayer.id;
             document.getElementById('modalHunter').classList.add('active');
@@ -4205,7 +4338,12 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
             // Resume original elimination queue
             if (hunter) {
-                finalizeElimination(hunter);
+                if (hunter._pendingExecution) {
+                    hunter._pendingExecution = false;
+                    executePlayerActually(hunter);
+                } else {
+                    finalizeElimination(hunter);
+                }
             } else {
                 updateStats();
                 renderPlayers();
@@ -4224,7 +4362,12 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
             // Resume original elimination queue
             if (hunter) {
-                finalizeElimination(hunter);
+                if (hunter._pendingExecution) {
+                    hunter._pendingExecution = false;
+                    executePlayerActually(hunter);
+                } else {
+                    finalizeElimination(hunter);
+                }
             } else {
                 updateStats();
                 renderPlayers();
@@ -4244,11 +4387,11 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 return `
 <div style="display:flex;align-items:center;justify-content:center;">
 <button class="vote-btn${voteCount > 0 ? ' selected' : ''}" 
-  onclick="tapVote('${p.id}', '${p.name}')" 
-  oncontextmenu="untapVote(event,'${p.name}')" 
+  onclick="tapVote('${p.id}', '${escapeJsString(p.name)}')" 
+  oncontextmenu="untapVote(event,'${escapeJsString(p.name)}')" 
   data-id="${p.id}" 
   style="width:100%;position:relative;${p.role === 'Mayor' && p._mayorRevealed ? 'border-color:var(--accent-gold);' : ''}${isLeading && voteCount > 0 ? 'border-color:var(--accent-red);box-shadow:0 0 10px rgba(239,68,68,0.4);' : ''}">
-  ${p.name}
+  ${escapeHtml(p.name)}
   ${voteCount > 0 ? `<span style="position:absolute;top:4px;right:6px;background:var(--accent-red);color:#fff;border-radius:50%;width:20px;height:20px;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;">${voteCount}</span>` : ''}
 </button>
 </div>
@@ -4272,21 +4415,6 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             renderVoteResults();
         }
 
-        function toggleVote(el, id, name) { tapVote(id, name); }
-
-        function recordVote() {
-            const selected = document.querySelectorAll('.vote-btn.selected');
-            if (selected.length === 0) return showToast('Pilih pemain yang divote!', 'warning');
-
-            selected.forEach(el => {
-                const name = el.textContent.trim();
-                if (!gameState.votes[name]) gameState.votes[name] = 0;
-                gameState.votes[name]++;
-            });
-
-            renderVoteResults();
-            showToast('Vote dicatat!', 'success');
-        }
 
         function renderVoteResults() {
             const container = document.getElementById('voteResults');
@@ -4329,18 +4457,8 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
             if (!player) return;
 
-            // INSTANT JESTER WIN CHECK
-            if (player.role === 'Jester') {
-                player.alive = false;
-                player.eliminated = true;
-                gameState.eliminatedPlayers.push(player.name);
-                player.killedByVote = true;
-                addLog('day', `💀 ${player.name} diusir dan mati di tiang gantungan.`);
-                renderPlayers();
-                updateStats();
-                endGame('🃏 JESTER MENANG!', `${player.name} berhasil diusir lewat voting dan memenangkan permainan mutlak!`);
-                return;
-            }
+            // Jester tidak perlu shortcut endGame di sini. 
+            // Ia akan dieksekusi normal dan terdeteksi menang lewat checkWinCondition().
 
             // Check Idiot
             if (player.role === 'Idiot' && !player._idiotRevealed) {
@@ -4363,18 +4481,23 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             }
 
 
+            // Handle Hunter death FIRST
+            if (player.role === 'Hunter' && !player._hunterUsed) {
+                showToast(`${player.name} adalah Hunter! Dia harus menembak sebelum mati.`, 'warning');
+                addLog('day', `🏹 Hunter ${player.name} mulai diusir... namun dia menarik pelatuknya sebelum digantung!`);
+                player._pendingExecution = true;
+                return openHunterModal(player);
+            }
+
+            executePlayerActually(player);
+        }
+
+        function executePlayerActually(player) {
             player.alive = false;
             player.eliminated = true;
             player.killedByVote = true; // mati karena voting siang hari
             gameState.eliminatedPlayers.push(player.name);
             addLog('day', `💀 ${player.name} (${player.role || '???'}) diusir dan mati di tiang gantungan.`);
-
-            // Handle Hunter death
-            if (player.role === 'Hunter' && !player._hunterUsed) {
-                showToast(`${player.name} adalah Hunter! Dia harus menembak sebelum mati.`, 'warning');
-                addLog('day', `🏹 Hunter ${player.name} dieksekusi... namun dia menarik pelatuknya.`);
-                return openHunterModal(player);
-            }
 
             finalizeElimination(player);
         }
@@ -4393,39 +4516,47 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
         }
 
         function checkCouplesDeath(deadName) {
+            const deadPlayer = gameState.players.find(p => p.name === deadName);
+            if (!deadPlayer) return;
+            const deadId = String(deadPlayer.id);
+
             // Guard: cegah re-entrancy jika sedang diproses (cascade protection)
             if (gameState._processingCouples) return;
             gameState._processingCouples = true;
 
             try {
                 // BFS queue: proses cascade kematian pasangan secara bertahap, tidak rekursif
-                const queue = [deadName];
-                const processedThisCycle = new Set([deadName]);
+                const queue = [deadId];
+                const processedThisCycle = new Set([deadId]);
 
                 while (queue.length > 0) {
-                    const currentDead = queue.shift();
+                    const currentDeadId = queue.shift();
 
                     gameState.couples.forEach(couple => {
-                        if (!couple.includes(currentDead)) return;
+                        if (!couple.includes(currentDeadId)) return;
 
-                        const otherName = couple.find(n => n !== currentDead);
-                        if (!otherName || processedThisCycle.has(otherName)) return;
+                        const otherId = couple.find(id => id !== currentDeadId);
+                        if (!otherId || processedThisCycle.has(otherId)) return;
 
-                        const otherPlayer = gameState.players.find(p => p.name === otherName);
+                        const otherPlayer = gameState.players.find(p => String(p.id) === otherId);
                         if (!otherPlayer || !otherPlayer.alive) return;
 
                         otherPlayer.alive = false;
                         otherPlayer.eliminated = true;
-                        gameState.eliminatedPlayers.push(otherName);
-                        addLog('day', `${otherName} (pasangan ${currentDead}) ikut mati karena cinta.`);
-                        showToast(`${otherName} ikut mati karena cinta!`, 'error');
+                        gameState.eliminatedPlayers.push(otherPlayer.name);
+                        
+                        const currentDeadPlayer = gameState.players.find(p => String(p.id) === currentDeadId);
+                        const currentDeadName = currentDeadPlayer ? currentDeadPlayer.name : '?';
+                        
+                        addLog('day', `${otherPlayer.name} (pasangan ${currentDeadName}) ikut mati karena cinta.`);
+                        showToast(`${otherPlayer.name} ikut mati karena cinta!`, 'error');
 
-                        processedThisCycle.add(otherName);
-                        queue.push(otherName);
+                        processedThisCycle.add(otherId);
+                        queue.push(otherId);
 
                         // Tangani Hunter couple death
                         if (otherPlayer.role === 'Hunter' && !otherPlayer._hunterUsed) {
-                            addLog('day', `Hunter ${otherName} ikut mati karena cinta... namun sempat menembak!`);
+                            addLog('day', `Hunter ${otherPlayer.name} ikut mati karena cinta... namun sempat menembak!`);
                             setTimeout(() => openHunterModal(otherPlayer), 300);
                         }
 
@@ -4436,7 +4567,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
                 // Bersihkan couple yang sudah tidak lengkap
                 gameState.couples = gameState.couples.filter(c =>
-                    c.every(name => gameState.players.find(p => p.name === name)?.alive)
+                    c.every(id => gameState.players.find(p => String(p.id) === id)?.alive)
                 );
 
                 updateCouplesPanel();
@@ -4478,13 +4609,13 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             // Check Lovers Win (Faksi ketiga)
             // Syarat: Minimal ada 1 pasangan yang hidup, dan SELURUH pemain sisa adalah bagian dari pasangan atau Cupid.
             if (gameState.couples && gameState.couples.length > 0) {
-                const loversFactionNames = new Set();
-                gameState.couples.forEach(c => c.forEach(name => loversFactionNames.add(name)));
+                const loversFactionIds = new Set();
+                gameState.couples.forEach(c => c.forEach(id => loversFactionIds.add(String(id))));
                 alivePlayers.forEach(p => {
-                    if (p.role === 'Cupid') loversFactionNames.add(p.name);
+                    if (p.role === 'Cupid') loversFactionIds.add(String(p.id));
                 });
 
-                const allAliveAreLovers = alivePlayers.every(p => loversFactionNames.has(p.name));
+                const allAliveAreLovers = alivePlayers.every(p => loversFactionIds.has(String(p.id)));
                 if (allAliveAreLovers) {
                     endGame('💕 FAKSI LOVERS MENANG!', `Kekuatan abadi cinta mengalahkan segalanya! Cupid beserta pasangannya sukses bertahan hingga akhir.`);
                     return;
@@ -4504,9 +4635,16 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 return;
             }
 
-            // Villager win: all wolves dead AND all SKs dead
-            if (aliveWolves.length === 0 && aliveSK.length === 0 && alivePlayers.length > 0) {
-                endGame('🏛️ VILLAGER MENANG!', `Semua ancaman Serigala dan Serial Killer telah dikalahkan!`);
+            // Villager win: all wolves dead AND all SKs dead AND at least one villager alive
+            if (aliveWolves.length === 0 && aliveSK.length === 0 && aliveVillagers.length > 0) {
+                endGame('🏛️ VILLAGER MENANG!', `Semua ancaman telah dikalahkan! Desa kini damai dan Warga berhasil menang.`);
+                return;
+            }
+            
+            // Cupid lone survivor but lovers are dead (or no lovers made) -> Cupid loses, game Over (Draw)
+            const aliveCupid = alivePlayers.filter(p => p.role === 'Cupid');
+            if (aliveWolves.length === 0 && aliveSK.length === 0 && aliveVillagers.length === 0 && aliveCupid.length > 0) {
+                endGame('💔 GAME OVER (CUPID KALAH)', `Semua pemain telah mati kecuali Cupid! Namun karena pasangannya juga telah tiada, kisah cinta ini berakhir tragis tanpa pemenang.`);
                 return;
             }
         }
@@ -4537,6 +4675,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             const container = document.getElementById('logContainer');
             const allLogs = [...gameState.nightLog, ...gameState.dayLog].sort((a, b) => {
                 if (a.day !== b.day) return a.day - b.day;
+                if (a.phase !== b.phase) return a.phase === 'night' ? -1 : 1;
                 return 0;
             });
 
@@ -4550,7 +4689,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 <div class="log-time">${log.time}</div>
 <div class="log-content">
 <span class="log-phase ${log.phase}">${log.phase === 'night' ? '🌙 Malam' : '☀️ Siang'}</span>
-<div class="log-message">${log.message}</div>
+<div class="log-message">${escapeHtml(log.message)}</div>
 </div>
 </div>
 `).join('');
@@ -4604,7 +4743,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             list.innerHTML = wolves.map(w => `
 <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
 <span>${w.alive ? '🐺' : '💀'}</span>
-<span style="font-weight:600;${w.alive ? '' : 'text-decoration:line-through;opacity:0.5;'}">${w.name}</span>
+<span style="font-weight:600;${w.alive ? '' : 'text-decoration:line-through;opacity:0.5;'}">${escapeHtml(w.name)}</span>
 <span class="badge badge-wolf">${w.role}</span>
 </div>
 `).join('');
@@ -4623,7 +4762,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             list.innerHTML = gameState.couples.map((couple, i) => `
 <div class="couple-item">
 <span class="heart-icon">💕</span>
-<span style="font-weight:600;">${couple.join(' ❤️ ')}</span>
+<span style="font-weight:600;">${couple.map(id => escapeHtml(gameState.players.find(p => String(p.id) === String(id))?.name || '?')).join(' ❤️ ')}</span>
 </div>
 `).join('');
         }
@@ -4669,14 +4808,6 @@ ${def.description}
             container.innerHTML = html;
         }
 
-        // ==================== SETTINGS ====================
-        function toggleSetting(key) {
-            gameState.settings[key] = !gameState.settings[key];
-            const toggle = document.getElementById('toggle-' + key);
-            toggle.classList.toggle('active');
-            showToast(`${key}: ${gameState.settings[key] ? 'ON' : 'OFF'}`, 'info');
-        }
-
         // ==================== MODALS ====================
         function openModal(id) {
             document.getElementById(id).classList.add('active');
@@ -4690,7 +4821,7 @@ ${def.description}
 
         function showConfirm(title, message, okText, isDanger, callback) {
             document.getElementById('modalConfirmTitle').textContent = title;
-            document.getElementById('modalConfirmMsg').innerHTML = message;
+            document.getElementById('modalConfirmMsg').textContent = message;
             
             const okBtn = document.getElementById('modalConfirmOkBtn');
             okBtn.textContent = okText;
@@ -4715,6 +4846,8 @@ ${def.description}
         // Close modal on overlay click
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', (e) => {
+                if (overlay.id === 'modalHunter' || overlay.id === 'modalWolfSacrifice') return; // Modal kritis wajib ditutup via aksi yang sah
+
                 if (e.target === overlay) {
                     overlay.classList.remove('active');
                     document.body.style.overflow = '';
@@ -4729,7 +4862,7 @@ ${def.description}
             toast.className = `toast ${type}`;
 
             const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
-            toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span>`;
+            toast.innerHTML = `<span>${icons[type] || '&#8505;'}</span><span>${escapeHtml(message)}</span>`;
 
             container.appendChild(toast);
 
@@ -4743,7 +4876,14 @@ ${def.description}
 
         // ==================== SAVE/EXPORT ====================
         function exportGame() {
-            const data = JSON.stringify(gameState, null, 2);
+            // Gabungkan gameState dengan persistent state Alpha Wolf yang tersimpan di luar gameState
+            const exportData = {
+                ...gameState,
+                _alphaAbilityUsed: typeof gameState._alphaAbilityUsed !== 'undefined' ? gameState._alphaAbilityUsed : false,
+                _alphaChoice: typeof gameState._alphaChoice !== 'undefined' ? gameState._alphaChoice : null,
+                _alphaRecruitDone: typeof gameState._alphaRecruitDone !== 'undefined' ? gameState._alphaRecruitDone : false,
+            };
+            const data = JSON.stringify(exportData, null, 2);
             const blob = new Blob([data], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -4763,7 +4903,6 @@ ${def.description}
                 isPaused: false,
                 players: [],
                 roles: {},
-                settings: gameState.settings,
                 votes: {},
                 wolfTeam: [],
                 couples: [],
@@ -4786,8 +4925,7 @@ ${def.description}
                     witchHealTarget: null,
                     witchPoisonTarget: null,
                     veteranIsAlert: false,
-                    wizardSilenced: false,
-                    alphaUsed: false
+                    wizardSilenceTarget: null
                 }
             };
 
@@ -4798,8 +4936,70 @@ ${def.description}
             initRoleDistribution();
             renderLog();
             switchTab('setup');
-            showToast('Game direset. Setup ulang!', 'info');
-            showToast('Game direset. Setup ulang!', 'info');
+            showToast('Game direset total!', 'info');
+            });
+        }
+
+        function restartGameKeepPlayers() {
+            showConfirm('Mulai Ulang Game', 'Mulai game baru dengan daftar pemain yang sama? (Role dan Log akan dikosongkan)', 'Mulai Ulang', true, () => {
+                const retainedPlayers = gameState.players.map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    role: null,
+                    alive: true,
+                    eliminated: false,
+                    notes: '',
+                    killedByVote: false,
+                    _sheriffUsed: false,
+                    _priestUsed: false,
+                    _hunterUsed: false,
+                    _idiotRevealed: false,
+                    _princeUsed: false,
+                    _mayorRevealed: false,
+                    _cupidTemp: null
+                }));
+
+                gameState = {
+                    phase: 'setup',
+                    day: 1,
+                    nightPhase: 0,
+                    isPaused: false,
+                    players: retainedPlayers,
+                    roles: {},
+                    votes: {},
+                    wolfTeam: [],
+                    couples: [],
+                    witchPotions: { heal: true, poison: true },
+                    guardLastProtect: null,
+                    hunterShot: false,
+                    nightLog: [],
+                    dayLog: [],
+                    eliminatedPlayers: [],
+                    winner: null,
+                    started: false,
+                    veteranAlertsLeft: 2,
+                    doppelgangerTarget: null,
+                    nightState: {
+                        wolfKillTarget: null,
+                        alphaKillTarget: null,
+                        skKillTarget: null,
+                        guardProtectTarget: null,
+                        bodyguardProtectTarget: null,
+                        witchHealTarget: null,
+                        witchPoisonTarget: null,
+                        veteranIsAlert: false,
+                        wizardSilenceTarget: null
+                    }
+                };
+
+                document.getElementById('gameOverSection').style.display = 'none';
+                updatePhaseBanner();
+                updateStats();
+                renderPlayers();
+                initRoleDistribution();
+                renderLog();
+                switchTab('setup');
+                showToast('Game diulang! Silakan acak role lagi.', 'success');
             });
         }
 
@@ -4807,6 +5007,8 @@ ${def.description}
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal-overlay.active').forEach(m => {
+                    if (m.id === 'modalHunter' || m.id === 'modalWolfSacrifice') return; // Modal kritis wajib ditutup via aksi yang sah
+
                     m.classList.remove('active');
                     document.body.style.overflow = '';
                 });
@@ -4915,3 +5117,5 @@ ${def.description}
 </body>
 
 </html>
+
+
