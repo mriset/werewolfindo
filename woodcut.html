@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf Card Design Showcase</title>
+
+    <!-- Google Fonts: Woodcut Folklore (Eczar & Lora) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Eczar:wght@600;800&family=Lora:ital,wght@0,500;0,700;1,500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* === GLOBAL VARIABLES & RESET === */
+        :root {
+            /* Faction Colors (Strictly adhered to prompt) */
+            --c-mod-1: #2C2C2C;
+            --c-mod-2: #C9A84C;
+            --c-seer-1: #1A2744;
+            --c-seer-2: #C0C0C0;
+            --c-wolf-1: #8B1A1A;
+            --c-wolf-2: #3A3A3A;
+            --c-jest-1: #1A1A1A;
+            --c-jest-2: #F5F0E8;
+
+            --card-base: #F9F7F2;
+            /* Safe CMYK Off-white */
+
+            /* Physical Card Dimensions */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+
+            /* UI Colors */
+            --bg-color: #121212;
+            --text-color: #E0E0E0;
+            --panel-bg: #1E1E1E;
+            --border-color: #333;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #F0F2F5;
+            --text-color: #1A1A1A;
+            --panel-bg: #FFFFFF;
+            --border-color: #DDD;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: 0.3s;
+            padding: 20px;
+        }
+
+        /* === UI GALLERY === */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Eczar', serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .theme-toggle {
+            background: var(--panel-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .theme-content {
+            display: block;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            justify-items: center;
+            margin-bottom: 40px;
+        }
+
+        .info-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .info-panel h3 {
+            color: #C9A84C;
+            margin-bottom: 10px;
+            font-family: 'Eczar', serif;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* === STRICT CARD LAYOUT (54x85.6mm) === */
+        .card-wrapper {
+            width: var(--card-w);
+            height: var(--card-h);
+            background: var(--card-base);
+            border-radius: 3mm;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+            /* Flexbox for strict 12-50-38 split */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-wrapper:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        /* Zones */
+        .zone-top {
+            flex: 0 0 12%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6px;
+            border-bottom: 1px solid;
+            z-index: 2;
+        }
+
+        .zone-mid {
+            flex: 0 0 50%;
+            position: relative;
+            overflow: hidden;
+            background: #FFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .zone-bot {
+            flex: 0 0 38%;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid;
+            z-index: 2;
+            background: var(--card-base);
+        }
+
+        /* Common Elements */
+        .c-id {
+            font-size: 8px;
+            font-weight: bold;
+        }
+
+        .c-icon {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .c-title {
+            font-size: 15px;
+            line-height: 1.1;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .c-subtitle {
+            font-size: 9px;
+            font-style: italic;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .c-quote {
+            font-size: 8px;
+            font-style: italic;
+            border-left: 2px solid;
+            padding-left: 4px;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 700;
+        }
+
+        .c-desc {
+            font-size: 7.5px;
+            line-height: 1.3;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        /* SVG Reset inside zone-mid */
+        .zone-mid svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* === THEME 2: WOODCUT FOLKLORE === */
+        .t-wood .card-wrapper {
+            border-radius: 1mm;
+            border: 1px solid #333;
+        }
+
+        .t-wood .zone-top {
+            border-bottom: 2px dashed var(--theme-c1);
+        }
+
+        .t-wood .zone-bot {
+            border-top: 2px dashed var(--theme-c1);
+            background-color: #F4EFE6;
+        }
+
+        .t-wood .c-title {
+            font-family: 'Eczar', serif;
+            font-weight: 800;
+            color: var(--theme-c1);
+            letter-spacing: 0.5px;
+        }
+
+        .t-wood .c-subtitle,
+        .t-wood .c-quote,
+        .t-wood .c-desc,
+        .t-wood .c-id {
+            font-family: 'Lora', serif;
+            color: #1a1a1a;
+        }
+
+        .t-wood .c-quote {
+            border-left: none;
+            text-align: center;
+            font-weight: 700;
+            border-bottom: 1px solid var(--theme-c2);
+            padding-bottom: 2px;
+        }
+
+        /* Modal Zoom */
+        #zoom-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #zoom-modal.active {
+            display: flex;
+        }
+
+        #zoom-container {
+            transform: scale(3.5);
+            transform-origin: center;
+            pointer-events: none;
+        }
+
+        .close-hint {
+            color: #FFF;
+            margin-top: 40vh;
+            font-family: 'Eczar', serif;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>WEREWOLF BESTIARY</h1>
+        <button class="theme-toggle" onclick="toggleMode()">🌓 Toggle Dark/Light Mode</button>
+    </header>
+
+    <!-- ==========================================
+         THEME 2: WOODCUT FOLKLORE
+         ========================================== -->
+    <div id="theme2" class="theme-content active">
+        <div class="card-grid">
+
+            <!-- T2: MODERATOR -->
+            <div class="card-wrapper t-wood" style="--theme-c1: var(--c-mod-1); --theme-c2: var(--c-mod-2);"
+                onclick="zoomCard(this)">
+                <div class="zone-top">
+                    <span class="c-id">WW-M01</span>
+                    <span class="c-id" style="font-family:'Eczar'; font-size:10px;">MODERATOR</span>
+                    <div class="c-icon" style="background: var(--c-mod-1);"></div>
+                </div>
+                <div class="zone-mid" style="background: #EAE3D2;">
+                    <svg viewBox="0 0 100 100">
+                        <defs>
+                            <pattern id="hatch-mod" width="4" height="4" patternUnits="userSpaceOnUse"
+                                patternTransform="rotate(45)">
+                                <line x1="0" y1="0" x2="0" y2="4" stroke="#2C2C2C" stroke-width="1" />
+                            </pattern>
+                        </defs>
+                        <!-- BG: Rustic aura -->
+                        <circle cx="50" cy="50" r="45" fill="url(#hatch-mod)" opacity="0.3" />
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="#2C2C2C" stroke-width="2"
+                            stroke-dasharray="2 4" />
+                        <!-- Mid: Thorns -->
+                        <path d="M10 50 Q30 30 50 10" fill="none" stroke="#2C2C2C" stroke-width="2" />
+                        <polygon points="20,38 25,35 22,42" fill="#2C2C2C" />
+                        <polygon points="40,18 45,15 42,22" fill="#2C2C2C" />
+                        <path d="M90 50 Q70 70 50 90" fill="none" stroke="#2C2C2C" stroke-width="2" />
+                        <!-- FG: Gavel and Block -->
+                        <polygon points="20,80 80,80 75,95 25,95" fill="#2C2C2C" /> <!-- Block -->
+                        <line x1="30" y1="85" x2="70" y2="85" stroke="#EAE3D2" stroke-width="1" />
+                        <path d="M70 20 L40 50 L45 55 L75 25 Z" fill="#2C2C2C" /> <!-- Handle -->
+                        <polygon points="30,40 50,60 40,70 20,50" fill="#C9A84C" stroke="#2C2C2C" stroke-width="2" />
+                        <!-- Gavel Head -->
+                        <line x1="25" y1="50" x2="45" y2="65" stroke="#2C2C2C" stroke-width="1" />
+                    </svg>
+                </div>
+                <div class="zone-bot">
+                    <div class="c-title">MODERATOR</div>
+                    <div class="c-subtitle">The Deity</div>
+                    <div class="c-quote">"Aturan adalah mutlak, nyawamu hanya pion."</div>
+                    <div class="c-desc">Mengatur jalannya takdir di siang dan malam. Penentu kehidupan yang absolut dan
+                        tak tersentuh.</div>
+                </div>
+            </div>
+
+            <!-- T2: SEER -->
+            <div class="card-wrapper t-wood" style="--theme-c1: var(--c-seer-1); --theme-c2: var(--c-seer-2);"
+                onclick="zoomCard(this)">
+                <div class="zone-top">
+                    <span class="c-id">WW-S02</span>
+                    <span class="c-id" style="font-family:'Eczar'; font-size:10px;">PERAMAL</span>
+                    <div class="c-icon" style="background: var(--c-seer-1);"></div>
+                </div>
+                <div class="zone-mid" style="background: #EAE3D2;">
+                    <svg viewBox="0 0 100 100">
+                        <defs>
+                            <pattern id="hatch-seer" width="5" height="5" patternUnits="userSpaceOnUse"
+                                patternTransform="rotate(-30)">
+                                <line x1="0" y1="0" x2="0" y2="5" stroke="#1A2744" stroke-width="1.5" />
+                            </pattern>
+                        </defs>
+                        <!-- BG: Dark woods -->
+                        <rect width="100" height="100" fill="url(#hatch-seer)" opacity="0.4" />
+                        <path d="M0 100 Q20 50 0 0" fill="none" stroke="#1A2744" stroke-width="4" />
+                        <path d="M100 100 Q80 50 100 0" fill="none" stroke="#1A2744" stroke-width="4" />
+                        <!-- Mid: Withered Hands -->
+                        <path d="M10 100 Q30 70 40 70 Q45 70 45 60" fill="none" stroke="#1A2744" stroke-width="3"
+                            stroke-linecap="round" />
+                        <path d="M90 100 Q70 70 60 70 Q55 70 55 60" fill="none" stroke="#1A2744" stroke-width="3"
+                            stroke-linecap="round" />
+                        <!-- FG: Wooden Eye Token -->
+                        <circle cx="50" cy="45" r="20" fill="#EAE3D2" stroke="#1A2744" stroke-width="3" />
+                        <path d="M35 45 Q50 35 65 45 Q50 55 35 45 Z" fill="#1A2744" />
+                        <circle cx="50" cy="45" r="5" fill="#C0C0C0" />
+                        <circle cx="50" cy="45" r="2" fill="#1A2744" />
+                        <!-- Etching lines on token -->
+                        <line x1="40" y1="30" x2="45" y2="35" stroke="#1A2744" stroke-width="1" />
+                        <line x1="60" y1="30" x2="55" y2="35" stroke="#1A2744" stroke-width="1" />
+                    </svg>
+                </div>
+                <div class="zone-bot">
+                    <div class="c-title">PERAMAL</div>
+                    <div class="c-subtitle">The Seer</div>
+                    <div class="c-quote">"Kebohonganmu takkan bisa bersembunyi."</div>
+                    <div class="c-desc">Setiap malam, lihat identitas asli satu pemain. Gunakan visi ini untuk
+                        membimbing warga ke kebenaran.</div>
+                </div>
+            </div>
+
+            <!-- T2: WEREWOLF -->
+            <div class="card-wrapper t-wood" style="--theme-c1: var(--c-wolf-1); --theme-c2: var(--c-wolf-2);"
+                onclick="zoomCard(this)">
+                <div class="zone-top">
+                    <span class="c-id">WW-W03</span>
+                    <span class="c-id" style="font-family:'Eczar'; font-size:10px;">SERIGALA</span>
+                    <div class="c-icon" style="background: var(--c-wolf-1);"></div>
+                </div>
+                <div class="zone-mid" style="background: #EAE3D2;">
+                    <svg viewBox="0 0 100 100">
+                        <defs>
+                            <pattern id="hatch-wolf" width="3" height="3" patternUnits="userSpaceOnUse"
+                                patternTransform="rotate(15)">
+                                <line x1="0" y1="0" x2="0" y2="3" stroke="#8B1A1A" stroke-width="1" />
+                            </pattern>
+                        </defs>
+                        <!-- BG: Blood moon etching -->
+                        <circle cx="50" cy="45" r="35" fill="url(#hatch-wolf)" />
+                        <!-- Mid: Forest framing -->
+                        <path d="M0 100 L20 60 L30 100 Z M100 100 L80 60 L70 100 Z" fill="#1A1A1A" />
+                        <!-- FG: Visceral Wolf Face (Frontal) -->
+                        <path d="M25 10 L45 40 L55 40 L75 10 L80 50 L65 90 L35 90 L20 50 Z" fill="#1A1A1A"
+                            stroke="#EAE3D2" stroke-width="1" />
+                        <!-- Fur strokes -->
+                        <line x1="30" y1="20" x2="40" y2="35" stroke="#EAE3D2" stroke-width="1.5" />
+                        <line x1="70" y1="20" x2="60" y2="35" stroke="#EAE3D2" stroke-width="1.5" />
+                        <!-- Eyes -->
+                        <polygon points="35,45 45,50 40,55" fill="#8B1A1A" />
+                        <polygon points="65,45 55,50 60,55" fill="#8B1A1A" />
+                        <!-- Snout & Teeth -->
+                        <polygon points="45,70 55,70 50,85" fill="#EAE3D2" />
+                        <polygon points="40,85 45,95 48,85" fill="#EAE3D2" />
+                        <polygon points="60,85 55,95 52,85" fill="#EAE3D2" />
+                        <!-- Drool -->
+                        <path d="M45 95 Q45 105 48 100" fill="none" stroke="#8B1A1A" stroke-width="2"
+                            stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="zone-bot">
+                    <div class="c-title">SERIGALA</div>
+                    <div class="c-subtitle">The Predator</div>
+                    <div class="c-quote">"Daging kalian adalah hidangan malam kami."</div>
+                    <div class="c-desc">Bangun setiap malam bersama kawanan untuk memangsa satu korban. Berbaur sempurna
+                        di siang hari.</div>
+                </div>
+            </div>
+
+            <!-- T2: JESTER -->
+            <div class="card-wrapper t-wood" style="--theme-c1: var(--c-jest-1); --theme-c2: var(--c-jest-2);"
+                onclick="zoomCard(this)">
+                <div class="zone-top">
+                    <span class="c-id">WW-J04</span>
+                    <span class="c-id" style="font-family:'Eczar'; font-size:10px;">BADUT</span>
+                    <div class="c-icon" style="background: var(--c-jest-1);"></div>
+                </div>
+                <div class="zone-mid" style="background: #EAE3D2;">
+                    <svg viewBox="0 0 100 100">
+                        <defs>
+                            <pattern id="hatch-jest" width="6" height="6" patternUnits="userSpaceOnUse"
+                                patternTransform="rotate(75)">
+                                <line x1="0" y1="0" x2="0" y2="6" stroke="#1A1A1A" stroke-width="2" />
+                                <line x1="0" y1="0" x2="6" y2="0" stroke="#1A1A1A" stroke-width="0.5" />
+                            </pattern>
+                        </defs>
+                        <!-- BG: Chaotic crosshatch -->
+                        <rect width="100" height="100" fill="url(#hatch-jest)" opacity="0.2" />
+                        <!-- FG: Grotesque Skull/Jester -->
+                        <!-- Hat -->
+                        <path d="M50 40 Q20 10 10 30 Q30 40 40 45 Z" fill="#1A1A1A" />
+                        <path d="M50 40 Q80 10 90 30 Q70 40 60 45 Z" fill="#F5F0E8" stroke="#1A1A1A" stroke-width="2" />
+                        <circle cx="10" cy="30" r="5" fill="#F5F0E8" stroke="#1A1A1A" stroke-width="2" />
+                        <circle cx="90" cy="30" r="5" fill="#1A1A1A" />
+                        <!-- Face/Skull -->
+                        <path d="M30 40 C30 40 20 70 40 85 L50 80 L60 85 C80 70 70 40 70 40 Z" fill="#EAE3D2"
+                            stroke="#1A1A1A" stroke-width="3" />
+                        <!-- Sunken Eyes -->
+                        <circle cx="40" cy="55" r="6" fill="#1A1A1A" />
+                        <circle cx="60" cy="55" r="6" fill="#1A1A1A" />
+                        <!-- Crazed Grin -->
+                        <path d="M35 75 Q50 90 65 75" fill="none" stroke="#1A1A1A" stroke-width="2" />
+                        <line x1="40" y1="73" x2="40" y2="78" stroke="#1A1A1A" stroke-width="2" />
+                        <line x1="50" y1="75" x2="50" y2="81" stroke="#1A1A1A" stroke-width="2" />
+                        <line x1="60" y1="73" x2="60" y2="78" stroke="#1A1A1A" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="zone-bot">
+                    <div class="c-title">SI BADUT</div>
+                    <div class="c-subtitle">The Chaos</div>
+                    <div class="c-quote">"Gantung aku, dan panggung ini milikku!"</div>
+                    <div class="c-desc">Hasut warga agar mengeksekusimu di siang hari. Jika kau digantung di tiang, kau
+                        menang mutlak sendirian!</div>
+                </div>
+            </div>
+
+        </div>
+        <div class="info-panel">
+            <h3>Tema II: Woodcut Folklore</h3>
+            <p><strong>Art Direction:</strong> Mengambil inspirasi dari dongeng Grimm bersaudara dan teknik cetak blok
+                kayu abad pertengahan (woodblock printing). Kasar, organik, dengan teknik <em>hatching</em> yang kental.
+            </p>
+            <p><strong>Warna:</strong> Tinta Hitam pekat, Off-white kertas tua, Merah Darah kusam, Emas Pudar.</p>
+            <p><strong>Tipografi:</strong> Eczar (Display) yang memiliki serif tajam dan kasar, Lora (Body) serif yang
+                elegan namun memiliki nuansa kaligrafi klasik.</p>
+        </div>
+    </div>
+
+
+
+    <!-- Zoom Modal -->
+    <div id="zoom-modal" onclick="closeZoom()">
+        <div id="zoom-container"></div>
+        <div class="close-hint">KLIK DIMANA SAJA UNTUK MENUTUP</div>
+    </div>
+
+    <script>
+        // Dark/Light mode toggle
+        function toggleMode() {
+            const html = document.documentElement;
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.setAttribute('data-theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        // Card Zoom Logic
+        function zoomCard(element) {
+            const modal = document.getElementById('zoom-modal');
+            const container = document.getElementById('zoom-container');
+
+            // Clone the card
+            const clone = element.cloneNode(true);
+            clone.removeAttribute('onclick');
+            clone.style.cursor = 'default';
+
+            container.innerHTML = '';
+            container.appendChild(clone);
+
+            modal.classList.add('active');
+        }
+
+        function closeZoom() {
+            document.getElementById('zoom-modal').classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>

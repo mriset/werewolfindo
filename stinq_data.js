@@ -1,0 +1,283 @@
+const stinqDeckData = [
+    {
+        id: "mod-01",
+        code: "MOD-01",
+        roleType: "MODERATOR",
+        title: "Sang Pengatur",
+        subtitle: "The Moderator // Deity",
+        quote: "\"Mesin ini berdetak atas perintahku.\"",
+        desc: "Mengendalikan alur permainan. <strong>Tak tersentuh</strong> oleh gigi roda kematian malam maupun siang.",
+        number: "01/25",
+        facClass: "fac-mod"
+    },
+    {
+        id: "ser-02",
+        code: "SER-02",
+        roleType: "SEER",
+        title: "Sang Peramal",
+        subtitle: "The Seer // Mystic",
+        quote: "\"Lensa ini menembus kedok bajamu.\"",
+        desc: "Setiap malam, pindai 1 subjek untuk mengungkap <strong>identitas aslinya</strong>. Pandu desa dengan datamu.",
+        number: "02/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "ww-03",
+        code: "WW-03",
+        roleType: "WEREWOLF",
+        title: "Serigala",
+        subtitle: "The Werewolf // Predator",
+        quote: "\"Tekanan uap ini haus akan darah.\"",
+        desc: "Bangun setiap malam, berdiskusi dengan mesin lain, dan <strong>koyak 1 korban</strong> hingga hancur.",
+        number: "03/25",
+        facClass: "fac-ww"
+    },
+    {
+        id: "jes-04",
+        code: "JES-04",
+        roleType: "JESTER",
+        title: "Si Badut",
+        subtitle: "The Jester // Chaos",
+        quote: "\"Putar tuasnya dan biarkan aku meledak!\"",
+        desc: "Manipulasi pengadilan siang. Jika kau <strong>berhasil dieksekusi</strong>, kau memenangkan permainan ini sendirian.",
+        number: "04/25",
+        facClass: "fac-jes"
+    },
+    {
+        id: "aw-05",
+        code: "AW-05",
+        roleType: "ALPHA WOLF",
+        title: "Serigala Alpha",
+        subtitle: "The Alpha Wolf // Apex Predator",
+        quote: "\"Lolongan mesinku membangkitkan kawanan.\"",
+        desc: "Sekali dalam permainan, kau dapat <strong>menginfeksi</strong> satu target untuk mengubahnya menjadi anggota kawanan Werewolf.",
+        number: "05/25",
+        facClass: "fac-ww"
+    },
+    {
+        id: "cup-06",
+        code: "CUP-06",
+        roleType: "CUPID",
+        title: "Sang Penjodoh",
+        subtitle: "The Cupid // Matchmaker",
+        quote: "\"Cinta adalah anomali sistem yang mematikan.\"",
+        desc: "Di malam pertama, pilih dua pemain menjadi <strong>sepasang kekasih</strong>. Jika salah satu mati, yang lain hancur seketika.",
+        number: "06/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "ww-07",
+        code: "WW-07",
+        roleType: "WEREWOLF",
+        title: "Serigala",
+        subtitle: "The Werewolf // Ravager",
+        quote: "\"Setiap roda gigi di badanku dirancang untuk memangsa.\"",
+        desc: "Bangun tiap malam bersama kawanan. Sepakat memilih <strong>1 target untuk dicabik-cabik</strong> secara brutal.",
+        number: "07/25",
+        facClass: "fac-ww"
+    },
+    {
+        id: "lw-08",
+        code: "LW-08",
+        roleType: "LONE WOLF",
+        title: "Serigala Kesepian",
+        subtitle: "The Lone Wolf // Outcast",
+        quote: "\"Sistemku berjalan bebas dari jaringan kawanan.\"",
+        desc: "Terdeteksi sebagai Warga. Namun, jika diretas Werewolf di malam hari, kau batal mati dan <strong>sistemmu berubah sepenuhnya</strong> menjadi Werewolf.",
+        number: "08/25",
+        facClass: "fac-ww"
+    },
+    {
+        id: "gd-09",
+        code: "GUA-09",
+        roleType: "GUARDIAN",
+        title: "Sang Pelindung",
+        subtitle: "The Guardian // Shield",
+        quote: "\"Perisaiku takkan tertembus oleh gigitan apa pun.\"",
+        desc: "Bebankan perisai pada 1 pemain di malam hari untuk <strong>melindunginya dari kematian</strong>. Tidak bisa melindungi target yang sama dua malam berturut-turut.",
+        number: "09/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "wt-10",
+        code: "WIT-10",
+        roleType: "WITCH",
+        title: "Sang Penyihir",
+        subtitle: "The Witch // Alchemist",
+        quote: "\"Cairan di tabung ini bisa merajut nyawa atau meledakkannya.\"",
+        desc: "Punya 1 <strong>Tetesan Hidup</strong> untuk menyelamatkan korban mati, dan 1 <strong>Tetesan Mati</strong> untuk membunuh. Masing-masing hanya 1x pakai.",
+        number: "10/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "wz-11",
+        code: "WIZ-11",
+        roleType: "WIZARD",
+        title: "Sang Teknisi Gaib",
+        subtitle: "The Wizard // Technomancer",
+        quote: "\"Satu jentikan, dan seluruh sirkuitmu akan mati rasa.\"",
+        desc: "Hingga 3x per permainan, <strong>bungkam sistem</strong> 1 pemain di malam hari. Target akan lumpuh dan tak bisa menggunakan kemampuannya.",
+        number: "11/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "hn-12",
+        code: "HUN-12",
+        roleType: "HUNTER",
+        title: "Sang Pemburu",
+        subtitle: "The Hunter // Marksman",
+        quote: "\"Kalian bisa merusakkanku, tapi tidak tanpa bayaran maut.\"",
+        desc: "Jika kau mati (dieliminasi malam/dieksekusi siang), kau berhak melepaskan 1 <strong>tembakan pamungkas</strong> untuk membunuh pemain lain sebelum keluar.",
+        number: "12/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "vt-13",
+        code: "VET-13",
+        roleType: "VETERAN",
+        title: "Sang Veteran",
+        subtitle: "The Veteran // Survivor",
+        quote: "\"Sasis tua ini belum siap masuk ke tumpukan rongsok.\"",
+        desc: "Miliki 2x jatah mode <strong>Siaga Penuh</strong> di malam hari. Siapapun yang mengunjungi dan berniat menyerangmu akan meledak terlebih dahulu.",
+        number: "13/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "bg-14",
+        code: "BGD-14",
+        roleType: "BODYGUARD",
+        title: "Sang Pengawal",
+        subtitle: "The Bodyguard // Sentinel",
+        quote: "\"Lewati perisaiku sebelum berani menyentuh tuannya.\"",
+        desc: "Pilih 1 target untuk dikawal tiap malam. Jika ia diserang, kau mati menggantikannya, <strong>TETAPI si penyerang ikut hancur</strong> bersamamu.",
+        number: "14/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "pr-15",
+        code: "PRI-15",
+        roleType: "PRIEST",
+        title: "Sang Pendeta",
+        subtitle: "The Priest // Purifier",
+        quote: "\"Air suci ini akan merontokkan karat dosamu.\"",
+        desc: "Siang hari, siramkan <strong>Cairan Pemurni</strong> ke 1 pemain. Jika ia Werewolf, target mati. Jika target baik, <strong>sistemmu yang hancur terbakar</strong>.",
+        number: "15/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "my-16",
+        code: "MYR-16",
+        roleType: "MAYOR",
+        title: "Sang Wali Kota",
+        subtitle: "The Mayor // Leader",
+        quote: "\"Kata-kataku adalah hukum bagi mesin-mesin di kota ini.\"",
+        desc: "Di siang hari, kau bisa meretas pengumuman untuk membuka identitas aslimu. Sejak saat itu, bobot suaramu merangkap menjadi <strong>2 vote otomatis</strong>.",
+        number: "16/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "sh-17",
+        code: "SHR-17",
+        roleType: "SHERIFF",
+        title: "Sang Penegak",
+        subtitle: "The Sheriff // Enforcer",
+        quote: "\"Ada hukum di kota ini, dan ukurannya adalah peluru kaliber 50 mekanik.\"",
+        desc: "Punya 1 <strong>Peluru Vonis</strong>. Di siang hari, bisa mengeliminasi 1 pemain tanpa voting. Jika targetmu baik, <strong>sistemmu ikut meledak bunuh diri</strong>.",
+        number: "17/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "dp-18",
+        code: "DOP-18",
+        roleType: "DOPPELGANGER",
+        title: "Sang Peniru",
+        subtitle: "The Doppelganger // Shapeshifter",
+        quote: "\"Sasisku kosong hingga aku meretas cetak birumu.\"",
+        desc: "Malam pertama: tempelkan cip pelacak pada 1 pemain. Begitu pemain itu hancur, kau <strong>mengkloning spesifikasi</strong> dan mewarisi peran serta kemampuannya.",
+        number: "18/25",
+        facClass: "fac-jes"
+    },
+    {
+        id: "sk-19",
+        code: "SK-19",
+        roleType: "SERIAL KILLER",
+        title: "Sang Penjagal",
+        subtitle: "The Serial Killer // Rogue Assassin",
+        quote: "\"Otomatisasiku hanya menuntut satu hal: Tidak ada yang boleh hidup.\"",
+        desc: "Bangun sendirian tiap malam untuk mendongkel mesin 1 orang. <strong>Kebal</strong> terhadap retasan Serigala. Kau menang jika menjadi satu-satunya entitas yang tersisa.",
+        number: "19/25",
+        facClass: "fac-jes"
+    },
+    {
+        id: "id-20",
+        code: "IDI-20",
+        roleType: "IDIOT",
+        title: "Si Mesin Rusak",
+        subtitle: "The Idiot // Glitch",
+        quote: "\"Srrrtt... bzzzt... apakah aku masih berguna?\"",
+        desc: "Jika kau dieksekusi di siang hari, sistemmu korsleting namun <strong>batal hancur</strong>. Sebagai gantinya, modul suaramu dicabut dan kau kehilangan hak vote selamanya.",
+        number: "20/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "pc-21",
+        code: "PRN-21",
+        roleType: "PRINCE",
+        title: "Sang Pangeran",
+        subtitle: "The Prince // Noble Heir",
+        quote: "\"Kode otorisasi Alpha. Eksekusi ditolak.\"",
+        desc: "Jika kau mendapat voting tertinggi di siang hari, secara otomatis kau <strong>meretas protokol eksekusi</strong> dengan cip kerajaanmu untuk membatalkan kematianmu. Berlaku tepat 1 kali.",
+        number: "21/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "lg-22",
+        code: "LGL-22",
+        roleType: "LITTLE GIRL",
+        title: "Gadis Pengintip",
+        subtitle: "The Little Girl // Spy",
+        quote: "\"Melalui lensa retak ini, aku melihat monster bersemayam.\"",
+        desc: "Tiap malam diperbolehkan diam-diam <strong>mengaktifkan optik pengintip</strong> untuk melihat formasi Serigala. Risiko besar: jika terdeteksi Serigala, kau mati seketika.",
+        number: "22/25",
+        facClass: "fac-seer"
+    },
+    {
+        id: "vl-23",
+        code: "VIL-23",
+        roleType: "VILLAGER",
+        title: "Warga Biasa",
+        subtitle: "The Villager // Mechanic",
+        quote: "\"Aku hanya montir biasa. Mengapa kalian mengincarku?\"",
+        desc: "Kau tidak dibekali modul tempur. Pasa dasarnya, kau hanyalah komponen dasar kota. <strong>Satu-satunya senjatamu adalah voting</strong> di siang hari.",
+        number: "23/25",
+        facClass: "fac-vil"
+    },
+    {
+        id: "vl-24",
+        code: "VIL-24",
+        roleType: "VILLAGER",
+        title: "Warga Biasa",
+        subtitle: "The Villager // Merchant",
+        quote: "\"Daganganku hancur semalam. Tolong identifikasi pelakunya!\"",
+        desc: "Kau tidak dibekali modul tempur. Pasa dasarnya, kau hanyalah komponen dasar kota. <strong>Satu-satunya senjatamu adalah voting</strong> di siang hari.",
+        number: "24/25",
+        facClass: "fac-vil"
+    },
+    {
+        id: "vl-25",
+        code: "VIL-25",
+        roleType: "VILLAGER",
+        title: "Warga Biasa",
+        subtitle: "The Villager // Laborer",
+        quote: "\"Sekrup dan minyak pelumas adalah hidupku, bukan perburuan darah.\"",
+        desc: "Kau tidak dibekali modul tempur. Pasa dasarnya, kau hanyalah komponen dasar kota. <strong>Satu-satunya senjatamu adalah voting</strong> di siang hari.",
+        number: "25/25",
+        facClass: "fac-vil"
+    },
+    {
+        id: "back-01",
+        isBack: true,
+        title: "STEAMPUNK INQUISITION",
+        subtitle: "WEREWOLF ART GALLERY"
+    }
+];

@@ -1,0 +1,757 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf: The Chaos Bestiary - Premium Themes</title>
+
+    <!-- Google Fonts: 2 Fonts per Theme -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Grenze+Gotisch:wght@700;900&family=Marcellus&family=Outfit:wght@300;400;600;700&family=Cinzel+Decorative:wght@700;900&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+        :root {
+            /* Faction Colors (CMYK Safe) */
+            --f-mod-dark: #2C2C2C;
+            --f-mod-light: #C9A84C;
+            --f-see-dark: #1A2744;
+            --f-see-light: #C0C0C0;
+            --f-wer-dark: #8B1A1A;
+            --f-wer-light: #3A3A3A;
+            --f-jes-dark: #1A1A1A;
+            --f-jes-light: #E8DCC8;
+            /* Adjusted Ivory */
+
+            --card-bg: #F9F7F2;
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+
+            /* Gallery UI Colors */
+            --bg-color: #121212;
+            --text-color: #E0E0E0;
+            --panel-bg: #1E1E1E;
+            --border-color: #333;
+        }
+
+        /* Light Mode Overrides */
+        body.light-mode {
+            --bg-color: #EFEFEF;
+            --text-color: #1A1A1A;
+            --panel-bg: #FFFFFF;
+            --border-color: #CCC;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* --- UI GALLERY --- */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #C9A84C;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        button.btn {
+            background: var(--panel-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        button.btn:hover {
+            border-color: #C9A84C;
+            color: #C9A84C;
+        }
+
+        button.btn.active {
+            background: #C9A84C;
+            color: #111;
+            border-color: #C9A84C;
+        }
+
+        .theme-section {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .theme-section.active {
+            display: flex;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .theme-desc {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .theme-desc h2 {
+            margin-bottom: 10px;
+            color: #C9A84C;
+        }
+
+        .theme-desc p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .theme-desc .meta {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #888;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            width: 100%;
+            justify-items: center;
+        }
+
+        @media (max-width: 1000px) {
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- ZOOM MODAL --- */
+        #zoom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        #zoom-modal.active {
+            display: flex;
+            animation: fadeIn 0.2s;
+        }
+
+        #zoom-modal .card {
+            transform: scale(2.5);
+            pointer-events: none;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        @media (max-width: 800px) {
+            #zoom-modal .card {
+                transform: scale(1.8);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================================
+           CORE CARD STRUCTURE & RULES (STRICT)
+           ========================================= */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background: var(--card-bg);
+            border-radius: 4mm;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* CRITICAL: No overflow allowed */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+            cursor: zoom-in;
+            transition: transform 0.2s;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Zone 1: TOP (12%) */
+        .card-top {
+            height: 12%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 4mm;
+            border-bottom: 2px solid;
+            z-index: 10;
+        }
+
+        .card-top .id {
+            font-size: 6pt;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .card-top .role-type {
+            font-size: 7.5pt;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .card-top .icon svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        /* Zone 2: MIDDLE / ILLUSTRATION (50%) */
+        .card-mid {
+            height: 50%;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            /* CRITICAL: SVG must stay inside */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 2px solid;
+            background-color: var(--bg-shade);
+        }
+
+        .card-mid svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Zone 3: BOTTOM / TEXT (38%) */
+        .card-bot {
+            height: 38%;
+            display: flex;
+            flex-direction: column;
+            padding: 8px;
+            /* CRITICAL: Minimum 6px padding */
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .card-bot .title {
+            font-size: 13pt;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 1px;
+        }
+
+        .card-bot .subtitle {
+            font-size: 7.5pt;
+            font-style: italic;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px dotted;
+            opacity: 0.9;
+        }
+
+        .card-bot .quote {
+            font-size: 6.5pt;
+            font-weight: bold;
+            font-style: italic;
+            line-height: 1.2;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-bot .desc {
+            font-size: 6pt;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-bot .seq {
+            position: absolute;
+            bottom: 4px;
+            right: 6px;
+            font-size: 5pt;
+            font-weight: bold;
+            opacity: 0.5;
+        }
+
+        /* =========================================
+           THEME 1: CLOCKWORK INQUISITION (Steampunk)
+           ========================================= */
+        .t1 .card-top {
+            font-family: 'Grenze Gotisch', serif;
+            border-color: var(--f-mod-dark);
+        }
+
+        .t1 .card-mid {
+            border-color: var(--f-mod-dark);
+        }
+
+        .t1 .card-bot {
+            font-family: 'Crimson Pro', serif;
+        }
+
+        .t1 .card-bot .title {
+            font-family: 'Grenze Gotisch', serif;
+        }
+
+        /* Steampunk Text Styles */
+        .t1[data-faction="mod"] {
+            color: var(--f-mod-dark);
+            background: linear-gradient(135deg, #F9F7F2, #E8E2D2);
+        }
+
+        .t1[data-faction="mod"] .card-top,
+        .t1[data-faction="mod"] .card-mid {
+            border-color: var(--f-mod-light);
+        }
+
+        .t1[data-faction="mod"] .subtitle {
+            border-color: var(--f-mod-light);
+            color: #8A7334;
+        }
+
+        .t1[data-faction="mod"] .quote {
+            color: var(--f-mod-dark);
+        }
+
+        .t1[data-faction="seer"] {
+            color: var(--f-see-dark);
+            background: linear-gradient(135deg, #F9F7F2, #D8DCE5);
+        }
+
+        .t1[data-faction="seer"] .card-top,
+        .t1[data-faction="seer"] .card-mid {
+            border-color: var(--f-see-light);
+        }
+
+        .t1[data-faction="seer"] .subtitle {
+            border-color: var(--f-see-light);
+            color: #4A5B7C;
+        }
+
+        .t1[data-faction="wolf"] {
+            color: var(--f-wer-dark);
+            background: linear-gradient(135deg, #F9F7F2, #EACDCD);
+        }
+
+        .t1[data-faction="wolf"] .card-top,
+        .t1[data-faction="wolf"] .card-mid {
+            border-color: var(--f-wer-dark);
+        }
+
+        .t1[data-faction="wolf"] .subtitle {
+            border-color: var(--f-wer-dark);
+            color: #5A1111;
+        }
+
+        .t1[data-faction="wolf"] .desc {
+            color: var(--f-wer-light);
+        }
+
+        .t1[data-faction="jes"] {
+            color: var(--f-jes-dark);
+            background: linear-gradient(135deg, #F5F0E8, #D1C8B4);
+        }
+
+        .t1[data-faction="jes"] .card-top,
+        .t1[data-faction="jes"] .card-mid {
+            border-color: var(--f-jes-dark);
+        }
+
+        .t1[data-faction="jes"] .subtitle {
+            border-color: var(--f-jes-dark);
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>The Chaos Bestiary</h1>
+        <div class="controls">
+            <button class="btn active">Clockwork Inquisition</button>
+            <button class="btn" id="theme-toggle" onclick="toggleMode()" style="margin-left: 20px;">🌙 Dark
+                Mode</button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         THEME 1: CLOCKWORK INQUISITION (Steampunk)
+         ========================================== -->
+    <div id="t1" class="theme-section active">
+        <div class="theme-desc">
+            <h2>⚙️ Clockwork Inquisition</h2>
+            <p>Membawa estetika <b>Gothic Steampunk Era Victoria</b>. Menampilkan mesin kuningan, pipa uap bertenaga
+                tinggi, roda gigi presisi, dan lensa optik yang gelap. Menggambarkan pertempuran ideologi di kota
+                industri yang tertutup kabut tebal.</p>
+            <div class="meta">
+                <span><b>Fonts:</b> Grenze Gotisch & Crimson Pro</span>
+                <span><b>Style:</b> Mechanical, Gritty, Volumetric Gradients</span>
+            </div>
+        </div>
+
+        <div class="card-grid">
+            <!-- T1: MODERATOR -->
+            <div class="card t1" data-faction="mod" onclick="zoomCard(this)">
+                <div class="card-top">
+                    <span class="id">WW-M01</span><span class="role-type">Moderator</span>
+                    <span class="icon"><svg viewBox="0 0 10 10">
+                            <circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" stroke-width="1.5" />
+                            <circle cx="5" cy="5" r="1.5" fill="currentColor" />
+                        </svg></span>
+                </div>
+                <div class="card-mid">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                            <radialGradient id="t1-mod-bg" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#4A4A4A" />
+                                <stop offset="100%" stop-color="#1A1A1A" />
+                            </radialGradient>
+                            <linearGradient id="t1-mod-brass" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FFF2A8" />
+                                <stop offset="50%" stop-color="#C9A84C" />
+                                <stop offset="100%" stop-color="#594411" />
+                            </linearGradient>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Background -->
+                        <rect width="100" height="100" fill="url(#t1-mod-bg)" />
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="2"
+                            stroke-dasharray="4,2" />
+                        <!-- Midground: Gears -->
+                        <g opacity="0.4" fill="none" stroke="#C9A84C" stroke-width="1.5">
+                            <path d="M20,20 l5,5 M80,20 l-5,5 M20,80 l5,-5 M80,80 l-5,-5" />
+                            <circle cx="20" cy="20" r="8" stroke-dasharray="2,2" />
+                            <circle cx="80" cy="80" r="12" stroke-dasharray="3,3" />
+                        </g>
+                        <!-- Foreground: The Clockwork Overseer -->
+                        <path d="M 30,90 C 30,60 40,45 50,45 C 60,45 70,60 70,90 Z" fill="#222"
+                            stroke="url(#t1-mod-brass)" stroke-width="2" />
+                        <!-- Golden Monocle / Absolute Eye -->
+                        <circle cx="50" cy="45" r="18" fill="#111" stroke="url(#t1-mod-brass)" stroke-width="4" />
+                        <circle cx="50" cy="45" r="12" fill="none" stroke="#C9A84C" stroke-width="1"
+                            stroke-dasharray="1,2" />
+                        <circle cx="50" cy="45" r="5" fill="#E6C875" filter="url(#glow)" />
+                        <path d="M 50,45 L 62,33 M 50,45 L 38,57 M 50,45 L 62,57 M 50,45 L 38,33" stroke="#C9A84C"
+                            stroke-width="0.5" />
+                        <!-- Top Hat -->
+                        <path d="M 25,30 Q 50,35 75,30 L 65,5 Q 50,10 35,5 Z" fill="#111" stroke="url(#t1-mod-brass)"
+                            stroke-width="1.5" />
+                        <!-- Steam -->
+                        <path d="M 10,80 Q 20,60 10,40" stroke="#FFF" stroke-width="8" fill="none" opacity="0.1"
+                            filter="url(#glow)" />
+                        <path d="M 90,70 Q 80,50 90,30" stroke="#FFF" stroke-width="6" fill="none" opacity="0.1"
+                            filter="url(#glow)" />
+                    </svg>
+                </div>
+                <div class="card-bot">
+                    <div class="title">Moderator</div>
+                    <div class="subtitle">The Clockwork Deity</div>
+                    <div class="quote">"Mesin takdir tak pernah salah berputar."</div>
+                    <div class="desc">Mengatur roda gigi permainan. Entitas mutlak yang mengawasi siang dan malam tanpa
+                        bisa disentuh oleh faksi manapun.</div>
+                    <div class="seq">01</div>
+                </div>
+            </div>
+
+            <!-- T1: SEER -->
+            <div class="card t1" data-faction="seer" onclick="zoomCard(this)">
+                <div class="card-top">
+                    <span class="id">WW-S02</span><span class="role-type">Peramal</span>
+                    <span class="icon"><svg viewBox="0 0 10 10">
+                            <path d="M1,5 Q5,1 9,5 Q5,9 1,5 Z" fill="none" stroke="currentColor" stroke-width="1" />
+                            <circle cx="5" cy="5" r="1.5" fill="currentColor" />
+                        </svg></span>
+                </div>
+                <div class="card-mid">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                            <radialGradient id="t1-see-bg" cx="50%" cy="50%" r="60%">
+                                <stop offset="0%" stop-color="#1A2744" />
+                                <stop offset="100%" stop-color="#0A0F1A" />
+                            </radialGradient>
+                            <linearGradient id="t1-see-lens" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#E0F7FA" />
+                                <stop offset="50%" stop-color="#4DD0E1" />
+                                <stop offset="100%" stop-color="#006064" />
+                            </linearGradient>
+                            <filter id="blue-glow">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <rect width="100" height="100" fill="url(#t1-see-bg)" />
+                        <!-- Midground: Telescopic rings -->
+                        <ellipse cx="50" cy="50" rx="45" ry="15" fill="none" stroke="#C0C0C0" stroke-width="0.5"
+                            opacity="0.5" transform="rotate(30 50 50)" />
+                        <ellipse cx="50" cy="50" rx="45" ry="15" fill="none" stroke="#C0C0C0" stroke-width="0.5"
+                            opacity="0.5" transform="rotate(-30 50 50)" />
+                        <!-- Foreground: Optic Apparatus -->
+                        <path d="M 30,80 L 45,50 L 55,50 L 70,80 Z" fill="#111" stroke="#C0C0C0" stroke-width="2" />
+                        <circle cx="50" cy="50" r="25" fill="#1A2744" stroke="#C0C0C0" stroke-width="4" />
+                        <!-- Inner glowing lens -->
+                        <circle cx="50" cy="50" r="18" fill="url(#t1-see-lens)" opacity="0.8" />
+                        <path d="M 40,40 Q 50,35 60,40" stroke="#FFF" stroke-width="2" fill="none"
+                            stroke-linecap="round" />
+                        <!-- Aether/Vapor -->
+                        <path d="M 50,50 Q 80,20 60,10" fill="none" stroke="#4DD0E1" stroke-width="3"
+                            filter="url(#blue-glow)" opacity="0.7" />
+                        <path d="M 50,50 Q 20,20 40,10" fill="none" stroke="#4DD0E1" stroke-width="2"
+                            filter="url(#blue-glow)" opacity="0.5" />
+                    </svg>
+                </div>
+                <div class="card-bot">
+                    <div class="title">Peramal</div>
+                    <div class="subtitle">The Optic Seer</div>
+                    <div class="quote">"Lensa spektralku menembus kabut kebohonganmu."</div>
+                    <div class="desc">Setiap malam, arahkan lensa pada 1 pemain untuk melihat wujud aslinya. Bimbing
+                        warga di siang hari tanpa memancing curiga.</div>
+                    <div class="seq">02</div>
+                </div>
+            </div>
+
+            <!-- T1: WEREWOLF -->
+            <div class="card t1" data-faction="wolf" onclick="zoomCard(this)">
+                <div class="card-top">
+                    <span class="id">WW-W03</span><span class="role-type">Serigala</span>
+                    <span class="icon"><svg viewBox="0 0 10 10">
+                            <polygon points="5,1 9,9 1,9" fill="none" stroke="currentColor" stroke-width="1.5" />
+                        </svg></span>
+                </div>
+                <div class="card-mid">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                            <radialGradient id="t1-wer-bg" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#4A0B0B" />
+                                <stop offset="100%" stop-color="#1A0505" />
+                            </radialGradient>
+                            <linearGradient id="t1-wer-metal" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#7A7A7A" />
+                                <stop offset="100%" stop-color="#2C2C2C" />
+                            </linearGradient>
+                            <filter id="red-glow">
+                                <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <rect width="100" height="100" fill="url(#t1-wer-bg)" />
+                        <!-- Midground: Pipes & Blood steam -->
+                        <path d="M 10,0 L 10,100 M 90,0 L 90,100" stroke="#333" stroke-width="8" />
+                        <path d="M 0,20 Q 50,40 100,20" fill="none" stroke="#8B1A1A" stroke-width="15" opacity="0.3"
+                            filter="url(#red-glow)" />
+                        <!-- Foreground: Cyber/Steam Wolf Snout -->
+                        <path d="M 25,60 L 40,25 L 60,25 L 75,60 Z" fill="url(#t1-wer-metal)" stroke="#111"
+                            stroke-width="2" />
+                        <!-- Jaws and Teeth -->
+                        <path d="M 20,80 L 45,60 L 55,60 L 80,80 Z" fill="#111" />
+                        <polygon points="30,60 35,75 40,60" fill="#E0E0E0" />
+                        <polygon points="45,60 50,78 55,60" fill="#E0E0E0" />
+                        <polygon points="60,60 65,75 70,60" fill="#E0E0E0" />
+                        <polygon points="35,80 40,65 45,80" fill="#C0C0C0" />
+                        <polygon points="55,80 60,65 65,80" fill="#C0C0C0" />
+                        <!-- Furnace Eyes -->
+                        <path d="M 35,40 Q 40,35 45,40 Q 40,45 35,40 Z" fill="#FF3333" filter="url(#red-glow)" />
+                        <path d="M 65,40 Q 60,35 55,40 Q 60,45 65,40 Z" fill="#FF3333" filter="url(#red-glow)" />
+                        <!-- Vents -->
+                        <line x1="45" y1="30" x2="55" y2="30" stroke="#111" stroke-width="2" />
+                        <line x1="43" y1="35" x2="57" y2="35" stroke="#111" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="card-bot">
+                    <div class="title">Serigala</div>
+                    <div class="subtitle">The Iron Predator</div>
+                    <div class="quote">"Deru mesin ini ditenagai oleh darah segar kalian."</div>
+                    <div class="desc">Bangun setiap malam bersama kawanannya untuk memilih 1 mangsa. Berbaur sempurna
+                        sebagai warga biasa di terangnya siang.</div>
+                    <div class="seq">03</div>
+                </div>
+            </div>
+
+            <!-- T1: JESTER -->
+            <div class="card t1" data-faction="jes" onclick="zoomCard(this)">
+                <div class="card-top">
+                    <span class="id">WW-J04</span><span class="role-type">Badut</span>
+                    <span class="icon"><svg viewBox="0 0 10 10">
+                            <path d="M2,8 Q5,2 8,8 Z" fill="none" stroke="currentColor" stroke-width="1.5" />
+                        </svg></span>
+                </div>
+                <div class="card-mid">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                            <radialGradient id="t1-jes-bg" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#4A4A4A" />
+                                <stop offset="100%" stop-color="#111111" />
+                            </radialGradient>
+                            <linearGradient id="t1-jes-porcelain" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FFFFFF" />
+                                <stop offset="100%" stop-color="#B0A896" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="100" height="100" fill="url(#t1-jes-bg)" />
+                        <!-- Midground: Springs and Box -->
+                        <path d="M 30,100 L 30,80 L 70,80 L 70,100" fill="#2C2C2C" stroke="#111" stroke-width="3" />
+                        <path d="M 40,80 Q 20,65 50,55 Q 80,45 50,30" fill="none" stroke="#7A7A7A" stroke-width="6" />
+                        <!-- Foreground: Porcelain Mask -->
+                        <path d="M 30,40 C 30,10 70,10 70,40 C 70,60 60,70 50,75 C 40,70 30,60 30,40 Z"
+                            fill="url(#t1-jes-porcelain)" stroke="#111" stroke-width="2" />
+                        <!-- Cracks -->
+                        <path d="M 30,30 L 40,35 L 35,45 M 70,50 L 60,45 L 65,35" fill="none" stroke="#111"
+                            stroke-width="1" />
+                        <!-- Painted Eyes (Sad/Mad) -->
+                        <path d="M 38,38 L 45,35 M 62,38 L 55,42" stroke="#111" stroke-width="2"
+                            stroke-linecap="round" />
+                        <circle cx="42" cy="42" r="3" fill="#111" />
+                        <circle cx="58" cy="42" r="3" fill="#111" />
+                        <!-- Tear -->
+                        <path d="M 42,46 L 40,52 A 2 2 0 0 0 44 52 Z" fill="#3A3A3A" />
+                        <!-- Mechanical Grin -->
+                        <path d="M 38,60 Q 50,75 62,60" fill="none" stroke="#111" stroke-width="3" />
+                        <line x1="40" y1="58" x2="42" y2="64" stroke="#111" stroke-width="1.5" />
+                        <line x1="45" y1="61" x2="45" y2="68" stroke="#111" stroke-width="1.5" />
+                        <line x1="50" y1="63" x2="50" y2="70" stroke="#111" stroke-width="1.5" />
+                        <line x1="55" y1="61" x2="55" y2="68" stroke="#111" stroke-width="1.5" />
+                        <line x1="60" y1="58" x2="58" y2="64" stroke="#111" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="card-bot">
+                    <div class="title">Badut</div>
+                    <div class="subtitle">The Broken Toy</div>
+                    <div class="quote">"Putar kuncinya, dan lihat siapa yang meledak!"</div>
+                    <div class="desc">Manipulasi warga agar menggantungmu di siang hari. Jika kau dieksekusi, tawa
+                        gilamu menandakan kemenangan mutlak seorang diri.</div>
+                    <div class="seq">04</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ZOOM MODAL -->
+    <div id="zoom-modal" onclick="closeZoom()">
+        <!-- Cloned card will be injected here -->
+    </div>
+
+    <script>
+
+        // Dark/Light Mode
+        let isDark = true;
+        function toggleMode() {
+            isDark = !isDark;
+            const body = document.body;
+            const btn = document.getElementById('theme-toggle');
+
+            if (isDark) {
+                body.classList.remove('light-mode');
+                btn.textContent = '🌙 Dark Mode';
+            } else {
+                body.classList.add('light-mode');
+                btn.textContent = '☀️ Light Mode';
+            }
+        }
+
+        // Zoom Modal Interaction
+        const modal = document.getElementById('zoom-modal');
+        function zoomCard(cardEl) {
+            // Clone the card
+            const clone = cardEl.cloneNode(true);
+            // Remove click listener on clone to avoid issues
+            clone.removeAttribute('onclick');
+            // Clear modal and append clone
+            modal.innerHTML = '';
+            modal.appendChild(clone);
+            // Show modal
+            modal.classList.add('active');
+        }
+
+        function closeZoom() {
+            modal.classList.remove('active');
+            modal.innerHTML = '';
+        }
+
+        // Close zoom on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeZoom();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werewolf Premium Art Gallery - Print Layout</title>
+    
+    <!-- Google Fonts untuk Tema dan Layout -->
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Crimson+Text:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,500;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Faction Colors (CMYK Safe) */
+            --c-mod-dark: #2C2C2C; --c-mod-gold: #C9A84C;
+            --c-seer-dark: #1A2744; --c-seer-silver: #C0C0C0;
+            --c-ww-dark: #3A3A3A; --c-ww-red: #8B1A1A;
+            --c-jes-dark: #1A1A1A; --c-jes-ivory: #F5F0E8;
+            --c-vil-dark: #3e2723; --c-vil-tan: #8d6e63;
+            
+            /* Base Paper - WHITE PER REQUEST for printing */
+            --paper: #ffffff;
+            
+            /* Physical Dimensions */
+            --card-w: 54mm;
+            --card-h: 85.6mm;
+            
+            /* UI Variables */
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        /* --- UI HEADER & CONTROLS --- */
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-family: 'Rye', cursive; font-size: 2.5rem; letter-spacing: 1px; margin-bottom: 10px; color: #fff; }
+        .header p { color: #aaa; letter-spacing: 1px; font-size: 0.9rem; }
+
+        kbd { background: #333; padding: 3px 6px; border-radius: 4px; border: 1px solid #555; color: #fff; display: inline-block; font-size: .85em; font-weight: 700; }
+
+        .control-group {
+            display: flex; align-items: center; gap: 8px; background: #222;
+            padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .page {
+            background: #ffffff; margin: 0 auto 40px; display: flex; flex-wrap: wrap;
+            align-content: flex-start; justify-content: flex-start; box-sizing: border-box;
+        }
+
+        @media print {
+            html, body { margin: 0 !important; padding: 0 !important; }
+            body { background: none !important; padding: 0 !important; display: block !important; }
+            .header, .screen-only, .control-panel { display: none !important; }
+            #pages-container { margin: 0 !important; padding: 0 !important; }
+            .page { background: none !important; margin: 0 !important; page-break-after: always; page-break-inside: avoid; break-after: page; }
+            .card { border: 1px solid #1a1a1a !important; transform: none !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; page-break-inside: avoid; }
+            .card-placeholder { visibility: hidden !important; border: 0 !important; }
+            .page:last-child { page-break-after: auto !important; break-after: auto !important; }
+        }
+
+        /* --- CARD BASE SYSTEM --- */
+        .card {
+            width: var(--card-w); height: var(--card-h); background: var(--paper);
+            color: #1a1a1a;
+            border-radius: 4mm; border: 1px solid #1a1a1a; display: flex; flex-direction: column;
+            overflow: hidden; position: relative; flex-shrink: 0; isolation: isolate;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .card-placeholder { background: transparent !important; border: 0 !important; box-shadow: none !important; pointer-events: none !important; }
+
+        /* Card Sections */
+        .c-top { height: 12%; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 4mm; z-index: 3; }
+        .c-mid { height: 44%; flex-shrink: 0; position: relative; overflow: hidden; background: #fff; z-index: 1; border-top: 1.5px solid; border-bottom: 1.5px solid; }
+        .c-bot { height: 44%; flex-shrink: 0; padding: 2.5mm 3.5mm 1.5mm 3.5mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 0.5mm; z-index: 3; }
+
+        .c-mid svg { width: 100%; height: 100%; display: block; object-fit: cover; }
+        
+        /* Inner Text Elements */
+        .c-top .code { font-size: 5pt; font-weight: 900; letter-spacing: 1px; }
+        .c-top .role-type { font-size: 6pt; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
+        .c-top .icon { width: 4mm; height: 4mm; border-radius: 50%; }
+
+        .c-bot h1 { font-size: 11pt; margin-bottom: 0; line-height: 1; }
+        .c-bot h2 { font-size: 6.5pt; font-weight: normal; margin-bottom: 1.5mm; opacity: 0.8; letter-spacing: 0.5px; }
+        .c-bot .quote { font-size: 7.5pt; font-style: italic; margin-bottom: 0.5mm; line-height: 1.15; font-weight: 600; }
+        .c-bot .desc { font-size: 8.2pt; line-height: 1.25; text-align: justify; }
+        .c-bot .number { font-size: 5pt; text-align: center; margin-top: auto; font-weight: bold; opacity: 0.6; }
+
+        /* --- THEME 1: STEAMPUNK INQUISITION --- */
+        .theme-1 { font-family: 'Crimson Text', serif; background-image: radial-gradient(#d5cfc1 1px, transparent 1px); background-size: 4px 4px; }
+        .theme-1 h1, .theme-1 .role-type { font-family: 'Rye', cursive; }
+        .theme-1 .c-top, .theme-1 .c-bot { background: rgba(255, 255, 255, 0.95); } /* Crisp white for print */
+        .theme-1 .c-mid { border-color: #555; border-width: 2px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .theme-1 h1 { text-transform: uppercase; text-shadow: 1px 1px 0px rgba(0,0,0,0.1); }
+        
+        /* Faction Colors Injector */
+        .fac-mod { --c-prim: var(--c-mod-dark); --c-sec: var(--c-mod-gold); }
+        .fac-seer { --c-prim: var(--c-seer-dark); --c-sec: var(--c-seer-silver); }
+        .fac-ww { --c-prim: var(--c-ww-dark); --c-sec: var(--c-ww-red); }
+        .fac-jes { --c-prim: var(--c-jes-dark); --c-sec: var(--c-jes-ivory); }
+        .fac-vil { --c-prim: var(--c-vil-dark); --c-sec: var(--c-vil-tan); }
+
+        .fac-mod .c-top .code, .fac-mod h1 { color: var(--c-mod-dark); }
+        .fac-mod .quote { color: var(--c-mod-gold); }
+        .fac-mod .icon { background: linear-gradient(135deg, #F1C40F, #B7950B); }
+
+        .fac-seer .c-top .code, .fac-seer h1 { color: var(--c-seer-dark); }
+        .fac-seer .quote { color: #5a74a8; }
+        .fac-seer .icon { background: linear-gradient(135deg, #3498DB, #21618C); }
+
+        .fac-ww .c-top .code, .fac-ww h1 { color: var(--c-ww-red); }
+        .fac-ww .quote { color: var(--c-ww-red); }
+        .fac-ww .icon { background: linear-gradient(135deg, #E74C3C, #943126); }
+
+        .fac-jes .c-top .code, .fac-jes h1 { color: var(--c-jes-dark); }
+        .fac-jes .quote { color: #888; }
+        .fac-jes .icon { background: linear-gradient(135deg, #BDC3C7, #707B7C); }
+
+        .fac-vil .c-top .code, .fac-vil h1 { color: var(--c-vil-dark); }
+        .fac-vil .quote { color: var(--c-vil-tan); }
+        .fac-vil .icon { background: linear-gradient(135deg, #3498DB, #21618C); }
+
+        /* Typography overrides for fit */
+        .desc strong { color: var(--c-prim); }
+        .fac-ww .desc strong { color: var(--c-ww-red); }
+
+        /* Card Back Bleed System */
+        .card-back {
+            border: none !important;
+            border-radius: 0 !important;
+            width: calc(var(--card-w) + 4mm) !important;
+            height: calc(var(--card-h) + 4mm) !important;
+            margin: -2mm !important;
+            z-index: 10;
+        }
+        .card-back .back-frame { display: none; }
+        .card-back .back-text-top { position: absolute; top: 10mm; width: 100%; text-align: center; z-index: 6; }
+        .card-back .back-text-bot { position: absolute; bottom: 8mm; width: 100%; text-align: center; z-index: 6; }
+        
+        .card-back .back-art {
+            height: 100%; border: none; background: #1a1a1a; display: flex; align-items: center; justify-content: center;
+        }
+        .card-back .back-art svg {
+            width: calc(100% - 4mm);
+            height: calc(100% - 4mm);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header screen-only">
+        <h1>Steampunk Inquisition</h1>
+        <p>TEKAN <kbd>CTRL+P</kbd> UNTUK MENCETAK (ATAU GUNAKAN KONTROL PANEL DI BAWAH)</p>
+    </div>
+
+    <!-- CONTROL PANEL -->
+    <div class="control-panel screen-only" style="background: rgba(30,30,30,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px 25px; margin: 0 auto 30px; max-width: 900px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; z-index: 10;">
+        <div style="width:100%; text-align:center; margin-bottom:12px; border-bottom:1px solid #444; padding-bottom:10px;">
+            <p style="margin:0; font-size:13px; color:#fff; font-weight:500;">
+                <span style="color:#27AE60; font-weight:700;">PANDUAN CETAK:</span>
+                Tekan <kbd>Ctrl+P</kbd> dan pastikan:
+                <strong>1.</strong> Format: <strong style="color:#27AE60">A4</strong>&nbsp;&nbsp;
+                <strong>2.</strong> Scale: <strong style="color:#27AE60">100%</strong>&nbsp;&nbsp;
+                <strong>3.</strong> Margins: <strong style="color:#27AE60">None</strong>&nbsp;&nbsp;
+                <strong>4.</strong> Centang <strong style="color:#27AE60">Background graphics</strong>
+            </p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; width:100%;">
+            <div class="control-group">
+                <label for="paper-size" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Kertas:</label>
+                <select id="paper-size" onchange="changePaperSize()" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="a4">A4 (9 Kartu)</option>
+                    <option value="f4">F4 / Folio (9 Kartu)</option>
+                    <option value="a3">A3 (20 Kartu)</option>
+                    <option value="a3plus">A3+ (25 Kartu)</option>
+                    <option value="single">Single (Per Kartu)</option>
+                </select>
+            </div>
+            
+            <div style="width:2px; background:#444; margin:0 5px; border-radius:2px;"></div>
+            
+            <div class="control-group">
+                <label for="back-mode" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Balik:</label>
+                <select id="back-mode" onchange="changePaperSize()" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="duplex">Duplex / Otomatis</option>
+                    <option value="manual-long">Manual (Sisi Panjang)</option>
+                    <option value="manual-short">Manual (Sisi Pendek)</option>
+                </select>
+            </div>
+
+            <div style="width:2px; background:#444; margin:0 5px; border-radius:2px;"></div>
+            
+            <div class="control-group">
+                <label for="export-dpi" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Detail PDF:</label>
+                <select id="export-dpi" onchange="changePaperSize()" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="1">Standar (96 DPI)</option>
+                    <option value="2">Tajam (192 DPI)</option>
+                    <option value="4" selected>Ekstrem (384 DPI)</option>
+                </select>
+            </div>
+
+            <button onclick="window.print()" style="font-family:'Montserrat',sans-serif; font-size:12px; font-weight:700; padding:10px 18px; border-radius:8px; cursor:pointer; border:none; background:linear-gradient(135deg,#1E272E,#27AE60); color:white;">
+                🖨️ Simpan PDF
+            </button>
+            <div style="width:2px; background:#444; margin:0 5px; border-radius:2px;"></div>
+            <div class="control-group">
+                <label for="export-format" style="font-size:11px; font-weight:700; color:#ccc; text-transform:uppercase;">Zip:</label>
+                <select id="export-format" style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600; padding:4px 8px; border-radius:4px; border:1px solid #555; background:#333; color:#fff; cursor:pointer; outline:none;">
+                    <option value="png">PNG</option>
+                    <option value="jpg">JPG</option>
+                </select>
+            </div>
+            <button id="btn-download-all" onclick="downloadAllCardsDomToImage('Steampunk', {format: document.getElementById('export-format').value, bgColor: document.getElementById('export-format').value==='jpg'?'#ffffff':null})" style="font-family:'Montserrat',sans-serif; font-size:12px; font-weight:700; padding:10px 18px; border-radius:8px; cursor:pointer; border:none; background:linear-gradient(135deg,#3B1C54,#F39C12); color:white;">
+                ⬇ Download (.ZIP)
+            </button>
+        </div>
+    </div>
+
+    <!-- DYNAMIC CONTAINER -->
+    <div id="pages-container"></div>
+
+    <!-- DATA & ART SCRIPTS -->
+    <script src="stinq_data.js"></script>
+    <script src="svg_stinq.js"></script>
+
+    <script>
+        function generateStinqCard(card) {
+            var html = '';
+            
+            if (card.isBack) {
+                html += '<div class="card card-back theme-1" data-id="' + card.id + '">';
+                html += '  <div class="back-frame"></div>';
+                html += '  <div class="back-text-top">';
+                html += '    <div style="color: #C9A84C; font-size: 11pt; letter-spacing: 4px; font-weight: bold; font-family: \'Rye\', cursive;">WEREWOLF</div>';
+                html += '  </div>';
+                html += '  <div class="back-art">';
+                html += '    ' + (stinqArt[card.id] || '');
+                html += '  </div>';
+                html += '  <div class="back-text-bot">';
+                html += '    <div style="color: #C9A84C; font-size: 8pt; letter-spacing: 2px; line-height: 1.1; font-weight: bold; font-family: \'Rye\', cursive; margin-bottom: 2px;">STEAMPUNK<br>INQUISITION</div>';
+                html += '    <div style="color: #fff; font-size: 5pt; letter-spacing: 1px;">&copy; MRSETIAWAN</div>';
+                html += '  </div>';
+                html += '</div>';
+            } else {
+                html += '<div class="card theme-1 ' + card.facClass + '" data-id="' + card.id + '">';
+                html += '  <div class="c-top">';
+                html += '    <span class="code">' + card.code + '</span>';
+                html += '    <span class="role-type">' + card.roleType + '</span>';
+                html += '    <span class="icon"></span>';
+                html += '  </div>';
+                html += '  <div class="c-mid">';
+                html += '    ' + (stinqArt[card.id] || '');
+                html += '  </div>';
+                html += '  <div class="c-bot">';
+                html += '    <div>';
+                html += '      <h1>' + card.title + '</h1>';
+                html += '      <h2>' + card.subtitle + '</h2>';
+                html += '      <p class="quote">' + card.quote + '</p>';
+                html += '    </div>';
+                html += '    <p class="desc">' + card.desc + '</p>';
+                html += '  </div>';
+                html += '</div>';
+            }
+            
+            return html;
+        }
+
+        function mapBackSlotIndex(slotIndex, cols, rows, backMode) {
+            var row = Math.floor(slotIndex / cols);
+            var col = slotIndex % cols;
+            if (backMode === 'manual-long') {
+                col = (cols - 1) - col;
+            } else if (backMode === 'manual-short') {
+                row = (rows - 1) - row;
+            }
+            return (row * cols) + col;
+        }
+
+        function renderPageFromSlots(slotCards, isBackPage) {
+            var html = '<div class="page' + (isBackPage ? ' page-back' : '') + '">';
+            for (var i = 0; i < slotCards.length; i++) {
+                if (slotCards[i]) html += generateStinqCard(slotCards[i]);
+                else html += '<div class="card card-placeholder" aria-hidden="true"></div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function changePaperSize() {
+            var paperSelect = document.getElementById('paper-size');
+            var dpiSelect = document.getElementById('export-dpi');
+            var backModeSelect = document.getElementById('back-mode');
+            var paperId = paperSelect ? paperSelect.value : 'a4';
+            var dpiScale = parseFloat(dpiSelect ? dpiSelect.value : '1');
+            var backMode = backModeSelect ? backModeSelect.value : 'duplex';
+            var container = document.getElementById('pages-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            var config = window.CardPrintLayout ? window.CardPrintLayout.applyCSS(paperId, dpiScale) : { cardsPerPage: 9, cols: 3, rows: 3 };
+            var cardsPerPage = config.cardsPerPage || (config.cols * config.rows);
+            var cols = config.cols || 3;
+            var rows = config.rows || 3;
+
+            var htmlContent = '';
+            var frontCards = stinqDeckData.filter(function(c) { return !c.isBack; });
+            var backCardData = null;
+            for (var k = 0; k < stinqDeckData.length; k++) {
+                if (stinqDeckData[k].isBack) { backCardData = stinqDeckData[k]; break; }
+            }
+
+            if (paperId === 'single') {
+                for (var s = 0; s < frontCards.length; s++) {
+                    htmlContent += renderPageFromSlots([frontCards[s]], false);
+                    if (backCardData) htmlContent += renderPageFromSlots([backCardData], true);
+                }
+            } else {
+                for (var i = 0; i < frontCards.length; i += cardsPerPage) {
+                    var pageCards = frontCards.slice(i, i + cardsPerPage);
+                    var frontSlots = new Array(cardsPerPage).fill(null);
+                    for (var j = 0; j < pageCards.length; j++) {
+                        frontSlots[j] = pageCards[j];
+                    }
+                    htmlContent += renderPageFromSlots(frontSlots, false);
+
+                    if (backCardData) {
+                        var backSlots = new Array(cardsPerPage).fill(null);
+                        for (var b = 0; b < pageCards.length; b++) {
+                            var mappedIndex = mapBackSlotIndex(b, cols, rows, backMode);
+                            backSlots[mappedIndex] = backCardData;
+                        }
+                        htmlContent += renderPageFromSlots(backSlots, true);
+                    }
+                }
+            }
+
+            container.innerHTML = htmlContent;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() { changePaperSize(); });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.8.0/dist/dom-to-image-more.min.js"></script>
+    <script src="download_helper.js?v=2"></script>
+</body>
+</html>
