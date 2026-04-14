@@ -1975,13 +1975,13 @@
         <!-- Phase Banner -->
         <div class="phase-banner night" id="phaseBanner">
             <div class="phase-indicator">
-                <span class="phase-icon" id="phaseIcon">🌙</span>
-                <span class="phase-text night" id="phaseText">MALAM HARI</span>
-                <span class="phase-day-count" id="phaseDayCount">Malam #1</span>
+                <span class="phase-icon" id="phaseIcon">⚙️</span>
+                <span class="phase-text night" id="phaseText">SETUP</span>
+                <span class="phase-day-count" id="phaseDayCount">Belum mulai</span>
             </div>
             <div class="phase-controls" id="phaseControls">
                 <button class="btn btn-primary btn-sm" onclick="nextPhase()" id="btnNextPhase">
-                    ▶️ Mulai Malam
+                    🚀 Mulai Game
                 </button>
                 <button class="btn btn-outline btn-sm" onclick="togglePause()" id="btnPause">
                     ⏸️ Jeda
@@ -2738,7 +2738,7 @@ ${player.alive ? '✅ Hidup' : '💀 Mati'}
 
 <div class="form-group">
 <label class="form-label">Ubah Role</label>
-<select class="form-select" id="detailRoleSelect" onchange="changePlayerRole('${id}', this.value)">
+<select class="form-select" id="detailRoleSelect" onchange="changePlayerRole('${escapeJsString(id)}', this.value)">
 <option value="">-- Tanpa Role --</option>
 ${Object.keys(ROLE_DEFINITIONS).map(r => `<option value="${r}" ${player.role === r ? 'selected' : ''}>${ROLE_DEFINITIONS[r].icon} ${r}</option>`).join('')}
 </select>
@@ -2746,14 +2746,14 @@ ${Object.keys(ROLE_DEFINITIONS).map(r => `<option value="${r}" ${player.role ===
 
 <div class="form-group">
 <label class="form-label">Catatan Moderator</label>
-<textarea class="form-textarea" id="detailNotes" placeholder="Catatan tentang pemain ini..." onchange="updatePlayerNotes('${id}', this.value)">${safeNotes}</textarea>
+<textarea class="form-textarea" id="detailNotes" placeholder="Catatan tentang pemain ini..." onchange="updatePlayerNotes('${escapeJsString(id)}', this.value)">${safeNotes}</textarea>
 </div>
 
 <div style="display:flex;gap:8px;flex-wrap:wrap;">
-<button class="btn ${player.alive ? 'btn-danger' : 'btn-success'} btn-block" onclick="togglePlayerAlive('${id}');closeModal('modalPlayerDetail');">
+<button class="btn ${player.alive ? 'btn-danger' : 'btn-success'} btn-block" onclick="togglePlayerAlive('${escapeJsString(id)}');closeModal('modalPlayerDetail');">
 ${player.alive ? '💀 Tandai Mati' : '✅ Tandai Hidup'}
 </button>
-<button class="btn btn-outline btn-block" onclick="removePlayer('${id}');closeModal('modalPlayerDetail');">
+<button class="btn btn-outline btn-block" onclick="removePlayer('${escapeJsString(id)}');closeModal('modalPlayerDetail');">
 🗑️ Hapus Pemain
 </button>
 </div>
@@ -3096,7 +3096,6 @@ ${p.alive ? '💀' : '✅'}
             if (gameState.phase === 'day') {
                 // Day -> Night
                 resetTimer(); // Pastikan timer siang berhenti saat masuk malam
-                showPhaseTransition('night');
                 gameState.phase = 'night';
                 gameState.nightPhase = 0;
                 gameState.nightState = {
@@ -3110,11 +3109,19 @@ ${p.alive ? '💀' : '✅'}
                     veteranIsAlert: false,
                     wizardSilenceTarget: null
                 };
+                // UI-05 FIX: Increment day SEBELUM showPhaseTransition agar overlay
+                // menampilkan nomor malam yang benar (bukan nomor lama).
                 gameState.day++;
+                showPhaseTransition('night');
                 addLog('night', `🌙 Malam #${gameState.day} dimulai.`);
             } else if (gameState.phase === 'night') {
                 // Night -> Day
                 gameState.phase = 'day';
+                resetTimer(); // UI-04 FIX: Pastikan timer malam berhenti/reset saat masuk siang
+                // LOGIC-07 FIX: Reset vote setiap siang baru dimulai — diam-diam (tanpa toast)
+                // agar vote dari siang sebelumnya (misal saat tie/tidak ada eksekusi)
+                // tidak terbawa ke ronde berikutnya.
+                gameState.votes = {};
                 showPhaseTransition('day');
                 addLog('day', `☀️ Hari ke-${gameState.day} dimulai.`);
                 
@@ -3255,6 +3262,9 @@ ${def.icon}
             const subtitle = document.getElementById('nightPhaseSubtitle');
             const targets = document.getElementById('nightTargets');
             const result = document.getElementById('nightActionResult');
+            // UI-02 FIX: Bersihkan hasil aksi sebelumnya di AWAL render, bukan di akhir.
+            // Ini memastikan panel hasil selalu kosong sebelum konten role baru muncul.
+            result.innerHTML = '';
 
             title.textContent = `${def.icon} ${currentRole}`;
 
@@ -3317,8 +3327,6 @@ ${def.icon}
                 subtitle.textContent = 'Tidak ada aksi malam ini.';
                 targets.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Tidak ada aksi.</div>';
             }
-
-            result.innerHTML = '';
         }
 
         function renderTargetButtons(role, showRole) {
@@ -3336,7 +3344,7 @@ ${def.icon}
                 let disabled = false;
                 let disabledMsg = '';
 
-                if (role === 'Guardian' && p.id == gameState.guardLastProtect) {
+                if (role === 'Guardian' && p.id === gameState.guardLastProtect) {
                     disabled = true;
                     disabledMsg = ' (Dilindungi malam sebelumnya)';
                 }
@@ -3467,7 +3475,13 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
   <div style="background:rgba(231,76,60,0.05);border:1px solid rgba(231,76,60,0.2);border-radius:var(--radius-md);padding:16px;">
     <div style="font-weight:700;margin-bottom:8px;color:var(--accent-red);">💜 Ramuan Racun</div>
     <div class="night-action-targets" style="margin-bottom:8px;">
-      ${gameState.players.filter(p => p.alive && p.id != wolfKillId && p.role !== 'Witch').map(p => `
+      ${gameState.players.filter(p => {
+          const witch = gameState.players.find(w => w.role === 'Witch' && w.alive);
+          return p.alive
+              && p.id !== wolfKillId   // tidak bisa meracuni korban wolf (heal lebih relevan)
+              && p.role !== 'Witch'    // tidak bisa meracuni diri sendiri
+              && (!witch || p.id !== witch.id); // guard ekstra jika role-check tidak cukup
+      }).map(p => `
         <button class="target-btn btn-sm" onclick="usePoisonPotion('${p.id}', '${escapeJsString(p.name)}')">${escapeHtml(p.name)}</button>
       `).join('')}
     </div>
@@ -3485,7 +3499,8 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
         }
 
         function useHealPotion(id, target) {
-            gameState.witchPotions.heal = false;
+            // Potion hanya dikonsumsi saat resolusi malam (processNightDeaths),
+            // agar jika Wizard membungkam Witch, potion bisa dikembalikan.
             gameState.nightState.witchHealTarget = id;
             addLog('night', `🧪 Witch menyelamatkan ${target}.`);
             showToast(`Witch menyelamatkan ${target}!`, 'success');
@@ -3499,7 +3514,8 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
         }
 
         function usePoisonPotion(id, target) {
-            gameState.witchPotions.poison = false;
+            // Potion hanya dikonsumsi saat resolusi malam (processNightDeaths),
+            // agar jika Wizard membungkam Witch, potion bisa dikembalikan.
             gameState.nightState.witchPoisonTarget = id;
             addLog('night', `🧪 Witch meracuni ${target}.`);
             showToast(`Witch meracuni ${target}!`, 'warning');
@@ -3787,17 +3803,22 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 </div>`;
                         addLog('night', `👑 Alpha Wolf memilih BUNUH: ${alphaTargetName} menjadi incaran.`);
                     } else {
-                        // Rekrut — tidak perlu target sekarang, target baru dipilih malam depan
+                        // Rekrut — tidak perlu target sekarang, target baru dipilih malam depan.
+                        // LOGIC-02 FIX: Kawanan tidak membunuh malam ini karena Alpha mengumumkan rekrut.
+                        // wolfKillId yang sudah diset Werewolf sebelumnya di-null-kan di sini.
                         gameState._alphaAbilityUsed = true;
                         gameState._alphaChoice = 'recruit';
                         gameState._alphaRecruitDone = false;
+                        // Batalkan kill Werewolf malam ini — kawanan sepakat rekrut, bukan membunuh
+                        gameState.nightState.wolfKillId = null;
+                        gameState.nightState.wolfKillTarget = null;
                         document.getElementById('nightActionResult').innerHTML = `
 <div class="seer-result">
 <div class="seer-result-icon">🐺</div>
 <div class="seer-result-text" style="color:var(--accent-purple);">Mode Rekrut Dipilih</div>
-<div class="seer-result-detail">Malam berikutnya, Alpha Wolf akan memilih siapa yang direkrut menjadi Werewolf.</div>
+<div class="seer-result-detail">Malam berikutnya, Alpha Wolf akan memilih siapa yang direkrut. <strong>Kawanan serigala TIDAK membunuh malam ini.</strong></div>
 </div>`;
-                        addLog('night', `👑 Alpha Wolf memilih mode REKRUT — target dipilih malam depan.`);
+                        addLog('night', `👑 Alpha Wolf memilih mode REKRUT — kawanan serigala tidak membunuh malam ini. Target rekrut dipilih malam berikutnya.`);
                     }
                 }
 
@@ -3865,8 +3886,28 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
             const currentRole = activeRoles[gameState.nightPhase];
             
+            // Doppelganger malam pertama WAJIB memilih — tidak bisa skip
             if (currentRole === 'Doppelganger' && gameState.day === 1) {
                 return showToast('Doppelganger WAJIB memilih target di malam pertama!', 'error');
+            }
+
+            // LOGIC-05 FIX: Role kritis (pembunuh) memerlukan konfirmasi sebelum skip,
+            // agar moderator tidak tidak sengaja melewatkan aksi yang mengubah jalannya game.
+            const criticalKillerRoles = ['Werewolf', 'Alpha Wolf', 'Serial Killer'];
+            if (criticalKillerRoles.includes(currentRole)) {
+                showConfirm(
+                    `Skip Aksi ${currentRole}?`,
+                    `${currentRole} tidak akan membunuh siapapun malam ini. Ini valid jika memang sengaja (pilihan tidak membunuh). Yakin ingin melewatkan?`,
+                    'Ya, Skip',
+                    true,
+                    () => {
+                        addLog('night', `${ROLE_DEFINITIONS[currentRole].icon} ${currentRole} melewatkan aksi — tidak ada korban malam ini dari ${currentRole}.`);
+                        gameState.nightPhase++;
+                        renderNightSequence();
+                        renderNightAction();
+                    }
+                );
+                return;
             }
             
             addLog('night', `${ROLE_DEFINITIONS[currentRole].icon} ${currentRole} melewatkan aksi.`);
@@ -3930,11 +3971,25 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 }
             }
 
+            // Konsumsi potion Witch hanya jika aksinya TIDAK diblokir Wizard.
+            // Jika Wizard menggagalkan efeknya, potion dikembalikan (tidak dikonsumsi).
+            if (ns.witchHealTarget) gameState.witchPotions.heal = false;
+            if (ns.witchPoisonTarget) gameState.witchPotions.poison = false;
+
+            // LOGIC-02 Guard (defensif): Jika Alpha Wolf baru saja mengumumkan Rekrut
+            // (malam pertama — bukan malam eksekusi rekrut), kawanan serigala TIDAK membunuh.
+            // wolfKillId seharusnya sudah di-null oleh confirmNightAction, ini hanya fallback.
+            if (gameState._alphaChoice === 'recruit' && !gameState._alphaRecruitDone && ns.wolfKillId) {
+                addLog('night', `👑 [Guard] Alpha Wolf memilih Rekrut — wolfKill dibatalkan secara otomatis.`);
+                ns.wolfKillId = null;
+                ns.wolfKillTarget = null;
+            }
+
             let kills = [];
 
             // Process Alpha Wolf Recruitment
             if (ns.alphaRecruitId) {
-                const targetPlayer = gameState.players.find(p => p.id == ns.alphaRecruitId);
+                const targetPlayer = gameState.players.find(p => p.id === ns.alphaRecruitId);
                 if (targetPlayer && targetPlayer.alive) {
                     // Target is converted to Werewolf instantly
                     targetPlayer.role = 'Werewolf';
@@ -3948,7 +4003,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
             // Evaluate Kills
             if (ns.wolfKillId) {
-                const wolfTarget = gameState.players.find(p => p.id == ns.wolfKillId);
+                const wolfTarget = gameState.players.find(p => p.id === ns.wolfKillId);
                 if (wolfTarget && wolfTarget.role === 'Lone Wolf') {
                     wolfTarget.role = 'Werewolf';
                     if (!gameState.wolfTeam.includes(wolfTarget.name)) {
@@ -3961,7 +4016,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 }
             }
             if (ns.alphaKillId) {
-                const alphaTarget = gameState.players.find(p => p.id == ns.alphaKillId);
+                const alphaTarget = gameState.players.find(p => p.id === ns.alphaKillId);
                 if (alphaTarget && alphaTarget.role === 'Lone Wolf') {
                     alphaTarget.role = 'Werewolf';
                     if (!gameState.wolfTeam.includes(alphaTarget.name)) {
@@ -3978,7 +4033,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
             // Process protections & veteran counter-attacks
             for (const k of kills) {
-                const targetPlayer = gameState.players.find(p => p.id == k.target);
+                const targetPlayer = gameState.players.find(p => p.id === k.target);
                 if (!targetPlayer) continue;
 
                 let blocked = false;
@@ -4031,12 +4086,12 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                         addLog('night', `👧 Little Girl diserang serigala! Tidak dapat dilindungi.`);
                     } else {
                         // Guardian
-                        if (k.target == ns.guardProtectId) {
+                        if (k.target === ns.guardProtectId) {
                             blocked = true;
                             addLog('night', `🛡️ Serangan terhadap ${targetPlayer.name} diblokir oleh Guardian.`);
                         }
                         // Bodyguard
-                        if (k.target == ns.bodyguardProtectId) {
+                        if (k.target === ns.bodyguardProtectId) {
                             blocked = true;
                             ns.bodyguardProtectId = null; // Bodyguard hanya bisa menahan 1 kali serangan
                             addLog('night', `💂 Bodyguard melindungi ${targetPlayer.name} dari serangan!`);
@@ -4058,7 +4113,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                             }
                         }
                         // Witch Heal
-                        if (k.target == ns.witchHealTarget) {
+                        if (k.target === ns.witchHealTarget) {
                             blocked = true;
                             addLog('night', `🧪 Witch menyembuhkan ${targetPlayer.name}.`);
                         }
@@ -4283,7 +4338,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 title.textContent = '📢 Pengumuman Kematian';
                 let killNames = [];
                 allKills.forEach(id => {
-                    const p = gameState.players.find(pl => pl.id == id);
+                    const p = gameState.players.find(pl => pl.id === id);
                     if (p && p.alive) {
                         p.alive = false;
                         p.eliminated = true;
@@ -4293,6 +4348,12 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                 });
 
                 if (killNames.length > 0) {
+                    // BUG-06 FIX: Proses kematian couple cascade SEBELUM pengumuman dibuat.
+                    // Dengan demikian: Hunter cascade dari couple (setTimeout 300ms) terpicu
+                    // lebih dulu dan lebih awal dari Hunter korban langsung (setTimeout 400ms+),
+                    // sehingga urutan modal Hunter sudah benar dan terprediksable.
+                    killNames.forEach(n => checkCouplesDeath(n));
+
                     announcement.innerHTML = `
             <strong style="color:var(--accent-red);">Malam ini, ${killNames.join(' dan ')} ditemukan meninggal.</strong>
             <div style="margin-top:8px;font-size:0.82rem;">
@@ -4301,12 +4362,15 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
             `;
                     addLog('day', `📢 ${killNames.join(', ')} ditemukan meninggal malam ini.`);
 
-                    // Hunter mati di malam hari → buka modal tembak (bukan alert primitif)
+                    // Hunter mati di malam hari → buka modal tembak.
+                    // Hanya tangani Hunter korban LANGSUNG (killNames); Hunter dari couple cascade
+                    // sudah ditangani di dalam checkCouplesDeath di atas.
                     const hunters = gameState.players.filter(p =>
                         !p.alive && p.role === 'Hunter' && !p._hunterUsed && killNames.includes(p.name)
                     );
                     if (hunters.length > 0) {
-                        // Buka modal Hunter secara bertahap jika ada lebih dari satu
+                        // Buka modal Hunter secara bertahap jika ada lebih dari satu.
+                        // Delay mulai dari 400ms agar muncul SETELAH cascade Hunter (300ms).
                         let delay = 400;
                         hunters.forEach(h => {
                             setTimeout(() => {
@@ -4316,7 +4380,6 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
                             delay += 200; // jeda antar modal jika ada beberapa hunter
                         });
                     }
-                    killNames.forEach(n => checkCouplesDeath(n));
                 }
             } else {
                 title.textContent = '📢 Pengumuman Pagi';
@@ -4333,11 +4396,23 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
         }
 
         function checkDoppelgangerInheritance(deadPlayer) {
-            if (gameState.doppelgangerTarget == deadPlayer.id) {
+            if (gameState.doppelgangerTarget === String(deadPlayer.id)) {
                 const dopp = gameState.players.find(p => p.role === 'Doppelganger');
                 if (dopp && dopp.alive) {
                     dopp.role = deadPlayer.role;
                     dopp._wasDoppelganger = true;
+
+                    // LOGIC-06 FIX: Jika role yang diwarisi adalah tim Werewolf,
+                    // tambahkan Doppelganger ke wolfTeam untuk konsistensi state.
+                    // (Panel Dashboard sudah menggunakan ROLE_DEFINITIONS[p.role].team
+                    //  sehingga tampilan sudah benar, ini hanya memperbaiki array tracking.)
+                    const inheritedDef = ROLE_DEFINITIONS[dopp.role];
+                    if (inheritedDef && inheritedDef.team === 'Werewolf') {
+                        if (!gameState.wolfTeam.includes(dopp.name)) {
+                            gameState.wolfTeam.push(dopp.name);
+                        }
+                    }
+
                     // Reset state global agar Doppelganger bisa menggunakan role barunya seutuhnya (Witch, Veteran, Alpha)
                     if (dopp.role === 'Veteran') {
                         gameState.veteranAlertsLeft = 2;
@@ -4435,7 +4510,14 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
             grid.innerHTML = alivePlayers.map(p => {
                 const voteCount = gameState.votes[p.name] || 0;
-                const isLeading = voteCount > 0 && voteCount === Math.max(...Object.values(gameState.votes).filter(v => v > 0), 0);
+            // UI-01 FIX: isLeading hanya dari vote eligible players (hidup & tidak _idiotRevealed)
+            // agar vote stale pemain mati tidak memengaruhi indikator 'terdepan'.
+            const eligibleVotes = Object.entries(gameState.votes)
+                .filter(([name, v]) => v > 0 && alivePlayers.some(pl => pl.name === name))
+                .map(([, v]) => v);
+            // UI-07 FIX: Gunakan array.reduce daripada Math.max(...array) untuk menghindari call stack size limit
+            const maxEligibleVote = eligibleVotes.length > 0 ? eligibleVotes.reduce((max, curr) => Math.max(max, curr), 0) : 0;
+            const isLeading = voteCount > 0 && voteCount === maxEligibleVote;
                 return `
 <div style="display:flex;align-items:center;justify-content:center;">
 <button class="vote-btn${voteCount > 0 ? ' selected' : ''}" 
@@ -4470,7 +4552,12 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
         function renderVoteResults() {
             const container = document.getElementById('voteResults');
-            const entries = Object.entries(gameState.votes).filter(([, count]) => count > 0).sort((a, b) => b[1] - a[1]);
+            // UI-01 FIX: Filter hanya vote untuk pemain yang masih hidup dan berhak divote.
+            // Mencegah nama pemain mati (misal korban Sheriff) muncul di panel hasil vote.
+            const eligiblePlayers = gameState.players.filter(p => p.alive && !p._idiotRevealed);
+            const entries = Object.entries(gameState.votes)
+                .filter(([name, count]) => count > 0 && eligiblePlayers.some(p => p.name === name))
+                .sort((a, b) => b[1] - a[1]);
 
             if (entries.length === 0) {
                 container.innerHTML = '';
@@ -4493,7 +4580,12 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
         }
 
         function eliminatePlayer() {
-            const entries = Object.entries(gameState.votes).filter(([, count]) => count > 0);
+            // Filter vote hanya untuk pemain yang MASIH HIDUP dan berhak divote.
+            // Mencegah "zombie vote": vote lama untuk pemain mati (misal korban malam)
+            // tidak sengaja memenangkan voting dan mengeksekusi pemain yang sudah mati.
+            const eligiblePlayers = gameState.players.filter(p => p.alive && !p._idiotRevealed);
+            const entries = Object.entries(gameState.votes)
+                .filter(([name, count]) => count > 0 && eligiblePlayers.some(p => p.name === name));
             if (entries.length === 0) return showToast('Tidak ada vote!', 'warning');
 
             // Find the player with most votes
@@ -4630,6 +4722,12 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
 
         function checkWinCondition() {
+            // LOGIC-03 FIX: Jika sudah ada pemenang, jangan proses ulang kondisi menang.
+            // Tanpa guard ini, checkWinCondition() yang dipanggil dari berbagai tempat
+            // (announceDeaths, finalizeElimination, dll.) akan men-trigger endGame() berulang kali
+            // — termasuk killedByVote Jester yang tetap ada di state setelah game selesai.
+            if (gameState.winner) return;
+
             const alivePlayers = gameState.players.filter(p => p.alive);
             const aliveWolves = alivePlayers.filter(p => {
                 const def = p.role ? ROLE_DEFINITIONS[p.role] : null;
@@ -4763,7 +4861,35 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
         function exportLog() {
             const allLogs = [...gameState.nightLog, ...gameState.dayLog];
             const text = allLogs.map(l => `[${l.time}] ${l.phase === 'night' ? '🌙' : '☀️'} ${l.message}`).join('\n');
-            navigator.clipboard.writeText(text).then(() => showToast('Log disalin ke clipboard!', 'success'));
+            
+            // UI-08 FIX: Fallback aman jika navigator.clipboard tidak tersedia (misal di HTTP local non-HTTPS)
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text)
+                    .then(() => showToast('Log disalin ke clipboard!', 'success'))
+                    .catch(() => fallbackCopyTextToClipboard(text));
+            } else {
+                fallbackCopyTextToClipboard(text);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            // Hindari scroll otomatis
+            textArea.style.position = "fixed";
+            textArea.style.top = "-99999px";
+            textArea.style.left = "-99999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) showToast('Log disalin ke clipboard! (Fallback)', 'success');
+                else showToast('Gagal menyalin log!', 'error');
+            } catch (err) {
+                showToast('Gagal menyalin log! Coba block manual.', 'error');
+            }
+            document.body.removeChild(textArea);
         }
 
         // ==================== STATS & PANELS ====================
@@ -4837,7 +4963,7 @@ ${isWolf ? 'Target adalah SERIGALA!' : 'Target BUKAN serigala.'}
 
             let html = '';
             Object.entries(grouped).forEach(([category, roles]) => {
-                html += `<h3 style="margin:24px 0 12px; color:var(--text-light); text-shadow: 0 1px 3px rgba(0,0,0,0.5); font-family: 'Cinzel', serif;">${category}</h3>`;
+                html += `<h3 style="margin:24px 0 12px; color:var(--text-primary); text-shadow: 0 1px 3px rgba(0,0,0,0.5); font-family: 'Cinzel', serif;">${category}</h3>`;
                 html += `<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">`;
                 roles.forEach(role => {
                     const def = ROLE_DEFINITIONS[role];
@@ -5168,6 +5294,15 @@ ${def.description}
                 });
             } catch (e) { }
         }
+        // ==================== INITIALIZATION ====================
+        // UI-03 FIX: Panggil update UI saat halaman pertama dimuat agar phase banner
+        // dan elemen lainnya mencerminkan gameState awal (fase 'setup'), bukan HTML default.
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePhaseBanner();
+            updateStats();
+            renderPlayers();
+            renderLog();
+        });
     </script>
 </body>
 
