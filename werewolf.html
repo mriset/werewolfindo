@@ -3598,6 +3598,44 @@ ${p.alive ? '💀' : '✅'}
                 return startGame();
             }
 
+            if (gameState.phase === 'night') {
+                const activeRoles = NIGHT_ORDER.filter(role => {
+                    return gameState.players.some(p => p.role === role && p.alive);
+                });
+                
+                if (gameState.nightPhase < activeRoles.length) {
+                    const currentRole = activeRoles[gameState.nightPhase];
+                    const roleName = ROLE_DEFINITIONS[currentRole]?.icon ? `${ROLE_DEFINITIONS[currentRole].icon} ${currentRole}` : currentRole;
+                    showToast(`🛑 Aksi malam belum selesai! Giliran ${roleName}. Selesaikan atau klik Lewati terlebih dahulu.`, 'error');
+                    return; // Blokir penggantian fase
+                }
+            } else if (gameState.phase === 'day') {
+                const totalVotes = Object.values(gameState.votes).reduce((a, b) => a + b, 0);
+                if (totalVotes > 0) {
+                    showConfirm(
+                        'Peringatan Voting',
+                        `Terdapat ${totalVotes} suara voting yang sudah masuk tapi belum dieksekusi. Yakin ingin memaksa lanjut ke Malam (hasil vote akan dihapus)?`,
+                        'Paksa Lanjut',
+                        true,
+                        () => executeNextPhase()
+                    );
+                    return;
+                }
+            }
+
+            const targetPhase = gameState.phase === 'day' ? 'Malam' : 'Siang';
+            showConfirm(
+                'Lanjut Fase?',
+                `Apakah Anda yakin ingin lanjut ke fase ${targetPhase}?`,
+                'Lanjut',
+                false,
+                () => {
+                    executeNextPhase();
+                }
+            );
+        }
+
+        function executeNextPhase() {
             if (gameState.isPaused) {
                 gameState.isPaused = false;
                 document.getElementById('btnPause').innerHTML = '⏸️ Jeda';
@@ -4017,11 +4055,17 @@ ${showRole && p.role ? `<span class="badge badge-${def.category}" style="margin-
             const nonWolves = gameState.players.filter(p => p.alive && p.role !== 'Alpha Wolf' && ROLE_DEFINITIONS[p.role]?.team !== 'Werewolf');
 
             let html = `
-<div style="display:flex;gap:8px;margin-bottom:8px;">
-  <button class="btn btn-danger" id="alphaModeKill" style="flex:1" onclick="setAlphaMode('kill')">🔪 Bunuh (Malam Ini)</button>
-  <button class="btn btn-outline" id="alphaModeRecruit" style="flex:1" onclick="setAlphaMode('recruit')">🐺 Rekrut (Target Dipilih Malam Depan)</button>
+<div style="display:flex;gap:8px;margin-bottom:12px;">
+  <button class="btn btn-danger" id="alphaModeKill" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:10px 4px; min-height:56px; line-height:1.2;" onclick="setAlphaMode('kill')">
+    <div style="font-weight:700; font-size:1.05rem; margin-bottom:4px;">🔪 Bunuh</div>
+    <div style="font-size:0.7rem; opacity:0.85; font-weight:normal; letter-spacing:0.5px;">MALAM INI</div>
+  </button>
+  <button class="btn btn-outline" id="alphaModeRecruit" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:10px 4px; min-height:56px; line-height:1.2;" onclick="setAlphaMode('recruit')">
+    <div style="font-weight:700; font-size:1.05rem; margin-bottom:4px;">🐺 Rekrut</div>
+    <div style="font-size:0.7rem; opacity:0.85; font-weight:normal; letter-spacing:0.5px;">MALAM DEPAN</div>
+  </button>
 </div>
-<div id="alphaModeHint" style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:var(--radius-sm);"></div>
+<div id="alphaModeHint" style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:16px;padding:12px 14px;background:rgba(155,89,182,0.1);border-left:3px solid var(--accent-purple);border-radius:var(--radius-sm);line-height:1.45;"></div>
 <div id="alphaTargetArea" style="display:none;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;">`;
             html += nonWolves.map(p => `
 <button class="target-btn" onclick="selectAlphaTarget(this, '${p.id}', '${escapeJsString(p.name)}')" data-id="${p.id}" data-name="${escapeHtml(p.name)}">
@@ -4297,16 +4341,19 @@ ${validTargets.map(p => `
         function littleGirlCaught() {
             const lg = gameState.players.find(p => p.role === 'Little Girl' && p.alive);
             if (!lg) return;
-            lg.alive = false;
-            lg.eliminated = true;
-            gameState.eliminatedPlayers.push(lg.name);
-            addLog('night', `👧 Little Girl (${lg.name}) ketahuan mengintip oleh Werewolf dan langsung dibunuh!`);
-            showToast(`${lg.name} (Little Girl) ketahuan dan mati!`, 'error');
+            
+            if (!gameState.nightKills) gameState.nightKills = [];
+            if (!gameState.nightKills.includes(lg.id)) {
+                gameState.nightKills.push(lg.id);
+            }
+            
+            addLog('night', `👧 Little Girl (${lg.name}) ketahuan mengintip oleh Werewolf! (Mati esok pagi)`);
+            showToast(`${lg.name} (Little Girl) ketahuan! Tekan Konfirmasi untuk lanjut.`, 'warning');
             document.getElementById('nightActionResult').innerHTML = `
 <div class="seer-result">
 <div class="seer-result-icon">💀</div>
 <div class="seer-result-text" style="color:var(--accent-red);">Ketahuan!</div>
-<div class="seer-result-detail">${escapeHtml(lg.name)} dieksekusi oleh Werewolf di tempat. Tidak ada yang bisa menyelamatkannya.</div>
+<div class="seer-result-detail">${escapeHtml(lg.name)} ketahuan oleh Werewolf. Kematiannya sudah pasti esok pagi dan tidak bisa dilindungi. Silakan klik <strong>Konfirmasi</strong> untuk lanjut ke role berikutnya.</div>
 </div>`;
         }
 
@@ -4541,6 +4588,19 @@ ${validTargets.map(p => `
                 const usesLeft = 3 - (wizard?._wizardUsedCount || 0);
                 if (usesLeft <= 0) {
                     addLog('night', `✨ Wizard tidak melakukan tindakan (sihir habis).`);
+                    gameState.nightPhase++;
+                    renderNightSequence();
+                    renderNightAction();
+                    return;
+                }
+            }
+
+            if (currentRole === 'Apprentice Seer') {
+                const seerIsAlive = gameState.players.some(p => p.role === 'Seer' && p.alive);
+                if (seerIsAlive) {
+                    addLog('night', `👁️ Murid Peramal (Apprentice Seer) belum aktif karena Seer asli masih hidup.`);
+                    gameState._lastNightActionResult = null;
+                    gameState._lastNightActionPhase = null;
                     gameState.nightPhase++;
                     renderNightSequence();
                     renderNightAction();
