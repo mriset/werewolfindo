@@ -3,7 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Werewolf">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0a12">
     <title>🐺 Moderator Werewolf - Game Manager</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Creepster&display=swap');
@@ -38,6 +43,14 @@
             --radius-lg: 16px;
             --radius-xl: 24px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* ── Mobile App Shell Tokens ── */
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-left: env(safe-area-inset-left, 0px);
+            --safe-right: env(safe-area-inset-right, 0px);
+            --bottom-nav-height: 64px;
+            --header-height: 56px;
+            --tap-target: 44px;
         }
 
         * {
@@ -46,12 +59,19 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
+            position: fixed;
+            width: 100%;
+            /* Prevent rubber-band scroll on the body shell */
+            overscroll-behavior: none;
         }
 
         /* Scrollbar */
@@ -137,6 +157,28 @@
             100% {
                 transform: translateY(-100vh) rotate(720deg);
                 opacity: 0;
+            }
+        }
+
+        @keyframes tabSwitch {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
@@ -242,122 +284,154 @@
             }
         }
 
-        /* App Container */
+        /* App Container — Mobile scrollable inner shell */
         .app-container {
-            position: relative;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 16px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
+            overscroll-behavior-y: contain;
+            /* Top: header height + status bar safe area */
+            padding-top: calc(var(--header-height) + var(--safe-top));
+            /* Bottom: bottom nav + home indicator safe area */
+            padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom) + 16px);
+            padding-left: max(16px, var(--safe-left));
+            padding-right: max(16px, var(--safe-right));
         }
 
-        /* Header */
+        /* ── Mobile App Header ── */
         .header {
-            text-align: center;
-            padding: 24px 16px;
-            position: relative;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 300;
+            height: calc(var(--header-height) + var(--safe-top));
+            padding-top: var(--safe-top);
+            padding-left: max(16px, var(--safe-left));
+            padding-right: max(16px, var(--safe-right));
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            transition: var(--transition);
         }
 
+        .header.night {
+            background: rgba(10, 10, 18, 0.92);
+            border-bottom: 1.5px solid rgba(123, 47, 247, 0.35);
+            box-shadow: 0 2px 20px rgba(123, 47, 247, 0.15);
+        }
+
+        .header.day {
+            background: rgba(10, 10, 18, 0.92);
+            border-bottom: 1.5px solid rgba(240, 192, 64, 0.35);
+            box-shadow: 0 2px 20px rgba(240, 192, 64, 0.10);
+        }
+
+        /* Left: Logo */
         .header-logo {
             font-family: 'Creepster', cursive;
-            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-size: 1.35rem;
             background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple-light), var(--accent-gold));
             background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: shimmer 3s ease-in-out infinite;
-            text-shadow: none;
-            margin-bottom: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            line-height: 1;
         }
 
         @keyframes shimmer {
-
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
+            0%, 100% { background-position: 0% 50%; }
+            50%       { background-position: 100% 50%; }
         }
 
-        .header-subtitle {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-weight: 400;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* Phase Banner */
-        .phase-banner {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 12px 16px;
-            text-align: center;
-            transition: var(--transition);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-
-        .phase-banner.night {
-            background: linear-gradient(135deg, rgba(10, 10, 18, 0.95), rgba(26, 26, 46, 0.95));
-            border-bottom: 2px solid var(--accent-purple);
-            box-shadow: 0 4px 30px rgba(123, 47, 247, 0.2);
-        }
-
-        .phase-banner.day {
-            background: linear-gradient(135deg, rgba(10, 10, 18, 0.95), rgba(26, 26, 46, 0.95));
-            border-bottom: 2px solid var(--accent-gold);
-            box-shadow: 0 4px 30px rgba(240, 192, 64, 0.2);
-        }
-
-        .phase-indicator {
+        /* Center: Phase indicator */
+        .header-phase {
+            flex: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .header-phase-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .phase-icon {
-            font-size: 1.8rem;
+            font-size: 1.15rem;
             animation: pulse 2s ease-in-out infinite;
         }
 
         .phase-text {
             font-family: 'Cinzel', serif;
-            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            font-size: 0.85rem;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
-        .phase-text.night {
-            color: var(--accent-purple-light);
-        }
-
-        .phase-text.day {
-            color: var(--accent-gold);
-        }
+        .phase-text.night  { color: var(--accent-purple-light); }
+        .phase-text.day    { color: var(--accent-gold); }
+        .phase-text.setup  { color: var(--text-secondary); }
 
         .phase-day-count {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px 12px;
-            border-radius: 20px;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
         }
 
-        .phase-controls {
+        /* Right: Action buttons */
+        .header-actions {
             display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 8px;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
         }
+
+        .header-icon-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: rgba(255, 255, 255, 0.07);
+            color: var(--text-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .header-icon-btn:active {
+            transform: scale(0.9);
+            background: rgba(255,255,255,0.12);
+        }
+
+        /* Hide old subtitle & phase-controls; phase-banner repurposed */
+        .header-subtitle { display: none; }
+
+        .phase-banner { display: none; }  /* merged into header */
+
+        .phase-controls { display: none; } /* moved to FAB + bottom sheet */
+
 
         /* Buttons */
         .btn {
@@ -375,6 +449,12 @@
             position: relative;
             overflow: hidden;
             white-space: nowrap;
+            /* Mobile touch optimizations */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            min-height: var(--tap-target);
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .btn::after {
@@ -390,6 +470,10 @@
             transform: translate(-50%, -50%);
         }
 
+        .btn:active {
+            transform: scale(0.96);
+        }
+
         .btn:active::after {
             width: 200px;
             height: 200px;
@@ -402,7 +486,6 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
             box-shadow: 0 4px 20px rgba(123, 47, 247, 0.4);
         }
 
@@ -413,7 +496,6 @@
         }
 
         .btn-gold:hover {
-            transform: translateY(-2px);
             box-shadow: 0 4px 20px rgba(240, 192, 64, 0.4);
         }
 
@@ -424,7 +506,6 @@
         }
 
         .btn-danger:hover {
-            transform: translateY(-2px);
             box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4);
         }
 
@@ -432,10 +513,6 @@
             background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
             color: white;
             box-shadow: 0 2px 10px rgba(46, 204, 113, 0.3);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
         }
 
         .btn-outline {
@@ -452,11 +529,14 @@
         .btn-sm {
             padding: 6px 12px;
             font-size: 0.78rem;
+            min-height: 36px;
         }
 
         .btn-lg {
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-size: 1rem;
+            min-height: 52px;
+            border-radius: var(--radius-md);
         }
 
         .btn-block {
@@ -470,50 +550,199 @@
             transform: none !important;
         }
 
-        /* Navigation Tabs */
-        .nav-tabs {
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 300;
+            height: calc(var(--bottom-nav-height) + var(--safe-bottom));
+            padding-bottom: var(--safe-bottom);
+            background: rgba(18, 18, 31, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border-color);
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 4px;
-            padding: 8px;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-lg);
-            margin: 16px 0;
+            justify-content: space-around;
+            align-items: center;
         }
 
-        .nav-tab {
-            padding: 10px 16px;
-            border: none;
-            background: transparent;
+        .bottom-nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: var(--bottom-nav-height);
             color: var(--text-secondary);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.82rem;
-            font-weight: 600;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-decoration: none;
+            background: transparent;
+            border: none;
             cursor: pointer;
-            border-radius: var(--radius-md);
-            transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+            transition: color 0.2s;
+            position: relative;
+            padding-top: 4px;
+        }
+
+        .bottom-nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 2px;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .bottom-nav-item.active {
+            color: var(--accent-purple-light);
+        }
+
+        .bottom-nav-item.active .bottom-nav-icon {
+            transform: translateY(-2px) scale(1.1);
+        }
+
+        .bottom-nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 32px;
+            height: 3px;
+            background: var(--accent-purple);
+            border-radius: 0 0 4px 4px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .bottom-nav-item.active::before {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .bottom-nav-item:active .bottom-nav-icon {
+            transform: scale(0.9);
+        }
+
+        /* Bottom Sheet Menu */
+        .sheet-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .sheet-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: var(--bg-secondary);
+            border-radius: 24px 24px 0 0;
+            padding: 16px 20px calc(24px + var(--safe-bottom));
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sheet-overlay.active .bottom-sheet {
+            transform: translateY(0);
+        }
+
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            margin: 0 auto 20px;
+        }
+
+        .sheet-menu-item {
             display: flex;
             align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-        }
-
-        .nav-tab:hover {
-            background: rgba(123, 47, 247, 0.1);
+            gap: 16px;
+            padding: 16px 12px;
+            background: transparent;
+            border: none;
             color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: var(--radius-md);
+            -webkit-tap-highlight-color: transparent;
+            text-align: left;
+            width: 100%;
         }
 
-        .nav-tab.active {
-            background: var(--accent-purple);
+        .sheet-menu-item:active {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .sheet-menu-item .icon {
+            font-size: 1.4rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Floating Action Button (FAB) */
+        .fab {
+            position: fixed;
+            right: 20px;
+            bottom: calc(var(--bottom-nav-height) + 16px + var(--safe-bottom));
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark));
             color: white;
-            box-shadow: 0 2px 10px rgba(123, 47, 247, 0.3);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 16px rgba(123, 47, 247, 0.4);
+            z-index: 290; /* below bottom sheet, above content */
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px) scale(0.8);
+        }
+
+        .fab.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+
+        .fab:active {
+            transform: scale(0.9);
+        }
+
+        /* Continuous pulse when game is active (day/night) */
+        .fab.pulse {
+            animation: fabPulse 2s infinite;
+        }
+
+        @keyframes fabPulse {
+            0% { box-shadow: 0 0 0 0 rgba(123, 47, 247, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(123, 47, 247, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(123, 47, 247, 0); }
         }
 
         /* Tab Content */
         .tab-content {
             display: none;
-            animation: fadeIn 0.4s ease;
+            animation: tabSwitch 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .tab-content.active {
@@ -571,14 +800,17 @@
         .form-select,
         .form-textarea {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 14px;
             background: var(--bg-tertiary);
             border: 2px solid var(--border-color);
             border-radius: var(--radius-sm);
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
+            font-size: 16px; /* CRITICAL: prevents iOS Safari auto-zoom on focus */
+            -webkit-appearance: none;
+            appearance: none;
             transition: var(--transition);
+            min-height: var(--tap-target);
         }
 
         .form-input:focus,
@@ -672,8 +904,8 @@
         }
 
         .player-avatar {
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -758,8 +990,8 @@
         }
 
         .player-action-btn {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border: none;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.05);
@@ -768,8 +1000,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
+            font-size: 1rem; /* slightly larger icon */
             transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .player-action-btn:active {
+            transform: scale(0.9);
         }
 
         .player-action-btn:hover {
@@ -926,9 +1164,9 @@
 
         .night-action-targets {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 8px;
-            margin-bottom: 16px;
+            grid-template-columns: 1fr; /* Full width on mobile */
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .target-btn {
@@ -938,13 +1176,16 @@
             border-radius: var(--radius-sm);
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            min-height: 56px; /* Touch friendly height */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .target-btn:hover {
@@ -974,8 +1215,8 @@
 
         .vote-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 8px;
+            grid-template-columns: 1fr 1fr; /* 2 columns on mobile */
+            gap: 12px;
         }
 
         .vote-btn {
@@ -985,11 +1226,18 @@
             border-radius: var(--radius-md);
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
+            min-height: 64px; /* Touch friendly height */
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
             transition: var(--transition);
             text-align: center;
+        }
+
+        .vote-btn:active {
+            transform: scale(0.96);
         }
 
         .vote-btn:hover {
@@ -1032,9 +1280,10 @@
 
         /* Game Log */
         .log-container {
-            max-height: 500px;
+            max-height: calc(100vh - 220px); /* Responsive max height for mobile */
             overflow-y: auto;
             padding-right: 8px;
+            -webkit-overflow-scrolling: touch; /* Momentum scrolling */
         }
 
         .log-entry {
@@ -1156,7 +1405,7 @@
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: 1fr 1fr; /* Fixed 2x2 grid */
             gap: 12px;
             margin-bottom: 16px;
         }
@@ -1171,7 +1420,7 @@
 
         .stat-value {
             font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
+            font-size: 2.5rem; /* Larger value */
             font-weight: 700;
             color: var(--accent-purple-light);
         }
@@ -1318,8 +1567,8 @@
         /* Role Distribution */
         .role-dist-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 10px;
+            grid-template-columns: 1fr 1fr; /* 2 columns on mobile */
+            gap: 12px;
         }
 
         .role-dist-item {
@@ -1545,27 +1794,45 @@
         /* Notification Toast */
         .toast-container {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            bottom: calc(var(--bottom-nav-height) + 16px + var(--safe-bottom));
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 2000;
             display: flex;
             flex-direction: column;
             gap: 8px;
+            align-items: center;
+            width: 100%;
+            padding: 0 16px;
+            pointer-events: none; /* Let clicks pass through empty container */
         }
 
         .toast {
-            padding: 12px 20px;
+            padding: 12px 24px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
+            border-radius: 30px; /* Pill shape */
             color: var(--text-primary);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
-            gap: 8px;
-            animation: slideIn 0.3s ease;
-            box-shadow: var(--shadow-card);
-            max-width: 350px;
+            gap: 12px;
+            animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: fit-content;
+            pointer-events: auto; /* Re-enable clicks for toast itself */
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .toast.success {
@@ -1697,7 +1964,8 @@
         /* Responsive */
         @media (max-width: 768px) {
             .app-container {
-                padding: 0 8px;
+                padding-left: max(8px, var(--safe-left));
+                padding-right: max(8px, var(--safe-right));
             }
 
             .header {
@@ -1709,9 +1977,30 @@
                 margin-bottom: 12px;
             }
 
+            .modal-overlay {
+                align-items: flex-end; /* Align modal to bottom */
+                padding: 0;
+            }
+
             .modal {
-                padding: 16px;
-                margin: 8px;
+                padding: 20px 16px max(20px, env(safe-area-inset-bottom)) 16px;
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+                border-radius: 24px 24px 0 0;
+                max-height: 90vh;
+                animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                /* Add a pseudo-element for the sheet handle */
+            }
+
+            .modal::before {
+                content: '';
+                display: block;
+                width: 40px;
+                height: 4px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 2px;
+                margin: -8px auto 16px auto;
             }
 
             .night-action-targets {
@@ -1870,37 +2159,42 @@
         /* Quick Actions */
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 8px;
+            grid-template-columns: 1fr 1fr; /* 2 columns on mobile */
+            gap: 12px;
             margin-bottom: 16px;
         }
 
         .quick-action-btn {
-            padding: 14px 12px;
+            padding: 16px 12px; /* Touch friendly padding */
             background: var(--bg-tertiary);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             text-align: center;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .quick-action-btn:active {
+            transform: scale(0.96);
+            background: rgba(123, 47, 247, 0.1);
         }
 
         .quick-action-btn:hover {
             border-color: var(--accent-purple);
-            background: rgba(123, 47, 247, 0.1);
-            transform: translateY(-2px);
         }
 
         .quick-action-btn .qa-icon {
-            font-size: 1.3rem;
+            font-size: 1.8rem; /* Larger icon */
         }
 
         /* Custom Scrollbar for logs */
@@ -2025,44 +2319,26 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-logo">🐺 Werewolf Moderator</div>
-            <div class="header-subtitle">Game Manager & Control Panel</div>
-        </header>
-
-        <!-- Phase Banner -->
-        <div class="phase-banner night" id="phaseBanner">
-            <div class="phase-indicator">
+    <!-- Mobile App Header (fixed, outside scroll container) -->
+    <header class="header night" id="phaseBanner">
+        <div class="header-logo">🐺 Werewolf</div>
+        <div class="header-phase">
+            <div class="header-phase-row">
                 <span class="phase-icon" id="phaseIcon">⚙️</span>
                 <span class="phase-text night" id="phaseText">SETUP</span>
-                <span class="phase-day-count" id="phaseDayCount">Belum mulai</span>
             </div>
-            <div class="phase-controls" id="phaseControls">
-                <button class="btn btn-primary btn-sm" onclick="nextPhase()" id="btnNextPhase">
-                    🚀 Mulai Game
-                </button>
-                <button class="btn btn-outline btn-sm" onclick="togglePause()" id="btnPause">
-                    ⏸️ Jeda
-                </button>
-                <button class="btn btn-outline btn-sm" onclick="showHelpModal()">
-                    ❓ Bantuan
-                </button>
-            </div>
+            <div class="phase-day-count" id="phaseDayCount">Belum mulai</div>
         </div>
+        <div class="header-actions">
+            <button class="header-icon-btn" id="btnPause" onclick="togglePause()" title="Jeda">⏸️</button>
+            <button class="header-icon-btn" onclick="showHelpModal()" title="Bantuan">❓</button>
+        </div>
+        <div id="phaseControls" style="display:none;">
+            <button id="btnNextPhase" onclick="nextPhase()"></button>
+        </div>
+    </header>
 
-        <!-- Navigation -->
-        <nav class="nav-tabs" id="navTabs">
-            <button class="nav-tab active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 Dashboard</button>
-            <button class="nav-tab" data-tab="players" onclick="switchTab('players')">👥 Pemain</button>
-            <button class="nav-tab" data-tab="setup" onclick="switchTab('setup')">⚙️ Setup</button>
-            <button class="nav-tab" data-tab="night" onclick="switchTab('night')">🌙 Aksi Malam</button>
-            <button class="nav-tab" data-tab="day" onclick="switchTab('day')">☀️ Aksi Siang</button>
-            <button class="nav-tab" data-tab="roles" onclick="switchTab('roles')">📖 Role Info</button>
-            <button class="nav-tab" data-tab="log" onclick="switchTab('log')">📜 Log</button>
-        </nav>
-
+    <div class="app-container">
         <!-- Tab: Dashboard -->
         <div class="tab-content active" id="tab-dashboard">
             <div class="stats-grid" id="statsGrid">
@@ -2276,28 +2552,31 @@
                 </div>
 
                 <div id="discussionTimerCard" class="card"
-                    style="background:rgba(255,255,255,0.02);border-color:rgba(240,192,64,0.25);margin-bottom:16px;padding:10px 14px;">
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                        <span style="font-weight:700;font-size:0.85rem;white-space:nowrap;">⏱️ Timer</span>
-                        <div style="display:flex;gap:4px;">
-                            <button class="btn btn-outline btn-sm" onclick="setTimer(60)" id="timerBtn60"
-                                style="padding:3px 8px;font-size:0.78rem;">1m</button>
-                            <button class="btn btn-outline btn-sm" onclick="setTimer(180)" id="timerBtn180"
-                                style="padding:3px 8px;font-size:0.78rem;">3m</button>
-                            <button class="btn btn-outline btn-sm" onclick="setTimer(300)" id="timerBtn300"
-                                style="padding:3px 8px;font-size:0.78rem;">5m</button>
-                            <button class="btn btn-outline btn-sm" onclick="setTimer(600)" id="timerBtn600"
-                                style="padding:3px 8px;font-size:0.78rem;">10m</button>
-                        </div>
-                        <div id="timerDisplay"
-                            style="font-family:'Cinzel',serif;font-size:1.4rem;font-weight:900;letter-spacing:3px;color:var(--accent-gold);text-shadow:0 0 12px rgba(240,192,64,0.4);transition:color 0.3s;min-width:70px;text-align:center;">
-                            05:00</div>
-                        <button class="btn btn-gold btn-sm" id="timerStartBtn" onclick="startPauseTimer()"
-                            style="padding:3px 12px;font-size:0.82rem;">▶ Mulai</button>
-                        <button class="btn btn-outline btn-sm" onclick="resetTimer()"
-                            style="padding:3px 10px;font-size:0.82rem;">↺</button>
-                        <span id="timerStatus" style="font-size:0.75rem;color:var(--text-muted);">Pilih durasi lalu
-                            mulai</span>
+                    style="background:rgba(255,255,255,0.02);border-color:rgba(240,192,64,0.25);margin-bottom:16px;padding:20px; text-align:center;">
+                    <div style="font-weight:700;font-size:1rem;color:var(--text-secondary);margin-bottom:12px;">⏱️ Timer Diskusi</div>
+                    
+                    <div id="timerDisplay"
+                        style="font-family:'Cinzel',serif;font-size:3.5rem;font-weight:900;letter-spacing:4px;color:var(--accent-gold);text-shadow:0 0 20px rgba(240,192,64,0.4);transition:color 0.3s;margin-bottom:12px;line-height:1;">
+                        05:00</div>
+                    
+                    <div id="timerStatus" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;">Pilih durasi lalu mulai</div>
+
+                    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;">
+                        <button class="btn btn-outline" onclick="setTimer(60)" id="timerBtn60"
+                            style="border-radius:20px;min-height:36px;">1m</button>
+                        <button class="btn btn-outline" onclick="setTimer(180)" id="timerBtn180"
+                            style="border-radius:20px;min-height:36px;">3m</button>
+                        <button class="btn btn-outline" onclick="setTimer(300)" id="timerBtn300"
+                            style="border-radius:20px;min-height:36px;">5m</button>
+                        <button class="btn btn-outline" onclick="setTimer(600)" id="timerBtn600"
+                            style="border-radius:20px;min-height:36px;">10m</button>
+                    </div>
+
+                    <div style="display:flex;gap:12px;">
+                        <button class="btn btn-gold" id="timerStartBtn" onclick="startPauseTimer()"
+                            style="flex:1;min-height:48px;font-size:1.1rem;border-radius:var(--radius-md);">▶ Mulai</button>
+                        <button class="btn btn-outline" onclick="resetTimer()"
+                            style="min-height:48px;width:64px;border-radius:var(--radius-md);flex-shrink:0;">↺</button>
                     </div>
                 </div>
 
@@ -2655,13 +2934,32 @@
         // ==================== TAB NAVIGATION ====================
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            // Remove active from all bottom nav items
+            document.querySelectorAll('.bottom-nav-item').forEach(t => t.classList.remove('active'));
+            
             document.getElementById('tab-' + tabName).classList.add('active');
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Add active to bottom nav icon if it exists (some tabs are in the more sheet)
+            const navBtn = document.querySelector(`[data-nav="${tabName}"]`);
+            if (navBtn && navBtn.classList.contains('bottom-nav-item')) {
+                navBtn.classList.add('active');
+            } else if (navBtn && navBtn.classList.contains('sheet-menu-item')) {
+                // Keep "Lainnya" active if we select a tab inside the sheet
+                const lainnyaBtn = document.querySelector('.bottom-nav-item:last-child');
+                if(lainnyaBtn) lainnyaBtn.classList.add('active');
+            }
 
             if (tabName === 'night') updateNightPanel();
             if (tabName === 'day') updateDayPanel();
             if (tabName === 'players') renderPlayers();
+        }
+
+        function openMoreSheet() {
+            document.getElementById('moreSheetOverlay').classList.add('active');
+        }
+
+        function closeMoreSheet() {
+            document.getElementById('moreSheetOverlay').classList.remove('active');
         }
 
         function sanitizePlayerName(name) {
@@ -3394,28 +3692,40 @@ ${p.alive ? '💀' : '✅'}
             const text = document.getElementById('phaseText');
             const dayCount = document.getElementById('phaseDayCount');
             const btn = document.getElementById('btnNextPhase');
+            const fab = document.getElementById('fabNextPhase');
 
             if (gameState.phase === 'night') {
-                banner.className = 'phase-banner night';
+                banner.className = 'header night';
                 icon.textContent = '🌙';
                 text.textContent = 'MALAM HARI';
                 text.className = 'phase-text night';
                 dayCount.textContent = `Malam #${gameState.day}`;
                 btn.innerHTML = '☀️ Ke Siang Hari';
+                if(fab) {
+                    fab.className = 'fab visible pulse';
+                    fab.innerHTML = '☀️';
+                }
             } else if (gameState.phase === 'day') {
-                banner.className = 'phase-banner day';
+                banner.className = 'header day';
                 icon.textContent = '☀️';
                 text.textContent = 'SIANG HARI';
                 text.className = 'phase-text day';
                 dayCount.textContent = `Hari ke-${gameState.day}`;
                 btn.innerHTML = '🌙 Ke Malam';
+                if(fab) {
+                    fab.className = 'fab visible pulse';
+                    fab.innerHTML = '🌙';
+                }
             } else {
-                banner.className = 'phase-banner night';
+                banner.className = 'header night';
                 icon.textContent = '⚙️';
                 text.textContent = 'SETUP';
-                text.className = 'phase-text night';
+                text.className = 'phase-text setup';
                 dayCount.textContent = 'Belum mulai';
                 btn.innerHTML = '🚀 Mulai Game';
+                if(fab) {
+                    fab.className = 'fab'; // hide FAB during setup
+                }
             }
         }
 
@@ -3752,7 +4062,7 @@ Karena Wolf Cub dibunuh kemarin, Serigala mengamuk dan memangsa 2 target malam i
 <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Target Mengamuk 1:</div>
 <div class="night-action-targets">
 ${validPlayers.map(p => {
-    return \`<button class="target-btn btn-sm" onclick="selectWolf1(this, '\${p.id}', '\${escapeJsString(p.name)}')">\${escapeHtml(p.name)}</button>\`;
+    return `<button class="target-btn btn-sm" onclick="selectWolf1(this, '${p.id}', '${escapeJsString(p.name)}')">${escapeHtml(p.name)}</button>`;
 }).join('')}
 </div>
 </div>
@@ -3760,7 +4070,7 @@ ${validPlayers.map(p => {
 <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Target Mengamuk 2:</div>
 <div class="night-action-targets">
 ${validPlayers.map(p => {
-    return \`<button class="target-btn btn-sm" onclick="selectWolf2(this, '\${p.id}', '\${escapeJsString(p.name)}')">\${escapeHtml(p.name)}</button>\`;
+    return `<button class="target-btn btn-sm" onclick="selectWolf2(this, '${p.id}', '${escapeJsString(p.name)}')">${escapeHtml(p.name)}</button>`;
 }).join('')}
 </div>
 </div>
@@ -6460,8 +6770,71 @@ ${def.description}
             } catch (e) { }
         }
     </script>
-</body>
+    
+    <!-- Floating Action Button (FAB) -->
+    <button class="fab" id="fabNextPhase" onclick="nextPhase()" title="Fase Berikutnya">
+        ⏭️
+    </button>
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav" id="bottomNav">
 
+        <button class="bottom-nav-item active" onclick="switchTab('dashboard')" data-nav="dashboard">
+            <span class="bottom-nav-icon">📊</span>
+            <span>Dashboard</span>
+        </button>
+        <button class="bottom-nav-item" onclick="switchTab('players')" data-nav="players">
+            <span class="bottom-nav-icon">👥</span>
+            <span>Pemain</span>
+        </button>
+        <button class="bottom-nav-item" onclick="switchTab('night')" data-nav="night">
+            <span class="bottom-nav-icon">🌙</span>
+            <span>Malam</span>
+        </button>
+        <button class="bottom-nav-item" onclick="switchTab('day')" data-nav="day">
+            <span class="bottom-nav-icon">☀️</span>
+            <span>Siang</span>
+        </button>
+        <button class="bottom-nav-item" onclick="openMoreSheet()">
+            <span class="bottom-nav-icon">···</span>
+            <span>Lainnya</span>
+        </button>
+    </nav>
+
+    <!-- Bottom Sheet Menu (For More Options & Phase Controls) -->
+    <div class="sheet-overlay" id="moreSheetOverlay" onclick="closeMoreSheet()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            
+            <div style="font-family:'Cinzel', serif; font-size:1.1rem; font-weight:700; color:var(--text-primary); margin-bottom:16px;">
+                Menu Lanjutan
+            </div>
+
+            <button class="sheet-menu-item" onclick="closeMoreSheet(); switchTab('setup')" data-nav="setup">
+                <span class="icon">⚙️</span>
+                <span>Setup Permainan</span>
+            </button>
+            <button class="sheet-menu-item" onclick="closeMoreSheet(); switchTab('roles')" data-nav="roles">
+                <span class="icon">📖</span>
+                <span>Referensi Peran (Role Info)</span>
+            </button>
+            <button class="sheet-menu-item" onclick="closeMoreSheet(); switchTab('log')" data-nav="log">
+                <span class="icon">📜</span>
+                <span>Log Permainan</span>
+            </button>
+
+            <div style="height:1px; background:var(--border-color); margin:12px 0;"></div>
+
+            <button class="sheet-menu-item" onclick="closeMoreSheet(); togglePause()">
+                <span class="icon" id="sheetPauseIcon">⏸️</span>
+                <span id="sheetPauseText">Jeda Game</span>
+            </button>
+            <button class="sheet-menu-item" onclick="closeMoreSheet(); nextPhase()">
+                <span class="icon">⏭️</span>
+                <span>Fase Berikutnya</span>
+            </button>
+        </div>
+    </div>
+</body>
 </html>
 
 
