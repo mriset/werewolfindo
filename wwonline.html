@@ -3009,6 +3009,7 @@
                 return showToast('Firebase belum terkonfigurasi!', 'error');
             }
             onlineRoomCode = generateRoomCode();
+            sessionStorage.setItem('ww_online_room_code', onlineRoomCode);
             roomMetaRef = db.ref(`rooms/${onlineRoomCode}/meta`);
             roomPlayersRef = db.ref(`rooms/${onlineRoomCode}/players`);
             timerRef = db.ref(`rooms/${onlineRoomCode}/timer`);
@@ -3068,9 +3069,48 @@
         function disconnectRoom() {
             if (roomPlayersRef) roomPlayersRef.off();
             onlineRoomCode = null;
+            sessionStorage.removeItem('ww_online_room_code');
             document.getElementById('onlineModeSetup').style.display = 'block';
             document.getElementById('onlineModeActive').style.display = 'none';
             showToast('Room ditutup. Mode Offline.', 'info');
+        }
+
+        function reconnectOnlineRoom(code) {
+            onlineRoomCode = code;
+            roomMetaRef = db.ref(`rooms/${onlineRoomCode}/meta`);
+            roomPlayersRef = db.ref(`rooms/${onlineRoomCode}/players`);
+            timerRef = db.ref(`rooms/${onlineRoomCode}/timer`);
+
+            // Listen to joined players
+            roomPlayersRef.on('child_added', snapshot => {
+                const pd = snapshot.val();
+                const pId = snapshot.key; // We use the push key as player ID
+
+                // Cek apakah pemain sudah ada
+                if (!gameState.players.find(p => p.id === pId)) {
+                    gameState.players.push({
+                        id: pId,
+                        name: pd.name,
+                        role: null,
+                        alive: true,
+                        eliminated: false,
+                        notes: ''
+                    });
+                    renderPlayers();
+                    updateStats();
+                    initRoleDistribution();
+                    showToast(`${pd.name} bergabung ke room!`, 'success');
+                    saveState();
+                }
+            });
+
+            document.getElementById('onlineModeSetup').style.display = 'none';
+            document.getElementById('onlineModeActive').style.display = 'block';
+            document.getElementById('roomCodeDisplay').textContent = onlineRoomCode;
+            const fullUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/player.html?room=' + onlineRoomCode;
+            document.getElementById('roomLinkDisplay').textContent = fullUrl;
+
+            showToast('Sesi room online dipulihkan', 'info');
         }
 
         function pushGameStateToFirebase() {
@@ -3213,6 +3253,11 @@
                     switchTab('dashboard');
                 }
                 showToast(`💾 Sesi dipulihkan — ${gameState.players.length} pemain`, 'success');
+            }
+
+            const savedRoomCode = sessionStorage.getItem('ww_online_room_code');
+            if (savedRoomCode && db) {
+                reconnectOnlineRoom(savedRoomCode);
             }
         });
 
@@ -3425,6 +3470,10 @@
                 if (player.role && gameState.roles[player.role]) {
                     gameState.roles[player.role] = Math.max(0, gameState.roles[player.role] - 1);
                 }
+                if (onlineRoomCode && roomPlayersRef) {
+                    roomPlayersRef.child(id).remove();
+                }
+                saveState();
                 renderPlayers();
                 updateStats();
                 initRoleDistribution();
@@ -3545,6 +3594,10 @@ ${player.alive ? '💀 Tandai Mati' : '✅ Tandai Hidup'}
                 gameState.roles = {};
                 gameState.wolfTeam = [];
                 gameState.couples = [];
+                if (onlineRoomCode && roomPlayersRef) {
+                    roomPlayersRef.remove();
+                }
+                saveState();
                 renderPlayers();
                 updateStats();
                 initRoleDistribution();

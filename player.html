@@ -395,8 +395,26 @@
 
         // Auto-fill from URL if joining via link
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('room')) {
-            document.getElementById('inputRoom').value = urlParams.get('room').toUpperCase();
+        const urlRoom = urlParams.get('room')?.toUpperCase();
+
+        const savedRoom = sessionStorage.getItem('ww_player_room');
+        const savedName = sessionStorage.getItem('ww_player_name');
+
+        if (urlRoom && urlRoom !== savedRoom) {
+            // Prioritaskan link baru dari URL, jangan auto-join ke room lama
+            document.getElementById('inputRoom').value = urlRoom;
+            if (savedName) document.getElementById('inputName').value = savedName;
+        } else if (savedRoom && savedName) {
+            // Reconnect ke sesi yang sama
+            document.getElementById('inputRoom').value = savedRoom;
+            document.getElementById('inputName').value = savedName;
+            // Auto join with slight delay to ensure DB is ready
+            setTimeout(() => {
+                if (db) joinRoom();
+            }, 300);
+        } else if (urlRoom) {
+            // Hanya ada URL
+            document.getElementById('inputRoom').value = urlRoom;
         }
 
         function showScreen(screenId) {
@@ -442,6 +460,8 @@
                     name: playerName,
                     joinedAt: firebase.database.ServerValue.TIMESTAMP
                 }).then(() => {
+                    sessionStorage.setItem('ww_player_room', roomCode);
+                    sessionStorage.setItem('ww_player_name', playerName);
                     initListeners();
                     showScreen('screen-waiting');
                 }).catch(err => {
@@ -456,7 +476,12 @@
             // Listen to Meta
             db.ref(`rooms/${roomCode}/meta`).on('value', snapshot => {
                 const meta = snapshot.val();
-                if (!meta) return; // Room deleted
+                if (!meta) {
+                    showToast("Room telah ditutup oleh moderator.");
+                    sessionStorage.removeItem('ww_player_room');
+                    setTimeout(() => window.location.reload(), 2000);
+                    return; // Room deleted
+                }
 
                 if (meta.gameStarted) {
                     showScreen('screen-game');
@@ -471,7 +496,12 @@
             // Listen to My Player Data (Role & Status)
             db.ref(`rooms/${roomCode}/players/${playerId}`).on('value', snapshot => {
                 const playerData = snapshot.val();
-                if (!playerData) return; // Kicked
+                if (!playerData) {
+                    showToast("Kamu telah dikeluarkan dari permainan.");
+                    sessionStorage.removeItem('ww_player_room');
+                    setTimeout(() => window.location.reload(), 2000);
+                    return; // Kicked
+                }
 
                 // Check death
                 if (!playerData.alive && !isDead) {
